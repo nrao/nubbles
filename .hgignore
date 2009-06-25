@@ -1,0 +1,23 @@
+syntax: glob
+
+*~
+*.class
+*.hi
+*.o
+*.orig
+*.prof
+*.swp
+
+.classpath
+.project
+.metadata
+
+*.launch
+
+bin/
+client/
+dist/
+tomcat/
+www/
+www-test/
+war/resources
