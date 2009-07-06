@@ -21,3 +21,5 @@ tomcat/
 www/
 www-test/
 war/resources
+war/nubbles
+war/WEB-INF
