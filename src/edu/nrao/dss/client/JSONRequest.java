@@ -47,12 +47,14 @@ class JSONRequest implements RequestCallback {
 	}
 
 	public void onResponseReceived(Request request, Response response) {
-	    //Window.alert(response.getText());
+		//GWT.log(response.getText(), null);
 		if (cb == null) {
 			// We don't care about the response.
 			return;
 		}
 
+		//JSONObject json = JSONParser.parse(response.getText()).isObject();
+		//cb.onSuccess(json);
 		try {
 			JSONObject json = JSONParser.parse(response.getText()).isObject();
 			if (json == null) {
@@ -95,7 +97,7 @@ class JSONRequest implements RequestCallback {
     		strKeys.add(k.toString());
     		strValues.add(data.get(k).toString());
     	}
-    	post("/sessions", strKeys.toArray(new String[]{}), strValues.toArray(new String[]{}), cb);
+    	post(uri, strKeys.toArray(new String[]{}), strValues.toArray(new String[]{}), cb);
 	}
 	
 	public static void post(String uri, String[] keys, String[] values, final JSONCallback cb) {

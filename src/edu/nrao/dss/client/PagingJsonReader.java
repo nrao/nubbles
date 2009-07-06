@@ -1,4 +1,4 @@
-package edu.nrao.dss.client;
+	package edu.nrao.dss.client;
 
 import java.util.List;
 
@@ -15,6 +15,6 @@ class PagingJsonReader<C> extends JsonReader<C> {
 
     protected Object createReturnData(Object loadConfig, List<ModelData> models, int totalCount) {
         BasePagingLoadConfig config = (BasePagingLoadConfig) loadConfig;
-        return new BasePagingLoadResult<ModelData>(models, config.getOffset(), 0);
+        return new BasePagingLoadResult<ModelData>(models, config.getOffset(), totalCount);
     }
 }

@@ -3,13 +3,13 @@ package edu.nrao.dss.client;
 import com.extjs.gxt.ui.client.data.ModelType;
 
 class SessionType extends ModelType {
-    public SessionType(ColumnDefinition columns) {
+    public SessionType(ColumnType[] columnTypes) {
         this.setRoot("sessions");
         this.setTotalName("total");
 
         addField("id");
-        for (String f : columns.getAllFieldIds()) {
-                addField(f);
+        for (ColumnType ct : columnTypes) {
+                addField(ct.getId());
         }
     }
 }

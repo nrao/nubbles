@@ -1,6 +1,8 @@
 package edu.nrao.dss.client;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -10,26 +12,33 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class Scheduler extends Viewport implements EntryPoint {
     public void onModuleLoad() {
-        RootPanel.get().add(this);
         initLayout();
     }
 
     private void initLayout() {
         setLayout(new FitLayout());
-        add(tabPanel);
 
-        addTab(pe, "Project Explorer", "Define and edit projects.");
-        addTab(se, "Session Explorer", "Define and edit sessions.");
+        tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
+        TabItem seTab = addTab(se, "Session Explorer", "Define and edit sessions.");
+        seTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
+        	@Override
+        	public void componentSelected(TabPanelEvent tpe){
+        		SessionColConfig pcodeConfig = (SessionColConfig) se.getPcodeConfig();
+        		pcodeConfig.updatePCodeOptions();
+        		se.loadData();
+        	}
+        });
+        tabPanel.add(seTab);
+        tabPanel.setHeight(600);
+
+        RootPanel.get().add(tabPanel);
     }
 
-    private TabItem addTab(LayoutContainer container, String title, String toolTip) {
+    private TabItem addTab(Explorer container, String title, String toolTip) {
         TabItem item = new TabItem(title);
-        tabPanel.add(item);
-
         item.add(container);
         item.getHeader().setToolTip(toolTip);
         item.setLayout(new FitLayout());
-
         return item;
     }
 

@@ -25,8 +25,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
 class SessionColConfig extends ColumnConfig {
-	public final ArrayList<String> proj_codes = new ArrayList<String>();
-	
+
 	@SuppressWarnings("unchecked")
 	public SessionColConfig(String fName, String name, int width, Class clasz) {
 		super(fName, name, width);
@@ -64,6 +63,7 @@ class SessionColConfig extends ColumnConfig {
 		JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
+				ArrayList<String> proj_codes = new ArrayList<String>();
 				JSONArray pcodes = json.get("project codes").isArray();
 				for (int i = 0; i < pcodes.size(); ++i){
 					proj_codes.add(pcodes.get(i).toString().replace('"', ' ').trim());
@@ -73,40 +73,21 @@ class SessionColConfig extends ColumnConfig {
     	});
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Field getField() {
-		Field field;
-		if (this.clasz == Integer.class) {
-			field = createIntegerField();
-		} else if (this.clasz == Double.class) {
-			field = createDoubleField();
-		} else if (this.clasz == Boolean.class) {
-			field = createCheckboxField();
-		} else if (this.clasz == CoordModeField.class) {
-			field = createSimpleComboBox(CoordModeField.values);
-		} else if (this.clasz == DateEditField.class) {
-			field = new DateField();
-		} else if (this.clasz == DegreeField.class) {
-			field = createTextField();
-		} else if (this.clasz == GradeField.class) {
-			field = createSimpleComboBox(GradeField.values);
-		} else if (this.clasz == ScienceField.class) {
-			field = createSimpleComboBox(ScienceField.values);
-		} else if (this.clasz == STypeField.class) {
-			field = createSimpleComboBox(STypeField.values);
-		} else if (this.clasz == PCodeField.class) {
-			field = createSimpleComboBox(proj_codes.toArray(new String[] {}));
-		} else if (this.clasz == TimeField.class) {
-			field = createTextField();
-		} else {
-			field = createTextField();
-		}
-		// field.setAllowBlank(false);
-		field.setFieldLabel(getId());
-		field.setEmptyText(getHeader());
-		return field;
+	public void updatePCodeOptions() {
+		JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(JSONObject json) {
+				SimpleComboBox<String> typeCombo = (SimpleComboBox<String>) getEditor().getField();
+				typeCombo.removeAll();
+				JSONArray pcodes = json.get("project codes").isArray();
+				for (int i = 0; i < pcodes.size(); ++i){
+					typeCombo.add(pcodes.get(i).toString().replace('"', ' ').trim());
+				}
+			}
+    	});
 	}
-
+	
 	private NumberField createDoubleField() {
 		NumberField field = new NumberField();
 		field.setPropertyEditorType(Double.class);
@@ -195,7 +176,9 @@ class SessionColConfig extends ColumnConfig {
 	}
 
 	private void checkboxField() {
-		setEditor(new CellEditor(new CheckBox()) {
+		setEditor(new CellEditor(new CheckBox()));
+		/*
+		{
 			@Override
 			public Object preProcessValue(Object value) {
 				if (value == null) {
@@ -212,6 +195,7 @@ class SessionColConfig extends ColumnConfig {
 				return value.toString();
 			}
 		});
+		*/
 	}
 	
 	private void dateField() {

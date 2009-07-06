@@ -1,34 +1,36 @@
 package edu.nrao.dss.client;
 
-import java.util.Map;
+public class ColumnType {
+	
+	@SuppressWarnings("unchecked")
+	public ColumnType(String id, String name, int length, Class clasz) {
+		this.id     = id;
+		this.name   = name;
+		this.length = length;
+		this.clasz  = clasz;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public String getName() {
+		return name;
+	}
 
-class ColumnType extends SessionColConfig {
-    @SuppressWarnings("unchecked")
-    public ColumnType(String id, String name, int width, Class type, Object value) {
-        super(id, name, width, type);
-        this.value = value;
-    }
+	public int getLength() {
+		return length;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Class getClasz() {
+		return clasz;
+	}
+	
+	private String id;
+	private String name;
+	private int length;
+	@SuppressWarnings("unchecked")
+	private Class clasz;
 
-    public Object getValue(RowType row, Map<String, Object> model) {
-        if (value == null) {
-            return null;
-        }
-
-        if (value instanceof CalculatedField) {
-            return ((CalculatedField) value).calculate(row, model);
-        }
-
-        return value;
-    }
-    
-    public boolean hasColumnDefault() {
-    	return value != null;
-    }
-
-    @SuppressWarnings("unchecked")
-	public Class getClasz(String id) {
-    	return this.clasz;
-    }
-    
-    private final Object value;
 }

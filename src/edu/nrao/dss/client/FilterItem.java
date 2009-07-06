@@ -9,27 +9,31 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class FilterItem extends MenuItem {
-	public FilterItem(final SessionExplorer sx) {
+	public FilterItem(final Explorer explorer) {
 		super("Filter");
-		textField = new TextField<String>(); //(TextField<String>) getWidget();
-		setTitle("Display sessions containing ...");
-		defineListener(sx);
+		textField = new TextField<String>();
+		setTitle("Display rows containing ...");
+		defineListener(explorer);
 	}
 	
-	private void defineListener(final SessionExplorer sx) {
+	private void defineListener(final Explorer explorer) {
 		textField.addKeyListener(new KeyListener() {
 			@Override
 			public void componentKeyPress(ComponentEvent e) {
 				if (e.getKeyCode() == 13) {
 					String filterText = textField.getValue();
-					String url = "/sessions" + (filterText != null ? "?filterText=" + filterText : "");
+					String url = explorer.getRootURL() + (filterText != null ? "?filterText=" + filterText : "");
 					RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-					DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = sx.getProxy();
+					DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = explorer.getProxy();
 					proxy.setBuilder(builder);
-					sx.loadData();
+					explorer.loadData();
 				}
 			}
 		});
+	}
+	
+	public TextField<String> getTextField() {
+		return textField;
 	}
 	
 	private final TextField<String> textField;
