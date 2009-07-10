@@ -3,6 +3,7 @@ package edu.nrao.dss.client;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -18,7 +19,11 @@ public class Scheduler extends Viewport implements EntryPoint {
     private void initLayout() {
         setLayout(new FitLayout());
 
+        // project explorer tab
         tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
+        
+        // session explorer tab - we need to update the project info when it
+        // comes into focus
         TabItem seTab = addTab(se, "Session Explorer", "Define and edit sessions.");
         seTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
         	@Override
@@ -29,12 +34,16 @@ public class Scheduler extends Viewport implements EntryPoint {
         	}
         });
         tabPanel.add(seTab);
+        
+        // schedule tab
+        tabPanel.add(addTab(sch, "Schedule", "Manage the Schedule"));
+        
         tabPanel.setHeight(600);
 
         RootPanel.get().add(tabPanel);
     }
-
-    private TabItem addTab(Explorer container, String title, String toolTip) {
+    
+    private TabItem addTab(ContentPanel container, String title, String toolTip) {
         TabItem item = new TabItem(title);
         item.add(container);
         item.getHeader().setToolTip(toolTip);
@@ -45,4 +54,5 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final TabPanel         tabPanel = new TabPanel();
     private final ProjectExplorer  pe       = new ProjectExplorer();
     private final SessionExplorer  se       = new SessionExplorer();
+    private final Schedule         sch      = new Schedule();
 }
