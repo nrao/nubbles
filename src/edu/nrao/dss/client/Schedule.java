@@ -102,29 +102,7 @@ public class Schedule extends ContentPanel {
 		northData.setMargins(new Margins(5,5,5,5));
 
 		// to the left, the calendar
-		ContentPanel west = new ContentPanel();
-		west.setHeading("West: Calendar");
-		west.setBorders(true);
-		// list the periods in a table
-		//LayoutContainer lc = new LayoutContainer();
-		TableLayout tl = new TableLayout(3);
-		tl.setWidth("100%");
-		tl.setHeight("100%");
-		tl.setBorder(1);
-		west.setLayout(tl);
-		// start
-		TableData td = new TableData();
-		td.setHorizontalAlign(HorizontalAlignment.CENTER);
-		west.add((Widget) new LabelField("Start"), td);
-		// dur
-		TableData td1 = new TableData();
-		td1.setHorizontalAlign(HorizontalAlignment.CENTER);
-		west.add((Widget) new LabelField("Duration"), td1);
-		// session
-		TableData td2 = new TableData();
-		td2.setHorizontalAlign(HorizontalAlignment.CENTER);
-		west.add((Widget) new LabelField("Session"), td2);
-
+		ScheduleCalendar west = new ScheduleCalendar();
 		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 500);
 		westData.setSplit(true);
 
