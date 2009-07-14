@@ -88,7 +88,17 @@ class JSONRequest implements RequestCallback {
 		} catch (RequestException e) {
 		}
 	}
+	
+	// TBF: refactor this to an overloaded 'get'
+	public static void getWithKeywords(String uri, JSONCallback cb) {
+		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, uri);
+		get.setHeader("Accept", "application/json");
 
+		try {
+			get.sendRequest(null, new JSONRequest(cb));
+		} catch (RequestException e) {
+		}
+	}
 	public static void post(String uri, HashMap<String, Object> data, final JSONCallback cb){
 		Set <String> keys           = data.keySet();
     	ArrayList<String> strKeys   = new ArrayList<String>();
