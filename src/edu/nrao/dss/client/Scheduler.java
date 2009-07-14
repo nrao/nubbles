@@ -38,7 +38,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         // schedule tab
         tabPanel.add(addTab(sch, "Schedule", "Manage the Schedule"));
         
-        tabPanel.setHeight(600);
+        tabPanel.setHeight(800);
 
         RootPanel.get().add(tabPanel);
     }
