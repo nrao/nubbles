@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -25,12 +26,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 // This class is the new version of the Beta Test's Scheduling Page.
 
-public class Schedule extends ContentPanel { 
-
-	private Integer numCalendarDays = 2;
-	// TBF: why can't I seem to create a Date object?
-	//long now = 1000;
-	private Date startCalendarDay; // = Date((long) now);
+public class Schedule extends ContentPanel {
+	
+	private final ScheduleCalendar west = null;
+	private Integer numCalendarDays = 1;
+	private Date startCalendarDay = new Date();
 	
 	public Schedule() {
 			super();
@@ -43,7 +43,7 @@ public class Schedule extends ContentPanel {
 		setLayout(new BorderLayout());
 		
 		// bells & whistles for this content panel
-		setHeading("Schedule Shit"); 
+		setHeading("Schedule Stuff"); 
 		setCollapsible(true);
 		setFrame(true);
 		setBodyStyle("backgroundColor: white;");
@@ -58,6 +58,7 @@ public class Schedule extends ContentPanel {
 		// fields for form
 		// 1. Date - when this changes, change the start of the calendar view
 	    final DateField dt = new DateField();
+	    dt.setValue(startCalendarDay);
 	    dt.setFieldLabel("Start Date");
 	    Listener<BaseEvent> dtListener;
 	    dtListener = new Listener<BaseEvent>() {
@@ -69,6 +70,7 @@ public class Schedule extends ContentPanel {
 	    		// alrighty then, get periods starting from this date!
 	            startCalendarDay = date;
 	            Window.alert("Getting Periods starting at: " + dateStr + " for " + numCalendarDays.toString() + " days.");
+	            west.loadPeriods(startCalendarDay, numCalendarDays);
 	    	}
 	    };
 	    dt.addListener(Events.Change, dtListener);
@@ -81,7 +83,7 @@ public class Schedule extends ContentPanel {
 		days.add(3);
 		days.setFieldLabel("Days");
 		days.setEditable(false);
-		days.setSimpleValue(2);
+		days.setSimpleValue(numCalendarDays);
 	    Listener<BaseEvent> daysListener;
 	    daysListener = new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
@@ -92,17 +94,26 @@ public class Schedule extends ContentPanel {
 	    		numCalendarDays = numDays;
 	    		String dateStr = startCalendarDay.toString();
 	            Window.alert("Getting Periods starting at: " + dateStr + " for " + numCalendarDays.toString() + " days.");
-
+	            // TBF: causing uncaught exception
+	            west.loadPeriods(startCalendarDay, numCalendarDays);
 	    	}
 	    };		
 	    days.addListener(Events.Change, daysListener);
 		north.add(days);
 		
+		// TBF: schedule this calendar
+		Button scheduleButton = new Button("Schedule");
+		north.add(scheduleButton);
+		
+		// TBF: create a new period
+		Button newPeriodButton = new Button("New Period");
+		north.add(newPeriodButton);
+		
 		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 150);
 		northData.setMargins(new Margins(5,5,5,5));
 
 		// to the left, the calendar
-		ScheduleCalendar west = new ScheduleCalendar();
+		ScheduleCalendar west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 500);
 		westData.setSplit(true);
 
@@ -121,5 +132,6 @@ public class Schedule extends ContentPanel {
 
 	}
 	
+
 }	
 	
