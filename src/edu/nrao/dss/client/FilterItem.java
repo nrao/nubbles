@@ -13,9 +13,11 @@ public class FilterItem extends MenuItem {
 		super("Filter");
 		textField = new TextField<String>();
 		setTitle("Display rows containing ...");
-		defineListener(explorer);
+		// see todo below
+		//defineListener(explorer);
 	}
 	
+	// TODO Remove this method or get it to pass advance filtering parameters
 	private void defineListener(final Explorer explorer) {
 		textField.addKeyListener(new KeyListener() {
 			@Override

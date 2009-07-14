@@ -3,8 +3,8 @@ package edu.nrao.dss.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import com.extjs.gxt.charts.client.model.axis.Label;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelType;
 import com.extjs.gxt.ui.client.data.PagingLoader;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -27,6 +26,8 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -39,7 +40,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
@@ -178,12 +178,22 @@ public class Explorer extends ContentPanel{
 			}
 		});
 
-		FilterItem filter = new FilterItem(Explorer.this);
-		toolBar.add(filter.getTextField());
-
 		toolBar.add(new SeparatorToolItem());
 
+		filter = new FilterItem(Explorer.this);
+		toolBar.add(filter.getTextField());
+
+		for (SimpleComboBox<String> f : advancedFilters) {
+			toolBar.add(new SeparatorToolItem());
+		    toolBar.add(f);
+		}
+		toolBar.add(new SeparatorToolItem());
+		if (filterAction != null) {
+			toolBar.add(filterAction);
+		}
+		
 		toolBar.add(new FillToolItem());
+		toolBar.add(new SeparatorToolItem());
 
 		Button saveItem = new Button("Save");
 		toolBar.add(saveItem);
@@ -239,35 +249,17 @@ public class Explorer extends ContentPanel{
 			}
 		});
 	}
-	
-	protected CellEditor getCombo(String[] options) {
-	    final SimpleComboBox<String> combo = new SimpleComboBox<String>();
-	    combo.setForceSelection(true);
-	    combo.setTriggerAction(TriggerAction.ALL);
-	    for (String o : options) {
-	    	combo.add(o);
-	    }
 
-	    CellEditor editor = new CellEditor(combo) {
-	      @Override
-	      public Object preProcessValue(Object value) {
-	        if (value == null) {
-	          return value;
-	        }
-	        return combo.findModel(value.toString());
-	      }
-
-	      @Override
-	      public Object postProcessValue(Object value) {
-	        if (value == null) {
-	          return value;
-	        }
-	        return ((ModelData) value).get("value");
-	      }
-	    };
-	    return editor;
+	protected SimpleComboBox<String> initCombo(String title, String[] options) {
+		SimpleComboBox<String> filter = new SimpleComboBox<String>();
+		filter.setEmptyText(title);
+		for (String o : options) {
+			filter.add(o);
+		}
+		
+		return filter;
 	}
-
+	
 	public DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> getProxy() {
 		return proxy;
 	}
@@ -295,4 +287,19 @@ public class Explorer extends ContentPanel{
 	protected DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy;
 	
 	protected String rootURL;
+	
+	protected List<SimpleComboBox<String>> advancedFilters = new ArrayList<SimpleComboBox<String>>();
+	
+	protected Button filterAction;
+	
+	protected FilterItem filter;
+	
+	protected String[] semesters = new String[] {
+		    "09C", "09B", "09A"
+            , "08C", "08B", "08A"
+            , "07C", "07B", "07A"
+            , "06C", "06B", "06A"
+            , "05C", "05B", "05A"
+            , "04A"
+            };
 }
