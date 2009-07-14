@@ -1,10 +1,13 @@
 package edu.nrao.dss.client;
 
 class ScienceField {
-    public static final String[] values = new String[] { "pulsar"
+    public static final String[] values = new String[] { "radar"
+                                                       , "vlbi"
+    	                                               , "pulsar"
                                                        , "continuum"
                                                        , "spectral line"
-                                                       , "vlbi"
+                                                       , "maintenance"
+                                                       , "calibration"
                                                        , "testing"
                                                        };
 

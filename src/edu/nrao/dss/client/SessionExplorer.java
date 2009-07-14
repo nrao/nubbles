@@ -1,25 +1,98 @@
 package edu.nrao.dss.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.google.gwt.http.client.RequestBuilder;
 
 public class SessionExplorer extends Explorer {
 	public SessionExplorer() {
 		super("/sessions", new SessionType(columnTypes));
+		initFilters();
 		initLayout(initColumnModel());
+	}
+	
+	private void initFilters() {
+		String[] frequencies = new String[] {
+			"> 2 GHz", "> 5 GHz", "> 10 GHz", "> 20 GHz", "> 30 GHz", "> 40 GHz"	
+		};
+		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}));
+		advancedFilters.add(initCombo("Science Type", ScienceField.values));
+		advancedFilters.add(initCombo("Frequency", frequencies));
+		advancedFilters.add(initCombo("Semester", semesters));
+		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}));
+		
+		initFilterAction();
+	}
+	
+	private void initFilterAction() {
+		filterAction = new Button("Filter");
+		filterAction.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be){
+				HashMap<String, String> freqMap = new HashMap<String, String>();
+				freqMap.put("> 2 GHz", "2");
+				freqMap.put("> 5 GHz", "5");
+				freqMap.put("> 10 GHz", "10");
+				freqMap.put("> 20 GHz", "20");
+				freqMap.put("> 30 GHz", "30");
+				freqMap.put("> 40 GHz", "40");
+				
+				String filtersURL = "?";
+				String filterVal;
+				String[] filterNames = new String[] {"filterType", "filterSci", "filterFreq", "filterSem", "filterClp"};
+				for (int i = 0; i < advancedFilters.size(); i++) {
+					SimpleComboValue<String> value = advancedFilters.get(i).getValue();
+					if (value != null) {
+						if (filterNames[i] == "filterFreq") {
+							filterVal = freqMap.get(value.getValue());
+						} else {
+							filterVal = value.getValue();
+						}
+						filtersURL += (filtersURL.equals("?") ? filterNames[i] + "=" : "&" + filterNames[i] + "=") + filterVal;
+					}
+				}
+
+				String filterText = filter.getTextField().getValue();
+				if (filterText != null) {
+					filterText = filtersURL.equals("?") ? "filterText=" + filterText : "&filterText=" + filterText;
+				} else {
+					filterText = "";
+				}
+				String url = getRootURL() + filtersURL + filterText;
+				RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+				DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = getProxy();
+				proxy.setBuilder(builder);
+				loadData();
+				
+			}
+		});
 	}
 	
 	private ColumnModel initColumnModel() {
 		configs = new ArrayList<ColumnConfig>();
 		CheckColumnConfig checkColumn;
 		for (ColumnType ct : columnTypes) {
-			if (ct.getClasz() != null) {
+			if (ct.getClasz() != Boolean.class) {
 			    configs.add(new SessionColConfig(ct.getId(), ct.getName(), ct.getLength(), ct.getClasz()));
 			} else {
 				checkColumn = new CheckColumnConfig(ct.getId(), ct.getName(), ct.getLength());
@@ -28,7 +101,6 @@ public class SessionExplorer extends Explorer {
 			    checkBoxes.add(checkColumn);
 			}
 		}
-	    
 	    return new ColumnModel(configs);
 	}
 	
@@ -57,9 +129,9 @@ public class SessionExplorer extends Explorer {
         new ColumnType("source_h",       "Source H",        75, TimeField.class),
         new ColumnType("source_v",       "Source V",        75, DegreeField.class),
         new ColumnType("between",        "Between",         60, Double.class),
-       	new ColumnType("authorized",     "Authorized?",     70, null),
-       	new ColumnType("enabled",        "Enabled?",        65, null),
-       	new ColumnType("complete",       "Complete?",       65, null),
-       	new ColumnType("backup",         "Backup?",         55, null),
+       	new ColumnType("authorized",     "Authorized?",     70, Boolean.class),
+       	new ColumnType("enabled",        "Enabled?",        65, Boolean.class),
+       	new ColumnType("complete",       "Complete?",       65, Boolean.class),
+       	new ColumnType("backup",         "Backup?",         55, Boolean.class)
     	};
 }
