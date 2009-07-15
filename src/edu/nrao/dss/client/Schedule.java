@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
@@ -48,7 +49,6 @@ public class Schedule extends ContentPanel {
 			initLayout();
 	}	
 	
-	@SuppressWarnings("unchecked") 
 	protected void initLayout() {
 		setHeaderVisible(true);
 		setLayout(new BorderLayout());
@@ -74,18 +74,12 @@ public class Schedule extends ContentPanel {
 	    dt.setFieldLabel("Start Date");
 	    dt.addListener(Events.Change, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		DateField dtf = (DateField) be.getSource();
-	    		Date date = dtf.getValue();
-	    		String dateStr = date.toString();
-	    		Window.alert("Will change calendar to start at: " + dateStr);
-	    		// alrighty then, get periods starting from this date!
-	            startCalendarDay = date;
-	            Window.alert("Getting Periods starting at: " + dateStr + " for " + numCalendarDays.toString() + " days.");
-	            //west.loadPeriods(startCalendarDay, numCalendarDays);
+	            startCalendarDay = dt.getValue();
+	            updateCalendar();
 	    	}
 	    });
 	    north.add(dt);
-	    
+
 		// 2. Days - when this changes, change the length of the calendar view
 		final SimpleComboBox<Integer> days;
 		days = new SimpleComboBox<Integer>();
@@ -98,22 +92,8 @@ public class Schedule extends ContentPanel {
 	    Listener<BaseEvent> daysListener;
 	    daysListener = new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		SimpleComboBox daysf = (SimpleComboBox) be.getSource();
-	    		Integer numDays = (Integer) daysf.getSimpleValue();
-	    		Window.alert("Will change calendar to run for " + numDays.toString() + " days");
-	    		// OK, get periods now for this number of days!
-	    		numCalendarDays = numDays;
-	    		String dateStr = startCalendarDay.toString();
-	            Window.alert("Getting Periods starting at: " + dateStr + " for " + numCalendarDays.toString() + " days.");
-	            // TBF: get period explorer to refresh
-	            //west.loadPeriods(startCalendarDay, numCalendarDays);
-				//String url = "/periods?startPeriods=2006-06-02&dayPeriods; // + (filterText != null ? "?filterText=" + filterText : "");" +
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
-	    		String url = "/periods?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
-				RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-				DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = west.pe.getProxy();
-				proxy.setBuilder(builder);
-				west.pe.loadData();
+	    		numCalendarDays = days.getSimpleValue();
+	            updateCalendar();
 	    	}
 	    };		
 	    days.addListener(Events.Change, daysListener);
@@ -123,7 +103,6 @@ public class Schedule extends ContentPanel {
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-	    		Button b = (Button) be.getSource();
 	    		HashMap<String, Object> keys = new HashMap<String, Object>();
 	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
 	    		keys.put("start", startStr);
@@ -132,7 +111,7 @@ public class Schedule extends ContentPanel {
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								System.out.println("schedule_algo onSuccess");
-								//TBF: get period explorer to refresh
+								updateCalendar();
 							}
 						});
 			}
@@ -163,6 +142,13 @@ public class Schedule extends ContentPanel {
 
 	}
 	
-
+    private void updateCalendar() {
+		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
+		String url = "/periods?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = west.pe.getProxy();
+		proxy.setBuilder(builder);
+		west.pe.loadData();
+    }
 }	
 	

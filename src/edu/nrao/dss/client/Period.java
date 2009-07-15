@@ -54,6 +54,6 @@ public class Period {
     //private Calendar start;
     // TBF - I don't understand how to deal w/ date times
     // in java!!!!
-    private String start;
+    private String   start;
     private int      duration; // minutes
 }

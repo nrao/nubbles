@@ -32,21 +32,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScheduleCalendar extends ContentPanel { 
 
-	private Date startCalendarDay = new Date();
-	private int numCalendarDays = 1;
 	public PeriodExplorer  pe;  
-    private List<Period> periods;
 
 	
 	public ScheduleCalendar(Date start, int days) {
-			super();
-			// TBF: use this date range to filter the explorer
-			startCalendarDay = start;
-			numCalendarDays = days;
-			initLayout(start, days);
+		super();
+		// TBF: use this date range to filter the explorer
+		initLayout(start, days);
 	}	
 	
-	@SuppressWarnings("unchecked") 
 	protected void initLayout(Date start, int days) {
 		
 		setHeading("West: Calendar");
@@ -60,10 +54,5 @@ public class ScheduleCalendar extends ContentPanel {
    
 		
 	}
-	
-//	public DynamicHttpProxy<BasePagingLoadResult<BaseModelData>>getProxy() {
-//		return pe.getProxy();
-//	}
-//	
 }	
 	
