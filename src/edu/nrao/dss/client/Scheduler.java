@@ -43,7 +43,6 @@ public class Scheduler extends Viewport implements EntryPoint {
         	@Override
         	public void componentSelected(TabPanelEvent tpe){
         		PeriodColConfig sessionConfig = (PeriodColConfig) sch.west.pe.getSessionConfig();
-        		GWT.log("Scheduler addListener", null);
         		sessionConfig.updateSessionOptions();
         		sch.west.pe.loadData();
         	}

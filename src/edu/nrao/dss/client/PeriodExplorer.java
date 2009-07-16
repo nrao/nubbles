@@ -28,8 +28,9 @@ public class PeriodExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
 	private static final ColumnType[] columnTypes = {
-       	new ColumnType("handle",          "Session",       180, SessionField.class),
-        new ColumnType("start",           "Start",         120, String.class), 
-        new ColumnType("duration",        "Duration",       80, Double.class)
+       	new ColumnType("handle",          "Session (Project)", 200, SessionField.class),
+        new ColumnType("start",           "Start",             120, String.class), 
+        new ColumnType("duration",        "Duration (Hrs)",     90, Double.class),
+       	new ColumnType("backup",          "Backup?",            70, Boolean.class),
 	};
 }

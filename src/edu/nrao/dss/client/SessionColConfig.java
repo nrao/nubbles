@@ -191,25 +191,6 @@ class SessionColConfig extends ColumnConfig {
 
 	private void checkboxField() {
 		setEditor(new CellEditor(new CheckBox()));
-		/*
-		{
-			@Override
-			public Object preProcessValue(Object value) {
-				if (value == null) {
-					return null;
-				}
-				return value.equals("true");
-			}
-
-			@Override
-			public Object postProcessValue(Object value) {
-				if (value == null) {
-					return null;
-				}
-				return value.toString();
-			}
-		});
-		*/
 	}
 	
 	private void dateField() {

@@ -119,8 +119,7 @@ public class Schedule extends ContentPanel {
 
 		// to the left, the calendar
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
-		//west = new PeriodExplorer();
-		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 500);
+		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 550);
 		westData.setSplit(true);
 
 		// to the right, the Bin

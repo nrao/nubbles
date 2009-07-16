@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -35,6 +36,8 @@ class PeriodColConfig extends ColumnConfig {
 			doubleField();
 		} else if (clasz == SessionField.class) {
 			setSessionOptions();
+		} else if (clasz == Boolean.class) {
+			checkboxField();
 		} else {
 			textField();
 		}
@@ -49,11 +52,9 @@ class PeriodColConfig extends ColumnConfig {
 			      , new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
-				GWT.log("setSessionOptions onSuccess", null);
 				ArrayList<String> sess_handles = new ArrayList<String>();
 				JSONArray sessions = json.get("session handles").isArray();
 				for (int i = 0; i < sessions.size(); ++i){
-					GWT.log(sessions.get(i).toString(), null);
 					sess_handles.add(sessions.get(i).toString().replace('"', ' ').trim());
 				}
 				typeField(sess_handles.toArray(new String[] {}));
@@ -71,7 +72,6 @@ class PeriodColConfig extends ColumnConfig {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(JSONObject json) {
-				GWT.log("updateSessionOptions onSuccess", null);
 				SimpleComboBox<String> typeCombo = (SimpleComboBox<String>) getEditor().getField();
 				typeCombo.removeAll();
 				JSONArray sessions = json.get("session handles").isArray();
@@ -88,6 +88,10 @@ class PeriodColConfig extends ColumnConfig {
 		return field;
 	}
 
+	private void checkboxField() {
+		setEditor(new CellEditor(new CheckBox()));
+	}
+	
 	private void doubleField() {
 		NumberField field = createDoubleField();
 
