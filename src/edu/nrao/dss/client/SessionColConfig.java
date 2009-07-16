@@ -2,6 +2,7 @@ package edu.nrao.dss.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -24,6 +25,8 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+//Should extend an intermediate class for duplicate code
+//between SessionColConfig and PeriodColConfig
 class SessionColConfig extends ColumnConfig {
 
 	@SuppressWarnings("unchecked")
@@ -59,8 +62,13 @@ class SessionColConfig extends ColumnConfig {
 		}
 	};
 
+	@SuppressWarnings("serial")
 	public void setPCodeOptions() {
-		JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
+		JSONRequest.get("/sessions/options"
+				      , new HashMap<String, Object>() {{
+				    	  put("mode", "project_codes");
+				        }}
+				      , new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
 				ArrayList<String> proj_codes = new ArrayList<String>();
@@ -73,8 +81,14 @@ class SessionColConfig extends ColumnConfig {
     	});
 	}
 	
+	@SuppressWarnings("serial")
 	public void updatePCodeOptions() {
-		JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
+		JSONRequest.get("/sessions/options"
+			      , new HashMap<String, Object>() {{
+			    	  put("mode", "project_codes");
+			        }}
+			      , new JSONCallbackAdapter() {
+		//JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(JSONObject json) {

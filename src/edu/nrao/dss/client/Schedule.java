@@ -5,7 +5,6 @@ package edu.nrao.dss.client;
 import java.util.Date;
 import java.util.HashMap;
 
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -33,7 +32,7 @@ import com.google.gwt.json.client.JSONObject;
 public class Schedule extends ContentPanel {
 	
 	//private PeriodExplorer west;
-	private ScheduleCalendar west;
+	public ScheduleCalendar west;
 	private ContentPanel east;
 
 	private Integer numCalendarDays = 1;
