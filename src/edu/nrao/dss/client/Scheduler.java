@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class Scheduler extends Viewport implements EntryPoint {
@@ -35,8 +36,19 @@ public class Scheduler extends Viewport implements EntryPoint {
         });
         tabPanel.add(seTab);
         
-        // schedule tab
-        tabPanel.add(addTab(sch, "Schedule", "Manage the Schedule"));
+        // schedule tab - we need to update the session/project info when it
+        // comes into focus
+        TabItem schTab = addTab(sch, "Schedule", "Manage the Schedule");
+        schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
+        	@Override
+        	public void componentSelected(TabPanelEvent tpe){
+        		PeriodColConfig sessionConfig = (PeriodColConfig) sch.west.pe.getSessionConfig();
+        		GWT.log("Scheduler addListener", null);
+        		sessionConfig.updateSessionOptions();
+        		sch.west.pe.loadData();
+        	}
+        });
+        tabPanel.add(schTab);
         
         tabPanel.setHeight(800);
 

@@ -89,16 +89,31 @@ class JSONRequest implements RequestCallback {
 		}
 	}
 	
-	// TBF: refactor this to an overloaded 'get'
-	public static void getWithKeywords(String uri, JSONCallback cb) {
-		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, uri);
+	public static void get(String rootURI, HashMap<String, Object> kwargs, JSONCallback cb) {
+		StringBuffer buf = new StringBuffer(rootURI);
+		if (kwargs != null) {
+			buf.append("?");
+			for (String k : kwargs.keySet()) {
+				buf.append(k);
+				buf.append("=");
+				buf.append(kwargs.get(k).toString());
+				buf.append("&");
+			}
+			GWT.log(buf.toString(), null);
+			int hlong = buf.length();
+			GWT.log(Integer.toString(hlong), null);
+			buf.deleteCharAt(buf.length() - 1);
+			GWT.log(buf.toString(), null);
+		}
+		GWT.log("get " + buf.toString(), null);
+		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, buf.toString());
 		get.setHeader("Accept", "application/json");
-
 		try {
 			get.sendRequest(null, new JSONRequest(cb));
 		} catch (RequestException e) {
 		}
 	}
+	
 	public static void post(String uri, HashMap<String, Object> data, final JSONCallback cb){
 		Set <String> keys           = data.keySet();
     	ArrayList<String> strKeys   = new ArrayList<String>();

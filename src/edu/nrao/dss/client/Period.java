@@ -1,8 +1,5 @@
 package edu.nrao.dss.client;
 
-import java.util.Calendar;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 
 public class Period {
