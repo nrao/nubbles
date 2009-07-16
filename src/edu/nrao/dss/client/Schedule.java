@@ -1,10 +1,11 @@
 package edu.nrao.dss.client;
 
 
+
 import java.util.Date;
 import java.util.HashMap;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -15,23 +16,17 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
 
 // This class is the new version of the Beta Test's Scheduling Page.
 
@@ -86,17 +81,16 @@ public class Schedule extends ContentPanel {
 		days.add(1);
 		days.add(2);
 		days.add(3);
+
 		days.setFieldLabel("Days");
 		days.setEditable(false);
 		days.setSimpleValue(numCalendarDays);
-	    Listener<BaseEvent> daysListener;
-	    daysListener = new Listener<BaseEvent>() {
+	    days.addListener(Events.Change, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		numCalendarDays = days.getSimpleValue();
+	    		numCalendarDays = days.getSimpleValue(); 
 	            updateCalendar();
 	    	}
-	    };		
-	    days.addListener(Events.Change, daysListener);
+	    });
 		north.add(days);
 		
 		Button scheduleButton = new Button("Schedule");
@@ -107,11 +101,14 @@ public class Schedule extends ContentPanel {
 	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
 	    		keys.put("start", startStr);
 	    		keys.put("duration", numCalendarDays);
+				String msg = "Scheduling from " + startStr + " for " + numCalendarDays.toString() + " days.";
+				final MessageBox box = MessageBox.wait("Calling Scheduling Algorithm", msg, "Be Patient ...");
 				JSONRequest.post("/runscheduler", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								System.out.println("schedule_algo onSuccess");
 								updateCalendar();
+								box.close();
 							}
 						});
 			}
