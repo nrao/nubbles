@@ -25,6 +25,8 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+//Should extend an intermediate class for duplicate code
+//between SessionColConfig and PeriodColConfig
 class SessionColConfig extends ColumnConfig {
 
 	@SuppressWarnings("unchecked")

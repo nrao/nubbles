@@ -99,13 +99,8 @@ class JSONRequest implements RequestCallback {
 				buf.append(kwargs.get(k).toString());
 				buf.append("&");
 			}
-			GWT.log(buf.toString(), null);
-			int hlong = buf.length();
-			GWT.log(Integer.toString(hlong), null);
 			buf.deleteCharAt(buf.length() - 1);
-			GWT.log(buf.toString(), null);
 		}
-		GWT.log("get " + buf.toString(), null);
 		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, buf.toString());
 		get.setHeader("Accept", "application/json");
 		try {
