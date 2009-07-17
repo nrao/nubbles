@@ -3,6 +3,9 @@ package edu.nrao.dss.client;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.google.gwt.core.client.GWT;
@@ -15,8 +18,16 @@ public class PeriodExplorer extends Explorer {
 	
 	private ColumnModel initColumnModel() {
 		configs = new ArrayList<ColumnConfig>();
+		CheckColumnConfig checkColumn;
 		for (ColumnType ct : columnTypes) {
-	        configs.add(new PeriodColConfig(ct.getId(), ct.getName(), ct.getLength(), ct.getClasz()));
+			if (ct.getClasz() != Boolean.class) {
+			    configs.add(new PeriodColConfig(ct.getId(), ct.getName(), ct.getLength(), ct.getClasz()));
+			} else {
+				checkColumn = new CheckColumnConfig(ct.getId(), ct.getName(), ct.getLength());
+			    checkColumn.setEditor(new CellEditor(new CheckBox()));
+			    configs.add(checkColumn);
+			    checkBoxes.add(checkColumn);
+			}
 		}
 	    return new ColumnModel(configs);
 	}
