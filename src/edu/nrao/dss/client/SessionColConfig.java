@@ -230,7 +230,7 @@ class SessionColConfig extends ColumnConfig {
 
 	private void timeField() {
 		TextField<String> positionField = new TextField<String>();
-		positionField.setRegex("[0-2]\\d:\\d\\d:\\d\\d(\\.\\d+)?");
+		positionField.setRegex("[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?");
 
 		setAlignment(HorizontalAlignment.RIGHT);
 
