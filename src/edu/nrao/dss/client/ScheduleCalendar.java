@@ -21,7 +21,7 @@ public class ScheduleCalendar extends ContentPanel {
 	
 	protected void initLayout(Date start, int days) {
 		
-		setHeading("West: Calendar");
+		setHeading("West: Period Explorer");
 		setBorders(true);
 
 		// put the period explorer inside
