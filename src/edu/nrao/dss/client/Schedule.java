@@ -66,7 +66,8 @@ public class Schedule extends ContentPanel {
 	    final DateField dt = new DateField();
 	    dt.setValue(startCalendarDay);
 	    dt.setFieldLabel("Start Date");
-	    dt.addListener(Events.Change, new Listener<BaseEvent>() {
+		dt.setToolTip("Set the schedule and display start day");
+	    dt.addListener(Events.OnFocus, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	            startCalendarDay = dt.getValue();
 	            updateCalendar();
@@ -80,6 +81,7 @@ public class Schedule extends ContentPanel {
 		days.add(1);
 		days.add(2);
 		days.add(3);
+		days.setToolTip("Set the schedule and display duration");
 
 		days.setFieldLabel("Days");
 		days.setEditable(false);
@@ -91,8 +93,19 @@ public class Schedule extends ContentPanel {
 	    	}
 	    });
 		north.add(days);
+
+	    final Button updateBtn;
+	    updateBtn = new Button("Update");
+		updateBtn.setToolTip("Modify the schedule and display range of calendar");
+	    updateBtn.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	            updateCalendar();
+	    	}
+	    });
+		north.add(updateBtn);
 		
 		Button scheduleButton = new Button("Schedule");
+		scheduleButton.setToolTip("Schedule the telescope over the specified calendar range");
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {

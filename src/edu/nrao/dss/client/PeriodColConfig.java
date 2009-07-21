@@ -1,6 +1,7 @@
 package edu.nrao.dss.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -8,6 +9,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -18,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -36,6 +39,10 @@ class PeriodColConfig extends ColumnConfig {
 			doubleField();
 		} else if (clasz == SessionField.class) {
 			setSessionOptions();
+		} else if (clasz == DateEditField.class) {
+			dateField();
+		} else if (clasz == TimeField.class) {
+			timeField();
 		} else if (clasz == Boolean.class) {
 			checkboxField();
 		} else {
@@ -90,6 +97,33 @@ class PeriodColConfig extends ColumnConfig {
 
 	private void checkboxField() {
 		setEditor(new CellEditor(new CheckBox()));
+	}
+	
+	private void dateField() {
+		setEditor(new CellEditor(new DateField()){
+			@Override
+			public Object preProcessValue(Object value) {
+				GWT.log("preProcessValue", null);
+				if (value == null) {
+					return null;
+				}
+				//return DateFormat.getDateInstance().parse(value.toString());
+				String str = value.toString();
+				DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
+				return fmt.parse(str);
+			}
+
+			@Override
+			public Object postProcessValue(Object value) {
+				GWT.log("postProcessValue", null);
+				if (value == null) {
+					return null;
+				}
+				DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
+				Date d = (Date) value;
+				return fmt.format(d);
+			}
+		});
 	}
 	
 	private void doubleField() {
@@ -163,6 +197,30 @@ class PeriodColConfig extends ColumnConfig {
 					return value;
 				}
 				return ((ModelData) value).get("value");
+			}
+		});
+	}
+	
+	private void timeField() {
+		TextField<String> field = new TextField<String>();
+		field.setRegex("[0-2]\\d:(00|15|30|45)");
+
+		setAlignment(HorizontalAlignment.RIGHT);
+		setEditor(new CellEditor(field) {
+			@Override
+			public Object preProcessValue(Object value) {
+				if (value == null) {
+					return value;
+				}
+				return value;
+			}
+
+			@Override
+			public Object postProcessValue(Object value) {
+				if (value == null) {
+					return value;
+				}
+				return value;
 			}
 		});
 	}
