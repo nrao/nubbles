@@ -16,7 +16,10 @@ public class Period {
     	//try {
             int id = (int) json.get("id").isNumber().doubleValue();
             String handle = (String) json.get("handle").isString().stringValue();
-            Date st = DATE_FORMAT.parse(json.get("start").isString().stringValue());
+            String date = json.get("date").isString().stringValue();
+            String time = json.get("time").isString().stringValue();
+            Date st = DATE_FORMAT.parse(date + " " + time + ":00");
+            //Date st = DATE_FORMAT.parse(json.get("start").isString().stringValue());
             int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
             Period period = new Period(id, handle, st, dur);
             return period;
