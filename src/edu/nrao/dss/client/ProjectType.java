@@ -11,6 +11,8 @@ public class ProjectType extends ModelType {
 		addField("pcode");
 		addField("type");
 		addField("semester");
+		addField("pi");
+		addField("co_i");
 		addField("name");
 		addField("total_time");
 		addField("PSC_time");

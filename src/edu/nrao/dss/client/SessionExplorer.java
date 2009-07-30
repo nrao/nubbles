@@ -28,11 +28,17 @@ public class SessionExplorer extends Explorer {
 		String[] frequencies = new String[] {
 			"> 2 GHz", "> 5 GHz", "> 10 GHz", "> 20 GHz", "> 30 GHz", "> 40 GHz"	
 		};
+		String[] receivers = new String[] {
+			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
+		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol"	
+		};
 		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}));
 		advancedFilters.add(initCombo("Science Type", ScienceField.values));
+		advancedFilters.add(initCombo("Receiver", receivers));
 		advancedFilters.add(initCombo("Frequency", frequencies));
-		advancedFilters.add(initCombo("Semester", semesters));
+		advancedFilters.add(initCombo("Trimester", trimesters));
 		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}));
+		advancedFilters.add(initCombo("Enabled", new String[] {"True", "False"}));
 		
 		initFilterAction();
 	}
@@ -52,7 +58,7 @@ public class SessionExplorer extends Explorer {
 				
 				String filtersURL = "?";
 				String filterVal;
-				String[] filterNames = new String[] {"filterType", "filterSci", "filterFreq", "filterSem", "filterClp"};
+				String[] filterNames = new String[] {"filterType", "filterSci", "filterRcvr", "filterFreq", "filterSem", "filterClp", "filterEnb"};
 				for (int i = 0; i < advancedFilters.size(); i++) {
 					SimpleComboValue<String> value = advancedFilters.get(i).getValue();
 					if (value != null) {
@@ -112,7 +118,7 @@ public class SessionExplorer extends Explorer {
         new ColumnType("science",        "Science",         75, ScienceField.class),
         new ColumnType("PSC_time",       "PSC Time",        60, Double.class),
         new ColumnType("total_time",     "Total Time",      60, Double.class),
-        new ColumnType("sem_time",       "Semester Time",  100, Double.class),
+        new ColumnType("sem_time",       "Trimester Time",  100, Double.class),
         new ColumnType("grade",          "Grade",           50, GradeField.class),
         new ColumnType("freq",           "Freq",            50, Double.class),
         new ColumnType("receiver",       "Receiver(s)",    100, String.class),

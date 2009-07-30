@@ -14,8 +14,10 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelType;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -24,8 +26,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -81,7 +85,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	public void loadData() {
-		loader.load(0, 50);
+		loader.load(0, pageSize);
 	}
 	
 	private void initListeners() {
@@ -126,7 +130,22 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void initToolBar() {
-		PagingToolBar pagingToolBar = new PagingToolBar(50);
+		final PagingToolBar pagingToolBar = new PagingToolBar(50);
+		final TextField<String> pages = new TextField<String>();
+		pages.setWidth(30);
+		pages.setValue("50");
+		pages.addKeyListener(new KeyListener() {
+			public void componentKeyPress(ComponentEvent e) {
+				if (e.getKeyCode() == 13) {
+					int page_size = Integer.valueOf(pages.getValue()).intValue();
+					pagingToolBar.setPageSize(page_size);
+					pageSize = page_size;
+					loadData();
+				}
+			}
+		});
+		pages.setTitle("Page Size");
+		pagingToolBar.add(pages);
 		setBottomComponent(pagingToolBar);
 		pagingToolBar.bind(loader);
 		
@@ -162,14 +181,28 @@ public class Explorer extends ContentPanel{
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				Double id = grid.getSelectionModel().getSelectedItem().get("id");
-				JSONRequest.delete(rootURL + "/" + id.intValue(),
-						new JSONCallbackAdapter() {
-							public void onSuccess(JSONObject json) {
-								store.remove(grid.getSelectionModel()
-										.getSelectedItem());
-							}
-						});
+				Dialog d = new Dialog();
+				d.setHeading("Quick Question");
+				d.addText("Are you sure you want to delete this record?");
+				d.setButtons(Dialog.YESNO);
+				d.setHideOnButtonClick(true);
+
+				Button yesButton = d.getButtonById(Dialog.YES);
+				yesButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+					@Override
+					public void componentSelected(ButtonEvent ce) {
+						Double id = grid.getSelectionModel().getSelectedItem().get("id");
+						JSONRequest.delete(rootURL + "/" + id.intValue(),
+								new JSONCallbackAdapter() {
+									public void onSuccess(JSONObject json) {
+										store.remove(grid.getSelectionModel()
+												.getSelectedItem());
+									}
+								});
+					}
+				});
+				d.show();
 			}
 		});
 
@@ -182,6 +215,18 @@ public class Explorer extends ContentPanel{
 			toolBar.add(new SeparatorToolItem());
 		    toolBar.add(f);
 		}
+		toolBar.add(new SeparatorToolItem());
+		Button reset = new Button("Reset");
+		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				for (SimpleComboBox<String> f : advancedFilters) {
+					f.reset();
+					filter.getTextField().setValue("");
+				}
+			}
+		});
+		toolBar.add(reset);
 		toolBar.add(new SeparatorToolItem());
 		if (filterAction != null) {
 			toolBar.add(filterAction);
@@ -200,6 +245,8 @@ public class Explorer extends ContentPanel{
 				commitState = true;
 				store.commitChanges();
 				commitState = false;
+				loadData();
+				grid.getView().refresh(true);
 			}
 		});
 		
@@ -238,7 +285,8 @@ public class Explorer extends ContentPanel{
 						}
 					}
 				}
-				store.add(model);
+				//store.add(model);
+				store.insert(model, 0);
 				grid.getView().refresh(true);
 				grid.getSelectionModel().select(model, false);
 			}
@@ -251,7 +299,6 @@ public class Explorer extends ContentPanel{
 		for (String o : options) {
 			filter.add(o);
 		}
-		
 		return filter;
 	}
 	
@@ -272,6 +319,8 @@ public class Explorer extends ContentPanel{
 	/** Flag for enforcing saves only on Save button press. **/
 	private boolean commitState;
 	
+	private int pageSize = 50;
+	
 	private ModelType modelType;
 
 	protected List<CheckColumnConfig> checkBoxes = new ArrayList<CheckColumnConfig>();
@@ -289,7 +338,7 @@ public class Explorer extends ContentPanel{
 	
 	protected FilterItem filter;
 	
-	protected String[] semesters = new String[] {
+	protected String[] trimesters = new String[] {
 		    "09C", "09B", "09A"
             , "08C", "08B", "08A"
             , "07C", "07B", "07A"

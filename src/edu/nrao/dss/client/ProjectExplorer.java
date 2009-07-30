@@ -32,7 +32,7 @@ public class ProjectExplorer extends Explorer {
 
 	private void initFilters() {
 		advancedFilters.add(initCombo("Project Type", new String[] {"science", "non-science"}));
-		advancedFilters.add(initCombo("Semester", semesters));
+		advancedFilters.add(initCombo("Trimester", trimesters));
 		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}));
 		initFilterAction();
 	}
@@ -81,7 +81,15 @@ public class ProjectExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
-	    column = new ColumnConfig("semester", "Semester", 80);
+	    column = new ColumnConfig("semester", "Trimester", 80);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    configs.add(column);
+	    
+	    column = new ColumnConfig("pi", "PI", 100);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    configs.add(column);
+
+	    column = new ColumnConfig("co_i", "Co-I", 150);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
@@ -97,7 +105,7 @@ public class ProjectExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
-	    column = new ColumnConfig("sem_time", "Max. Semester Time(s)", 130);
+	    column = new ColumnConfig("sem_time", "Max. Trimester Time(s)", 130);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 

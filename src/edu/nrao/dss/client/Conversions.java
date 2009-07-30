@@ -1,5 +1,6 @@
 package edu.nrao.dss.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 
 class Conversions {
@@ -16,6 +17,18 @@ class Conversions {
         int    minutes = (int) ((degrees / 15.0 - hours) * 60.0);
         double seconds =       ((degrees / 15.0 - hours) * 60.0 - minutes) * 60.0;
 
+        if (Math.abs(seconds - 60.0) < 0.1) {
+        	minutes += 1;
+        	seconds = Math.abs(seconds - 60.0);
+        }
+        if (Math.abs(minutes - 60.0) < 0.1) {
+        	hours += 1;
+        	minutes = Math.abs(minutes - 60);
+        }
+        if (Math.abs(hours - 24.0) < 0.1) {
+        	hours = Math.abs(hours - 24);
+        }
+
         StringBuilder result = new StringBuilder();
         result.append(NumberFormat.getFormat("00").format(hours))
               .append(":")
@@ -30,6 +43,15 @@ class Conversions {
         int    degrees = (int)  (decimaldegrees);
         int    minutes = (int) ((Math.abs(decimaldegrees) - Math.abs(degrees)) * 60.0);
         double seconds =       ((Math.abs(decimaldegrees) - Math.abs(degrees)) * 60.0 - minutes) * 60.0;
+
+        if (Math.abs(seconds - 60.0) < 0.1) {
+        	minutes += 1;
+        	seconds = Math.abs(seconds - 60.0);
+        }
+        if (Math.abs(minutes - 60.0) < 0.1) {
+        	degrees += 1;
+        	minutes = Math.abs(minutes - 60);
+        }
 
         StringBuilder result = new StringBuilder();
         result.append(NumberFormat.getFormat("00").format(degrees))
