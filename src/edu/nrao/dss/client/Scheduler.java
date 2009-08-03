@@ -10,6 +10,8 @@ import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class Scheduler extends Viewport implements EntryPoint {
@@ -51,7 +53,10 @@ public class Scheduler extends Viewport implements EntryPoint {
         
         tabPanel.setHeight(800);
 
-        RootPanel.get().add(tabPanel);
+        RootPanel rp = RootPanel.get();
+        rp.add(new Image("http://localhost:9000/static/images/banner.jpg"));
+        rp.add(new Anchor("Helpdesk", true, "mailto:helpdesk-dss@gb.nrao.edu"));
+        rp.add(tabPanel);
     }
     
     private TabItem addTab(ContentPanel container, String title, String toolTip) {
