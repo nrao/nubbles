@@ -31,9 +31,9 @@ public class ProjectExplorer extends Explorer {
 	}
 
 	private void initFilters() {
-		advancedFilters.add(initCombo("Project Type", new String[] {"science", "non-science"}));
-		advancedFilters.add(initCombo("Trimester", trimesters));
-		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}));
+		advancedFilters.add(initCombo("Project Type", new String[] {"science", "non-science"}, 100));
+		advancedFilters.add(initCombo("Trimester", trimesters, 80));
+		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}, 80));
 		initFilterAction();
 	}
 	
