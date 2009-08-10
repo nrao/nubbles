@@ -54,7 +54,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         tabPanel.setHeight(800);
 
         RootPanel rp = RootPanel.get();
-        rp.add(new Image("http://localhost:9000/static/images/banner.jpg"));
+        rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
         rp.add(new Anchor("Helpdesk", true, "mailto:helpdesk-dss@gb.nrao.edu"));
         rp.add(tabPanel);
     }
