@@ -86,10 +86,12 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(column);
 	    
 	    column = new ColumnConfig("pi", "PI", 100);
+	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
 	    column = new ColumnConfig("co_i", "Co-I", 150);
+	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
@@ -98,18 +100,22 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(column);
 	    
 	    column = new ColumnConfig("total_time", "Total Time(s)", 80);
+	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
 	    column = new ColumnConfig("PSC_time", "PSC Time(s)", 80);
+	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
 	    column = new ColumnConfig("sem_time", "Max. Trimester Time(s)", 130);
+	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
 	    column = new ColumnConfig("grade", "Grade(s)", 80);
+	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 

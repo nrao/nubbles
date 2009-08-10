@@ -33,6 +33,10 @@ class SessionColConfig extends ColumnConfig {
 	public SessionColConfig(String fName, String name, int width, Class clasz) {
 		super(fName, name, width);
 		
+		if (fName == "receiver") {
+			setSortable(false);
+		}
+		
 		this.clasz = clasz;
 
 		if (clasz == Integer.class) {
