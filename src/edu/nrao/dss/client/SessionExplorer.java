@@ -32,13 +32,13 @@ public class SessionExplorer extends Explorer {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
 		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol"	
 		};
-		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}));
-		advancedFilters.add(initCombo("Science Type", ScienceField.values));
-		advancedFilters.add(initCombo("Receiver", receivers));
-		advancedFilters.add(initCombo("Frequency", frequencies));
-		advancedFilters.add(initCombo("Trimester", trimesters));
-		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}));
-		advancedFilters.add(initCombo("Enabled", new String[] {"True", "False"}));
+		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}, 100));
+		advancedFilters.add(initCombo("Science Type", ScienceField.values, 100));
+		advancedFilters.add(initCombo("Receiver", receivers, 80));
+		advancedFilters.add(initCombo("Frequency", frequencies, 80));
+		advancedFilters.add(initCombo("Trimester", trimesters, 80));
+		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}, 80));
+		advancedFilters.add(initCombo("Enabled", new String[] {"True", "False"}, 80));
 		
 		initFilterAction();
 	}

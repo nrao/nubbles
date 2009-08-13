@@ -293,8 +293,9 @@ public class Explorer extends ContentPanel{
 		});
 	}
 
-	protected SimpleComboBox<String> initCombo(String title, String[] options) {
+	protected SimpleComboBox<String> initCombo(String title, String[] options, int width) {
 		SimpleComboBox<String> filter = new SimpleComboBox<String>();
+		filter.setWidth(width);
 		filter.setEmptyText(title);
 		for (String o : options) {
 			filter.add(o);
