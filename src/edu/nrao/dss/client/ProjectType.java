@@ -20,7 +20,6 @@ public class ProjectType extends ModelType {
 		addField("grade");
 		addField("thesis");
 		addField("complete");
-		addField("ignore_grade");
 	}
 
 }

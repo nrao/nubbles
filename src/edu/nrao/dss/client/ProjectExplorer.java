@@ -123,11 +123,6 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
 	    
-	    checkColumn = new CheckColumnConfig("ignore_grade", "Ignore Grade?", 85);
-	    checkColumn.setEditor(new CellEditor(new CheckBox()));
-	    configs.add(checkColumn);
-	    checkBoxes.add(checkColumn);
-	    
 	    return new ColumnModel(configs);
 	}
 	
