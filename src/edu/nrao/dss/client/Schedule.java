@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
+import com.bradrydzewski.gwt.calendar.client.AppointmentInterface;
 import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
 import com.bradrydzewski.gwt.calendar.client.DayView;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -20,14 +23,22 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.Time;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -37,18 +48,26 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 
+import edu.nrao.dss.client.util.TimeUtils;
+
 // This class is the new version of the Beta Test's Scheduling Page.
 
 public class Schedule extends ContentPanel {
 	
-	//private PeriodExplorer west;
 	public ScheduleCalendar west;
-	private ContentPanel east;
+	private NomineePanel east;
+	private ContentPanel center;
 
 	private DayView dayView;
 	
 	private Integer numCalendarDays = 1;
 	private Date startCalendarDay = new Date();
+	
+	private Integer numVacancyMinutes = 2;
+	private Date startVacancyDate = new Date();
+	private Time startVacancyTime = new Time();
+	public Date startVacancyDateTime = new Date();
+	private CheckBoxGroup nomineeOptions = new CheckBoxGroup();
 	
 	public Schedule() {
 			super();
@@ -60,21 +79,39 @@ public class Schedule extends ContentPanel {
 		setLayout(new BorderLayout());
 		
 		// bells & whistles for this content panel
-		setHeading("Schedule Stuff"); 
-		setCollapsible(true);
-		setFrame(true);
+		//setHeading("Schedule Stuff"); 
+		setCollapsible(false);
+		setBodyBorder(false);
+		setFrame(false);
+		setHeaderVisible(false);
 		setBodyStyle("backgroundColor: white;");
 		getHeader().addTool(new ToolButton("x-tool-gear"));
 		getHeader().addTool(new ToolButton("x-tool-close"));
 
 		// now for the child panels:
 		// At the top, control widgets
-		final FormPanel north = new FormPanel();
-		north.setHeading("North: Control Widgets");
-		north.setBorders(true);
+		//final FormPanel north = new FormPanel();
+		LayoutContainer north = new LayoutContainer();
+		//north.setHeading("North: Control Widgets");
+		TableLayout tl = new TableLayout(3);
+		tl.setBorder(1);
+		tl.setWidth("100%");
+		north.setLayout(tl);
+
+		
+		// 4 calendar controls:
+		final FormPanel northCalendar = new FormPanel();
+		northCalendar.setHeading("Calendar Controls");
+		northCalendar.setBorders(true);
+		//northCalendar.setHeight(300);
+		TableData td = new TableData();
+		td.setWidth("33%");
+		//td.setHeight("100%");
+		//td.setVerticalAlign(VerticalAlignment.TOP);
+		north.add(northCalendar, td);
 		
 		// fields for form
-		// 1. Date - when this changes, change the start of the calendar view
+		// Date - when this changes, change the start of the calendar view
 	    final DateField dt = new DateField();
 	    dt.setValue(startCalendarDay);
 	    dt.setFieldLabel("Start Date");
@@ -85,9 +122,9 @@ public class Schedule extends ContentPanel {
 	            updateCalendar();
 	    	}
 	    });
-	    north.add(dt);
+	    northCalendar.add(dt);
 
-		// 2. Days - when this changes, change the length of the calendar view
+		// Days - when this changes, change the length of the calendar view
 		final SimpleComboBox<Integer> days;
 		days = new SimpleComboBox<Integer>();
 		days.add(1);
@@ -104,8 +141,9 @@ public class Schedule extends ContentPanel {
 	            updateCalendar();
 	    	}
 	    });
-		north.add(days);
+		northCalendar.add(days);
 
+		// Update Button TODO could get rid of if 1 & 2 sensitive to changes
 	    final Button updateBtn;
 	    updateBtn = new Button("Update");
 		updateBtn.setToolTip("Modify the schedule and display range of calendar");
@@ -114,8 +152,18 @@ public class Schedule extends ContentPanel {
 	            updateCalendar();
 	    	}
 	    });
-		north.add(updateBtn);
+		northCalendar.add(updateBtn);
 		
+		
+		// 1 schedule controls
+		final FormPanel northSchedule = new FormPanel();
+		northSchedule.setHeading("Schedule Control");
+		northSchedule.setBorders(true);
+		td = new TableData();
+		td.setWidth("33%");
+		north.add(northSchedule, td);
+		
+		// Auto schedules the current calendar
 		Button scheduleButton = new Button("Schedule");
 		scheduleButton.setToolTip("Schedule the telescope over the specified calendar range");
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -130,35 +178,139 @@ public class Schedule extends ContentPanel {
 				JSONRequest.post("/runscheduler", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								System.out.println("schedule_algo onSuccess");
+								System.out.println("runscheduler onSuccess");
 								updateCalendar();
 								box.close();
 							}
 						});
 			}
 		});
-		north.add(scheduleButton);
+		northSchedule.add(scheduleButton);
 		
-		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 150);
-		northData.setMargins(new Margins(5,5,5,5));
+		
+		// 4 nominee controls:
+		final FormPanel northNominee = new FormPanel();
+		northNominee.setHeading("Vacancy Control");
+		northNominee.setBorders(true);
+		td = new TableData();
+		td.setWidth("33%");
+		north.add(northNominee, td);
+			
+		// Nominee date
+	    final DateField vacancyDate = new DateField();
+	    vacancyDate.setValue(startVacancyDate);
+	    vacancyDate.setFieldLabel("Start Date");
+		vacancyDate.setToolTip("Set the start day for the vacancy to be filled");
+	    vacancyDate.addListener(Events.Select, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	    		System.out.println("TimeField Listener date " + vacancyDate.getValue().toString());
+	            startVacancyDate = vacancyDate.getValue();
+	    	}
+	    });
+	    northNominee.add(vacancyDate);
+	    
+	    // Nominee time
+	    final TimeField vacancyTime = new TimeField();
+	    vacancyTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+	    vacancyTime.setValue(startVacancyTime);
+	    vacancyTime.setFieldLabel("Start Time");
+		vacancyTime.setToolTip("Set the start time for the vacancy to be filled");
+	    vacancyTime.addListener(Events.Select, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	    		System.out.println("TimeField Listener time " + vacancyTime.getValue().toString());
+	            startVacancyTime = vacancyTime.getValue();
+	    	}
+	    });
+	    northNominee.add(vacancyTime);
+
+		// Nominee maximum duration
+		final SimpleComboBox<String> hours = new SimpleComboBox<String>();
+		final HashMap<String, Integer> durChoices = new HashMap<String, Integer>();
+		String noChoice = new String("none");
+		durChoices.put(noChoice, 0);
+		hours.add(noChoice);
+		for (int m = 15; m < 8*60; m += 15) {
+			String key = TimeUtils.min2sex(m);
+			durChoices.put(key, m);
+			hours.add(key);
+		}
+		hours.setToolTip("Set the maximum vacancy duration");
+		hours.setFieldLabel("Duration");
+		hours.setEditable(false);
+	    hours.addListener(Events.Select, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	    		numVacancyMinutes = durChoices.get(hours.getSimpleValue()); 
+	    	}
+	    });
+		northNominee.add(hours);
+		
+		// Nominee options		
+		northNominee.add(new LabelField());
+		//final CheckBoxGroup nomineeOptions = new CheckBoxGroup();
+		nomineeOptions.setFieldLabel("Selection Options");
+		// timeBetween
+		CheckBox timeBetween = new CheckBox();
+		timeBetween.setBoxLabel("ignore timeBetween?");
+		timeBetween.setTitle("Ignore sessions' timeBetween limits?");
+		timeBetween.setValue(false);
+		nomineeOptions.add(timeBetween);
+		// minimum
+		CheckBox minimum = new CheckBox();
+		minimum.setBoxLabel("ignore minimum?");
+		minimum.setTitle("Ignore sessions' minimum duration limits?");
+		minimum.setValue(false);
+		nomineeOptions.add(minimum);
+		// blackout
+		CheckBox blackout = new CheckBox();
+		blackout.setBoxLabel("ignore blackout?");
+		blackout.setTitle("Ignore observers' blackout periods?");
+		blackout.setValue(false);
+		nomineeOptions.add(blackout);
+		// backup
+		CheckBox backup = new CheckBox();
+		backup.setBoxLabel("only backups?");
+		backup.setTitle("Use only sessions marked as backups?");
+		backup.setValue(false);
+		nomineeOptions.add(backup);
+		// completed
+		CheckBox completed = new CheckBox();
+		completed.setBoxLabel("use completed?");
+		completed.setTitle("Include completed sessions?");
+		completed.setValue(false);
+		nomineeOptions.add(completed);
+		northNominee.add(nomineeOptions);
+		
+	    // Fetch nominees
+		final Button nomineesButton = new Button("Nominees");
+		nomineesButton.setToolTip("Request possible periods for the selected time");
+	    nomineesButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	            updateNominees(east);
+	    	}
+	    });
+		northNominee.add(nomineesButton);
+		
+		
+		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 300);
+		northData.setMargins(new Margins(5,5,0,5));
 
 		// to the left, the period explorer
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
+		west.addButtonsListener(this);
 		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 550);
+		westData.setMargins(new Margins(5));
 		westData.setSplit(true);
+		westData.setCollapsible(true);
+
 
 		// to the right, the calendar
-		east = new ContentPanel();
-		east.setHeading("East: Calendar");
-		east.setBorders(true);
-		east.setCollapsible(true);
+		center = new ContentPanel();
+  		center.setHeading("Center: Calendar");
+		center.setScrollMode(Scroll.AUTOX);
+		
 		
 		// calendar
-		//DayView dayView = new DayView();
 		dayView = new DayView();
-		GWT.log("staring calendar with: " + startCalendarDay.toString(), null);
-		//Date day = new Date(startCalendarDay.getYear(), startCalendarDay.getMonth(), startCalendarDay.getMonth());
-		//GWT.log("staring calendar at: " + day.toString(), null);
 		dayView.setDate(startCalendarDay); //calendar date, not required
 		dayView.setDays((int) numCalendarDays); //number of days displayed at a time, not required
 		dayView.setWidth("100%");
@@ -176,21 +328,55 @@ public class Schedule extends ContentPanel {
 	            String msg = "Details of Period for Session: " + event.getValue().getDescription();   
 	            Window.alert(msg);
 	        }               
-	    });		
-		east.add(dayView);
+	    });	
+		//dayView.addSelectionHandler(handler); // TODO handle nominee selecion in calendar?
+		center.add(dayView);
 		
-		BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST);
-		eastData.setSplit(true);
+		BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER); //, 500);
+		centerData.setMargins(new Margins(5, 0, 5, 0));
+		//centerData.setSplit(true);
+		//centerData.setCollapsible(true);
+		
+		// in the east, nominee periods
+		east = new NomineePanel(this);
 
+		BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST, 300);
+		eastData.setMargins(new Margins(5));
+		eastData.setSplit(true);
+		eastData.setCollapsible(true);
+		
 		// add all the components to this parent panel
 		add(north, northData);
 		add(west, westData);
+		add(center, centerData);
 		add(east, eastData);
 
 	}
 	
-    private void updateCalendar() {
-    	
+	private void updateNominees(ContentPanel panel) {
+		// TODO get start and duration from the calendar!
+		startVacancyDateTime = startVacancyDate;
+		startVacancyDateTime.setHours(startVacancyTime.getHour());
+		startVacancyDateTime.setMinutes(startVacancyTime.getMinutes());
+		startVacancyDateTime.setSeconds(0);
+		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").format(startVacancyDateTime);
+		
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		keys.put("start", startStr);
+		keys.put("duration", numVacancyMinutes);
+		keys.put("timeBetween", (Boolean) nomineeOptions.get(0).getValue()); // ignore timeBetween limit?
+		keys.put("minimum", (Boolean) nomineeOptions.get(1).getValue());     // ignore minimum duration limit?
+		keys.put("blackout", (Boolean) nomineeOptions.get(2).getValue());    // ignore observer blackout times?
+		keys.put("backup", (Boolean) nomineeOptions.get(3).getValue());      // use only backup sessions?
+		keys.put("completed", (Boolean) nomineeOptions.get(4).getValue());   // include completed sessions?
+		east.updateKeys(keys);
+		east.loadData();
+		
+		panel.setHeading("East: Nominee Periods for " + startStr);
+	}
+	
+    public void updateCalendar() {	
+    	GWT.log("updateCalendar", null);
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
 		String baseUrl = "/periods";
@@ -235,7 +421,6 @@ public class Schedule extends ContentPanel {
 		dayView.clearAppointments();
 		for(Period p : periods) {
 		        Appointment appt = new Appointment();
-		        GWT.log(p.getStart().toString() + " - " + p.getEnd().toString(), null);
 		        appt.setStart(p.getStart());
 		        appt.setEnd(p.getEnd());
 		        appt.setTitle("Period");

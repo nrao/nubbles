@@ -49,8 +49,8 @@ class SessionColConfig extends ColumnConfig {
 			degreeField();
 		} else if (clasz == GradeField.class) {
 			typeField(GradeField.values);
-		} else if (clasz == TimeField.class) {
-			timeField();
+		} else if (clasz == HourField.class) {
+			hourField();
 		} else if (clasz == ScienceField.class) {
 			typeField(ScienceField.values);
 		} else if (clasz == STypeField.class) {
@@ -228,7 +228,7 @@ class SessionColConfig extends ColumnConfig {
 		setEditor(new CellEditor(new TextField<String>()));
 	}
 
-	private void timeField() {
+	private void hourField() {
 		TextField<String> positionField = new TextField<String>();
 		positionField.setRegex("[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?");
 

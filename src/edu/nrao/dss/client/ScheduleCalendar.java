@@ -3,6 +3,10 @@ package edu.nrao.dss.client;
 
 
 import java.util.Date;
+import java.util.HashMap;
+
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -11,7 +15,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 public class ScheduleCalendar extends ContentPanel { 
 
 	public PeriodExplorer  pe;  
-
 	
 	public ScheduleCalendar(Date start, int days) {
 		super();
@@ -28,9 +31,15 @@ public class ScheduleCalendar extends ContentPanel {
 		FitLayout fl = new FitLayout();
 		setLayout(fl);
 	    pe = new PeriodExplorer();
-	    add(pe, new FitData(10));
-   
-		
+	    add(pe, new FitData(10));   	
+	}
+	
+	public void addButtonsListener(final Schedule schedule) {
+		pe.addButtonsListener(schedule);
+	}
+	
+	public void addRecord(HashMap<String, Object> fields) {
+		pe.addRecord(fields);
 	}
 }	
 	

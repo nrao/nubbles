@@ -3,6 +3,8 @@ package edu.nrao.dss.client;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -30,6 +32,27 @@ public class PeriodExplorer extends Explorer {
 			}
 		}
 	    return new ColumnModel(configs);
+	}
+	
+	public void addButtonsListener(final Schedule schedule) {
+		saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+	            schedule.updateCalendar();
+			}
+		});
+		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+	            schedule.updateCalendar();
+			}
+		});
+		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+	            schedule.updateCalendar();
+			}
+		});
 	}
 	
 	public ColumnConfig getSessionConfig() {
