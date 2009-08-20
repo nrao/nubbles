@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -39,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
@@ -152,7 +154,7 @@ public class Explorer extends ContentPanel{
 		ToolBar toolBar = new ToolBar();
 		setTopComponent(toolBar);
 
-		Button addItem = new Button("Add");
+		addItem = new Button("Add");
 		toolBar.add(addItem);
 		addItem.setToolTip("Add a new row.");
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -175,7 +177,7 @@ public class Explorer extends ContentPanel{
             }
         });
 		
-		Button removeItem = new Button("Delete");
+		removeItem = new Button("Delete");
 		toolBar.add(removeItem);
 		removeItem.setToolTip("Delete a row.");
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -235,7 +237,7 @@ public class Explorer extends ContentPanel{
 		toolBar.add(new FillToolItem());
 		toolBar.add(new SeparatorToolItem());
 
-		Button saveItem = new Button("Save");
+		saveItem = new Button("Save");
 		toolBar.add(saveItem);
 
 		// Commit outstanding changes to the server.
@@ -260,7 +262,7 @@ public class Explorer extends ContentPanel{
 				});
 	}
 	
-	private void addRecord(HashMap<String, Object> fields) {
+	protected void addRecord(HashMap<String, Object> fields) {
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
@@ -336,6 +338,9 @@ public class Explorer extends ContentPanel{
 	protected List<SimpleComboBox<String>> advancedFilters = new ArrayList<SimpleComboBox<String>>();
 	
 	protected Button filterAction;
+	protected Button saveItem;
+	protected Button addItem;
+	protected Button removeItem;
 	
 	protected FilterItem filter;
 	

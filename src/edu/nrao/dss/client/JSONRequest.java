@@ -79,6 +79,7 @@ class JSONRequest implements RequestCallback {
 		post(uri, new String[]{"_method"}, new String[]{"delete"}, cb);
 	}
 
+	// uri, cb -> request
 	public static void get(String uri, JSONCallback cb) {
 		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, uri + "?" + new java.util.Date().getTime());
 		get.setHeader("Accept", "application/json");
@@ -89,19 +90,25 @@ class JSONRequest implements RequestCallback {
 		}
 	}
 	
-	public static void get(String rootURI, HashMap<String, Object> kwargs, JSONCallback cb) {
-		StringBuffer buf = new StringBuffer(rootURI);
-		if (kwargs != null) {
-			buf.append("?");
-			for (String k : kwargs.keySet()) {
-				buf.append(k);
-				buf.append("=");
-				buf.append(kwargs.get(k).toString());
-				buf.append("&");
-			}
-			buf.deleteCharAt(buf.length() - 1);
-		}
-		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, buf.toString());
+	// uri, map, cb -> uri, keys, values, cb
+	public static void get(String uri, HashMap<String, Object> data, final JSONCallback cb){
+		Set <String> keys           = data.keySet();
+    	ArrayList<String> strKeys   = new ArrayList<String>();
+    	ArrayList<String> strValues = new ArrayList<String>();
+    	for(Object k : keys) {
+    		strKeys.add(k.toString());
+    		strValues.add(data.get(k).toString());
+    	}
+    	get(uri, strKeys.toArray(new String[]{}), strValues.toArray(new String[]{}), cb);
+	}
+	
+	// uri, keys, values, cb -> request
+	public static void get(String uri, String[] keys, String[] values, final JSONCallback cb) {
+		StringBuilder urlData = new StringBuilder();
+		urlData.append(uri);
+		urlData.append("?");
+		urlData.append(kv2url(keys, values));
+		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 		get.setHeader("Accept", "application/json");
 		try {
 			get.sendRequest(null, new JSONRequest(cb));
@@ -109,6 +116,25 @@ class JSONRequest implements RequestCallback {
 		}
 	}
 	
+	// old
+	public static void xget(String rootURI, HashMap<String, Object> kwargs, JSONCallback cb) {
+		StringBuilder urlData = new StringBuilder();
+		urlData.append(rootURI);
+		urlData.append("?");
+		for (String k : kwargs.keySet()) {
+			urlData.append(URL.encodeComponent(k)).append("=").append(URL.encodeComponent(kwargs.get(k).toString()));
+			urlData.append("&");
+		}
+		urlData.deleteCharAt(urlData.length() - 1);
+		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, urlData.toString());
+		get.setHeader("Accept", "application/json");
+		try {
+			get.sendRequest(null, new JSONRequest(cb));
+		} catch (RequestException e) {
+		}
+	}
+	
+	// uri, map, cb -> uri, keys, values, cb
 	public static void post(String uri, HashMap<String, Object> data, final JSONCallback cb){
 		Set <String> keys           = data.keySet();
     	ArrayList<String> strKeys   = new ArrayList<String>();
@@ -120,12 +146,13 @@ class JSONRequest implements RequestCallback {
     	post(uri, strKeys.toArray(new String[]{}), strValues.toArray(new String[]{}), cb);
 	}
 	
+	// uri, keys, values, cb -> request
 	public static void post(String uri, String[] keys, String[] values, final JSONCallback cb) {
 		RequestBuilder post = new RequestBuilder(RequestBuilder.POST, uri);
 		post.setHeader("Accept", "application/json");
 		post.setHeader("Content-Type", "application/x-www-form-encoded");
 		try {
-			post.sendRequest(postData(keys, values), new JSONRequest(cb));
+			post.sendRequest(kv2url(keys, values), new JSONRequest(cb));
 		} catch (RequestException e) {
 		}
 	}
@@ -165,16 +192,16 @@ class JSONRequest implements RequestCallback {
         post(uri, keys.toArray(new String[]{}), values.toArray(new String[]{}), cb);
 	}
 
-	public static String postData(String[] keys, String[] values) {
-		StringBuilder postData = new StringBuilder();
+	// keys + values -> url keyword args
+	public static String kv2url(String[] keys, String[] values) {
+		StringBuilder urlData = new StringBuilder();
 		for (int i = 0; keys != null && i < keys.length; ++i) {
 			if (i > 0) {
-				postData.append("&");
+				urlData.append("&");
 			}
-			postData.append(URL.encodeComponent(keys[i])).append("=").append(URL.encodeComponent(values[i]));
+			urlData.append(URL.encodeComponent(keys[i])).append("=").append(URL.encodeComponent(values[i]));
 		}
-		
-		return postData.toString();
+		return urlData.toString();
 	}
 
 	public static String getString(JSONObject json, String key) {

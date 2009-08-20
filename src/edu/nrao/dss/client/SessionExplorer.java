@@ -125,7 +125,7 @@ public class SessionExplorer extends Explorer {
         new ColumnType("req_min",        "Req Min",         60, Double.class),
         new ColumnType("req_max",        "Req Max",         60, Double.class),
         new ColumnType("coord_mode",     "Coord Mode",      75, CoordModeField.class),
-        new ColumnType("source_h",       "Source H",        75, TimeField.class),
+        new ColumnType("source_h",       "Source H",        75, HourField.class),
         new ColumnType("source_v",       "Source V",        75, DegreeField.class),
         new ColumnType("between",        "Between",         60, Double.class),
        	new ColumnType("authorized",     "Authorized?",     70, Boolean.class),

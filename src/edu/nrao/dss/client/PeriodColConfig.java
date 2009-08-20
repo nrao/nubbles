@@ -103,7 +103,6 @@ class PeriodColConfig extends ColumnConfig {
 		setEditor(new CellEditor(new DateField()){
 			@Override
 			public Object preProcessValue(Object value) {
-				GWT.log("preProcessValue", null);
 				if (value == null) {
 					return null;
 				}
@@ -115,7 +114,6 @@ class PeriodColConfig extends ColumnConfig {
 
 			@Override
 			public Object postProcessValue(Object value) {
-				GWT.log("postProcessValue", null);
 				if (value == null) {
 					return null;
 				}
