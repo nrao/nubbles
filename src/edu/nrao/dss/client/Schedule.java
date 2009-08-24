@@ -351,6 +351,7 @@ public class Schedule extends ContentPanel {
 		add(center, centerData);
 		add(east, eastData);
 
+		updateCalendar();
 	}
 	
 	private void updateNominees(ContentPanel panel) {

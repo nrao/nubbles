@@ -73,7 +73,7 @@ public class NomineePanel extends ContentPanel {
 		retval.put("handle", fields.get("sess_name") + " (" + fields.get("proj_name") + ")");
 		retval.put("date", DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startVacancyDateTime));
 		retval.put("time", DateTimeFormat.getFormat("HH:mm").format(schedule.startVacancyDateTime));
-		retval.put("duration", fields.get("duration"));
+		retval.put("duration", (Double)fields.get("duration")/60.0);
 		retval.put("backup", false);
 		return retval;
 	}

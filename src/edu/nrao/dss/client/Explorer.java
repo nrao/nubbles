@@ -177,34 +177,35 @@ public class Explorer extends ContentPanel{
             }
         });
 		
-		removeItem = new Button("Delete");
+		removeDialog = new Dialog();
+		removeDialog.setHeading("Confirmation");
+		removeDialog.addText("Remove record?");
+		removeDialog.setButtons(Dialog.YESNO);
+		removeDialog.setHideOnButtonClick(true);
+		removeApproval = removeDialog.getButtonById(Dialog.YES);
+		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				Double id = grid.getSelectionModel().getSelectedItem().get("id");
+				JSONRequest.delete(rootURL + "/" + id.intValue(),
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								store.remove(grid.getSelectionModel()
+										.getSelectedItem());
+							}
+						});
+			}
+		});	
+		removeDialog.hide();
+
+	
+		Button removeItem = new Button("Delete");
 		toolBar.add(removeItem);
 		removeItem.setToolTip("Delete a row.");
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				Dialog d = new Dialog();
-				d.setHeading("Quick Question");
-				d.addText("Are you sure you want to delete this record?");
-				d.setButtons(Dialog.YESNO);
-				d.setHideOnButtonClick(true);
-
-				Button yesButton = d.getButtonById(Dialog.YES);
-				yesButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-					@Override
-					public void componentSelected(ButtonEvent ce) {
-						Double id = grid.getSelectionModel().getSelectedItem().get("id");
-						JSONRequest.delete(rootURL + "/" + id.intValue(),
-								new JSONCallbackAdapter() {
-									public void onSuccess(JSONObject json) {
-										store.remove(grid.getSelectionModel()
-												.getSelectedItem());
-									}
-								});
-					}
-				});
-				d.show();
+				removeDialog.show();
 			}
 		});
 
@@ -340,7 +341,8 @@ public class Explorer extends ContentPanel{
 	protected Button filterAction;
 	protected Button saveItem;
 	protected Button addItem;
-	protected Button removeItem;
+	protected Button removeApproval;
+	private Dialog removeDialog;
 	
 	protected FilterItem filter;
 	

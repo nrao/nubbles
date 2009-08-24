@@ -47,7 +47,13 @@ public class PeriodExplorer extends Explorer {
 	            schedule.updateCalendar();
 			}
 		});
-		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+//		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+//			@Override
+//			public void componentSelected(ButtonEvent be) {
+//	            schedule.updateCalendar();
+//			}
+//		});
+		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
 	            schedule.updateCalendar();
