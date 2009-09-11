@@ -1,6 +1,7 @@
 package edu.nrao.dss.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class Explorer extends ContentPanel{
 	public Explorer(String url, ModelType mType) {
 		rootURL = url;
 		modelType = mType;
+		defaultDate = "";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -160,7 +162,11 @@ public class Explorer extends ContentPanel{
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
-	        	addRecord(new HashMap<String, Object>());
+	        	HashMap<String, Object> fields = new HashMap<String, Object>();
+	        	if (defaultDate != "") {
+	        		fields.put("date", defaultDate);
+	        	}
+	        	addRecord(fields);
 	        }
 	    });
 		
@@ -354,4 +360,6 @@ public class Explorer extends ContentPanel{
             , "05C", "05B", "05A"
             , "04A"
             };
+	
+	protected String defaultDate;
 }

@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
@@ -159,6 +160,7 @@ public class Schedule extends ContentPanel {
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
 		northSchedule.setBorders(true);
+		//northSchedule.setLayout(new FitLayout());
 		td = new TableData();
 		td.setWidth("33%");
 		north.add(northSchedule, td);
@@ -297,6 +299,7 @@ public class Schedule extends ContentPanel {
 		// to the left, the period explorer
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		west.addButtonsListener(this);
+		west.setDefaultDate(startCalendarDay);
 		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 550);
 		westData.setMargins(new Margins(5));
 		westData.setSplit(true);
@@ -387,6 +390,7 @@ public class Schedule extends ContentPanel {
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = west.pe.getProxy();
 		proxy.setBuilder(builder);
+		west.setDefaultDate(startCalendarDay);
 		west.pe.loadData();
 		
 		// now get the calendar to load these

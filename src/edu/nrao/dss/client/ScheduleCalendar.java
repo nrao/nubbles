@@ -41,5 +41,9 @@ public class ScheduleCalendar extends ContentPanel {
 	public void addRecord(HashMap<String, Object> fields) {
 		pe.addRecord(fields);
 	}
+	
+	public void setDefaultDate(Date date) {
+		pe.setDefaultDate(date);
+	}
 }	
 	
