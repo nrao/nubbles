@@ -131,6 +131,7 @@ public class SessionExplorer extends Explorer {
        	new ColumnType("authorized",     "Authorized?",     70, Boolean.class),
        	new ColumnType("enabled",        "Enabled?",        65, Boolean.class),
        	new ColumnType("complete",       "Complete?",       65, Boolean.class),
-       	new ColumnType("backup",         "Backup?",         55, Boolean.class)
+       	new ColumnType("backup",         "Backup?",         55, Boolean.class),
+       	new ColumnType("transit",        "Transit?",        55, Boolean.class)
     	};
 }
