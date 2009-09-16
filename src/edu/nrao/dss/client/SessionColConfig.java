@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
@@ -268,7 +269,7 @@ class SessionColConfig extends ColumnConfig {
 
 	private void degreeField() {
 		TextField<String> degreeField = new TextField<String>();
-		degreeField.setRegex("[0-2]\\d:\\d\\d:\\d\\d(\\.\\d+)?");
+		degreeField.setRegex("-?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
 
 		setAlignment(HorizontalAlignment.RIGHT);
 
