@@ -61,7 +61,7 @@ public class Schedule extends ContentPanel {
 
 	private DayView dayView;
 	
-	private Integer numCalendarDays = 1;
+	private Integer numCalendarDays = 3;
 	private Date startCalendarDay = new Date();
 	
 	private Integer numVacancyMinutes = 2;
@@ -131,6 +131,10 @@ public class Schedule extends ContentPanel {
 		days.add(1);
 		days.add(2);
 		days.add(3);
+		days.add(4);
+		days.add(5);
+		days.add(6);
+		days.add(7);
 		days.setToolTip("Set the schedule and display duration");
 
 		days.setFieldLabel("Days");
