@@ -16,7 +16,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
-		super("/periods", new PeriodType(columnTypes));
+		super("/periods/UTC", new PeriodType(columnTypes));
 		initLayout(initColumnModel());
 	}
 	
@@ -77,7 +77,7 @@ public class PeriodExplorer extends Explorer {
 	private static final ColumnType[] columnTypes = {
        	new ColumnType("handle",          "Session (Project) ID", 200, SessionField.class),
         new ColumnType("date",            "Day",                   70, DateEditField.class),
-        new ColumnType("time",            "Time (UTC)",            70, TimeField.class),
+        new ColumnType("time",            "Time",                  70, TimeField.class),
         new ColumnType("duration",        "Duration (Hrs)",        90, Double.class),
        	new ColumnType("backup",          "Backup?",               70, Boolean.class),
 	};

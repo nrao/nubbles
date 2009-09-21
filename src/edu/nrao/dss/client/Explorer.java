@@ -320,6 +320,12 @@ public class Explorer extends ContentPanel{
 		return rootURL;
 	}
 	
+	public void setRootURL(String rurl) {
+		rootURL = rurl;
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
+		proxy.setBuilder(builder);
+	}
+	
 	/** Provides basic spreadsheet-like functionality. */
 	private EditorGrid<BaseModelData> grid;
 

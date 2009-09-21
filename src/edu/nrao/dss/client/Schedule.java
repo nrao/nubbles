@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
@@ -61,8 +62,11 @@ public class Schedule extends ContentPanel {
 
 	private DayView dayView;
 	
-	private Integer numCalendarDays = 3;
 	private Date startCalendarDay = new Date();
+	private Integer numCalendarDays = 3;
+	private String timezone = "UTC";
+	private String baseUrl = "/periods/" + timezone;
+
 	
 	private Integer numVacancyMinutes = 2;
 	private Date startVacancyDate = new Date();
@@ -106,7 +110,7 @@ public class Schedule extends ContentPanel {
 		northCalendar.setBorders(true);
 		//northCalendar.setHeight(300);
 		TableData td = new TableData();
-		td.setWidth("33%");
+		td.setWidth("35%");
 		//td.setHeight("100%");
 		//td.setVerticalAlign(VerticalAlignment.TOP);
 		north.add(northCalendar, td);
@@ -117,7 +121,7 @@ public class Schedule extends ContentPanel {
 	    dt.setValue(startCalendarDay);
 	    dt.setFieldLabel("Start Date");
 		dt.setToolTip("Set the schedule and display start day");
-	    dt.addListener(Events.OnFocus, new Listener<BaseEvent>() {
+	    dt.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	            startCalendarDay = dt.getValue();
 	            updateCalendar();
@@ -140,13 +144,33 @@ public class Schedule extends ContentPanel {
 		days.setFieldLabel("Days");
 		days.setEditable(false);
 		days.setSimpleValue(numCalendarDays);
-	    days.addListener(Events.Change, new Listener<BaseEvent>() {
+	    days.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	    		numCalendarDays = days.getSimpleValue(); 
 	            updateCalendar();
 	    	}
 	    });
 		northCalendar.add(days);
+		
+		// Timezone - controls the reference for all the date/times in the tab
+		final SimpleComboBox<String> tz;
+		tz = new SimpleComboBox<String>();
+		tz.add("UTC");
+		tz.add("ET");
+		tz.setToolTip("Set the timezone for all dates/times");
+
+		tz.setFieldLabel("TZ");
+		tz.setEditable(false);
+		tz.setSimpleValue(timezone);
+	    tz.addListener(Events.Valid, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	    		timezone = tz.getSimpleValue();
+	    		baseUrl = "/periods/" + timezone;
+	        	west.pe.setRootURL(baseUrl);
+	            updateCalendar();
+	    	}
+	    });
+		northCalendar.add(tz);
 
 		// Update Button TODO could get rid of if 1 & 2 sensitive to changes
 	    final Button updateBtn;
@@ -166,12 +190,12 @@ public class Schedule extends ContentPanel {
 		northSchedule.setBorders(true);
 		//northSchedule.setLayout(new FitLayout());
 		td = new TableData();
-		td.setWidth("33%");
+		td.setWidth("15%");
 		north.add(northSchedule, td);
 		
 		// Auto schedules the current calendar
 		Button scheduleButton = new Button("Schedule");
-		scheduleButton.setToolTip("Schedule the telescope over the specified calendar range");
+		scheduleButton.setToolTip("Generate a schedule for free periods over the specified calendar range");
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
@@ -199,7 +223,7 @@ public class Schedule extends ContentPanel {
 		northNominee.setHeading("Vacancy Control");
 		northNominee.setBorders(true);
 		td = new TableData();
-		td.setWidth("33%");
+		td.setWidth("50%");
 		north.add(northNominee, td);
 			
 		// Nominee date
@@ -253,6 +277,7 @@ public class Schedule extends ContentPanel {
 		// Nominee options		
 		northNominee.add(new LabelField());
 		//final CheckBoxGroup nomineeOptions = new CheckBoxGroup();
+		nomineeOptions.setSpacing(10);
 		nomineeOptions.setFieldLabel("Selection Options");
 		// timeBetween
 		CheckBox timeBetween = new CheckBox();
@@ -385,9 +410,9 @@ public class Schedule extends ContentPanel {
 	
     public void updateCalendar() {	
     	GWT.log("updateCalendar", null);
+
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
-		String baseUrl = "/periods";
 		String url = baseUrl + "?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
 		
 		// get the period explorer to load these
