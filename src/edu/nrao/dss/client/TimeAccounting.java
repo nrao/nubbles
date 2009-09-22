@@ -1,5 +1,6 @@
 package edu.nrao.dss.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,6 +24,8 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.util.TimeUtils;
 
@@ -33,7 +36,11 @@ public class TimeAccounting extends ContentPanel{
     final LayoutContainer session = new LayoutContainer();
 	final SimpleComboBox<String> periods = new SimpleComboBox<String>();
     final LayoutContainer period = new LayoutContainer();
+	final TextField sessionName = new TextField();
+	final TextField periodName = new TextField();
 	
+    final ArrayList<String> project_codes = new ArrayList<String>();
+	final HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
 	
 	public TimeAccounting() {
 		super();
@@ -128,8 +135,8 @@ protected void initLayout() {
 	sessionForm.setBorders(true);
 	
 	// the session picker goes in this left-most form panel
-	TextField sessionName = new TextField();
-	sessionName.setValue("This Session");
+	//TextField sessionName = new TextField();
+	sessionName.setValue("");
 	sessionName.setReadOnly(true);
 	sessionName.setFieldLabel("Session Name");
 	sessionForm.add(sessionName);
@@ -179,10 +186,10 @@ protected void initLayout() {
 	periodForm.setHeading("Period");
 	periodForm.setBorders(true);
 	
-	TextField periodName = new TextField();
-	periodName.setValue("This Period");
+	//TextField periodName = new TextField();
+	periodName.setValue("");
 	periodName.setReadOnly(true);
-	periodName.setFieldLabel("Session Name");
+	periodName.setFieldLabel("Period");
 	periodForm.add(periodName);
 	
 	SimpleComboBox<String> times = new SimpleComboBox<String>();
@@ -196,8 +203,6 @@ protected void initLayout() {
 	times.setToolTip("Set the Hrs for this type of time");
 	periodForm.add(times);
 	
-	
-	
 	period.add(periodForm, new RowData(1, -1, new Margins(4)));
 	
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
@@ -210,41 +215,154 @@ protected void initLayout() {
 	add(project, new FitData(10));
   }
 
+// a period has been selected - now what?
 protected void updatePeriod() {
 	GWT.log("updatePeriod", null);
-	// show the period panel
+	// show the period pane with the periods info
+	String name = periods.getSimpleValue();
+	int periodId = periodInfo.get(name);
+	// TODO: get this period from the server to fill in the time accnting form
+	updatePeriodForm(periodId);
+	periodName.setValue(name);
 	period.setVisible(true);
 
 	
 }
 
+private void updatePeriodForm(int periodId) {
+	// get this period from the server and populate the form
+    GWT.log("updatePeriodForm", null);
+	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
+//		      , new HashMap<String, Object>() {{
+//		    	  put("mode", "periods");
+//		    	  put("pcode", pcode);
+//		    	  put("session_name", sessionName);
+//		        }}
+		      , new JSONCallbackAdapter() {
+		public void onSuccess(JSONObject json) {
+        	// JSON period -> JAVA period
+         	Period period = Period.parseJSON(json.get("period").isObject());
+         	updatePeriodForm(period);
+            GWT.log("period onSuccess", null);          
+		}
+	});    		
+	
+}
+
+protected void updatePeriodForm(Period period) {
+    // TODO: first we need the json to give our class time accounting info
+	
+}
+
+// a session has been selected - what to do?
 protected void updateSessionPeriods() {
 	GWT.log("updateSessionPeriods", null);
 	// show the session panel
 	session.setVisible(true);
-	// update the sessions drop down 
-	String sessionName = sessions.getSimpleValue();
-	periods.clearSelections();
-	periods.removeAll();
-	periods.add(sessionName);
-	periods.add(sessionName);
+	// update the periods drop down 
+	String name = sessions.getSimpleValue();
+	String pcode = projects.getSimpleValue();
+	sessionName.setValue(name);
+	updatePeriodOptions(pcode, name);
+	//periods.clearSelections();
+	//periods.removeAll();
+	//periods.add(sessionName);
+	//periods.add(sessionName);
 	// hide the period panel until a period is choosen
 	period.setVisible(false);
 	
 
 }
 
+private void updatePeriodOptions(final String pcode, final String sessionName) {
+    GWT.log("updatePeriodOptions", null);
+	JSONRequest.get("/sessions/options"
+		      , new HashMap<String, Object>() {{
+		    	  put("mode", "periods");
+		    	  put("pcode", pcode);
+		    	  put("session_name", sessionName);
+		        }}
+		      , new JSONCallbackAdapter() {
+		public void onSuccess(JSONObject json) {
+			// get ready to populate the sessions codes list
+			periods.clearSelections();
+			periods.removeAll();
+			periodInfo.clear();
+			//project_codes.clear();
+			JSONArray ps = json.get("periods").isArray();
+			JSONArray ids = json.get("period ids").isArray();
+			for (int i = 0; i < ps.size(); ++i){
+				GWT.log(ps.get(i).toString(), null);
+				String p = ps.get(i).toString().replace('"', ' ').trim();
+				periods.add(p);
+				String id = ids.get(i).toString().replace('"', ' ').trim();
+				periodInfo.put(p, Integer.parseInt(id));
+				//String name = periods.get(i).toString().replace('"', ' ').trim();
+				//sessions.add(name);
+				//projects.add(pcode);
+				
+			}
+			//session.setVisible(false);
+		}
+	});    	
+}
+
+// a project has been selected - what to do?
 protected void updateProjectSessions() {
 	GWT.log("updateProjectSessions", null);
 	// update the sessions drop down and clear the current selection
 	String pcode = projects.getSimpleValue();
-	sessions.clearSelections();
-	sessions.removeAll();
-	sessions.add(pcode);
-	sessions.add(pcode);
+	updateSessionOptions(pcode);
 	// hide the session panel until a session is choosen
 	session.setVisible(false);
 }
-	
+
+// gets the session names from the server and populates the session combobox
+private void updateSessionOptions(final String pcode) {
+    GWT.log("updateSessionOptions", null);
+	JSONRequest.get("/sessions/options"
+		      , new HashMap<String, Object>() {{
+		    	  put("mode", "session_names");
+		    	  put("pcode", pcode);
+		        }}
+		      , new JSONCallbackAdapter() {
+		public void onSuccess(JSONObject json) {
+			// get ready to populate the sessions codes list
+			sessions.clearSelections();
+			sessions.removeAll();
+			//project_codes.clear();
+			JSONArray names = json.get("session names").isArray();
+			for (int i = 0; i < names.size(); ++i){
+				String name = names.get(i).toString().replace('"', ' ').trim();
+				sessions.add(name);
+				//projects.add(pcode);
+				
+			}
+			//session.setVisible(false);
+		}
+	});    
+}
+
+// gets all project codes form the server and populates the project combo
+public void updatePCodeOptions() {
+	JSONRequest.get("/sessions/options"
+		      , new HashMap<String, Object>() {{
+		    	  put("mode", "project_codes");
+		        }}
+		      , new JSONCallbackAdapter() {
+		public void onSuccess(JSONObject json) {
+			// get ready to populate the project codes list
+			projects.removeAll();
+			project_codes.clear();
+			JSONArray pcodes = json.get("project codes").isArray();
+			for (int i = 0; i < pcodes.size(); ++i){
+				String pcode = pcodes.get(i).toString().replace('"', ' ').trim();
+				project_codes.add(pcode);
+				projects.add(pcode);
+				
+			}
+		}
+	});
+}	
 
 }
