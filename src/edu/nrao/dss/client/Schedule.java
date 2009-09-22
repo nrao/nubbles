@@ -98,12 +98,11 @@ public class Schedule extends ContentPanel {
 		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
 		north.setLayout(northLayout);
 
-		// 4 calendar controls:
+		// 4 calendar controls: TODO
 		final FormPanel northCalendar = new FormPanel();
 		northCalendar.setHeading("Calendar Controls");
-		northCalendar.setLayout(new FitLayout());
 		northCalendar.setBorders(true);
-		northCalendar.setWidth("20%");
+		northCalendar.setWidth("40%");
 		north.add(northCalendar);
 		
 		// fields for form
@@ -163,7 +162,7 @@ public class Schedule extends ContentPanel {
 	    });
 		northCalendar.add(tz);
 
-		// Update Button TODO could get rid of if 1 & 2 sensitive to changes
+/*		// Update Button TODO could get rid of if 1 & 2 sensitive to changes
 	    final Button updateBtn;
 	    updateBtn = new Button("Update");
 		updateBtn.setToolTip("Modify the schedule and display range of calendar");
@@ -172,14 +171,14 @@ public class Schedule extends ContentPanel {
 	            updateCalendar();
 	    	}
 	    });
-		northCalendar.add(updateBtn);
+		northCalendar.add(updateBtn);*/
 		
 		
 		// 1 schedule controls
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
 		northSchedule.setBorders(true);
-		northSchedule.setWidth("20%");
+		northSchedule.setWidth("15%");
 		north.add(northSchedule);
 		
 		// Auto schedules the current calendar
@@ -207,11 +206,11 @@ public class Schedule extends ContentPanel {
 		northSchedule.add(scheduleButton);
 		
 		
-		// 4 nominee controls:
+		// 4 nominee controls: TODO
 		final FormPanel northNominee = new FormPanel();
 		northNominee.setHeading("Vacancy Control");
 		northNominee.setBorders(true);
-	    northNominee.setWidth("60%");
+	    northNominee.setWidth("45%");
 		north.add(northNominee);
 			
 		// Nominee date
@@ -367,11 +366,6 @@ public class Schedule extends ContentPanel {
 		eastData.setCollapsible(true);
 		
 		// add all the components to this parent panel
-//		LayoutContainer northContainer = new LayoutContainer();
-//		northContainer.setLayout(new FitLayout());
-//		northContainer.setBorders(true);
-//		northContainer.add(north);
-//		add(northContainer, northData);
 		add(north, northData);
 		add(west, westData);
 		add(center, centerData);

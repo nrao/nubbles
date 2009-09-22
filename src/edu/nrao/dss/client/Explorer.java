@@ -330,7 +330,7 @@ public class Explorer extends ContentPanel{
 	private EditorGrid<BaseModelData> grid;
 
 	/** Use store.add() to remember dynamically created records. */
-	private ListStore<BaseModelData> store;
+	protected ListStore<BaseModelData> store;
 	
 	/** Flag for enforcing saves only on Save button press. **/
 	private boolean commitState;

@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -20,7 +21,7 @@ public class Scheduler extends Viewport implements EntryPoint {
     }
 
     private void initLayout() {
-        setLayout(new FitLayout());
+        //setLayout(new FitLayout());
 
         // project explorer tab
         tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
@@ -51,7 +52,8 @@ public class Scheduler extends Viewport implements EntryPoint {
         });
         tabPanel.add(schTab);
         
-        tabPanel.setHeight(800);
+        // TODO Why does not "tabPanel.setAutoHeight(true);? work?
+        tabPanel.setHeight(920);
 
         RootPanel rp = RootPanel.get();
         rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));

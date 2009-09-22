@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -49,18 +53,19 @@ public class PeriodExplorer extends Explorer {
 	            schedule.updateCalendar();
 			}
 		});
-//		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-//			@Override
-//			public void componentSelected(ButtonEvent be) {
-//	            schedule.updateCalendar();
-//			}
-//		});
 		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
 	            schedule.updateCalendar();
 			}
 		});
+/*		// TODO Instead of listening to each button, we should just listen to the store!
+		store.addListener(Events.Update, new Listener<StoreEvent>() {
+			public void handleEvent(StoreEvent se) {
+				GWT.log("hhhheeeeeeeelllllllllloooooo?", null);
+	            GWT.log(se.toString(), null);
+			}
+		});*/
 	}
 	
 	public void setDefaultDate(Date date) {
