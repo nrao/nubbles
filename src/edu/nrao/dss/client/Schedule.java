@@ -13,7 +13,6 @@ import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
 import com.bradrydzewski.gwt.calendar.client.DayView;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -28,7 +27,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
@@ -39,8 +37,8 @@ import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -95,25 +93,18 @@ public class Schedule extends ContentPanel {
 
 		// now for the child panels:
 		// At the top, control widgets
-		//final FormPanel north = new FormPanel();
 		LayoutContainer north = new LayoutContainer();
-		//north.setHeading("North: Control Widgets");
-		TableLayout tl = new TableLayout(3);
-		tl.setBorder(1);
-		tl.setWidth("100%");
-		north.setLayout(tl);
+		HBoxLayout northLayout = new HBoxLayout();
+		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
+		north.setLayout(northLayout);
 
-		
 		// 4 calendar controls:
 		final FormPanel northCalendar = new FormPanel();
 		northCalendar.setHeading("Calendar Controls");
+		northCalendar.setLayout(new FitLayout());
 		northCalendar.setBorders(true);
-		//northCalendar.setHeight(300);
-		TableData td = new TableData();
-		td.setWidth("35%");
-		//td.setHeight("100%");
-		//td.setVerticalAlign(VerticalAlignment.TOP);
-		north.add(northCalendar, td);
+		northCalendar.setWidth("20%");
+		north.add(northCalendar);
 		
 		// fields for form
 		// Date - when this changes, change the start of the calendar view
@@ -188,10 +179,8 @@ public class Schedule extends ContentPanel {
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
 		northSchedule.setBorders(true);
-		//northSchedule.setLayout(new FitLayout());
-		td = new TableData();
-		td.setWidth("15%");
-		north.add(northSchedule, td);
+		northSchedule.setWidth("20%");
+		north.add(northSchedule);
 		
 		// Auto schedules the current calendar
 		Button scheduleButton = new Button("Schedule");
@@ -222,9 +211,8 @@ public class Schedule extends ContentPanel {
 		final FormPanel northNominee = new FormPanel();
 		northNominee.setHeading("Vacancy Control");
 		northNominee.setBorders(true);
-		td = new TableData();
-		td.setWidth("50%");
-		north.add(northNominee, td);
+	    northNominee.setWidth("60%");
+		north.add(northNominee);
 			
 		// Nominee date
 	    final DateField vacancyDate = new DateField();
@@ -322,8 +310,9 @@ public class Schedule extends ContentPanel {
 		northNominee.add(nomineesButton);
 		
 		
-		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 300);
+		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 200);
 		northData.setMargins(new Margins(5,5,0,5));
+		//northData.
 
 		// to the left, the period explorer
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
@@ -378,6 +367,11 @@ public class Schedule extends ContentPanel {
 		eastData.setCollapsible(true);
 		
 		// add all the components to this parent panel
+//		LayoutContainer northContainer = new LayoutContainer();
+//		northContainer.setLayout(new FitLayout());
+//		northContainer.setBorders(true);
+//		northContainer.add(north);
+//		add(northContainer, northData);
 		add(north, northData);
 		add(west, westData);
 		add(center, centerData);
