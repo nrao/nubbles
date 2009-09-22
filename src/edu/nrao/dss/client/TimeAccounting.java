@@ -1,7 +1,13 @@
 package edu.nrao.dss.client;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -16,9 +22,19 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
+
+import edu.nrao.dss.client.util.TimeUtils;
 
 public class TimeAccounting extends ContentPanel{
 
+	final SimpleComboBox<String> projects = new SimpleComboBox<String>();
+	final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
+    final LayoutContainer session = new LayoutContainer();
+	final SimpleComboBox<String> periods = new SimpleComboBox<String>();
+    final LayoutContainer period = new LayoutContainer();
+	
+	
 	public TimeAccounting() {
 		super();
 		initLayout();
@@ -41,72 +57,46 @@ protected void initLayout() {
 	project.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
 	project.setBorders(true);
 	
-	//project.setHeading("North: Control Widgets");	
-	
-//    TextArea projectComments = new TextArea();
-//    projectComments.setValue("dog");
-//    projectComments.setVisible(true);
-//    //project.add(projectComments, new FitData(5));
-//    
-//    add(projectComments); //, new FitData(10));
-	
-	// always there: the one project that we're looking at
-	// here's the parent project container
-	//final LayoutContainer project = new LayoutContainer();
-	//north.setHeading("North: Control Widgets");
-	//TableLayout tl = new TableLayout(2);
-	//tl.setBorder(1);
-	//tl.setWidth("100%");
-	//project.setLayout(tl);
-
-	
 	// now place some controls in the first column
 	final FormPanel projectFormLeft = new FormPanel();
 	projectFormLeft.setHeading("Project");
 	projectFormLeft.setBorders(true);
-	//northCalendar.setHeight(300);
-
-	//td.setHeight("100%");
-	//td.setVerticalAlign(VerticalAlignment.TOP);
 	
 	// the project picker goes in this left-most form panel
-	SimpleComboBox<String> projects = new SimpleComboBox<String>();
+	//final SimpleComboBox<String> projects = new SimpleComboBox<String>();
 	projects.setFieldLabel("Project");
 	projects.add("proj1");
 	projects.add("proj2");
+	// when a project gets picked, populate the sessions combo
+	projects.addListener(Events.Valid, new Listener<BaseEvent>() {
+	  	public void handleEvent(BaseEvent be) {
+	  		GWT.log("projects Events.Valid", null);
+	  		updateProjectSessions();
+	   	}
+	});	
 	projectFormLeft.add(projects);
+    
 	
 	// followed by the session picker
-	SimpleComboBox<String> sessions = new SimpleComboBox<String>();
+	//SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 	sessions.setFieldLabel("Session");
-	sessions.add("sess1");
-	sessions.add("sess2");
+	//sessions.add("sess1");
+	//sessions.add("sess2");
+	sessions.addListener(Events.Valid, new Listener<BaseEvent>() {
+	  	public void handleEvent(BaseEvent be) {
+	  		GWT.log("session Events.Valid", null);
+	  		updateSessionPeriods();
+	   	}
+	});	
+	
 	projectFormLeft.add(sessions);
 	
-	//TableData td = new TableData();
-	//td.setWidth("35%");	
-	//project.add(projectFormLeft, td);
-	
 
-	// now place some controls in the second column
-	//final FormPanel projectFormRight = new FormPanel();
-	//projectFormRight.setHeading("Project Comments");
-	//projectFormRight.setBorders(true);
-	
-	//northCalendar.setHeight(300);
-	//td.setHeight("100%");
-	//td.setVerticalAlign(VerticalAlignment.TOP);
-	
 	// the project time accounting comments goes in this second form panel
     TextArea projectComments = new TextArea();
     projectComments.setFieldLabel("Comments");
     projectFormLeft.add(projectComments);
 
-	//TableData td2 = new TableData();
-	//td2.setWidth("50%");
-	//project.add(projectFormRight, td2);
-
-	
     ContentPanel projectTimeAccounting = new ContentPanel();
     projectTimeAccounting.setLayout(new TableLayout(5));
     projectTimeAccounting.setHeaderVisible(true);
@@ -126,10 +116,11 @@ protected void initLayout() {
 	project.add(projectFormLeft, new RowData(1, -1, new Margins(4)));
     project.add(projectTimeAccounting, new RowData(1, -1, new Margins(4)));
     
-//    // now add the session panel
-    LayoutContainer session = new LayoutContainer();
+    // now add the session panel
+    //LayoutContainer session = new LayoutContainer();
 	session.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
 	session.setBorders(true);
+	session.setVisible(false);
 
 	// first use form to affect this session and pick periods
 	final FormPanel sessionForm = new FormPanel();
@@ -144,13 +135,19 @@ protected void initLayout() {
 	sessionForm.add(sessionName);
 	
 	// followed by the period picker
-	SimpleComboBox<String> periods = new SimpleComboBox<String>();
+	//SimpleComboBox<String> periods = new SimpleComboBox<String>();
 	periods.setFieldLabel("Period");
-	periods.add("p1");
-	periods.add("p2");
+	//periods.add("p1");
+	//periods.add("p2");
+	periods.addListener(Events.Valid, new Listener<BaseEvent>() {
+	  	public void handleEvent(BaseEvent be) {
+	  		GWT.log("period Events.Valid", null);
+	  		updatePeriod();
+	   	}
+	});	
 	sessionForm.add(periods);
 	
-	// the project time accounting comments goes in this second form panel
+	// the session time accounting comments goes in this second form panel
     TextArea sessionComments = new TextArea();
     sessionComments.setFieldLabel("Comments");
     sessionForm.add(sessionComments);
@@ -171,15 +168,83 @@ protected void initLayout() {
     stf2.setReadOnly(true);
     sessionTA.add(stf2);
     
+	// the session panel contains a period panel (just like the project contained a session)
+    //LayoutContainer period = new LayoutContainer();
+	period.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
+	period.setBorders(true);
+	period.setVisible(false);
+
+	// here's the form for setting all the period time accounting stuff 
+	final FormPanel periodForm = new FormPanel();
+	periodForm.setHeading("Period");
+	periodForm.setBorders(true);
+	
+	TextField periodName = new TextField();
+	periodName.setValue("This Period");
+	periodName.setReadOnly(true);
+	periodName.setFieldLabel("Session Name");
+	periodForm.add(periodName);
+	
+	SimpleComboBox<String> times = new SimpleComboBox<String>();
+	final HashMap<String, Integer> timeChoices = new HashMap<String, Integer>();
+	for (int m = 0; m < 24*60; m += 15) {
+		String key = TimeUtils.min2sex(m);
+		timeChoices.put(key, m);
+		times.add(key);
+	}	
+	times.setFieldLabel("times (Hrs):");
+	times.setToolTip("Set the Hrs for this type of time");
+	periodForm.add(times);
+	
+	
+	
+	period.add(periodForm, new RowData(1, -1, new Margins(4)));
+	
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
 	session.add(sessionTA, new RowData(1, -1, new Margins(4)));
-
+    session.add(period, new RowData(1, -1, new Margins(4)));
     
     
     project.add(session, new RowData(1, -1, new Margins(4)));
     
 	add(project, new FitData(10));
   }
+
+protected void updatePeriod() {
+	GWT.log("updatePeriod", null);
+	// show the period panel
+	period.setVisible(true);
+
+	
+}
+
+protected void updateSessionPeriods() {
+	GWT.log("updateSessionPeriods", null);
+	// show the session panel
+	session.setVisible(true);
+	// update the sessions drop down 
+	String sessionName = sessions.getSimpleValue();
+	periods.clearSelections();
+	periods.removeAll();
+	periods.add(sessionName);
+	periods.add(sessionName);
+	// hide the period panel until a period is choosen
+	period.setVisible(false);
+	
+
+}
+
+protected void updateProjectSessions() {
+	GWT.log("updateProjectSessions", null);
+	// update the sessions drop down and clear the current selection
+	String pcode = projects.getSimpleValue();
+	sessions.clearSelections();
+	sessions.removeAll();
+	sessions.add(pcode);
+	sessions.add(pcode);
+	// hide the session panel until a session is choosen
+	session.setVisible(false);
+}
 	
 
 }
