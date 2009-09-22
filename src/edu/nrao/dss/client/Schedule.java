@@ -46,6 +46,8 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
@@ -98,7 +100,7 @@ public class Schedule extends ContentPanel {
 		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
 		north.setLayout(northLayout);
 
-		// 4 calendar controls: TODO
+		// 4 calendar controls:
 		final FormPanel northCalendar = new FormPanel();
 		northCalendar.setHeading("Calendar Controls");
 		northCalendar.setBorders(true);
@@ -162,7 +164,7 @@ public class Schedule extends ContentPanel {
 	    });
 		northCalendar.add(tz);
 
-/*		// Update Button TODO could get rid of if 1 & 2 sensitive to changes
+/*		// Update Button
 	    final Button updateBtn;
 	    updateBtn = new Button("Update");
 		updateBtn.setToolTip("Modify the schedule and display range of calendar");
@@ -206,7 +208,7 @@ public class Schedule extends ContentPanel {
 		northSchedule.add(scheduleButton);
 		
 		
-		// 4 nominee controls: TODO
+		// 4 nominee controls:
 		final FormPanel northNominee = new FormPanel();
 		northNominee.setHeading("Vacancy Control");
 		northNominee.setBorders(true);
@@ -325,16 +327,29 @@ public class Schedule extends ContentPanel {
 
 		// to the right, the calendar
 		center = new ContentPanel();
+/*		center = new ContentPanel() {
+			protected void onRender(Element target, int index) {
+				super.onRender(target, index);
+				el().addEventsSunk(Event.ONCLICK);
+			}
+		};
+		center.addListener(Events.OnClick,
+				new Listener<BaseEvent>() {
+				    public void handleEvent(BaseEvent be) {
+					    GWT.log(be.toString(), null);
+					    GWT.log(be.getSource().toString(), null);
+					    GWT.log(be.getClass().toString(), null);
+					    GWT.log(be.getType().toString(), null);
+				    }
+			    });*/
   		center.setHeading("Center: Calendar");
 		center.setScrollMode(Scroll.AUTOX);
-		
 		
 		// calendar
 		dayView = new DayView();
 		dayView.setDate(startCalendarDay); //calendar date, not required
 		dayView.setDays((int) numCalendarDays); //number of days displayed at a time, not required
 		dayView.setWidth("100%");
-		//dayView.setHeight("100%");
 		dayView.setTitle("Schedule Calendar");
 		CalendarSettings settings = new CalendarSettings();
 		// this fixes offset issue with time labels
