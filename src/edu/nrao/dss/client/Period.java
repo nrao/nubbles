@@ -8,9 +8,12 @@ import java.util.Date;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.util.TimeUtils;
+
 public class Period {
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormat DAY_FORMAT  = DateTimeFormat.getFormat("yyyy-MM-dd");
 
     public static Period parseJSON(JSONObject json) {
     	//try {
@@ -19,9 +22,10 @@ public class Period {
             String date = json.get("date").isString().stringValue();
             String time = json.get("time").isString().stringValue();
             Date st = DATE_FORMAT.parse(date + " " + time + ":00");
+            Date day = DAY_FORMAT.parse(date);
             //Date st = DATE_FORMAT.parse(json.get("start").isString().stringValue());
             int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
-            Period period = new Period(id, handle, st, dur);
+            Period period = new Period(id, handle, st, dur, day, time);
             return period;
     	//} catch (NullPointerException e) {
         //	return null;
@@ -32,11 +36,13 @@ public class Period {
     private static double hours2minutes(double hours) {
     	return hours * 60.0;
     }
-    public Period(int id, String handle, Date st, int dur) {
+    public Period(int id, String handle, Date start, int dur, Date start_day, String start_time ) {
     	this.id = id;
     	this.handle = handle;
-    	this.start = st; 
+    	this.start = start; 
     	this.duration = dur;
+    	this.start_day = start_day;
+    	this.start_time = start_time;
     }
     
     public String getHandle() {
@@ -69,12 +75,34 @@ public class Period {
     	return duration;
     }
     
+    public String getDurationString() {
+    	return TimeUtils.min2sex(duration);
+    }
     public int getId() {
     	return id;
     }
     
+    public String getStartTime() {
+    	return start_time;
+    }
+    
+    public int getStartHour() {
+    	return Integer.parseInt(start_time.split(":")[0]);
+    }
+
+    public int getStartMinute() {
+    	return Integer.parseInt(start_time.split(":")[1]);
+    }
+    
+    public Date getStartDay() {
+    	return start_day;
+    }
+    
+
     private int      id;
     private String   handle; 
     private Date     start;
     private int      duration; // minutes
+    private Date     start_day;
+    private String   start_time;
 }

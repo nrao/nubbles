@@ -74,6 +74,8 @@ public class Schedule extends ContentPanel {
 	public Date startVacancyDateTime = new Date();
 	private CheckBoxGroup nomineeOptions = new CheckBoxGroup();
 	
+	private ArrayList<String> sess_handles = new ArrayList<String>();
+	
 	public Schedule() {
 			super();
 			initLayout();
@@ -95,7 +97,8 @@ public class Schedule extends ContentPanel {
 
 		// now for the child panels:
 		// At the top, control widgets
-		LayoutContainer north = new LayoutContainer();
+
+		final LayoutContainer north = new LayoutContainer();
 		HBoxLayout northLayout = new HBoxLayout();
 		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
 		north.setLayout(northLayout);
@@ -358,10 +361,23 @@ public class Schedule extends ContentPanel {
 		settings.setIntervalsPerHour(4);
 		settings.setEnableDragDrop(true);
 		dayView.setSettings(settings);
+		// when a period is clicked, a user can insert a different session
+		// but we need all those session names
+		getSessionOptions();
 		dayView.addValueChangeHandler(new ValueChangeHandler<Appointment>(){
 	        public void onValueChange(ValueChangeEvent<Appointment> event) {
-	            String msg = "Details of Period for Session: " + event.getValue().getDescription();   
-	            Window.alert(msg);
+	        	// seed the PeriodDialog w/ detials from the period that just got clckd
+	            String periodUrl = "/periods/UTC/" + event.getValue().getTitle();
+	    	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
+		            @Override
+		            public void onSuccess(JSONObject json) {
+		            	// JSON period -> JAVA period
+	                 	Period period = Period.parseJSON(json.get("period").isObject());
+	                 	// Okay, now user can insert a new period into the schedule
+	                 	PeriodDialogBox dlg = new PeriodDialogBox(period, sess_handles, (Schedule) north.getParent());
+		            }
+		    });	            
+	            
 	        }               
 	    });	
 		//dayView.addSelectionHandler(handler); // TODO handle nominee selecion in calendar?
@@ -460,12 +476,33 @@ public class Schedule extends ContentPanel {
 		        Appointment appt = new Appointment();
 		        appt.setStart(p.getStart());
 		        appt.setEnd(p.getEnd());
-		        appt.setTitle("Period");
+		        String title = Integer.toString(p.getId());
+		        appt.setTitle(title);
 		        appt.setDescription(p.getHandle());
 		        appt.addStyleName("gwt-appointment-blue");
 		        dayView.addAppointment(appt);
 		}
 		dayView.resumeLayout();
     }
+    
+    // gets all the session handles (sess name (proj name)) and holds on to them
+    // for use in lists (e.g. PeriodDialog)
+    private void getSessionOptions() {
+        JSONRequest.get("/sessions/options"
+        		     , new HashMap<String, Object>() {{
+        		    	    put("mode", "session_handles");
+        		     }}
+        		   , new JSONCallbackAdapter() {
+        			   public void onSuccess(JSONObject json) {
+    					JSONArray sessions = json.get("session handles").isArray();
+    					for (int i = 0; i < sessions.size(); ++i){
+    						sess_handles.add(sessions.get(i).toString().replace('"', ' ').trim());
+    					}       
+   					
+        			   }
+        		   }
+       );
+
+    }    
 }	
 	
