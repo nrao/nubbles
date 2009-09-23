@@ -79,6 +79,10 @@ public class PeriodExplorer extends Explorer {
         new ColumnType("date",            "Day",                   70, DateEditField.class),
         new ColumnType("time",            "Time",                  70, TimeField.class),
         new ColumnType("duration",        "Duration (Hrs)",        90, Double.class),
+       	new ColumnType("not_billable",    "Not Billable",          50, Double.class),
+       	new ColumnType("other_session_weather", "OS Weather",      50, Double.class),
        	new ColumnType("backup",          "Backup?",               70, Boolean.class),
+       	
+       	
 	};
 }
