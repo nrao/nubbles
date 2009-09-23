@@ -370,7 +370,7 @@ public class Schedule extends ContentPanel {
 		            	// JSON period -> JAVA period
 	                 	Period period = Period.parseJSON(json.get("period").isObject());
 	                 	// Okay, now user can insert a new period into the schedule
-	                 	PeriodDialog dlg = new PeriodDialog(period, sess_handles, (Schedule) north.getParent());
+	                 	PeriodDialogBox dlg = new PeriodDialogBox(period, sess_handles, (Schedule) north.getParent());
 		            }
 		    });	            
 	            
