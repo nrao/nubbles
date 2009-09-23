@@ -28,10 +28,12 @@ import edu.nrao.dss.client.util.TimeUtils;
 // TODO: this does more then just change a period - it can replace several periods
 // w/ a single period.  But it's also ideal for inserting backups.  so what to call it?
 
-class PeriodDialog extends Dialog {
+class PeriodDialogBox extends Dialog {
 
 	// TODO: need to refactor this into more methods
-	public PeriodDialog(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
+	public PeriodDialogBox(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
+		
+		super();
 		
 		// Basic Dlg settings
 		String heading = "Change Schedule";
