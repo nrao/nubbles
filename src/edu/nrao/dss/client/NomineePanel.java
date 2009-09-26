@@ -64,6 +64,7 @@ public class NomineePanel extends ContentPanel {
 		           public void handleEvent(SelectionChangedEvent<BaseModel> be) {  
 			         BaseModelData baseModelData = (BaseModelData) (be.getSelectedItem());
 		             schedule.west.addRecord(nominee2Period(baseModelData));
+		             schedule.updateCalendar();
 		           }  
 		         }); 
 	}
