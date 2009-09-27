@@ -166,7 +166,7 @@ public class Explorer extends ContentPanel{
 	        	if (defaultDate != "") {
 	        		fields.put("date", defaultDate);
 	        	}
-	        	addRecord(fields, 0);
+	        	addRecord(fields);
 	        }
 	    });
 		
@@ -178,7 +178,7 @@ public class Explorer extends ContentPanel{
             @Override
             public void componentSelected(ButtonEvent be) {
                 addRecord(new HashMap<String, Object>(grid.getSelectionModel()
-            			.getSelectedItem().getProperties()), 0);
+            			.getSelectedItem().getProperties()));
                 grid.getView().refresh(true);
             }
         });
@@ -269,7 +269,7 @@ public class Explorer extends ContentPanel{
 				});
 	}
 	
-	protected void addRecord(HashMap<String, Object> fields, final int col) {
+	protected void addRecord(HashMap<String, Object> fields) {
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
@@ -296,9 +296,8 @@ public class Explorer extends ContentPanel{
 				}
 				grid.stopEditing();
 				store.insert(model, 0);
-				grid.startEditing(0, col);
 				//grid.getView().refresh(true);
-				//grid.getSelectionModel().select(model, false);
+				grid.getSelectionModel().select(model, false);
 			}
 		});
 	}
