@@ -43,6 +43,8 @@ class PeriodColConfig extends ColumnConfig {
 			dateField();
 		} else if (clasz == TimeField.class) {
 			timeField();
+		} else if (clasz == ScoreField.class) {
+			scoreField();
 		} else if (clasz == Boolean.class) {
 			checkboxField();
 		} else {
@@ -120,6 +122,23 @@ class PeriodColConfig extends ColumnConfig {
 				DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
 				Date d = (Date) value;
 				return fmt.format(d);
+			}
+		});
+	}
+	
+	private void scoreField() {
+		setAlignment(HorizontalAlignment.RIGHT);
+
+		setNumberFormat(NumberFormat.getFormat("0"));
+		setRenderer(new GridCellRenderer<BaseModelData>() {
+			public Object render(BaseModelData model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<BaseModelData> store, Grid<BaseModelData> grid) {
+				if (model.get(property) != null) {
+					return model.get(property).toString();
+				} else {
+					return "";
+				}
 			}
 		});
 	}

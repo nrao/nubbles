@@ -320,7 +320,7 @@ public class Schedule extends ContentPanel {
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		west.addButtonsListener(this);
 		west.setDefaultDate(startCalendarDay);
-		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 550);
+		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 720);
 		westData.setMargins(new Margins(5));
 		westData.setSplit(true);
 		westData.setCollapsible(true);
