@@ -5,11 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -80,14 +76,14 @@ public class PeriodExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
 	private static final ColumnType[] columnTypes = {
-       	new ColumnType("handle",          "Session (Project) ID", 200, SessionField.class),
-        new ColumnType("date",            "Day",                   70, DateEditField.class),
-        new ColumnType("time",            "Time",                  70, TimeField.class),
-        new ColumnType("duration",        "Duration (Hrs)",        90, Double.class),
-       	new ColumnType("not_billable",    "Not Billable",          50, Double.class),
-       	new ColumnType("other_session_weather", "OS Weather",      50, Double.class),
-       	new ColumnType("backup",          "Backup?",               70, Boolean.class),
-       	
+       	new ColumnType("handle",                "Session (Project) ID", 200, SessionField.class),
+        new ColumnType("date",                  "Day",                   70, DateEditField.class),
+        new ColumnType("time",                  "Time",                  70, TimeField.class),
+        new ColumnType("duration",              "Duration (Hrs)",        80, Double.class),
+        new ColumnType("score",                 "Score",                 70, ScoreField.class),
+       	new ColumnType("not_billable",          "Not Billable",          70, Double.class),
+       	new ColumnType("other_session_weather", "OS Weather",            70, Double.class),
+       	new ColumnType("backup",                "Backup?",               70, Boolean.class),
        	
 	};
 }

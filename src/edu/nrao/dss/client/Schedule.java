@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.google.gwt.core.client.GWT;
@@ -46,8 +45,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
@@ -112,6 +109,7 @@ public class Schedule extends ContentPanel {
 		
 		// fields for form
 		// Date - when this changes, change the start of the calendar view
+		final DateField vacancyDate = new DateField();
 	    final DateField dt = new DateField();
 	    dt.setValue(startCalendarDay);
 	    dt.setFieldLabel("Start Date");
@@ -119,6 +117,8 @@ public class Schedule extends ContentPanel {
 	    dt.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	            startCalendarDay = dt.getValue();
+	            startVacancyDate = startCalendarDay;
+	            vacancyDate.setValue(startVacancyDate);
 	            updateCalendar();
 	    	}
 	    });
@@ -219,13 +219,11 @@ public class Schedule extends ContentPanel {
 		north.add(northNominee);
 			
 		// Nominee date
-	    final DateField vacancyDate = new DateField();
 	    vacancyDate.setValue(startVacancyDate);
 	    vacancyDate.setFieldLabel("Start Date");
 		vacancyDate.setToolTip("Set the start day for the vacancy to be filled");
-	    vacancyDate.addListener(Events.Select, new Listener<BaseEvent>() {
+	    vacancyDate.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		System.out.println("TimeField Listener date " + vacancyDate.getValue().toString());
 	            startVacancyDate = vacancyDate.getValue();
 	    	}
 	    });
@@ -322,7 +320,7 @@ public class Schedule extends ContentPanel {
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		west.addButtonsListener(this);
 		west.setDefaultDate(startCalendarDay);
-		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 550);
+		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 720);
 		westData.setMargins(new Margins(5));
 		westData.setSplit(true);
 		westData.setCollapsible(true);
