@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.bradrydzewski.gwt.calendar.client.Appointment;
-import com.bradrydzewski.gwt.calendar.client.AppointmentInterface;
-import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
-import com.bradrydzewski.gwt.calendar.client.DayView;
+//import com.bradrydzewski.gwt.calendar.client.Appointment;
+//import com.bradrydzewski.gwt.calendar.client.AppointmentInterface;
+//import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
+//import com.bradrydzewski.gwt.calendar.client.DayView;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -48,6 +48,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
+import edu.nrao.dss.client.util.dssgwtcal.Appointment;
+import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
+import edu.nrao.dss.client.util.dssgwtcal.DayView;
+import edu.nrao.dss.client.util.dssgwtcal.Event;
 
 // This class is the new version of the Beta Test's Scheduling Page.
 
@@ -471,14 +475,11 @@ public class Schedule extends ContentPanel {
 		dayView.suspendLayout();
 		dayView.clearAppointments();
 		for(Period p : periods) {
-		        Appointment appt = new Appointment();
-		        appt.setStart(p.getStart());
-		        appt.setEnd(p.getEnd());
-		        String title = Integer.toString(p.getId());
-		        appt.setTitle(title);
-		        appt.setDescription(p.getHandle());
-		        appt.addStyleName("gwt-appointment-blue");
-		        dayView.addAppointment(appt);
+                // TODO: format title & description better			
+			    String title = Integer.toString(p.getId());
+			    Event event = new Event(title, p.getHandle(), p.getStart(), p.getEnd());
+		        dayView.addAppointments(event.getAppointments());
+		        
 		}
 		dayView.resumeLayout();
     }
