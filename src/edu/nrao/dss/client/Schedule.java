@@ -375,8 +375,8 @@ public class Schedule extends ContentPanel {
 		            public void onSuccess(JSONObject json) {
 		            	// JSON period -> JAVA period
 	                 	Period period = Period.parseJSON(json.get("period").isObject());
-	                 	// Okay, now user can insert a new period into the schedule
-	                 	PeriodDialogBox dlg = new PeriodDialogBox(period, sess_handles, (Schedule) north.getParent());
+                        // displya info about this period, and give options to change it
+	                 	PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, sess_handles, (Schedule) north.getParent());
 		            }
 		    });	            
 	            
@@ -461,7 +461,10 @@ public class Schedule extends ContentPanel {
 	                for (int i = 0; i < ps.size(); ++i) {
 	                	Period period = Period.parseJSON(ps.get(i).isObject());
 	                	if (period != null){
-	                		periods.add(period);
+	                		// TODO: really we should be using period state to keep these periods out
+	                		if (period.getDuration() > 0) {
+                        		periods.add(period);
+	                        }
 	                	}
 	                }
 	                // update the gwt-cal widget

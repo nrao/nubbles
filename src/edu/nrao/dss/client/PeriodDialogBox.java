@@ -41,6 +41,7 @@ class PeriodDialogBox extends Dialog {
 		String txt = "Change the schedule for and around Period " + period.getHandle();
 		addText(txt);
 		setButtons(Dialog.OKCANCEL);
+		GWT.log("PeriodDialogBox", null);
 		
 		// now set up the form w/ all it's fields
 		final FormPanel fp = new FormPanel();
@@ -142,7 +143,7 @@ class PeriodDialogBox extends Dialog {
 	    		changeDateTime.setSeconds(0);
 	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").format(changeDateTime);	    	
 	    		keys.put("start", startStr);
-	    		keys.put("duration", durChoices.get(hours.getSimpleValue()));
+	    		keys.put("duration", Double.toString(durChoices.get(hours.getSimpleValue())/60.0)); // hex -> minutes -> hours
 	    		keys.put("session", sessions.getSimpleValue());
 	    		keys.put("reason", reasons.getSimpleValue());
 	    		keys.put("description", desc.getValue());

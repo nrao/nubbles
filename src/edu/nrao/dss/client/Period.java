@@ -30,7 +30,11 @@ public class Period {
         Period period = new Period(id, handle, st, dur, day, time);
         
         // now set the fields associated with time accounting
+        period.setDescription(json.get("description").isString().stringValue());
+        period.setScheduled(json.get("scheduled").isNumber().doubleValue());
+        period.setShort_notice(json.get("short_notice").isNumber().doubleValue());
         period.setNot_billable(json.get("not_billable").isNumber().doubleValue());
+        
         period.setOther_session_weather(json.get("other_session_weather").isNumber().doubleValue());
         period.setOther_session_rfi(json.get("other_session_rfi").isNumber().doubleValue());
         period.setOther_session_other(json.get("other_session_other").isNumber().doubleValue());
@@ -73,6 +77,14 @@ public class Period {
     	// add the duration (in minutes) to this time in milli-seconds
     	long endSecs = (long) (startSecs + (duration * 60.0 * 1000.0));
     	return new Date(endSecs);
+    }
+    
+    public double getLost_time() {
+    	return lost_time_weather + lost_time_rfi + lost_time_other;
+    }
+    
+    public double getOther_Session() {
+    	return other_session_weather + other_session_rfi + other_session_other;
     }
     
     public String getStartString() {
@@ -162,6 +174,30 @@ public class Period {
 		return other_session_other;
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setScheduled(double scheduled) {
+		this.scheduled = scheduled;
+	}
+
+	public double getScheduled() {
+		return scheduled;
+	}
+
+	public void setShort_notice(double short_notice) {
+		this.short_notice = short_notice;
+	}
+
+	public double getShort_notice() {
+		return short_notice;
+	}
+
 	// traditional period attributes
     private int      id;
     private String   handle; 
@@ -170,7 +206,10 @@ public class Period {
     private Date     start_day;
     private String   start_time;
     // time accounting (all in Hours)
+    private String   description;
+    private double   scheduled;
     private double   not_billable;
+    private double   short_notice;
     private double   lost_time_weather;
     private double   lost_time_rfi;
     private double   lost_time_other;

@@ -25,21 +25,21 @@ public class Scheduler extends Viewport implements EntryPoint {
     private void initLayout() {
         //setLayout(new FitLayout());
 
-        // project explorer tab
-        tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
-        
-        // session explorer tab - we need to update the project info when it
-        // comes into focus
-        TabItem seTab = addTab(se, "Session Explorer", "Define and edit sessions.");
-        seTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
-        	@Override
-        	public void componentSelected(TabPanelEvent tpe){
-        		SessionColConfig pcodeConfig = (SessionColConfig) se.getPcodeConfig();
-        		pcodeConfig.updatePCodeOptions();
-        		se.loadData();
-        	}
-        });
-        tabPanel.add(seTab);
+//        // project explorer tab
+//        tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
+//        
+//        // session explorer tab - we need to update the project info when it
+//        // comes into focus
+//        TabItem seTab = addTab(se, "Session Explorer", "Define and edit sessions.");
+//        seTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
+//        	@Override
+//        	public void componentSelected(TabPanelEvent tpe){
+//        		SessionColConfig pcodeConfig = (SessionColConfig) se.getPcodeConfig();
+//        		pcodeConfig.updatePCodeOptions();
+//        		se.loadData();
+//        	}
+//        });
+//        tabPanel.add(seTab);
         
         // schedule tab - we need to update the session/project info when it
         // comes into focus
