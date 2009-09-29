@@ -38,6 +38,7 @@ public class TimeAccounting extends ContentPanel{
     final LayoutContainer session = new LayoutContainer();
 	final SimpleComboBox<String> periods = new SimpleComboBox<String>();
     final LayoutContainer periodContainer = new LayoutContainer();
+    final PeriodSummaryPanel periodSummary = new PeriodSummaryPanel(null);
 	final TextField sessionName = new TextField();
 //	final TextField periodName = new TextField();
 	final NumberField periodNotBillable = new NumberField();
@@ -182,13 +183,14 @@ protected void initLayout() {
     
 	// the session panel contains a period panel (just like the project contained a session)
     //LayoutContainer period = new LayoutContainer();
-	periodContainer.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
-
-	periodContainer.setBorders(true);
-	periodContainer.setVisible(false);
+//	periodContainer.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
+//
+//	periodContainer.setBorders(true);
+//	periodContainer.setVisible(false);
 //
 //	// here's the form for setting all the period time accounting stuff 
 //	final FormPanel periodForm = new FormPanel();
+	
 //	periodForm.setHeading("Period");
 //	periodForm.setBorders(true);
 //	
@@ -216,8 +218,11 @@ protected void initLayout() {
 //	
 //	period.add(periodForm, new RowData(1, -1, new Margins(4)));
 	
+    periodSummary.setVisible(true); // -> false
+    
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
 	session.add(sessionTA, new RowData(1, -1, new Margins(4)));
+	session.add(periodSummary, new RowData(1, -1, new Margins(4)));
     //session.add(periodContainer, new RowData(1, -1, new Margins(4)));
     
     
@@ -249,7 +254,7 @@ protected void updatePeriod() {
 	// TODO: get this period from the server to fill in the time accnting form
 	updatePeriodForm(periodId);
 	//periodName.setValue(name);
-	periodContainer.setVisible(true);
+	periodSummary.setVisible(true);
 
 	
 }
@@ -276,9 +281,10 @@ private void updatePeriodForm(int periodId) {
 
 protected void updatePeriodForm(Period period) {
  
-	PeriodSummaryPanel panel = new PeriodSummaryPanel(period);
-	periodContainer.add(panel, new RowData(1, -1, new Margins(4)));
-	periodContainer.show();
+	periodSummary.setPeriod(period);
+	//PeriodSummaryPanel panel = new PeriodSummaryPanel(period);
+	//periodContainer.add(panel, new RowData(1, -1, new Margins(4)));
+	//periodContainer.show();
 	//session.add(panel,new RowData(1, -1, new Margins(4)));
 //    periodNotBillable.setValue(period.getNot_billable());
 //    periodLostTimeWeather.setValue(period.getLost_time_weather());

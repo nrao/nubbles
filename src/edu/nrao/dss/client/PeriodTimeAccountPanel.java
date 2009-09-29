@@ -36,7 +36,9 @@ public class PeriodTimeAccountPanel extends FormPanel {
 		// time accounting fields:
 		TextArea desc = new TextArea();
 		desc.setFieldLabel("Description");
-		desc.setValue(period.getDescription());
+		if (period != null) {
+		    desc.setValue(period.getDescription());
+		}    
 		desc.setReadOnly(true);
 		add(desc);
 		
@@ -102,26 +104,21 @@ public class PeriodTimeAccountPanel extends FormPanel {
 	}
 	
 	private void setValues(Period p) {
-        numberFields.get(keys.get(0)).setValue(period.getScheduled());
-        numberFields.get(keys.get(1)).setValue(period.getNot_billable());
-        numberFields.get(keys.get(2)).setValue(period.getShort_notice());
-        numberFields.get(keys.get(3)).setValue(period.getLost_time());
-        numberFields.get(keys.get(4)).setValue(period.getLost_time_weather());
-        numberFields.get(keys.get(5)).setValue(period.getLost_time_rfi());
-        numberFields.get(keys.get(6)).setValue(period.getLost_time_other());
-        numberFields.get(keys.get(7)).setValue(period.getOther_Session());
-        numberFields.get(keys.get(8)).setValue(period.getOther_session_weather());
-        numberFields.get(keys.get(9)).setValue(period.getOther_session_rfi());
-        numberFields.get(keys.get(10)).setValue(period.getOther_session_other());
-        
-//        fields.put(keys.get(2), period.getShort_notice());
-//        fields.put(keys.get(3), period.getLost_time());
-//        fields.put(keys.get(4), period.getLost_time_weather());
-//        fields.put(keys.get(5), period.getLost_time_rfi());
-//        fields.put(keys.get(6), period.getLost_time_other());
-//        fields.put(keys.get(7), period.getOther_Session());
-//        fields.put(keys.get(8), period.getOther_session_weather());
-//        fields.put(keys.get(9), period.getOther_session_rfi());
-//        fields.put(keys.get(10),period.getOther_session_other());		
+
+	    if (period != null) {
+		    	
+		    numberFields.get(keys.get(0)).setValue(period.getScheduled());
+		    numberFields.get(keys.get(1)).setValue(period.getNot_billable());
+		    numberFields.get(keys.get(2)).setValue(period.getShort_notice());
+		    numberFields.get(keys.get(3)).setValue(period.getLost_time());
+		    numberFields.get(keys.get(4)).setValue(period.getLost_time_weather());
+		    numberFields.get(keys.get(5)).setValue(period.getLost_time_rfi());
+		    numberFields.get(keys.get(6)).setValue(period.getLost_time_other());
+		    numberFields.get(keys.get(7)).setValue(period.getOther_Session());
+		    numberFields.get(keys.get(8)).setValue(period.getOther_session_weather());
+		    numberFields.get(keys.get(9)).setValue(period.getOther_session_rfi());
+		    numberFields.get(keys.get(10)).setValue(period.getOther_session_other());
+	    }
+	
 	}
 }
