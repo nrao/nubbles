@@ -37,9 +37,9 @@ public class TimeAccounting extends ContentPanel{
 	final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
     final LayoutContainer session = new LayoutContainer();
 	final SimpleComboBox<String> periods = new SimpleComboBox<String>();
-    final LayoutContainer period = new LayoutContainer();
+    final LayoutContainer periodContainer = new LayoutContainer();
 	final TextField sessionName = new TextField();
-	final TextField periodName = new TextField();
+//	final TextField periodName = new TextField();
 	final NumberField periodNotBillable = new NumberField();
 	final NumberField periodLostTimeWeather = new NumberField();
 	
@@ -182,20 +182,21 @@ protected void initLayout() {
     
 	// the session panel contains a period panel (just like the project contained a session)
     //LayoutContainer period = new LayoutContainer();
-	period.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
-	period.setBorders(true);
-	period.setVisible(false);
+	periodContainer.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
 
-	// here's the form for setting all the period time accounting stuff 
-	final FormPanel periodForm = new FormPanel();
-	periodForm.setHeading("Period");
-	periodForm.setBorders(true);
-	
-	//TextField periodName = new TextField();
-	periodName.setValue("");
-	periodName.setReadOnly(true);
-	periodName.setFieldLabel("Period");
-	periodForm.add(periodName);
+	periodContainer.setBorders(true);
+	periodContainer.setVisible(false);
+//
+//	// here's the form for setting all the period time accounting stuff 
+//	final FormPanel periodForm = new FormPanel();
+//	periodForm.setHeading("Period");
+//	periodForm.setBorders(true);
+//	
+//	//TextField periodName = new TextField();
+//	periodName.setValue("");
+//	periodName.setReadOnly(true);
+//	periodName.setFieldLabel("Period");
+//	periodForm.add(periodName);
 	
 //	SimpleComboBox<String> times = new SimpleComboBox<String>();
 //	final HashMap<String, Integer> timeChoices = new HashMap<String, Integer>();
@@ -208,16 +209,16 @@ protected void initLayout() {
 //	times.setToolTip("Set the Hrs for this type of time");
 //	periodForm.add(times);
 
-	periodNotBillable.setFieldLabel("Not Billable (Hrs)");
-	periodForm.add(periodNotBillable);
-	periodLostTimeWeather.setFieldLabel("Lost Time Weather (Hrs)");
-	periodForm.add(periodLostTimeWeather);
-	
-	period.add(periodForm, new RowData(1, -1, new Margins(4)));
+//	periodNotBillable.setFieldLabel("Not Billable (Hrs)");
+//	periodForm.add(periodNotBillable);
+//	periodLostTimeWeather.setFieldLabel("Lost Time Weather (Hrs)");
+//	periodForm.add(periodLostTimeWeather);
+//	
+//	period.add(periodForm, new RowData(1, -1, new Margins(4)));
 	
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
 	session.add(sessionTA, new RowData(1, -1, new Margins(4)));
-    session.add(period, new RowData(1, -1, new Margins(4)));
+    //session.add(periodContainer, new RowData(1, -1, new Margins(4)));
     
     
     project.add(session, new RowData(1, -1, new Margins(4)));
@@ -247,8 +248,8 @@ protected void updatePeriod() {
 	int periodId = periodInfo.get(name);
 	// TODO: get this period from the server to fill in the time accnting form
 	updatePeriodForm(periodId);
-	periodName.setValue(name);
-	period.setVisible(true);
+	//periodName.setValue(name);
+	periodContainer.setVisible(true);
 
 	
 }
@@ -274,9 +275,13 @@ private void updatePeriodForm(int periodId) {
 }
 
 protected void updatePeriodForm(Period period) {
-    
-    periodNotBillable.setValue(period.getNot_billable());
-    periodLostTimeWeather.setValue(period.getLost_time_weather());
+ 
+	PeriodSummaryPanel panel = new PeriodSummaryPanel(period);
+	periodContainer.add(panel, new RowData(1, -1, new Margins(4)));
+	periodContainer.show();
+	//session.add(panel,new RowData(1, -1, new Margins(4)));
+//    periodNotBillable.setValue(period.getNot_billable());
+//    periodLostTimeWeather.setValue(period.getLost_time_weather());
 }
 
 // a session has been selected - what to do?
@@ -294,7 +299,7 @@ protected void updateSessionPeriods() {
 	//periods.add(sessionName);
 	//periods.add(sessionName);
 	// hide the period panel until a period is choosen
-	period.setVisible(false);
+	periodContainer.setVisible(false);
 	
 
 }

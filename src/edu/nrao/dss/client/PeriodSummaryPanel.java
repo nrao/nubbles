@@ -13,6 +13,10 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 public class PeriodSummaryPanel extends ContentPanel {
 	
 	private Period period;
+	private TextField label = new TextField();
+	private TextField start = new TextField();
+	private TextField dur = new TextField();
+	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel(null);
 	
     public PeriodSummaryPanel(Period p) {
     	period = p;
@@ -31,35 +35,51 @@ public class PeriodSummaryPanel extends ContentPanel {
     	
     	// field per attribute, roughly:
     	// name
-    	TextField label = new TextField();
+    	//TextField label = new TextField();
     	label.setFieldLabel("Name");
-    	label.setValue(period.getHandle());
+    	//label.setValue(period.getHandle());
     	label.setReadOnly(true);
     	periodForm.add(label);
     	
     	// start
-    	TextField start = new TextField();
+    	//TextField start = new TextField();
     	start.setFieldLabel("Start (UTC)");
-    	start.setValue(period.getStartString());
+    	//start.setValue(period.getStartString());
     	start.setReadOnly(true);
     	periodForm.add(start);
     	
     	// duration
-    	TextField dur = new TextField();
+    	//TextField dur = new TextField();
     	dur.setFieldLabel("Duration (Hrs)");
-    	dur.setValue(period.getDurationString());
+    	//dur.setValue(period.getDurationString());
     	dur.setReadOnly(true);
     	periodForm.add(dur);
     	
     	// score
     	// backup 
     	// what else
+
+    	setValues(period);
     	
     	// Time Accounting get's its own form
-    	PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel(period);
-    	
+    	//PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel(period);
+    	ta.setPeriod(period);
     	periodForm.add(ta);
     	
     	add(periodForm, new RowData(1, -1, new Margins(1)));    	
+    }
+    
+    public void setPeriod(Period period) {
+    	setValues(period);
+    	ta.setPeriod(period);
+    }
+    
+    private void setValues(Period period) {
+        if (period != null) {
+        	label.setValue(period.getHandle());
+        	start.setValue(period.getStartString());
+        	dur.setValue(period.getDurationString());
+        }
+    	
     }
 }
