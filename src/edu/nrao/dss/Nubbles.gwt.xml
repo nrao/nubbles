@@ -13,8 +13,12 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.extjs.gxt.ui.GXT'/>
-  <inherits name='com.bradrydzewski.gwt.calendar.Calendar' />
-  <inherits name='com.bradrydzewski.gwt.calendar.theme.google.Google' />
+  <!-- swap the below stylesheet for the gwt.calendar inherits when we use theirs -->
+  <!-- <inherits name='com.bradrydzewski.gwt.calendar.Calendar' /> --> 
+  <!-- <inherits name='com.bradrydzewski.gwt.calendar.theme.google.Google' /> -->
+  <!-- <inherits name='edu.nrao.dss.theme.google.Google'/> -->
+  <stylesheet src='gwt-cal-google.css' />
+  
   <!-- Specify the app entry point class.                         -->
   <entry-point class='edu.nrao.dss.client.Scheduler'/>
 </module>

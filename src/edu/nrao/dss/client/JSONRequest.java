@@ -65,7 +65,7 @@ class JSONRequest implements RequestCallback {
 				cb.onSuccess(json);
 			}
 		} catch (Exception e) {
-			GWT.log(response.getText(), null);
+			GWT.log("json exception" + response.getText(), null);
 			cb.onError("json parse failed", null);
 		}
 	}

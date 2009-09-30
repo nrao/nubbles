@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -32,12 +33,16 @@ import edu.nrao.dss.client.util.TimeUtils;
 public class TimeAccounting extends ContentPanel{
 
 	final SimpleComboBox<String> projects = new SimpleComboBox<String>();
+    final TextArea projectComments = new TextArea();
 	final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
     final LayoutContainer session = new LayoutContainer();
 	final SimpleComboBox<String> periods = new SimpleComboBox<String>();
-    final LayoutContainer period = new LayoutContainer();
+    final LayoutContainer periodContainer = new LayoutContainer();
+    final PeriodSummaryPanel periodSummary = new PeriodSummaryPanel(null);
 	final TextField sessionName = new TextField();
-	final TextField periodName = new TextField();
+//	final TextField periodName = new TextField();
+	final NumberField periodNotBillable = new NumberField();
+	final NumberField periodLostTimeWeather = new NumberField();
 	
     final ArrayList<String> project_codes = new ArrayList<String>();
 	final HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
@@ -72,13 +77,15 @@ protected void initLayout() {
 	// the project picker goes in this left-most form panel
 	//final SimpleComboBox<String> projects = new SimpleComboBox<String>();
 	projects.setFieldLabel("Project");
-	projects.add("proj1");
-	projects.add("proj2");
+	//projects.add("proj1");
+	//projects.add("proj2");
 	// when a project gets picked, populate the sessions combo
 	projects.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
 	  		GWT.log("projects Events.Valid", null);
 	  		updateProjectSessions();
+	  		// get all the time accounting info!
+	  		getProjectTimeAccounting();
 	   	}
 	});	
 	projectFormLeft.add(projects);
@@ -100,7 +107,6 @@ protected void initLayout() {
 	
 
 	// the project time accounting comments goes in this second form panel
-    TextArea projectComments = new TextArea();
     projectComments.setFieldLabel("Comments");
     projectFormLeft.add(projectComments);
 
@@ -177,43 +183,67 @@ protected void initLayout() {
     
 	// the session panel contains a period panel (just like the project contained a session)
     //LayoutContainer period = new LayoutContainer();
-	period.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
-	period.setBorders(true);
-	period.setVisible(false);
+//	periodContainer.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
+//
+//	periodContainer.setBorders(true);
+//	periodContainer.setVisible(false);
+//
+//	// here's the form for setting all the period time accounting stuff 
+//	final FormPanel periodForm = new FormPanel();
+	
+//	periodForm.setHeading("Period");
+//	periodForm.setBorders(true);
+//	
+//	//TextField periodName = new TextField();
+//	periodName.setValue("");
+//	periodName.setReadOnly(true);
+//	periodName.setFieldLabel("Period");
+//	periodForm.add(periodName);
+	
+//	SimpleComboBox<String> times = new SimpleComboBox<String>();
+//	final HashMap<String, Integer> timeChoices = new HashMap<String, Integer>();
+//	for (int m = 0; m < 24*60; m += 15) {
+//		String key = TimeUtils.min2sex(m);
+//		timeChoices.put(key, m);
+//		times.add(key);
+//	}	
+//	times.setFieldLabel("times (Hrs):");
+//	times.setToolTip("Set the Hrs for this type of time");
+//	periodForm.add(times);
 
-	// here's the form for setting all the period time accounting stuff 
-	final FormPanel periodForm = new FormPanel();
-	periodForm.setHeading("Period");
-	periodForm.setBorders(true);
+//	periodNotBillable.setFieldLabel("Not Billable (Hrs)");
+//	periodForm.add(periodNotBillable);
+//	periodLostTimeWeather.setFieldLabel("Lost Time Weather (Hrs)");
+//	periodForm.add(periodLostTimeWeather);
+//	
+//	period.add(periodForm, new RowData(1, -1, new Margins(4)));
 	
-	//TextField periodName = new TextField();
-	periodName.setValue("");
-	periodName.setReadOnly(true);
-	periodName.setFieldLabel("Period");
-	periodForm.add(periodName);
-	
-	SimpleComboBox<String> times = new SimpleComboBox<String>();
-	final HashMap<String, Integer> timeChoices = new HashMap<String, Integer>();
-	for (int m = 0; m < 24*60; m += 15) {
-		String key = TimeUtils.min2sex(m);
-		timeChoices.put(key, m);
-		times.add(key);
-	}	
-	times.setFieldLabel("times (Hrs):");
-	times.setToolTip("Set the Hrs for this type of time");
-	periodForm.add(times);
-	
-	period.add(periodForm, new RowData(1, -1, new Margins(4)));
-	
+    periodSummary.setVisible(true); // -> false
+    
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
 	session.add(sessionTA, new RowData(1, -1, new Margins(4)));
-    session.add(period, new RowData(1, -1, new Margins(4)));
+	session.add(periodSummary, new RowData(1, -1, new Margins(4)));
+    //session.add(periodContainer, new RowData(1, -1, new Margins(4)));
     
     
     project.add(session, new RowData(1, -1, new Margins(4)));
     
 	add(project, new FitData(10));
   }
+
+protected void getProjectTimeAccounting() {
+    
+	JSONRequest.get("/projects/time_accounting/" + projects.getSimpleValue()
+		      , new JSONCallbackAdapter() {
+		public void onSuccess(JSONObject json) {
+      	// JSON -> JAVA 
+			String comments = json.get("notes").isString().stringValue() ;
+			projectComments.setValue(comments);
+       	 //projectComments.setValue(json.get("notes").isString());
+          GWT.log("/projects/time_accounting onSuccess", null);          
+		}
+	});    			
+}
 
 // a period has been selected - now what?
 protected void updatePeriod() {
@@ -223,8 +253,8 @@ protected void updatePeriod() {
 	int periodId = periodInfo.get(name);
 	// TODO: get this period from the server to fill in the time accnting form
 	updatePeriodForm(periodId);
-	periodName.setValue(name);
-	period.setVisible(true);
+	//periodName.setValue(name);
+	periodSummary.setVisible(true);
 
 	
 }
@@ -250,8 +280,14 @@ private void updatePeriodForm(int periodId) {
 }
 
 protected void updatePeriodForm(Period period) {
-    // TODO: first we need the json to give our class time accounting info
-	
+ 
+	periodSummary.setPeriod(period);
+	//PeriodSummaryPanel panel = new PeriodSummaryPanel(period);
+	//periodContainer.add(panel, new RowData(1, -1, new Margins(4)));
+	//periodContainer.show();
+	//session.add(panel,new RowData(1, -1, new Margins(4)));
+//    periodNotBillable.setValue(period.getNot_billable());
+//    periodLostTimeWeather.setValue(period.getLost_time_weather());
 }
 
 // a session has been selected - what to do?
@@ -269,7 +305,7 @@ protected void updateSessionPeriods() {
 	//periods.add(sessionName);
 	//periods.add(sessionName);
 	// hide the period panel until a period is choosen
-	period.setVisible(false);
+	periodContainer.setVisible(false);
 	
 
 }
