@@ -45,6 +45,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
@@ -214,6 +215,34 @@ public class Schedule extends ContentPanel {
 		});
 		northSchedule.add(scheduleButton);
 		
+		Button emailButton = new Button("Email");
+		emailButton.setToolTip("Emails a schedule to staff and observers starting now and covering the next two days");
+		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+				String msg = "Generating scheduling email for observations over the next two days";
+				final MessageBox box = MessageBox.wait("Getting Email Text", msg, "Be Patient ...");
+				JSONRequest.get("/schedule/email", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								System.out.println("/schedule/email onSuccess");
+								JSONArray emails = json.get("emails").isArray();
+								String addr = "";
+								for (int i = 0; i < emails.size(); ++i)
+								{
+									addr += emails.get(i).isString().stringValue();
+								}
+								String subject = json.get("subject").isString().stringValue();
+								String body = json.get("body").isString().stringValue();
+								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
+								dlg.show();
+								box.close();
+							}
+						});
+			}
+		});
+		northSchedule.add(emailButton);
 		
 		// 4 nominee controls:
 		final FormPanel northNominee = new FormPanel();
@@ -368,21 +397,21 @@ public class Schedule extends ContentPanel {
 		getSessionOptions();
 		dayView.addValueChangeHandler(new ValueChangeHandler<Appointment>(){
 	        public void onValueChange(ValueChangeEvent<Appointment> event) {
-	        	// seed the PeriodDialog w/ detials from the period that just got clckd
+	        	// seed the PeriodDialog w/ details from the period that just got clckd
 	            String periodUrl = "/periods/UTC/" + event.getValue().getTitle();
 	    	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
 		            @Override
 		            public void onSuccess(JSONObject json) {
 		            	// JSON period -> JAVA period
 	                 	Period period = Period.parseJSON(json.get("period").isObject());
-                        // displya info about this period, and give options to change it
+                        // display info about this period, and give options to change it
 	                 	PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, sess_handles, (Schedule) north.getParent());
 		            }
 		    });	            
 	            
 	        }               
 	    });	
-		//dayView.addSelectionHandler(handler); // TODO handle nominee selecion in calendar?
+		//dayView.addSelectionHandler(handler); // TODO handle nominee selection in calendar?
 		center.add(dayView);
 		
 		BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER); //, 500);
