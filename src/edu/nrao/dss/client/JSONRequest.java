@@ -116,24 +116,6 @@ class JSONRequest implements RequestCallback {
 		}
 	}
 	
-	// old
-	public static void xget(String rootURI, HashMap<String, Object> kwargs, JSONCallback cb) {
-		StringBuilder urlData = new StringBuilder();
-		urlData.append(rootURI);
-		urlData.append("?");
-		for (String k : kwargs.keySet()) {
-			urlData.append(URL.encodeComponent(k)).append("=").append(URL.encodeComponent(kwargs.get(k).toString()));
-			urlData.append("&");
-		}
-		urlData.deleteCharAt(urlData.length() - 1);
-		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, urlData.toString());
-		get.setHeader("Accept", "application/json");
-		try {
-			get.sendRequest(null, new JSONRequest(cb));
-		} catch (RequestException e) {
-		}
-	}
-	
 	// uri, map, cb -> uri, keys, values, cb
 	public static void post(String uri, HashMap<String, Object> data, final JSONCallback cb){
 		Set <String> keys           = data.keySet();

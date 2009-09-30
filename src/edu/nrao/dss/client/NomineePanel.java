@@ -76,6 +76,7 @@ public class NomineePanel extends ContentPanel {
 		retval.put("time", DateTimeFormat.getFormat("HH:mm").format(schedule.startVacancyDateTime));
 		retval.put("duration", (Double)fields.get("duration")/60.0);
 		retval.put("score", (Double)fields.get("score"));
+		//retval.put("forecast", null);
 		retval.put("backup", false);
 		return retval;
 	}
@@ -92,6 +93,7 @@ public class NomineePanel extends ContentPanel {
 		urlData.append(rootUrl);
 		urlData.append("?");
 		urlData.append(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
+		GWT.log(urlData.toString(), null);
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 //		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, rootUrl);
 //      builder.setRequestData(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
