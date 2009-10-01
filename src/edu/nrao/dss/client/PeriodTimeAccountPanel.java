@@ -82,9 +82,7 @@ public class PeriodTimeAccountPanel extends FormPanel {
 	        }
         	
         }
-        
-
-		
+    	setScrollMode(Scroll.ALWAYS);
 	}
 	
 	private void addNumberField(String label, Double value) {
@@ -119,6 +117,6 @@ public class PeriodTimeAccountPanel extends FormPanel {
 		    numberFields.get(keys.get(9)).setValue(period.getOther_session_rfi());
 		    numberFields.get(keys.get(10)).setValue(period.getOther_session_other());
 	    }
-	
+ 	
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -46,6 +47,8 @@ public class TimeAccounting extends ContentPanel{
 	
     final ArrayList<String> project_codes = new ArrayList<String>();
 	final HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
+	
+	private JSONObject timeAccountingJson = new JSONObject();
 	
 	public TimeAccounting() {
 		super();
@@ -229,6 +232,7 @@ protected void initLayout() {
     project.add(session, new RowData(1, -1, new Margins(4)));
     
 	add(project, new FitData(10));
+	
   }
 
 protected void getProjectTimeAccounting() {
@@ -236,11 +240,11 @@ protected void getProjectTimeAccounting() {
 	JSONRequest.get("/projects/time_accounting/" + projects.getSimpleValue()
 		      , new JSONCallbackAdapter() {
 		public void onSuccess(JSONObject json) {
-      	// JSON -> JAVA 
+			timeAccountingJson = json;
+        	// JSON -> JAVA 
 			String comments = json.get("notes").isString().stringValue() ;
 			projectComments.setValue(comments);
-       	 //projectComments.setValue(json.get("notes").isString());
-          GWT.log("/projects/time_accounting onSuccess", null);          
+           GWT.log("/projects/time_accounting onSuccess", null);          
 		}
 	});    			
 }
@@ -251,7 +255,7 @@ protected void updatePeriod() {
 	// show the period pane with the periods info
 	String name = periods.getSimpleValue();
 	int periodId = periodInfo.get(name);
-	// TODO: get this period from the server to fill in the time accnting form
+	// get this period from the server to fill in the time accnting form
 	updatePeriodForm(periodId);
 	//periodName.setValue(name);
 	periodSummary.setVisible(true);
@@ -263,11 +267,6 @@ private void updatePeriodForm(int periodId) {
 	// get this period from the server and populate the form
     GWT.log("updatePeriodForm", null);
 	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
-//		      , new HashMap<String, Object>() {{
-//		    	  put("mode", "periods");
-//		    	  put("pcode", pcode);
-//		    	  put("session_name", sessionName);
-//		        }}
 		      , new JSONCallbackAdapter() {
 		public void onSuccess(JSONObject json) {
         	// JSON period -> JAVA period
