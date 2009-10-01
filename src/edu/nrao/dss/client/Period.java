@@ -48,6 +48,7 @@ public class Period {
     private static double hours2minutes(double hours) {
     	return hours * 60.0;
     }
+    
     public Period(int id, String handle, Date start, int dur, Date start_day, String start_time ) {
     	this.id = id;
     	this.handle = handle;

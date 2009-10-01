@@ -65,7 +65,7 @@ class JSONRequest implements RequestCallback {
 				cb.onSuccess(json);
 			}
 		} catch (Exception e) {
-			GWT.log(response.getText(), null);
+			GWT.log("json exception" + response.getText(), null);
 			cb.onError("json parse failed", null);
 		}
 	}
@@ -108,24 +108,6 @@ class JSONRequest implements RequestCallback {
 		urlData.append(uri);
 		urlData.append("?");
 		urlData.append(kv2url(keys, values));
-		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, urlData.toString());
-		get.setHeader("Accept", "application/json");
-		try {
-			get.sendRequest(null, new JSONRequest(cb));
-		} catch (RequestException e) {
-		}
-	}
-	
-	// old
-	public static void xget(String rootURI, HashMap<String, Object> kwargs, JSONCallback cb) {
-		StringBuilder urlData = new StringBuilder();
-		urlData.append(rootURI);
-		urlData.append("?");
-		for (String k : kwargs.keySet()) {
-			urlData.append(URL.encodeComponent(k)).append("=").append(URL.encodeComponent(kwargs.get(k).toString()));
-			urlData.append("&");
-		}
-		urlData.deleteCharAt(urlData.length() - 1);
 		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 		get.setHeader("Accept", "application/json");
 		try {

@@ -40,7 +40,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         	}
         });
         tabPanel.add(seTab);
-      
+        
         // schedule tab - we need to update the session/project info when it
         // comes into focus
         TabItem schTab = addTab(sch, "Schedule", "Manage the Schedule");
