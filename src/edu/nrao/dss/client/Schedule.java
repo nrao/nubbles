@@ -231,8 +231,9 @@ public class Schedule extends ContentPanel {
 								String addr = "";
 								for (int i = 0; i < emails.size(); ++i)
 								{
-									addr += emails.get(i).isString().stringValue();
+									addr += emails.get(i).isString().stringValue() + ", ";
 								}
+								addr = addr.substring(0, addr.length() - 2); // Get rid of last comma.
 								String subject = json.get("subject").isString().stringValue();
 								String body = json.get("body").isString().stringValue();
 								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
