@@ -282,7 +282,7 @@ public class Schedule extends ContentPanel {
 		String noChoice = new String("none");
 		durChoices.put(noChoice, 0);
 		hours.add(noChoice);
-		for (int m = 15; m < 8*60; m += 15) {
+		for (int m = 15; m < 12*60; m += 15) {
 			String key = TimeUtils.min2sex(m);
 			durChoices.put(key, m);
 			hours.add(key);
@@ -376,7 +376,7 @@ public class Schedule extends ContentPanel {
 					    GWT.log(be.getType().toString(), null);
 				    }
 			    });*/
-  		center.setHeading("Center: Calendar");
+  		center.setHeading("Calendar");
 		center.setScrollMode(Scroll.AUTOX);
 		
 		// calendar
@@ -455,7 +455,7 @@ public class Schedule extends ContentPanel {
 		east.updateKeys(keys);
 		east.loadData();
 		
-		panel.setHeading("East: Nominee Periods for " + startStr);
+		panel.setHeading("Nominee Periods for " + startStr);
 	}
 	
     public void updateCalendar() {	

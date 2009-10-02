@@ -76,7 +76,7 @@ public class PeriodExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
 	private static final ColumnType[] columnTypes = {
-       	new ColumnType("handle",                "Session (Project) ID", 200, SessionField.class),
+       	new ColumnType("handle",                "Session (Project) VP", 200, SessionField.class),
         new ColumnType("date",                  "Day",                   70, DateEditField.class),
         new ColumnType("time",                  "Time",                  70, TimeField.class),
         new ColumnType("duration",              "Duration (Hrs)",        80, Double.class),
