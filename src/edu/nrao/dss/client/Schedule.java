@@ -283,7 +283,7 @@ public class Schedule extends ContentPanel {
 		String noChoice = new String("none");
 		durChoices.put(noChoice, 0);
 		hours.add(noChoice);
-		for (int m = 15; m < 12*60; m += 15) {
+		for (int m = 15; m < 12*60+15; m += 15) {
 			String key = TimeUtils.min2sex(m);
 			durChoices.put(key, m);
 			hours.add(key);
