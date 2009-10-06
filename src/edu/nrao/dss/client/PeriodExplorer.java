@@ -80,7 +80,7 @@ public class PeriodExplorer extends Explorer {
        	new ColumnType("stype",                 "T",                     20, DisplayField.class),
         new ColumnType("date",                  "Day",                   70, DateEditField.class),
         new ColumnType("time",                  "Time",                  40, TimeField.class),
-        //new ColumnType("lst",                   "LST",                   55, DisplayField.class),
+        new ColumnType("lst",                   "LST",                   55, DisplayField.class),
         new ColumnType("duration",              "Duration",              55, Double.class),
         new ColumnType("score",                 "Score",                 40, ScoreField.class),
        	new ColumnType("not_billable",          "Not Bill",              50, Double.class),
