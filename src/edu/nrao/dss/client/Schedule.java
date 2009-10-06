@@ -361,7 +361,7 @@ public class Schedule extends ContentPanel {
 
 
 		// to the right, the calendar
-		center = new ContentPanel();
+		center = new ContentPanel(); // TODO extend to bottom of panel
 /*		center = new ContentPanel() {
 			protected void onRender(Element target, int index) {
 				super.onRender(target, index);
