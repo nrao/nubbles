@@ -132,6 +132,7 @@ public class Schedule extends ContentPanel {
 		// Days - when this changes, change the length of the calendar view
 		final SimpleComboBox<Integer> days;
 		days = new SimpleComboBox<Integer>();
+		days.setForceSelection(true);
 		days.add(1);
 		days.add(2);
 		days.add(3);
@@ -155,6 +156,7 @@ public class Schedule extends ContentPanel {
 		// Timezone - controls the reference for all the date/times in the tab
 		final SimpleComboBox<String> tz;
 		tz = new SimpleComboBox<String>();
+		tz.setForceSelection(true);
 		tz.add("UTC");
 		tz.add("ET");
 		tz.setToolTip("Set the timezone for all dates/times");
@@ -269,7 +271,7 @@ public class Schedule extends ContentPanel {
 	    vacancyTime.setValue(startVacancyTime);
 	    vacancyTime.setFieldLabel("Start Time");
 		vacancyTime.setToolTip("Set the start time for the vacancy to be filled");
-	    vacancyTime.addListener(Events.Select, new Listener<BaseEvent>() {
+	    vacancyTime.addListener(Events.Change, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	    		System.out.println("TimeField Listener time " + vacancyTime.getValue().toString());
 	            startVacancyTime = vacancyTime.getValue();
@@ -283,6 +285,7 @@ public class Schedule extends ContentPanel {
 		String noChoice = new String("none");
 		durChoices.put(noChoice, 0);
 		hours.add(noChoice);
+		hours.setForceSelection(true);
 		for (int m = 15; m < 12*60+15; m += 15) {
 			String key = TimeUtils.min2sex(m);
 			durChoices.put(key, m);
