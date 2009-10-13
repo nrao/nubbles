@@ -35,15 +35,21 @@ public class NomineePanel extends ContentPanel {
 	private DynamicHttpProxy<BaseListLoadResult<NomineeType>> proxy;
 	private BaseListLoader<BaseListLoadResult<NomineeModel>> loader;
 	private ListStore<NomineeModel> store;
+	private FactorsWindow factors;
 	private String rootUrl = "/nominees";
+	private String timezone = "UTC";
 	
 	public NomineePanel(Schedule sched) {
 		schedule = sched;
 		initLayout();
 	}
 	
+	public void setTimeZone(String tz) {
+		timezone = tz;
+	}
+	
 	private void initLayout() {
-		setHeading("East: Nominee Periods");
+		setHeading("Nominee Periods");
 		
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, rootUrl);
 
@@ -66,7 +72,8 @@ public class NomineePanel extends ContentPanel {
 		             schedule.west.addRecord(nominee2Period(baseModelData));
 		             schedule.updateCalendar();
 		           }  
-		         }); 
+		         });
+		factors = new FactorsWindow();
 	}
 	
 	private HashMap<String, Object> nominee2Period(BaseModelData fields) {
@@ -89,14 +96,14 @@ public class NomineePanel extends ContentPanel {
     		strKeys.add(k.toString());
     		strValues.add(data.get(k).toString());
     	}
+		strKeys.add("tz");
+		strValues.add(timezone);
     	StringBuilder urlData = new StringBuilder();
 		urlData.append(rootUrl);
 		urlData.append("?");
 		urlData.append(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
 		GWT.log(urlData.toString(), null);
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlData.toString());
-//		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, rootUrl);
-//      builder.setRequestData(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
 		proxy.setBuilder(builder);
 	}
 	

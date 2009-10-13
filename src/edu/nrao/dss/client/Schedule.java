@@ -169,6 +169,7 @@ public class Schedule extends ContentPanel {
 	    		timezone = tz.getSimpleValue();
 	    		baseUrl = "/periods/" + timezone;
 	        	west.pe.setRootURL(baseUrl);
+	        	east.setTimeZone(timezone);
 	            updateCalendar();
 	    	}
 	    });
@@ -459,7 +460,7 @@ public class Schedule extends ContentPanel {
 		east.updateKeys(keys);
 		east.loadData();
 		
-		panel.setHeading("Nominee Periods for " + startStr);
+		panel.setHeading("Nominee Periods for " + startStr + " " + timezone);
 	}
 	
     public void updateCalendar() {	
