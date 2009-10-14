@@ -83,6 +83,10 @@ public class Schedule extends ContentPanel {
 			initLayout();
 	}	
 	
+	public String getTimeZone() {
+		return timezone;
+	}
+	
 	protected void initLayout() {
 		setHeaderVisible(true);
 		setLayout(new BorderLayout());
@@ -169,7 +173,6 @@ public class Schedule extends ContentPanel {
 	    		timezone = tz.getSimpleValue();
 	    		baseUrl = "/periods/" + timezone;
 	        	west.pe.setRootURL(baseUrl);
-	        	east.setTimeZone(timezone);
 	            updateCalendar();
 	    	}
 	    });
@@ -204,6 +207,7 @@ public class Schedule extends ContentPanel {
 	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
 	    		keys.put("start", startStr);
 	    		keys.put("duration", numCalendarDays);
+	    		keys.put("tz", timezone);
 				String msg = "Scheduling from " + startStr + " for " + numCalendarDays.toString() + " days.";
 				final MessageBox box = MessageBox.wait("Calling Scheduling Algorithm", msg, "Be Patient ...");
 				JSONRequest.post("/runscheduler", keys,

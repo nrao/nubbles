@@ -37,15 +37,10 @@ public class NomineePanel extends ContentPanel {
 	private ListStore<NomineeModel> store;
 	private FactorsWindow factors;
 	private String rootUrl = "/nominees";
-	private String timezone = "UTC";
 	
 	public NomineePanel(Schedule sched) {
 		schedule = sched;
 		initLayout();
-	}
-	
-	public void setTimeZone(String tz) {
-		timezone = tz;
 	}
 	
 	private void initLayout() {
@@ -97,7 +92,7 @@ public class NomineePanel extends ContentPanel {
     		strValues.add(data.get(k).toString());
     	}
 		strKeys.add("tz");
-		strValues.add(timezone);
+		strValues.add(schedule.getTimeZone());
     	StringBuilder urlData = new StringBuilder();
 		urlData.append(rootUrl);
 		urlData.append("?");

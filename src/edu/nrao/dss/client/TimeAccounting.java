@@ -266,6 +266,7 @@ protected void updatePeriod() {
 private void updatePeriodForm(int periodId) {
 	// get this period from the server and populate the form
     GWT.log("updatePeriodForm", null);
+    // TODO - should pick up timezone from Schedule
 	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
 		      , new JSONCallbackAdapter() {
 		public void onSuccess(JSONObject json) {
