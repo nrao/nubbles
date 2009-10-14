@@ -168,9 +168,9 @@
 	font-family: arial;
 	/*border: 1px solid #000;*/
 	overflow: hidden;
-	filter: alpha(opacity = 50);
-	opacity: .5;
-    -moz-opacity: .5;
+	filter: alpha(opacity = 75);
+	opacity: .75;
+    -moz-opacity: .75;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 }
