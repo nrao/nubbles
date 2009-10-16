@@ -31,7 +31,7 @@ import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.util.TimeUtils;
 
-public class TimeAccounting extends ContentPanel{
+public class TimeAccounting extends ContentPanel {
 
 	final SimpleComboBox<String> projects = new SimpleComboBox<String>();
     final TextArea projectComments = new TextArea();
@@ -57,7 +57,7 @@ public class TimeAccounting extends ContentPanel{
 
 protected void initLayout() {
 	
-	setLayout(new FitLayout());
+	setLayout( new FitLayout());
 	
 	// bells & whistles for this content panel
 	//setHeading("Project Time Accounting");
@@ -68,14 +68,15 @@ protected void initLayout() {
 	setHeaderVisible(true);
 	setBodyStyle("backgroundColor: white;");
 
-	final LayoutContainer project = new LayoutContainer();
+	final LayoutContainer project = new ContentPanel();
 	project.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
 	project.setBorders(true);
 	
 	// now place some controls in the first column
-	final FormPanel projectFormLeft = new FormPanel();
-	projectFormLeft.setHeading("Project");
-	projectFormLeft.setBorders(true);
+	final FormPanel projectForm = new FormPanel();
+	projectForm.setHeading("Project");
+	projectForm.setBorders(true);
+
 	
 	// the project picker goes in this left-most form panel
 	//final SimpleComboBox<String> projects = new SimpleComboBox<String>();
@@ -91,14 +92,11 @@ protected void initLayout() {
 	  		getProjectTimeAccounting();
 	   	}
 	});	
-	projectFormLeft.add(projects);
+	projectForm.add(projects);
     
 	
 	// followed by the session picker
-	//SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 	sessions.setFieldLabel("Session");
-	//sessions.add("sess1");
-	//sessions.add("sess2");
 	sessions.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
 	  		GWT.log("session Events.Valid", null);
@@ -106,34 +104,19 @@ protected void initLayout() {
 	   	}
 	});	
 	
-	projectFormLeft.add(sessions);
+	projectForm.add(sessions);
 	
 
 	// the project time accounting comments goes in this second form panel
-    projectComments.setFieldLabel("Comments");
-    projectFormLeft.add(projectComments);
+    //projectComments.setFieldLabel("Comments");
+    //projectFormLeft.add(projectComments);
 
-    ContentPanel projectTimeAccounting = new ContentPanel();
-    projectTimeAccounting.setLayout(new TableLayout(5));
-    projectTimeAccounting.setHeaderVisible(true);
+    ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
     projectTimeAccounting.setHeading("Project Time Accounting");
-    projectTimeAccounting.setBorders(true);
-    
-    TextField tf1 = new TextField();
-    tf1.setValue("time accounting 1.");
-    tf1.setReadOnly(true);
-    projectTimeAccounting.add(tf1);
-    
-    TextField tf2 = new TextField();
-    tf2.setValue("time accounting 2.");
-    tf2.setReadOnly(true);
-    projectTimeAccounting.add(tf2);
-    
-	project.add(projectFormLeft, new RowData(1, -1, new Margins(4)));
-    project.add(projectTimeAccounting, new RowData(1, -1, new Margins(4)));
+    project.add(projectForm);
+    project.add(projectTimeAccounting);
     
     // now add the session panel
-    //LayoutContainer session = new LayoutContainer();
 	session.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
 	session.setBorders(true);
 	session.setVisible(false);
@@ -144,17 +127,13 @@ protected void initLayout() {
 	sessionForm.setBorders(true);
 	
 	// the session picker goes in this left-most form panel
-	//TextField sessionName = new TextField();
 	sessionName.setValue("");
 	sessionName.setReadOnly(true);
 	sessionName.setFieldLabel("Session Name");
 	sessionForm.add(sessionName);
 	
 	// followed by the period picker
-	//SimpleComboBox<String> periods = new SimpleComboBox<String>();
 	periods.setFieldLabel("Period");
-	//periods.add("p1");
-	//periods.add("p2");
 	periods.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
 	  		GWT.log("period Events.Valid", null);
@@ -166,67 +145,15 @@ protected void initLayout() {
 	// the session time accounting comments goes in this second form panel
     TextArea sessionComments = new TextArea();
     sessionComments.setFieldLabel("Comments");
-    sessionForm.add(sessionComments);
-
-    // the session form is followed by a panel w/ the session time accounting
-    ContentPanel sessionTA = new ContentPanel();
-    sessionTA.setLayout(new TableLayout(5));
-    sessionTA.setHeaderVisible(true);
-    sessionTA.setHeading("Session Time Accounting");
+    //sessionForm.add(sessionComments);
     
-    TextField stf1 = new TextField();
-    stf1.setValue("time accounting 1.");
-    stf1.setReadOnly(true);
-    sessionTA.add(stf1);
-    
-    TextField stf2 = new TextField();
-    stf2.setValue("time accounting 2.");
-    stf2.setReadOnly(true);
-    sessionTA.add(stf2);
-    
-	// the session panel contains a period panel (just like the project contained a session)
-    //LayoutContainer period = new LayoutContainer();
-//	periodContainer.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
-//
-//	periodContainer.setBorders(true);
-//	periodContainer.setVisible(false);
-//
-//	// here's the form for setting all the period time accounting stuff 
-//	final FormPanel periodForm = new FormPanel();
-	
-//	periodForm.setHeading("Period");
-//	periodForm.setBorders(true);
-//	
-//	//TextField periodName = new TextField();
-//	periodName.setValue("");
-//	periodName.setReadOnly(true);
-//	periodName.setFieldLabel("Period");
-//	periodForm.add(periodName);
-	
-//	SimpleComboBox<String> times = new SimpleComboBox<String>();
-//	final HashMap<String, Integer> timeChoices = new HashMap<String, Integer>();
-//	for (int m = 0; m < 24*60; m += 15) {
-//		String key = TimeUtils.min2sex(m);
-//		timeChoices.put(key, m);
-//		times.add(key);
-//	}	
-//	times.setFieldLabel("times (Hrs):");
-//	times.setToolTip("Set the Hrs for this type of time");
-//	periodForm.add(times);
-
-//	periodNotBillable.setFieldLabel("Not Billable (Hrs)");
-//	periodForm.add(periodNotBillable);
-//	periodLostTimeWeather.setFieldLabel("Lost Time Weather (Hrs)");
-//	periodForm.add(periodLostTimeWeather);
-//	
-//	period.add(periodForm, new RowData(1, -1, new Margins(4)));
-	
     periodSummary.setVisible(true); // -> false
     
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
-	session.add(sessionTA, new RowData(1, -1, new Margins(4)));
+    SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
+    sessionTimeAccounting.setHeading("Session Time Accounting");
+	session.add(sessionTimeAccounting, new RowData(1, -1, new Margins(4)));
 	session.add(periodSummary, new RowData(1, -1, new Margins(4)));
-    //session.add(periodContainer, new RowData(1, -1, new Margins(4)));
     
     
     project.add(session, new RowData(1, -1, new Margins(4)));
@@ -280,14 +207,10 @@ private void updatePeriodForm(int periodId) {
 }
 
 protected void updatePeriodForm(Period period) {
- 
+
+	
 	periodSummary.setPeriod(period);
-	//PeriodSummaryPanel panel = new PeriodSummaryPanel(period);
-	//periodContainer.add(panel, new RowData(1, -1, new Margins(4)));
-	//periodContainer.show();
-	//session.add(panel,new RowData(1, -1, new Margins(4)));
-//    periodNotBillable.setValue(period.getNot_billable());
-//    periodLostTimeWeather.setValue(period.getLost_time_weather());
+
 }
 
 // a session has been selected - what to do?
@@ -300,10 +223,6 @@ protected void updateSessionPeriods() {
 	String pcode = projects.getSimpleValue();
 	sessionName.setValue(name);
 	updatePeriodOptions(pcode, name);
-	//periods.clearSelections();
-	//periods.removeAll();
-	//periods.add(sessionName);
-	//periods.add(sessionName);
 	// hide the period panel until a period is choosen
 	periodContainer.setVisible(false);
 	
@@ -333,9 +252,6 @@ private void updatePeriodOptions(final String pcode, final String sessionName) {
 				periods.add(p);
 				String id = ids.get(i).toString().replace('"', ' ').trim();
 				periodInfo.put(p, Integer.parseInt(id));
-				//String name = periods.get(i).toString().replace('"', ' ').trim();
-				//sessions.add(name);
-				//projects.add(pcode);
 				
 			}
 			//session.setVisible(false);
