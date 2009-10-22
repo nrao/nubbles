@@ -13,10 +13,14 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 
 public class TimeAccountingPanel extends ContentPanel { 
 	
     protected NumberField scheduled = new NumberField();
+    protected NumberField timeBilled = new NumberField();
+    protected NumberField observed = new NumberField();
+    protected NumberField unaccounted = new NumberField();
     protected NumberField notBillable = new NumberField();
     protected NumberField shortNotice = new NumberField();
     protected NumberField lt = new NumberField();
@@ -29,11 +33,16 @@ public class TimeAccountingPanel extends ContentPanel {
     protected NumberField oso = new NumberField();
     protected TextArea desc = new TextArea();
     
+    protected int fieldWidth = 45;
+    protected int fieldHeight = 20;
+    
+    protected FormData fd = new FormData(fieldWidth, fieldHeight);
+    
 	public TimeAccountingPanel() {
 		initLayout();
 	}
 	
-	private void initLayout() {
+	protected void initLayout() {
 		
 		setLayout(new RowLayout());
 		setCollapsible(true); 
@@ -59,19 +68,32 @@ public class TimeAccountingPanel extends ContentPanel {
 		
 		// start adding the misc. times
 		//NumberField scheduled = new NumberField();
-		scheduled.setFieldLabel("Scheduled");
-		scheduled.setReadOnly(true);
-		miscTimes.add(scheduled, new FormData(30, 25));
-		
+//		scheduled.setFieldLabel("Scheduled");
+//		setDefaultField("Scheduled", scheduled);
+		//scheduled.setReadOnly(true);
+		miscTimes.add(scheduled, new FormData(fieldWidth, fieldHeight));
+
+//		observed.setFieldLabel("Observed");
+//		observed.setReadOnly(true);
+		miscTimes.add(observed, new FormData(fieldWidth, fieldHeight));
+
+//		timeBilled.setFieldLabel("Billed");
+//		timeBilled.setReadOnly(true);
+		miscTimes.add(timeBilled, new FormData(fieldWidth, fieldHeight));
+
+//		unaccounted.setFieldLabel("Unaccounted");
+//		unaccounted.setReadOnly(true);
+		miscTimes.add(unaccounted, new FormData(fieldWidth, fieldHeight));
+
 		//NumberField notBillable = new NumberField();
-		notBillable.setFieldLabel("Not Billable");
-		notBillable.setReadOnly(true);
-		miscTimes.add(notBillable, new FormData(30, 25));
+//		notBillable.setFieldLabel("Not Billable");
+//		notBillable.setReadOnly(true);
+		miscTimes.add(notBillable, new FormData(fieldWidth, fieldHeight));
 
 		//NumberField shortNotice = new NumberField();
-		shortNotice.setFieldLabel("Short Notice");
-		shortNotice.setReadOnly(true);
-		miscTimes.add(shortNotice, new FormData(30, 25));
+//		shortNotice.setFieldLabel("Short Notice");
+//		shortNotice.setReadOnly(true);
+		miscTimes.add(shortNotice, new FormData(fieldWidth, fieldHeight));
 		
 		row1.add(miscTimes, td);
 		
@@ -81,25 +103,25 @@ public class TimeAccountingPanel extends ContentPanel {
         lostTimePanel.setHeaderVisible(true);
         
 		//NumberField nb = new NumberField();
-		lt.setFieldLabel("Lost Time");
-		lt.setReadOnly(true);
+//		lt.setFieldLabel("Lost Time");
+//		lt.setReadOnly(true);
 		
-		lostTimePanel.add(lt, new FormData(30, 25));
+		lostTimePanel.add(lt, new FormData(fieldWidth, fieldHeight));
 
 		//NumberField nb2 = new NumberField();
-		ltw.setFieldLabel("LT Weather");
-		ltw.setReadOnly(true);
-		lostTimePanel.add(ltw, new FormData(30, 25));
+//		ltw.setFieldLabel("LT Weather");
+//		ltw.setReadOnly(true);
+		lostTimePanel.add(ltw, new FormData(fieldWidth, fieldHeight));
 
 		//NumberField ltr = new NumberField();
-		ltr.setFieldLabel("LT RFI");
-		ltr.setReadOnly(true);
-		lostTimePanel.add(ltr, new FormData(30, 25));
+//		ltr.setFieldLabel("LT RFI");
+//		ltr.setReadOnly(true);
+		lostTimePanel.add(ltr, new FormData(fieldWidth, fieldHeight));
 
 		//NumberField lto = new NumberField();
-		lto.setFieldLabel("LT Other");
-		lto.setReadOnly(true);
-		lostTimePanel.add(lto, new FormData(30, 25));
+//		lto.setFieldLabel("LT Other");
+//		lto.setReadOnly(true);
+		lostTimePanel.add(lto, new FormData(fieldWidth, fieldHeight));
 		
 		row1.add(lostTimePanel, td);
 		
@@ -109,24 +131,22 @@ public class TimeAccountingPanel extends ContentPanel {
         otherTimePanel.setHeaderVisible(true);
         
 		//NumberField nb3 = new NumberField();
-		os.setFieldLabel("Other Session");
-		os.setReadOnly(true);
-		otherTimePanel.add(os, new FormData(30, 25));
+//		os.setFieldLabel("Other Session");
+//		os.setReadOnly(true);
+		otherTimePanel.add(os, new FormData(fieldWidth, fieldHeight));
 
 		//NumberField osw = new NumberField();
-		osw.setFieldLabel("OS Weather");
-		osw.setReadOnly(true);
-		otherTimePanel.add(osw, new FormData(30, 25));
+//		osw.setFieldLabel("OS Weather");
+//		osw.setReadOnly(true);
+		otherTimePanel.add(osw, new FormData(fieldWidth, fieldHeight));
 
 		//NumberField osr = new NumberField();
-		osr.setFieldLabel("OS RFI");
-		osr.setReadOnly(true);
-		otherTimePanel.add(osr, new FormData(30, 25));
-		
-		//NumberField oso = new NumberField();
-		oso.setFieldLabel("OS Other");
-		oso.setReadOnly(true);
-		otherTimePanel.add(oso, new FormData(30, 25));
+//		setDefaultField("OS RFI", osr);
+//		osr.setFieldLabel("OS RFI");
+//		osr.setReadOnly(true);
+		otherTimePanel.add(osr, new FormData(fieldWidth, fieldHeight));
+		setDefaultField("OS Other", oso);
+        otherTimePanel.add(oso, new FormData(fieldWidth, fieldHeight));
 		
 		row1.add(otherTimePanel, td);
 		
@@ -150,5 +170,41 @@ public class TimeAccountingPanel extends ContentPanel {
 		row2.add(miscTimes2, td);
 		
 		add(row2);
-	}		
+		
+		setFieldAttributes();
+	}	
+	
+	protected void setFieldAttributes() {
+		setDefaultField("Scheduled", scheduled);
+		setDefaultField("Not Billable", notBillable);
+		setDefaultField("Short Notice", shortNotice);
+		setDefaultField("Time Billed", timeBilled);
+		setDefaultField("Unaccounted", unaccounted);
+		setDefaultField("Observed", observed);
+		
+		setDefaultField("Lost Time", lt);
+		setDefaultField("LT Weather", ltw);
+		setDefaultField("LT RFI", ltr);
+		setDefaultField("LT Other", lto);
+		
+		setDefaultField("Other Session", os);
+		setDefaultField("OS Weather", osw);
+		setDefaultField("OS RFI", osr);
+		setDefaultField("OS Other", oso);
+	}
+	
+	private void setDefaultField(String label, NumberField nf) {
+		nf.setFieldLabel(label);
+		nf.setReadOnly(true);
+		// TODO: read only fields should just have their background color darkened!
+		//nf.setEnabled(false);
+		//nf.setStyleAttribute("border" , "5px solid line");
+		//nf.setStyleAttribute("background-color", "#FFFFFF");
+		nf.setStyleAttribute("color", "grey");
+	}
+	
+	protected void setEditable(NumberField nf) {
+		nf.setReadOnly(false);
+		nf.setStyleAttribute("color", "black");
+	}
 }

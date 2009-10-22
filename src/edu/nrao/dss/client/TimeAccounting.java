@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -42,8 +43,10 @@ public class TimeAccounting extends ContentPanel {
     final PeriodSummaryPanel periodSummary = new PeriodSummaryPanel(null);
 	final TextField sessionName = new TextField();
 //	final TextField periodName = new TextField();
-	final NumberField periodNotBillable = new NumberField();
-	final NumberField periodLostTimeWeather = new NumberField();
+//	final NumberField periodNotBillable = new NumberField();
+//	final NumberField periodLostTimeWeather = new NumberField();
+    final ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
+    final SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
 	
     final ArrayList<String> project_codes = new ArrayList<String>();
 	final HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
@@ -105,15 +108,25 @@ protected void initLayout() {
 	});	
 	
 	projectForm.add(sessions);
+
+	Button save = new Button("Save");
+	save.addListener(Events.OnClick, new Listener<BaseEvent>() {
+		public void handleEvent(BaseEvent be) {
+			GWT.log("Save!", null);
+			// TODO: send back the time accounting json!!!
+		}
+	});
 	
+	projectForm.add(save);
+	
+    project.add(projectForm);
 
 	// the project time accounting comments goes in this second form panel
     //projectComments.setFieldLabel("Comments");
     //projectFormLeft.add(projectComments);
 
-    ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
+//    ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
     projectTimeAccounting.setHeading("Project Time Accounting");
-    project.add(projectForm);
     project.add(projectTimeAccounting);
     
     // now add the session panel
@@ -148,9 +161,10 @@ protected void initLayout() {
     //sessionForm.add(sessionComments);
     
     periodSummary.setVisible(true); // -> false
+    periodSummary.setParent(this);
     
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
-    SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
+//    SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
     sessionTimeAccounting.setHeading("Session Time Accounting");
 	session.add(sessionTimeAccounting, new RowData(1, -1, new Margins(4)));
 	session.add(periodSummary, new RowData(1, -1, new Margins(4)));
@@ -168,14 +182,33 @@ protected void getProjectTimeAccounting() {
 		      , new JSONCallbackAdapter() {
 		public void onSuccess(JSONObject json) {
 			timeAccountingJson = json;
-        	// JSON -> JAVA 
-			String comments = json.get("notes").isString().stringValue() ;
-			projectComments.setValue(comments);
+			// take the project level time accounting info, and populate the panel w/ it.
+			populateProjTimeAccounting(timeAccountingJson);
            GWT.log("/projects/time_accounting onSuccess", null);          
 		}
 	});    			
 }
 
+public void setTimeAccountingFromJSON(JSONObject json) {
+	// make sure the project & session panels get updated;
+	// periods get updated by default
+	GWT.log("setTimeAccountingFromJSON!", null);
+	timeAccountingJson = json;
+	populateProjTimeAccounting(json);
+	String name = sessionName.getValue().toString();
+	populateSessTimeAccounting(json, name);
+}
+
+private void populateProjTimeAccounting(JSONObject json) {
+	
+	String comments = json.get("notes").isString().stringValue() ;
+	projectComments.setValue(comments);
+	
+	projectTimeAccounting.setValues(json);
+	
+	
+	
+}
 // a period has been selected - now what?
 protected void updatePeriod() {
 	GWT.log("updatePeriod", null);
@@ -222,11 +255,39 @@ protected void updateSessionPeriods() {
 	String name = sessions.getSimpleValue();
 	String pcode = projects.getSimpleValue();
 	sessionName.setValue(name);
+	
+	// extract the time accounting info for session just picked, and populate
+	// it's time accounting panel
+    populateSessTimeAccounting(timeAccountingJson, name);
+    
 	updatePeriodOptions(pcode, name);
 	// hide the period panel until a period is choosen
 	periodContainer.setVisible(false);
-	
+}
 
+private void populateSessTimeAccounting(JSONObject json, String sessName) {
+	// find the section of the json that has our session in it:
+    //List<Period> periods = new ArrayList<Period>();
+    JSONArray names = json.get("sessions").isArray();
+    for (int i = 0; i < names.size(); ++i) {
+    	//Period period = Period.parseJSON(names.get(i).isObject());
+    	JSONObject session = names.get(i).isObject();
+    	String name = session.get("name").isString().stringValue();
+    	GWT.log("comparing: <" + sessName + "> and <" + name + ">", null);
+    	if (name.equals(sessName)) {
+    		// got it!
+    		GWT.log("match!", null);
+    		sessionTimeAccounting.setValues(session);
+    		
+    	}	
+    	
+//    	if (period != null){
+//    		// TODO: really we should be using period state to keep these periods out
+//    		if (period.getDuration() > 0) {
+//        		periods.add(period);
+//            }
+    	
+    }	
 }
 
 private void updatePeriodOptions(final String pcode, final String sessionName) {

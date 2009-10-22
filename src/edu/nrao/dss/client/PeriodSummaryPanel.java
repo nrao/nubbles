@@ -2,9 +2,13 @@ package edu.nrao.dss.client;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -13,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 
 public class PeriodSummaryPanel extends ContentPanel {
 	
@@ -85,7 +90,17 @@ public class PeriodSummaryPanel extends ContentPanel {
     	
     	// backup 
     	// what else
-
+    	Button save = new Button();
+    	save.setText("Save");
+    	save.addListener(Events.OnClick, new Listener<BaseEvent>() {
+    		public void handleEvent(BaseEvent be) {
+    			GWT.log("Save!", null);
+    			// TODO: send back the time accounting json!!!
+    			ta.sendUpdates();
+    		}
+    	});
+        periodForm2.add(save);
+        
     	lc.add(periodForm2, td);
     	
     	add(lc);
@@ -100,6 +115,10 @@ public class PeriodSummaryPanel extends ContentPanel {
     	//periodForm.add(ta);
     	
     	//add(periodForm, new RowData(1, -1, new Margins(1)));    	
+    }
+    
+    public void setParent(TimeAccounting parent) {
+    	ta.setParent(parent);
     }
     
     public void setPeriod(Period period) {
