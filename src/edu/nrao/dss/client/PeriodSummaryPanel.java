@@ -51,19 +51,12 @@ public class PeriodSummaryPanel extends ContentPanel {
         periodForm.setHeaderVisible(false);
         
     	// field per attribute, roughly:
-    	// name
-    	label.setFieldLabel("Name");
-    	label.setReadOnly(true);
+        setReadOnly("Name", label);
+    	setReadOnly("Start", start);
+    	setReadOnly("Duration (Hrs)", dur);
+        
     	periodForm.add(label);
-    	
-    	// start
-    	start.setFieldLabel("Start (UTC)");
-    	start.setReadOnly(true);
     	periodForm.add(start);
-    	
-    	// duration
-    	dur.setFieldLabel("Duration (Hrs)");
-    	dur.setReadOnly(true);
     	periodForm.add(dur);
     	
     	lc.add(periodForm, td);
@@ -120,9 +113,17 @@ public class PeriodSummaryPanel extends ContentPanel {
     	
     }
 
+    private void setReadOnly(String label, TextField<String> tf) {
+    	tf.setFieldLabel(label);
+    	tf.setReadOnly(true);
+    	// TODO: read-only using background color?
+    	tf.setStyleAttribute("color", "grey");
+    }
+    
 	public void setParent(TimeAccounting p) {
 		ta.setParent(p);
 	}  
+	
     public void setPeriod(Period period) {
     	setValues(period);
     	ta.setPeriod(period);

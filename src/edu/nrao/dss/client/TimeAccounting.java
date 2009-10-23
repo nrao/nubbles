@@ -165,6 +165,20 @@ protected void initLayout() {
 	session.setVisible(false);
 
 	// TODO: a table is used to place two forms side by side
+	LayoutContainer sessionTable = new LayoutContainer();
+	TableLayout tbSess = new TableLayout(2);
+	tbSess.setWidth("100%");
+	tbSess.setBorder(1);
+	sessionTable.setLayout(tbSess);
+	sessionTable.setBorders(true);
+
+	TableData tdSess = new TableData();
+	tdSess.setVerticalAlign(VerticalAlignment.TOP);
+	
+	// TODO: why must I do this, just to get the two forms to share space?
+	tdSess.setColspan(1);
+	tdSess.setWidth("400px");
+	
 	final FormPanel sessionForm = new FormPanel();
 	sessionForm.setHeading("Session");
 	sessionForm.setBorders(true);
@@ -172,13 +186,11 @@ protected void initLayout() {
 	// what's the current session?
 	sessionName.setValue("");
 	sessionName.setReadOnly(true);
+	// TODO: readonly using background color?
+	sessionName.setStyleAttribute("color", "grey");
 	sessionName.setFieldLabel("Session Name");
 	sessionForm.add(sessionName);
-	
-	sessionGrade.setReadOnly(true);
-	sessionGrade.setFieldLabel("Grade");
-	sessionForm.add(sessionGrade);
-	
+
 	// followed by the period picker
 	periods.setFieldLabel("Period");
 	periods.addListener(Events.Valid, new Listener<BaseEvent>() {
@@ -189,9 +201,21 @@ protected void initLayout() {
 	   	}
 	});	
 	sessionForm.add(periods);
+
+	sessionTable.add(sessionForm, tdSess);
+	
+	final FormPanel sessionForm2 = new FormPanel();
+	sessionForm2.setHeading("Allotment");
+	sessionForm2.setBorders(true);
+	
+	sessionGrade.setReadOnly(true);
+	// TODO: read only using background color?
+	sessionGrade.setStyleAttribute("color", "grey");
+	sessionGrade.setFieldLabel("Grade");
+	sessionForm2.add(sessionGrade);
 	
 	sessionTime.setFieldLabel("Alloted (Hrs)");
-	sessionForm.add(sessionTime);
+	sessionForm2.add(sessionTime);
 	
 	Button saveSess = new Button("Save Session Time Accounting");
 	saveSess.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -201,13 +225,16 @@ protected void initLayout() {
 			sendSessionAllotment();
 		}
 	});
-	sessionForm.add(saveSess);
+	sessionForm2.add(saveSess);
+	
+	sessionTable.add(sessionForm2, tdSess);
+	
     
     periodSummary.setVisible(false); 
     periodSummary.setParent(this);
 
     // display session basics, then it's time accounting details
-    session.add(sessionForm, new RowData(1, -1, new Margins(4)));
+    session.add(sessionTable, new RowData(1, -1, new Margins(4)));
     sessionTimeAccounting.setHeading("Session Time Accounting");
 	session.add(sessionTimeAccounting, new RowData(1, -1, new Margins(4)));
 	// then the period info
