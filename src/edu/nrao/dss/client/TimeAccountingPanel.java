@@ -33,7 +33,7 @@ public class TimeAccountingPanel extends ContentPanel {
     protected NumberField oso = new NumberField();
     protected TextArea desc = new TextArea();
     
-    protected int fieldWidth = 45;
+    protected int fieldWidth = 55;
     protected int fieldHeight = 20;
     
     protected FormData fd = new FormData(fieldWidth, fieldHeight);
@@ -67,33 +67,12 @@ public class TimeAccountingPanel extends ContentPanel {
 		miscTimes.setHeading("Times (Hrs)");
 		
 		// start adding the misc. times
-		//NumberField scheduled = new NumberField();
-//		scheduled.setFieldLabel("Scheduled");
-//		setDefaultField("Scheduled", scheduled);
-		//scheduled.setReadOnly(true);
-		miscTimes.add(scheduled, new FormData(fieldWidth, fieldHeight));
-
-//		observed.setFieldLabel("Observed");
-//		observed.setReadOnly(true);
-		miscTimes.add(observed, new FormData(fieldWidth, fieldHeight));
-
-//		timeBilled.setFieldLabel("Billed");
-//		timeBilled.setReadOnly(true);
-		miscTimes.add(timeBilled, new FormData(fieldWidth, fieldHeight));
-
-//		unaccounted.setFieldLabel("Unaccounted");
-//		unaccounted.setReadOnly(true);
-		miscTimes.add(unaccounted, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField notBillable = new NumberField();
-//		notBillable.setFieldLabel("Not Billable");
-//		notBillable.setReadOnly(true);
-		miscTimes.add(notBillable, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField shortNotice = new NumberField();
-//		shortNotice.setFieldLabel("Short Notice");
-//		shortNotice.setReadOnly(true);
-		miscTimes.add(shortNotice, new FormData(fieldWidth, fieldHeight));
+		miscTimes.add(scheduled, fd);
+		miscTimes.add(observed, fd);
+		miscTimes.add(timeBilled, fd);
+		miscTimes.add(unaccounted, fd);
+		miscTimes.add(notBillable, fd);
+		miscTimes.add(shortNotice, fd);
 		
 		row1.add(miscTimes, td);
 		
@@ -102,26 +81,10 @@ public class TimeAccountingPanel extends ContentPanel {
         lostTimePanel.setHeading("Lost Time (Hrs)");
         lostTimePanel.setHeaderVisible(true);
         
-		//NumberField nb = new NumberField();
-//		lt.setFieldLabel("Lost Time");
-//		lt.setReadOnly(true);
-		
-		lostTimePanel.add(lt, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField nb2 = new NumberField();
-//		ltw.setFieldLabel("LT Weather");
-//		ltw.setReadOnly(true);
-		lostTimePanel.add(ltw, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField ltr = new NumberField();
-//		ltr.setFieldLabel("LT RFI");
-//		ltr.setReadOnly(true);
-		lostTimePanel.add(ltr, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField lto = new NumberField();
-//		lto.setFieldLabel("LT Other");
-//		lto.setReadOnly(true);
-		lostTimePanel.add(lto, new FormData(fieldWidth, fieldHeight));
+		lostTimePanel.add(lt, fd);
+		lostTimePanel.add(ltw, fd);
+		lostTimePanel.add(ltr, fd);
+		lostTimePanel.add(lto, fd);
 		
 		row1.add(lostTimePanel, td);
 		
@@ -130,23 +93,10 @@ public class TimeAccountingPanel extends ContentPanel {
         otherTimePanel.setHeading("Time to Other Session (Hrs)");
         otherTimePanel.setHeaderVisible(true);
         
-		//NumberField nb3 = new NumberField();
-//		os.setFieldLabel("Other Session");
-//		os.setReadOnly(true);
-		otherTimePanel.add(os, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField osw = new NumberField();
-//		osw.setFieldLabel("OS Weather");
-//		osw.setReadOnly(true);
-		otherTimePanel.add(osw, new FormData(fieldWidth, fieldHeight));
-
-		//NumberField osr = new NumberField();
-//		setDefaultField("OS RFI", osr);
-//		osr.setFieldLabel("OS RFI");
-//		osr.setReadOnly(true);
-		otherTimePanel.add(osr, new FormData(fieldWidth, fieldHeight));
-		setDefaultField("OS Other", oso);
-        otherTimePanel.add(oso, new FormData(fieldWidth, fieldHeight));
+		otherTimePanel.add(os, fd);
+		otherTimePanel.add(osw, fd);
+		otherTimePanel.add(osr, fd);
+        otherTimePanel.add(oso, fd);
 		
 		row1.add(otherTimePanel, td);
 		
@@ -206,5 +156,9 @@ public class TimeAccountingPanel extends ContentPanel {
 	protected void setEditable(NumberField nf) {
 		nf.setReadOnly(false);
 		nf.setStyleAttribute("color", "black");
+	}
+	
+	public String getDescription() {
+		return desc.getValue();
 	}
 }

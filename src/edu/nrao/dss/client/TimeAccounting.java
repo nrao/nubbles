@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -14,6 +16,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -22,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -34,23 +38,26 @@ import edu.nrao.dss.client.util.TimeUtils;
 
 public class TimeAccounting extends ContentPanel {
 
+	// project level
+    final ArrayList<String> project_codes = new ArrayList<String>();
 	final SimpleComboBox<String> projects = new SimpleComboBox<String>();
-    final TextArea projectComments = new TextArea();
 	final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
+	final ProjAllotmentFieldSet projGrade1 = new ProjAllotmentFieldSet();
+	final ProjAllotmentFieldSet projGrade2 = new ProjAllotmentFieldSet();
+    final ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
+	
+	// session level
     final LayoutContainer session = new LayoutContainer();
 	final SimpleComboBox<String> periods = new SimpleComboBox<String>();
+    final SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
+	final HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
+
+    // period level
     final LayoutContainer periodContainer = new LayoutContainer();
     final PeriodSummaryPanel periodSummary = new PeriodSummaryPanel(null);
 	final TextField sessionName = new TextField();
-//	final TextField periodName = new TextField();
-//	final NumberField periodNotBillable = new NumberField();
-//	final NumberField periodLostTimeWeather = new NumberField();
-    final ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
-    final SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
 	
-    final ArrayList<String> project_codes = new ArrayList<String>();
-	final HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
-	
+	// stores all the time accounting info we get from the server
 	private JSONObject timeAccountingJson = new JSONObject();
 	
 	public TimeAccounting() {
@@ -74,18 +81,29 @@ protected void initLayout() {
 	final LayoutContainer project = new ContentPanel();
 	project.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
 	project.setBorders(true);
+
+	// first the project table!
+	LayoutContainer projectTable = new LayoutContainer();
+	TableLayout tb = new TableLayout(2);
+	tb.setWidth("100%");
+	tb.setBorder(1);
+	projectTable.setLayout(tb);
+	projectTable.setBorders(true);
+
+	TableData td = new TableData();
+	td.setVerticalAlign(VerticalAlignment.TOP);
+	// TODO: why must I do this, just to get the two forms to share space?
+	td.setColspan(1);
+	td.setWidth("400px");
 	
-	// now place some controls in the first column
+	// left side of project table lets you pick what project & session you want
 	final FormPanel projectForm = new FormPanel();
 	projectForm.setHeading("Project");
 	projectForm.setBorders(true);
 
 	
 	// the project picker goes in this left-most form panel
-	//final SimpleComboBox<String> projects = new SimpleComboBox<String>();
 	projects.setFieldLabel("Project");
-	//projects.add("proj1");
-	//projects.add("proj2");
 	// when a project gets picked, populate the sessions combo
 	projects.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
@@ -106,26 +124,34 @@ protected void initLayout() {
 	  		updateSessionPeriods();
 	   	}
 	});	
-	
 	projectForm.add(sessions);
 
-	Button save = new Button("Save");
-	save.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	Button saveProj = new Button("Save Project Time Accounting");
+	saveProj.addListener(Events.OnClick, new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent be) {
 			GWT.log("Save!", null);
 			// TODO: send back the time accounting json!!!
+			sendProjectAllotments();
 		}
 	});
-	
-	projectForm.add(save);
-	
-    project.add(projectForm);
+	projectForm.add(saveProj);
+    
+	projectTable.add(projectForm, td);
 
-	// the project time accounting comments goes in this second form panel
-    //projectComments.setFieldLabel("Comments");
-    //projectFormLeft.add(projectComments);
-
-//    ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
+	// The right side of the project table includes allotments by grade.
+	// a FieldSet for each grade allotment - the first always gets shown, not the second
+	FormPanel projectForm2 = new FormPanel();
+	projectForm2.setHeading("Allotments");
+	projectForm2.setBorders(true);	
+	projectForm2.add(projGrade1);
+	projGrade2.setVisible(false);
+	projectForm2.add(projGrade2);
+	
+	projectTable.add(projectForm2, td);
+	
+    project.add(projectTable, new RowData(1, -1, new Margins(4)));
+    
+	// the project time accounting panel goes next
     projectTimeAccounting.setHeading("Project Time Accounting");
     project.add(projectTimeAccounting);
     
@@ -158,23 +184,49 @@ protected void initLayout() {
 	// the session time accounting comments goes in this second form panel
     TextArea sessionComments = new TextArea();
     sessionComments.setFieldLabel("Comments");
-    //sessionForm.add(sessionComments);
     
     periodSummary.setVisible(true); // -> false
     periodSummary.setParent(this);
     
     session.add(sessionForm, new RowData(1, -1, new Margins(4)));
-//    SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
     sessionTimeAccounting.setHeading("Session Time Accounting");
 	session.add(sessionTimeAccounting, new RowData(1, -1, new Margins(4)));
 	session.add(periodSummary, new RowData(1, -1, new Margins(4)));
-    
     
     project.add(session, new RowData(1, -1, new Margins(4)));
     
 	add(project, new FitData(10));
 	
   }
+
+private void sendProjectAllotments() {
+	// TODO: boy, this really sucks.  I really need to learn how to send heirarchal data!
+	// send a JSON request for each grade being updated.
+	// First grade is always visible:
+    sendProjectAllotment(projGrade1, projectTimeAccounting.getDescription());
+    if (projGrade2.isVisible()) {
+        sendProjectAllotment(projGrade2, projectTimeAccounting.getDescription());
+    }
+}
+
+private void sendProjectAllotment(ProjAllotmentFieldSet fs, String desc) {
+	
+	String url = "/projects/time_accounting/" + projects.getSimpleValue();
+	HashMap <String, Object> keys = new HashMap<String, Object>();
+
+	keys.put("grade", fs.getGrade());
+	keys.put("total_time", fs.getAllotment());
+	keys.put("description", desc);
+	
+	JSONRequest.post(url, keys, new JSONCallbackAdapter() {
+		// this url returns all the time accounting for the whole proj., 
+		// so use it to update the whole UI
+		public void onSuccess(JSONObject json) {
+			timeAccountingJson = json;
+			populateProjTimeAccounting(json);
+		}
+	});
+}
 
 protected void getProjectTimeAccounting() {
     
@@ -201,9 +253,26 @@ public void setTimeAccountingFromJSON(JSONObject json) {
 
 private void populateProjTimeAccounting(JSONObject json) {
 	
-	String comments = json.get("notes").isString().stringValue() ;
-	projectComments.setValue(comments);
-	
+	// set the proj. level info from the time accounting dict.
+	//projAllotedTime.setValue(json.get("alloted").isNumber().doubleValue());
+	//projSessSumTime.setValue(json.get("sess_alloted").isNumber().doubleValue());
+	projGrade2.setVisible(false);
+	JSONArray times = json.get("times").isArray();
+	for (int i = 0; i < times.size(); ++i){
+		//GWT.log(times.get(i).toString(), null);
+		// TODO: we only can deal with up to two grades right now! this code sucks!
+		JSONObject time = times.get(i).isObject();
+		if (i == 0) {
+			// first grade field list
+			projGrade1.setValues(time);
+		} 
+		if (i == 1) {
+			// second grade field list - make it visible!
+			projGrade2.setVisible(true);
+			projGrade2.setValues(time);
+			
+		}
+	}	
 	projectTimeAccounting.setValues(json);
 	
 	
@@ -377,5 +446,6 @@ public void updatePCodeOptions() {
 		}
 	});
 }	
+
 
 }

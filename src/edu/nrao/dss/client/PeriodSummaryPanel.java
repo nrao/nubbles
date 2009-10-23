@@ -22,9 +22,9 @@ import com.google.gwt.core.client.GWT;
 public class PeriodSummaryPanel extends ContentPanel {
 	
 	private Period period;
-	private TextField label = new TextField();
-	private TextField start = new TextField();
-	private TextField dur = new TextField();
+	private TextField<String> label = new TextField<String>();
+	private TextField<String> start = new TextField<String>();
+	private TextField<String> dur = new TextField<String>();
 	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel();
 	
     public PeriodSummaryPanel(Period p) {
@@ -33,8 +33,6 @@ public class PeriodSummaryPanel extends ContentPanel {
     }
     
     private void initLayout() {
-    	
-    	//setLayout(new FitLayout());
     	
     	setHeading("Period Summary Panel");
     	
@@ -53,23 +51,17 @@ public class PeriodSummaryPanel extends ContentPanel {
         
     	// field per attribute, roughly:
     	// name
-    	//TextField label = new TextField();
     	label.setFieldLabel("Name");
-    	//label.setValue(period.getHandle());
     	label.setReadOnly(true);
     	periodForm.add(label);
     	
     	// start
-    	//TextField start = new TextField();
     	start.setFieldLabel("Start (UTC)");
-    	//start.setValue(period.getStartString());
     	start.setReadOnly(true);
     	periodForm.add(start);
     	
     	// duration
-    	//TextField dur = new TextField();
     	dur.setFieldLabel("Duration (Hrs)");
-    	//dur.setValue(period.getDurationString());
     	dur.setReadOnly(true);
     	periodForm.add(dur);
     	
@@ -79,23 +71,21 @@ public class PeriodSummaryPanel extends ContentPanel {
     	periodForm2.setHeading("Period Form2");
     	periodForm2.setHeaderVisible(false);
     	
-    	
-    	
     	// score
     	NumberField score = new NumberField();
     	score.setFieldLabel("Score");
-    	//start.setValue(period.getStartString());
     	score.setReadOnly(true);
     	periodForm2.add(score);
     	
     	// backup 
-    	// what else
+    	// what else?
+    	
+    	// save the changes?
     	Button save = new Button();
-    	save.setText("Save");
+    	save.setText("Save Period Time Accounting");
     	save.addListener(Events.OnClick, new Listener<BaseEvent>() {
     		public void handleEvent(BaseEvent be) {
     			GWT.log("Save!", null);
-    			// TODO: send back the time accounting json!!!
     			ta.sendUpdates();
     		}
     	});
@@ -109,12 +99,8 @@ public class PeriodSummaryPanel extends ContentPanel {
     	setValues(period);
     	
     	// Time Accounting get's its own form
-    	//PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel(period);
     	ta.setHeading("Period Time Accounting");
     	ta.setPeriod(period);
-    	//periodForm.add(ta);
-    	
-    	//add(periodForm, new RowData(1, -1, new Margins(1)));    	
     }
     
     public void setParent(TimeAccounting parent) {
