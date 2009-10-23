@@ -104,6 +104,8 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 							GWT.log("calling parent.setTimeAcctFromJSON", null);
 							parent.setTimeAccountingFromJSON(json);
 						}
+						// now, make sure we update ourselves
+						period.getId();
 						
 					}
 				});		

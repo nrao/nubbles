@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONObject;
 
 public class PeriodSummaryPanel extends ContentPanel {
 	
@@ -103,10 +104,25 @@ public class PeriodSummaryPanel extends ContentPanel {
     	ta.setPeriod(period);
     }
     
-    public void setParent(TimeAccounting parent) {
-    	ta.setParent(parent);
+    public void updatePeriodForm(int periodId) {
+    	// get this period from the server and populate the form
+        GWT.log("updatePeriodForm", null);
+        // TODO - should pick up timezone from Schedule
+    	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
+    		      , new JSONCallbackAdapter() {
+    		public void onSuccess(JSONObject json) {
+            	// JSON period -> JAVA period
+             	Period period = Period.parseJSON(json.get("period").isObject());
+             	setPeriod(period);
+                GWT.log("period onSuccess", null);          
+    		}
+    	});    		
+    	
     }
-    
+
+	public void setParent(TimeAccounting p) {
+		ta.setParent(p);
+	}  
     public void setPeriod(Period period) {
     	setValues(period);
     	ta.setPeriod(period);
