@@ -71,18 +71,16 @@ protected void initLayout() {
 	
 	setLayout( new FitLayout());
 	
-	// bells & whistles for this content panel
-	//setHeading("Project Time Accounting");
-	
-	setCollapsible(false);
-	setBodyBorder(true);
-	setFrame(true);
-	setHeaderVisible(true);
-	setBodyStyle("backgroundColor: white;");
 
-	final LayoutContainer project = new ContentPanel();
-	project.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
-	project.setBorders(true);
+	setHeaderVisible(false);
+
+	final ContentPanel project = new ContentPanel();
+	project.setLayout(new RowLayout(Orientation.VERTICAL)); 
+	project.setBorders(false);
+	project.setHeaderVisible(false);
+	
+	// so we can always see everything 
+	project.setScrollMode(Scroll.ALWAYS); 
 
 	// first the project table!
 	LayoutContainer projectTable = new LayoutContainer();
