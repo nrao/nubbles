@@ -84,7 +84,6 @@ public class PeriodExplorer extends Explorer {
         new ColumnType("duration",              "Duration",              55, Double.class),
         new ColumnType("score",                 "Score",                 40, ScoreField.class),
        	new ColumnType("not_billable",          "Not Bill",              50, Double.class),
-       	new ColumnType("other_session_weather", "OS Weather",            70, Double.class),
        	new ColumnType("backup",                "Backup?",               70, Boolean.class),
        	
 	};
