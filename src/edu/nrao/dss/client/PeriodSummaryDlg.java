@@ -20,20 +20,19 @@ public class PeriodSummaryDlg extends Dialog {
 		setLayout(new FlowLayout());
 		
 		// Basic Dlg settings
-		String heading = "Period Summary Dialog";
-		setHeading(heading);
 		String txt = "Summary for Period " + period.getHandle();
-		addText(txt);
+		setHeading(txt);
 		setButtons(Dialog.OK);
 
 		// change the schedule?
 		Button change = new Button();
+		change.setToolTip("Click this button to change the schedule: replace this period(s) with some other period w/ the correct time accounting.");
 		change.setText("Change Schedule");
 	    change.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	@SuppressWarnings("deprecation")
 			public void handleEvent(BaseEvent be) {
 	    		GWT.log("Change Click", null);
-	    		PeriodDialogBox dlg = new PeriodDialogBox(period, sess_handles, sc);
+	    		ChangeScheduleDlg dlg = new ChangeScheduleDlg(period, sess_handles, sc);
 	    		close();
 	    	}
 	    });	
