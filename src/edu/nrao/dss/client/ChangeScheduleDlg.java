@@ -28,10 +28,10 @@ import edu.nrao.dss.client.util.TimeUtils;
 // TODO: this does more then just change a period - it can replace several periods
 // w/ a single period.  But it's also ideal for inserting backups.  so what to call it?
 
-class PeriodDialogBox extends Dialog {
+class ChangeScheduleDlg extends Dialog {
 
 	// TODO: need to refactor this into more methods
-	public PeriodDialogBox(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
+	public ChangeScheduleDlg(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
 		
 		super();
 		
@@ -45,6 +45,7 @@ class PeriodDialogBox extends Dialog {
 		
 		// now set up the form w/ all it's fields
 		final FormPanel fp = new FormPanel();
+		fp.setHeaderVisible(false);
 		
 		// starting with the start date
 	    final DateField changeDate = new DateField();
@@ -72,7 +73,7 @@ class PeriodDialogBox extends Dialog {
 			durChoices.put(key, m);
 			hours.add(key);
 		}
-		hours.setToolTip("Set duration of the time to be changed");
+		hours.setToolTip("Set duration (Hrs:Mins) of the time to be changed");
 		hours.setFieldLabel("Duration");
 		hours.setEditable(false);
 		hours.setAllowBlank(false);
