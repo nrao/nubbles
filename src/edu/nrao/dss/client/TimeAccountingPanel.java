@@ -70,9 +70,9 @@ public class TimeAccountingPanel extends ContentPanel {
 		miscTimes.add(scheduled, fd);
 		miscTimes.add(observed, fd);
 		miscTimes.add(timeBilled, fd);
-		miscTimes.add(unaccounted, fd);
 		miscTimes.add(notBillable, fd);
 		miscTimes.add(shortNotice, fd);
+		miscTimes.add(unaccounted, fd);
 		
 		row1.add(miscTimes, td);
 		
