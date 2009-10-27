@@ -25,10 +25,12 @@ public class Period {
         String time = json.get("time").isString().stringValue();
         Date st = DATE_FORMAT.parse(date + " " + time + ":00");
         Date day = DAY_FORMAT.parse(date);
-        //Date st = DATE_FORMAT.parse(json.get("start").isString().stringValue());
         int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
         
         Period period = new Period(id, handle, st, dur, day, time);
+        
+        period.setBackup(json.get("backup").isBoolean().booleanValue());
+        period.setScore(json.get("score").isNumber().doubleValue());
         
         // now set the fields associated with time accounting
         period.setDescription(json.get("description").isString().stringValue());
@@ -40,13 +42,11 @@ public class Period {
         period.setUnaccounted(json.get("unaccounted_time").isNumber().doubleValue());
 
         period.setOther_session(json.get("other_session").isNumber().doubleValue());
-
         period.setOther_session_weather(json.get("other_session_weather").isNumber().doubleValue());
         period.setOther_session_rfi(json.get("other_session_rfi").isNumber().doubleValue());
         period.setOther_session_other(json.get("other_session_other").isNumber().doubleValue());
         
         period.setLost_time(json.get("lost_time").isNumber().doubleValue());
-        
         period.setLost_time_weather(json.get("lost_time_weather").isNumber().doubleValue());
         period.setLost_time_rfi(json.get("lost_time_rfi").isNumber().doubleValue());
         period.setLost_time_other(json.get("lost_time_other").isNumber().doubleValue());
@@ -245,8 +245,6 @@ public class Period {
 		return unaccounted;
 	}
 
-
-
 	public void setOther_session(double other_session) {
 		this.other_session = other_session;
 	}
@@ -262,6 +260,21 @@ public class Period {
 	public double getLost_time() {
 		return lost_time;
 	}
+	public void setScore(double score) {
+		this.score = score;
+	}
+
+	public double getScore() {
+		return score;
+	}
+	public void setBackup(boolean backup) {
+		this.backup = backup;
+	}
+
+	public boolean isBackup() {
+		return backup;
+	}
+	
 	// traditional period attributes
     private int      id;
     private String   handle; 
@@ -269,6 +282,9 @@ public class Period {
     private int      duration; // minutes
     private Date     start_day;
     private String   start_time;
+    private double   score;
+    private boolean  backup;
+    
     // time accounting (all in Hours)
     private String   description;
     private double   scheduled;

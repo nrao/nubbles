@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -26,6 +27,8 @@ public class PeriodSummaryPanel extends ContentPanel {
 	private TextField<String> label = new TextField<String>();
 	private TextField<String> start = new TextField<String>();
 	private TextField<String> dur = new TextField<String>();
+	private NumberField score = new NumberField();
+	private CheckBox backup = new CheckBox();
 	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel();
 	
     public PeriodSummaryPanel(Period p) {
@@ -66,12 +69,19 @@ public class PeriodSummaryPanel extends ContentPanel {
     	periodForm2.setHeaderVisible(false);
     	
     	// score
-    	NumberField score = new NumberField();
     	score.setFieldLabel("Score");
     	score.setReadOnly(true);
+    	// TODO
+    	score.setStyleAttribute("color", "grey");
     	periodForm2.add(score);
     	
     	// backup 
+    	backup.setFieldLabel("Backup");
+    	backup.setReadOnly(true);
+    	// TODO
+    	backup.setStyleAttribute("color", "grey");
+    	periodForm2.add(backup);
+    	
     	// what else?
     	
     	// save the changes?
@@ -134,6 +144,8 @@ public class PeriodSummaryPanel extends ContentPanel {
         	label.setValue(period.getHandle());
         	start.setValue(period.getStartString());
         	dur.setValue(period.getDurationString());
+        	score.setValue(period.getScore());
+        	backup.setValue(period.isBackup());
         }
     	
     }
