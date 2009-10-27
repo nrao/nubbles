@@ -3,6 +3,7 @@ package edu.nrao.dss.client;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONObject;
 
 public class ProjAllotmentFieldSet extends FieldSet {
@@ -25,6 +26,8 @@ public class ProjAllotmentFieldSet extends FieldSet {
 
 
 		proj_alloted.setFieldLabel("Alloted (Hrs)");
+		proj_alloted.setFormat(NumberFormat.getFormat("#0.00"));
+		proj_alloted.setValidator(new DSSTimeValidator());
 		add(proj_alloted);
 
 		setReadOnlyField("Sess. alloted (Hrs)", proj_sess_alloted);
@@ -44,6 +47,7 @@ public class ProjAllotmentFieldSet extends FieldSet {
 	    nf.setReadOnly(true);
 	    // TODO: use background color!
 	    nf.setStyleAttribute("color", "grey");
+		nf.setFormat(NumberFormat.getFormat("#0.00"));
 	}
 	
 	public double getGrade() {

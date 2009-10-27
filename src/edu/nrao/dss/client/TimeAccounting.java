@@ -31,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
@@ -213,6 +214,9 @@ protected void initLayout() {
 	sessionForm2.add(sessionGrade);
 	
 	sessionTime.setFieldLabel("Alloted (Hrs)");
+	sessionTime.setFormat(NumberFormat.getFormat("#0.00"));
+	sessionTime.setValidator(new DSSTimeValidator()); 	
+	
 	sessionForm2.add(sessionTime);
 	
 	Button saveSess = new Button("Save Session Time Accounting");

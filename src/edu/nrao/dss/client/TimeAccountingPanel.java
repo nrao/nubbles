@@ -4,9 +4,11 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -14,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 
 public class TimeAccountingPanel extends ContentPanel { 
 	
@@ -151,6 +154,8 @@ public class TimeAccountingPanel extends ContentPanel {
 		//nf.setStyleAttribute("border" , "5px solid line");
 		//nf.setStyleAttribute("background-color", "#FFFFFF");
 		nf.setStyleAttribute("color", "grey");
+		nf.setFormat(NumberFormat.getFormat("#0.00"));
+		nf.setValidator(new DSSTimeValidator()); 
 	}
 	
 	protected void setEditable(NumberField nf) {
