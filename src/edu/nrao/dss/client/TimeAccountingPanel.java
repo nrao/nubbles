@@ -2,6 +2,9 @@ package edu.nrao.dss.client;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -156,6 +159,14 @@ public class TimeAccountingPanel extends ContentPanel {
 		nf.setStyleAttribute("color", "grey");
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
 		nf.setValidator(new DSSTimeValidator()); 
+
+		
+//		nf.addListener(Events.OnChange, new Listener<BaseEvent>() {
+//			@Override
+//			public void handleEvent(BaseEvent be) {
+//                GWT.log("Changed!", null);				
+//			}
+//    	});
 	}
 	
 	protected void setEditable(NumberField nf) {
@@ -164,6 +175,6 @@ public class TimeAccountingPanel extends ContentPanel {
 	}
 	
 	public String getDescription() {
-		return desc.getValue();
+		return (desc.getValue() == null) ? "" : desc.getValue();
 	}
 }

@@ -72,13 +72,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		// 1. update the period object
         GWT.log("setting period values", null);
         
-        // watch out for allowed null descriptions in the DB
-        if (desc.getValue() == null) {
-        	period.setDescription("");
-        } else {
-        	period.setDescription(desc.getValue());
-        }
-		period.setDescription(desc.getValue());
+		period.setDescription(getDescription());
 		period.setScheduled(scheduled.getValue().doubleValue());
 		period.setNot_billable(notBillable.getValue().doubleValue());
 		period.setShort_notice(shortNotice.getValue().doubleValue());
@@ -105,12 +99,29 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 							parent.setTimeAccountingFromJSON(json);
 						}
 						// now, make sure we update ourselves
-						period.getId();
+						if (period != null) {
+							updatePeriodForm(period.getId());
+						}	
 						
 					}
 				});		
 	}
 	
+    public void updatePeriodForm(int periodId) {
+    	// get this period from the server and populate the form
+        GWT.log("updatePeriodForm", null);
+        // TODO - should pick up timezone from Schedule
+    	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
+    		      , new JSONCallbackAdapter() {
+    		public void onSuccess(JSONObject json) {
+            	// JSON period -> JAVA period
+             	Period period = Period.parseJSON(json.get("period").isObject());
+             	setPeriod(period);
+                GWT.log("period onSuccess", null);          
+    		}
+    	});    	
+    }
+    
 	public void setParent(TimeAccounting p) {
 		parent = p;
 	}

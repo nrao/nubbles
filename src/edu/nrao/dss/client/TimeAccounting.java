@@ -216,6 +216,20 @@ protected void initLayout() {
 	sessionTime.setFieldLabel("Alloted (Hrs)");
 	sessionTime.setFormat(NumberFormat.getFormat("#0.00"));
 	sessionTime.setValidator(new DSSTimeValidator()); 	
+//	sessionTime.addListener(Events.Blur, new Listener<BaseEvent>() {
+//		@Override
+//		public void handleEvent(BaseEvent be) {
+//            GWT.log("Blur!", null);	
+//            GWT.log("original value: " + sessionTime.getOriginalValue().toString(), null);
+//            GWT.log("value: " + sessionTime.getValue().toString(), null);
+//            if (sessionTime.getValue().doubleValue() != sessionTime.getOriginalValue().doubleValue()) {
+//		        GWT.log("Value changed!", null);
+//		        sessionTime.setStyleAttribute("color", "red");
+//	        } else {
+//		        sessionTime.setStyleAttribute("color", "black");
+//	        }
+//		}
+//	});	
 	
 	sessionForm2.add(sessionTime);
 	
@@ -274,7 +288,8 @@ private void sendProjectAllotment(ProjAllotmentFieldSet fs, String desc) {
 		// so use it to update the whole UI
 		public void onSuccess(JSONObject json) {
 			timeAccountingJson = json;
-			populateProjTimeAccounting(json);
+			//populateProjTimeAccounting(json);
+			setTimeAccountingFromJSON(json);
 		}
 	});
 }
@@ -287,13 +302,16 @@ private void sendSessionAllotment() {
 
 	keys.put("total_time", sessionTime.getValue().doubleValue());
 	keys.put("description", sessionTimeAccounting.getDescription());
+	GWT.log("sending to url: " + url, null);
 	
 	JSONRequest.post(url, keys, new JSONCallbackAdapter() {
 		// this url returns all the time accounting for the whole proj., 
 		// so use it to update the whole UI
 		public void onSuccess(JSONObject json) {
+			GWT.log("sendSessoinAllotment onsuccess; setting json", null);
 			timeAccountingJson = json;
-			populateProjTimeAccounting(json);
+			//populateProjTimeAccounting(json);
+			setTimeAccountingFromJSON(json);
 		}
 	});
 }
@@ -306,7 +324,8 @@ protected void getProjectTimeAccounting() {
 		public void onSuccess(JSONObject json) {
 			timeAccountingJson = json;
 			// take the project level time accounting info, and populate the panel w/ it.
-			populateProjTimeAccounting(json);
+			//populateProjTimeAccounting(json);
+			setTimeAccountingFromJSON(json);
             GWT.log("/projects/time_accounting onSuccess", null);          
 		}
 	});    			
@@ -320,8 +339,11 @@ public void setTimeAccountingFromJSON(JSONObject json) {
 	GWT.log("setTimeAccountingFromJSON!", null);
 	timeAccountingJson = json;
 	populateProjTimeAccounting(json);
-	String name = sessionName.getValue().toString();
-	populateSessTimeAccounting(json, name);
+	String name = sessionName.getValue();
+	GWT.log("setting sess: ? " + name, null);
+	if (name != null & name != "") {
+		populateSessTimeAccounting(json, name);
+	}
 }
 
 //given the JSON which has all the time accounting info in it, update the current project
@@ -344,7 +366,6 @@ private void populateProjTimeAccounting(JSONObject json) {
 		}
 	}	
 	projectTimeAccounting.setValues(json);
-
 }
 
 //given the JSON which has all the time accounting info in it, update the current session
@@ -355,13 +376,15 @@ private void populateSessTimeAccounting(JSONObject json, String sessName) {
     	//Period period = Period.parseJSON(names.get(i).isObject());
     	JSONObject session = names.get(i).isObject();
     	String name = session.get("name").isString().stringValue();
-    	GWT.log("comparing: <" + sessName + "> and <" + name + ">", null);
     	if (name.equals(sessName)) {
     		// got it!
-    		GWT.log("match!", null);
+    		GWT.log("matched session name " + sessName, null);
     		sessionName.setValue(sessName);
     		sessionGrade.setValue(session.get("grade").isNumber().doubleValue());
-    		sessionTime.setValue(session.get("total_time").isNumber().doubleValue()); 
+    		double time = session.get("total_time").isNumber().doubleValue();
+    		sessionTime.setValue(time); 
+    		sessionTime.setOriginalValue(time);
+    		sessionTime.setStyleAttribute("color", "black");
     		sessionTimeAccounting.setValues(session);
     		
     	}	
