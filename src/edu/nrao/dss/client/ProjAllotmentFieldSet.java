@@ -1,8 +1,12 @@
 package edu.nrao.dss.client;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONObject;
 
@@ -25,9 +29,7 @@ public class ProjAllotmentFieldSet extends FieldSet {
 		setLayout(layout1);
 
 
-		proj_alloted.setFieldLabel("Alloted (Hrs)");
-		proj_alloted.setFormat(NumberFormat.getFormat("#0.00"));
-		proj_alloted.setValidator(new DSSTimeValidator());
+		setEditableField("Alloted (Hrs)", proj_alloted);
 		add(proj_alloted);
 
 		setReadOnlyField("Sess. alloted (Hrs)", proj_sess_alloted);
@@ -38,8 +40,13 @@ public class ProjAllotmentFieldSet extends FieldSet {
 		grade = time.get("grade").isNumber().doubleValue();
 		String heading = "Grade: " + Double.toString(grade);
 		setHeading(heading);
-	    proj_alloted.setValue(time.get("total_time").isNumber().doubleValue());
 	    proj_sess_alloted.setValue(time.get("sess_total_time").isNumber().doubleValue());
+	    
+	    // writable fields should reseet their state
+	    double t = time.get("total_time").isNumber().doubleValue();
+	    proj_alloted.setValue(t);
+	    proj_alloted.setOriginalValue(t);
+	    proj_alloted.setStyleAttribute("color", "black");
 	}
 	
 	private void setReadOnlyField(String label, NumberField nf) {
@@ -48,6 +55,25 @@ public class ProjAllotmentFieldSet extends FieldSet {
 	    // TODO: use background color!
 	    nf.setStyleAttribute("color", "grey");
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
+	}
+	
+	private void setEditableField(String label, NumberField nf) {
+		nf.setFieldLabel(label);
+		nf.setFormat(NumberFormat.getFormat("#0.00"));
+		nf.setValidator(new DSSTimeValidator());
+		nf.addListener(Events.Blur, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+	            GWT.log("Blur!", null);
+	            double value = ((NumberField) be.getSource()).getValue().doubleValue();
+	            double orgvl = ((NumberField) be.getSource()).getOriginalValue().doubleValue();
+	            if (orgvl == value) {
+	            	((NumberField) be.getSource()).setStyleAttribute("color", "black");
+	            } else {
+	            	((NumberField) be.getSource()).setStyleAttribute("color", "red");
+	            }
+			}			
+    	});		
 	}
 	
 	public double getGrade() {

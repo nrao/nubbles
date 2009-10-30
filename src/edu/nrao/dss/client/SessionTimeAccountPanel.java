@@ -5,7 +5,8 @@ import com.google.gwt.json.client.JSONObject;
 public class SessionTimeAccountPanel extends TimeAccountingPanel {
 	
 	public void setValues(JSONObject json) {
-		
+
+		// these are all read-only, so there's no change in state; we can just set them		
 	    scheduled.setValue(json.get("scheduled").isNumber().doubleValue());
 	    observed.setValue(json.get("observed").isNumber().doubleValue());	
 	    timeBilled.setValue(json.get("time_billed").isNumber().doubleValue());	
@@ -23,8 +24,8 @@ public class SessionTimeAccountPanel extends TimeAccountingPanel {
 	    osr.setValue(json.get("other_session_rfi").isNumber().doubleValue());	
 	    oso.setValue(json.get("other_session_other").isNumber().doubleValue());	
 	    
-	    desc.setValue(json.get("notes").isString().stringValue());
-	    
+	    // Description is NOT read-only, so must set state
+	    setDescription(json.get("notes").isString().stringValue());	    
 
 	}
 

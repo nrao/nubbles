@@ -41,23 +41,34 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	private void setValues(Period p) {
 		GWT.log("PeriodTimeAccountPanel.setValues", null);
 		if (p != null) {
-			GWT.log(String.valueOf(p.getScheduled()), null);
-			scheduled.setValue(p.getScheduled());
-			observed.setValue(p.getObserved());
-			timeBilled.setValue(p.getBilled());
-			unaccounted.setValue(p.getUnaccounted());
-			notBillable.setValue(p.getNot_billable());
-			shortNotice.setValue(p.getShort_notice());
-			lt.setValue(p.getLost_time());
-			ltw.setValue(p.getLost_time_weather());
-			ltr.setValue(p.getLost_time_rfi());
-			lto.setValue(p.getLost_time_other());
-			os.setValue(p.getOther_session());
-			osw.setValue(p.getOther_session_weather());
-			osr.setValue(p.getOther_session_rfi());
-			oso.setValue(p.getOther_session_other());
+			setValue(scheduled, p.getScheduled());
+			setValue(observed, p.getObserved());
+			setValue(timeBilled, p.getBilled());
+			setValue(unaccounted, p.getUnaccounted());
+			setValue(notBillable, p.getNot_billable());
+			setValue(shortNotice, p.getShort_notice());
+			setValue(lt, p.getLost_time());
+			setValue(ltw, p.getLost_time_weather());
+			setValue(ltr, p.getLost_time_rfi());
+			setValue(lto, p.getLost_time_other());
+			setValue(os, p.getOther_session());
+			setValue(osw, p.getOther_session_weather());
+			setValue(osr, p.getOther_session_rfi());
+			setValue(oso, p.getOther_session_other());
+			//setValue(desc, p.getDescription());
 			desc.setValue(p.getDescription());
+			desc.setOriginalValue(p.getDescription());
 		}
+	}
+	
+	public void setValue(NumberField nf, double value) {
+		// getting the fields in sync w/ the database should be reflected 
+		// in the fields state
+	    nf.setValue(value);
+	    nf.setOriginalValue(value);
+	    if (!nf.isReadOnly()) {
+	    	nf.setStyleAttribute("color", "black");
+	    }	
 	}
 	
 	public void sendUpdates() {

@@ -216,20 +216,20 @@ protected void initLayout() {
 	sessionTime.setFieldLabel("Alloted (Hrs)");
 	sessionTime.setFormat(NumberFormat.getFormat("#0.00"));
 	sessionTime.setValidator(new DSSTimeValidator()); 	
-//	sessionTime.addListener(Events.Blur, new Listener<BaseEvent>() {
-//		@Override
-//		public void handleEvent(BaseEvent be) {
-//            GWT.log("Blur!", null);	
-//            GWT.log("original value: " + sessionTime.getOriginalValue().toString(), null);
-//            GWT.log("value: " + sessionTime.getValue().toString(), null);
-//            if (sessionTime.getValue().doubleValue() != sessionTime.getOriginalValue().doubleValue()) {
-//		        GWT.log("Value changed!", null);
-//		        sessionTime.setStyleAttribute("color", "red");
-//	        } else {
-//		        sessionTime.setStyleAttribute("color", "black");
-//	        }
-//		}
-//	});	
+	sessionTime.addListener(Events.Blur, new Listener<BaseEvent>() {
+		@Override
+		public void handleEvent(BaseEvent be) {
+            GWT.log("Blur!", null);	
+            GWT.log("original value: " + sessionTime.getOriginalValue().toString(), null);
+            GWT.log("value: " + sessionTime.getValue().toString(), null);
+            if (sessionTime.getValue().doubleValue() != sessionTime.getOriginalValue().doubleValue()) {
+		        GWT.log("Value changed!", null);
+		        sessionTime.setStyleAttribute("color", "red");
+	        } else {
+		        sessionTime.setStyleAttribute("color", "black");
+	        }
+		}
+	});	
 	
 	sessionForm2.add(sessionTime);
 	

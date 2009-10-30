@@ -6,6 +6,7 @@ public class ProjectTimeAccountPanel extends TimeAccountingPanel {
 
 	public void setValues(JSONObject json) {
 		
+		// these are all read-only, so there's no change in state; we can just set them
 	    scheduled.setValue(json.get("scheduled").isNumber().doubleValue());
 	    notBillable.setValue(json.get("not_billable").isNumber().doubleValue());	
 	    shortNotice.setValue(json.get("short_notice").isNumber().doubleValue());	
@@ -23,7 +24,9 @@ public class ProjectTimeAccountPanel extends TimeAccountingPanel {
 	    osr.setValue(json.get("other_session_rfi").isNumber().doubleValue());	
 	    oso.setValue(json.get("other_session_other").isNumber().doubleValue());
 	    
-	    desc.setValue(json.get("notes").isString().stringValue());
+	    // Description is NOT read-only, so must set state
+	    setDescription(json.get("notes").isString().stringValue());
+//	    desc.setValue(json.get("notes").isString().stringValue());
 	    
 	    
 	    

@@ -120,7 +120,8 @@ public class TimeAccountingPanel extends ContentPanel {
 		miscTimes2.setHeading("Times (Hrs)");
 		
 		//TextArea desc = new TextArea();
-		desc.setFieldLabel("Description");
+		//desc.setFieldLabel("Description");
+		
 		miscTimes2.add(desc, new FormData(600, 50));	
         
 		row2.add(miscTimes2, td);
@@ -147,6 +148,23 @@ public class TimeAccountingPanel extends ContentPanel {
 		setDefaultField("OS Weather", osw);
 		setDefaultField("OS RFI", osr);
 		setDefaultField("OS Other", oso);
+
+		desc.setFieldLabel("Description");
+	    // remind the user that they've changed a value		
+		desc.addListener(Events.Blur, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+	            GWT.log("Blur!", null);
+	            String value = ((TextArea) be.getSource()).getValue();
+	            String orgvl = ((TextArea) be.getSource()).getOriginalValue();
+	            GWT.log("comparing: " + value + " vs " + orgvl, null);
+	            if (orgvl.compareTo(value) == 0) {
+	            	((TextArea) be.getSource()).setStyleAttribute("color", "black");
+	            } else {
+	            	((TextArea) be.getSource()).setStyleAttribute("color", "red");
+	            }
+			}			
+    	});		
 	}
 	
 	private void setDefaultField(String label, NumberField nf) {
@@ -159,19 +177,32 @@ public class TimeAccountingPanel extends ContentPanel {
 		nf.setStyleAttribute("color", "grey");
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
 		nf.setValidator(new DSSTimeValidator()); 
-
-		
-//		nf.addListener(Events.OnChange, new Listener<BaseEvent>() {
-//			@Override
-//			public void handleEvent(BaseEvent be) {
-//                GWT.log("Changed!", null);				
-//			}
-//    	});
+        // remind the user that they've changed a value		
+		nf.addListener(Events.Blur, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+	            GWT.log("Blur!", null);
+	            double value = ((NumberField) be.getSource()).getValue().doubleValue();
+	            double orgvl = ((NumberField) be.getSource()).getOriginalValue().doubleValue();
+	            if (orgvl == value) {
+	            	((NumberField) be.getSource()).setStyleAttribute("color", "black");
+	            } else {
+	            	((NumberField) be.getSource()).setStyleAttribute("color", "red");
+	            }
+			}			
+    	});
 	}
 	
 	protected void setEditable(NumberField nf) {
 		nf.setReadOnly(false);
 		nf.setStyleAttribute("color", "black");
+	}
+	
+	public void setDescription(String value) {
+	    // we will reset the state as well
+		desc.setValue(value);
+		desc.setOriginalValue(value);
+		desc.setStyleAttribute("color", "black");
 	}
 	
 	public String getDescription() {
