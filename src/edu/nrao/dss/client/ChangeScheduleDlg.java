@@ -36,9 +36,9 @@ class ChangeScheduleDlg extends Dialog {
 		super();
 		
 		// Basic Dlg settings
-		String heading = "Change Schedule";
+		String heading = "Insert Period";
 		setHeading(heading);
-		String txt = "Change the schedule for and around Period " + period.getHandle();
+		String txt = "Insert a new period around Period " + period.getHandle();
 		addText(txt);
 		setButtons(Dialog.OKCANCEL);
 		GWT.log("PeriodDialogBox", null);
@@ -51,7 +51,7 @@ class ChangeScheduleDlg extends Dialog {
 	    final DateField changeDate = new DateField();
 	    changeDate.setValue(period.getStartDay());
 	    changeDate.setFieldLabel("Start Date");
-		changeDate.setToolTip("Set the start date for the time range to be changed");
+		changeDate.setToolTip("Set the start date for the start of new period");
 	    fp.add(changeDate);
 	    
 	    // start time
@@ -62,7 +62,7 @@ class ChangeScheduleDlg extends Dialog {
 	    changeTime.setFieldLabel("Start Time");
 	    changeTime.setAllowBlank(false);
 	    changeTime.setEditable(false);
-		changeTime.setToolTip("Set the start time for the time range to be changed");
+		changeTime.setToolTip("Set the start time for the start of new period");
 	    fp.add(changeTime);
 		
 		// duration
@@ -73,7 +73,7 @@ class ChangeScheduleDlg extends Dialog {
 			durChoices.put(key, m);
 			hours.add(key);
 		}
-		hours.setToolTip("Set duration (Hrs:Mins) of the time to be changed");
+		hours.setToolTip("Set duration (Hrs:Mins) of the new period");
 		hours.setFieldLabel("Duration");
 		hours.setEditable(false);
 		hours.setAllowBlank(false);

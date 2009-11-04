@@ -26,8 +26,8 @@ public class PeriodSummaryDlg extends Dialog {
 
 		// change the schedule?
 		Button change = new Button();
-		change.setToolTip("Click this button to change the schedule: replace this period(s) with some other period w/ the correct time accounting.");
-		change.setText("Change Schedule");
+		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
+		change.setText("Insert Period");
 	    change.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	@SuppressWarnings("deprecation")
 			public void handleEvent(BaseEvent be) {
