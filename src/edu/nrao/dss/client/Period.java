@@ -15,6 +15,7 @@ public class Period {
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormat DAY_FORMAT  = DateTimeFormat.getFormat("yyyy-MM-dd");
+    private static final DateTimeFormat TIME_FORMAT = DateTimeFormat.getFormat("HH:mm");
 
     public static Period parseJSON(JSONObject json) {
     	
@@ -25,6 +26,7 @@ public class Period {
         String time = json.get("time").isString().stringValue();
         Date st = DATE_FORMAT.parse(date + " " + time + ":00");
         Date day = DAY_FORMAT.parse(date);
+        
         int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
         
         Period period = new Period(id, handle, st, dur, day, time);
@@ -109,7 +111,24 @@ public class Period {
     	return new Date(endSecs);
     }
     
+    public String getEndTime() {
+    	return TIME_FORMAT.format(getEnd());
+    }
     
+    public int getEndHour() {
+        Date end = getEnd();
+        String endStr = end.toString();
+        String hms = endStr.split(" ")[3];
+        return Integer.parseInt(hms.split(":")[0]);
+    }
+    
+    public int getEndMinute() {
+        Date end = getEnd();
+        String endStr = end.toString();
+        String hms = endStr.split(" ")[3];
+        return Integer.parseInt(hms.split(":")[1]);
+    }
+        
     public String getStartString() {
     	return start.toString(); // TBF
     }

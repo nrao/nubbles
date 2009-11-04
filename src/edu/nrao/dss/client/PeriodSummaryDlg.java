@@ -24,7 +24,7 @@ public class PeriodSummaryDlg extends Dialog {
 		setHeading(txt);
 		setButtons(Dialog.OK);
 
-		// change the schedule?
+		// Insert a Period?
 		Button change = new Button();
 		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
 		change.setText("Insert Period");
@@ -37,6 +37,20 @@ public class PeriodSummaryDlg extends Dialog {
 	    	}
 	    });	
 	    add(change);
+	    
+	    // shfit period boundary?
+	    Button shift = new Button();
+		shift.setToolTip("Click this button to shift one of the boundaries of the period (start or end), with the correct time accounting.");
+		shift.setText("Shift Period Boundary");
+	    shift.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		GWT.log("shift Click", null);
+	    		ShiftPeriodBndDlg dlg = new ShiftPeriodBndDlg(period, sc); //period, sess_handles, sc);
+	    		close();
+	    	}
+	    });	
+	    add(shift);
 	    
 		// display summary info
 		PeriodSummaryPanel p = new PeriodSummaryPanel(period);
