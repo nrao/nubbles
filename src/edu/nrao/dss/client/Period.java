@@ -33,6 +33,7 @@ public class Period {
         
         period.setBackup(json.get("backup").isBoolean().booleanValue());
         period.setScore(json.get("score").isNumber().doubleValue());
+        period.setState(json.get("state").isString().stringValue());
         
         // now set the fields associated with time accounting
         period.setDescription(json.get("description").isString().stringValue());
@@ -294,6 +295,14 @@ public class Period {
 		return backup;
 	}
 	
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getState() {
+		return state;
+	}
+
 	// traditional period attributes
     private int      id;
     private String   handle; 
@@ -303,6 +312,7 @@ public class Period {
     private String   start_time;
     private double   score;
     private boolean  backup;
+    private String   state;
     
     // time accounting (all in Hours)
     private String   description;

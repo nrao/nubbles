@@ -29,6 +29,7 @@ public class PeriodSummaryPanel extends ContentPanel {
 	private TextField<String> dur = new TextField<String>();
 	private NumberField score = new NumberField();
 	private CheckBox backup = new CheckBox();
+	private TextField<String> state = new TextField<String>();
 	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel();
 	
     public PeriodSummaryPanel(Period p) {
@@ -81,6 +82,9 @@ public class PeriodSummaryPanel extends ContentPanel {
     	// TODO
     	backup.setStyleAttribute("color", "grey");
     	periodForm2.add(backup);
+    	
+    	setReadOnly("State", state);
+    	periodForm2.add(state);
     	
     	// what else?
     	
@@ -146,6 +150,7 @@ public class PeriodSummaryPanel extends ContentPanel {
         	dur.setValue(period.getDurationString());
         	score.setValue(period.getScore());
         	backup.setValue(period.isBackup());
+        	state.setValue(period.getState());
         }
     	
     }

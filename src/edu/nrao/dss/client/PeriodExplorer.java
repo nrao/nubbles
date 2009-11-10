@@ -78,6 +78,7 @@ public class PeriodExplorer extends Explorer {
 	private static final ColumnType[] columnTypes = {
        	new ColumnType("handle",                "Session (Project) VP", 220, SessionField.class),
        	new ColumnType("stype",                 "T",                     20, DisplayField.class),
+       	new ColumnType("state",                 "S",                     20, DisplayField.class),
         new ColumnType("date",                  "Day",                   70, DateEditField.class),
         new ColumnType("time",                  "Time",                  40, TimeField.class),
         new ColumnType("lst",                   "LST",                   55, DisplayField.class),
