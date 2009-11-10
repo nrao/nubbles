@@ -45,8 +45,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
+//import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
@@ -68,6 +67,7 @@ public class Schedule extends ContentPanel {
 	private Integer numCalendarDays = 3;
 	private String timezone = "UTC";
 	private String baseUrl = "/periods/" + timezone;
+//	private FactorsWindow factorsWindow;
 
 	
 	private Integer numVacancyMinutes = 2;
@@ -113,7 +113,7 @@ public class Schedule extends ContentPanel {
 		final FormPanel northCalendar = new FormPanel();
 		northCalendar.setHeading("Calendar Controls");
 		northCalendar.setBorders(true);
-		northCalendar.setWidth("40%");
+		northCalendar.setWidth("35%");
 		north.add(northCalendar);
 		
 		// fields for form
@@ -194,7 +194,7 @@ public class Schedule extends ContentPanel {
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
 		northSchedule.setBorders(true);
-		northSchedule.setWidth("15%");
+		northSchedule.setWidth("25%");
 		north.add(northSchedule);
 		
 		// Auto schedules the current calendar
@@ -252,11 +252,60 @@ public class Schedule extends ContentPanel {
 		});
 		northSchedule.add(emailButton);
 		
+//	    // Factors
+//		// TODO need to refresh menu when ??
+//		factorsWindow = new FactorsWindow();
+//		final SimpleComboBox<String> factors = new SimpleComboBox<String>();
+//		final HashMap<String, Integer> facChoices = new HashMap<String, Integer>();
+//		factors.setForceSelection(true);
+//		JSONRequest.get("/sessions/options"
+//			      , new HashMap<String, Object>() {{
+//			    	  put("mode", "session_handles");
+//			        }}
+//			      , new JSONCallbackAdapter() {
+//			@Override
+//			public void onSuccess(JSONObject json) {
+//				JSONArray sessions = json.get("session handles").isArray();
+//				JSONArray ids = json.get("ids").isArray();
+//				for (int i = 0; i< ids.size(); i += 1) {
+//					String key = sessions.get(i).toString().replace('"', ' ').trim();
+//					facChoices.put(key, (int)(ids.get(i).isNumber().doubleValue()));
+//					factors.add(key);
+//				}
+//			}
+//    	});
+//		factors.setToolTip("Display a session's score factors.");
+//		factors.setFieldLabel("Factors");
+//		factors.setEditable(false);
+//	    factors.addListener(Events.Select, new Listener<BaseEvent>() {
+//	    	public void handleEvent(BaseEvent be) {
+//	    		String label = factors.getSimpleValue();
+//	    		Integer index = facChoices.get(label);
+//	    		factorsWindow.setHeading(label + " (" + timezone + ")");
+//	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+//	    		keys.put("id", index);
+//	    		keys.put("tz", timezone);
+//	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd 00:00:00").format(startVacancyDateTime);
+//	    		keys.put("start", startStr);
+//	    		keys.put("duration", 24*60*numCalendarDays);
+//				String msg = "Generating scheduling factors for " + label;
+//				final MessageBox box = MessageBox.wait("Getting factors", msg, "Be Patient ...");
+//				JSONRequest.get("/factors", keys,
+//						new JSONCallbackAdapter() {
+//							public void onSuccess(JSONObject json) {
+//								box.close();
+//								factorsWindow.update(json);
+//							}
+//						});
+//	    	}
+//	    });
+//		northSchedule.add(factors);
+		
 		// 4 nominee controls:
 		final FormPanel northNominee = new FormPanel();
 		northNominee.setHeading("Vacancy Control");
 		northNominee.setBorders(true);
-	    northNominee.setWidth("45%");
+	    northNominee.setWidth("40%");
 		north.add(northNominee);
 			
 		// Nominee date
@@ -278,7 +327,6 @@ public class Schedule extends ContentPanel {
 		vacancyTime.setToolTip("Set the start time for the vacancy to be filled");
 	    vacancyTime.addListener(Events.Change, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		System.out.println("TimeField Listener time " + vacancyTime.getValue().toString());
 	            startVacancyTime = vacancyTime.getValue();
 	    	}
 	    });
@@ -468,8 +516,6 @@ public class Schedule extends ContentPanel {
 	}
 	
     public void updateCalendar() {	
-    	GWT.log("updateCalendar", null);
-
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
 		String url = baseUrl + "?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
