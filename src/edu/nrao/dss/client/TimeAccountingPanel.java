@@ -2,21 +2,31 @@ package edu.nrao.dss.client;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 
 public class TimeAccountingPanel extends ContentPanel { 
 	
     protected NumberField scheduled = new NumberField();
+    protected NumberField timeBilled = new NumberField();
+    protected NumberField observed = new NumberField();
+    protected NumberField unaccounted = new NumberField();
     protected NumberField notBillable = new NumberField();
     protected NumberField shortNotice = new NumberField();
     protected NumberField lt = new NumberField();
@@ -29,11 +39,16 @@ public class TimeAccountingPanel extends ContentPanel {
     protected NumberField oso = new NumberField();
     protected TextArea desc = new TextArea();
     
+    protected int fieldWidth = 55;
+    protected int fieldHeight = 20;
+    
+    protected FormData fd = new FormData(fieldWidth, fieldHeight);
+    
 	public TimeAccountingPanel() {
 		initLayout();
 	}
 	
-	private void initLayout() {
+	protected void initLayout() {
 		
 		setLayout(new RowLayout());
 		setCollapsible(true); 
@@ -58,20 +73,12 @@ public class TimeAccountingPanel extends ContentPanel {
 		miscTimes.setHeading("Times (Hrs)");
 		
 		// start adding the misc. times
-		//NumberField scheduled = new NumberField();
-		scheduled.setFieldLabel("Scheduled");
-		scheduled.setReadOnly(true);
-		miscTimes.add(scheduled, new FormData(30, 25));
-		
-		//NumberField notBillable = new NumberField();
-		notBillable.setFieldLabel("Not Billable");
-		notBillable.setReadOnly(true);
-		miscTimes.add(notBillable, new FormData(30, 25));
-
-		//NumberField shortNotice = new NumberField();
-		shortNotice.setFieldLabel("Short Notice");
-		shortNotice.setReadOnly(true);
-		miscTimes.add(shortNotice, new FormData(30, 25));
+		miscTimes.add(scheduled, fd);
+		miscTimes.add(observed, fd);
+		miscTimes.add(timeBilled, fd);
+		miscTimes.add(notBillable, fd);
+		miscTimes.add(shortNotice, fd);
+		miscTimes.add(unaccounted, fd);
 		
 		row1.add(miscTimes, td);
 		
@@ -80,26 +87,10 @@ public class TimeAccountingPanel extends ContentPanel {
         lostTimePanel.setHeading("Lost Time (Hrs)");
         lostTimePanel.setHeaderVisible(true);
         
-		//NumberField nb = new NumberField();
-		lt.setFieldLabel("Lost Time");
-		lt.setReadOnly(true);
-		
-		lostTimePanel.add(lt, new FormData(30, 25));
-
-		//NumberField nb2 = new NumberField();
-		ltw.setFieldLabel("LT Weather");
-		ltw.setReadOnly(true);
-		lostTimePanel.add(ltw, new FormData(30, 25));
-
-		//NumberField ltr = new NumberField();
-		ltr.setFieldLabel("LT RFI");
-		ltr.setReadOnly(true);
-		lostTimePanel.add(ltr, new FormData(30, 25));
-
-		//NumberField lto = new NumberField();
-		lto.setFieldLabel("LT Other");
-		lto.setReadOnly(true);
-		lostTimePanel.add(lto, new FormData(30, 25));
+		lostTimePanel.add(lt, fd);
+		lostTimePanel.add(ltw, fd);
+		lostTimePanel.add(ltr, fd);
+		lostTimePanel.add(lto, fd);
 		
 		row1.add(lostTimePanel, td);
 		
@@ -108,25 +99,10 @@ public class TimeAccountingPanel extends ContentPanel {
         otherTimePanel.setHeading("Time to Other Session (Hrs)");
         otherTimePanel.setHeaderVisible(true);
         
-		//NumberField nb3 = new NumberField();
-		os.setFieldLabel("Other Session");
-		os.setReadOnly(true);
-		otherTimePanel.add(os, new FormData(30, 25));
-
-		//NumberField osw = new NumberField();
-		osw.setFieldLabel("OS Weather");
-		osw.setReadOnly(true);
-		otherTimePanel.add(osw, new FormData(30, 25));
-
-		//NumberField osr = new NumberField();
-		osr.setFieldLabel("OS RFI");
-		osr.setReadOnly(true);
-		otherTimePanel.add(osr, new FormData(30, 25));
-		
-		//NumberField oso = new NumberField();
-		oso.setFieldLabel("OS Other");
-		oso.setReadOnly(true);
-		otherTimePanel.add(oso, new FormData(30, 25));
+		otherTimePanel.add(os, fd);
+		otherTimePanel.add(osw, fd);
+		otherTimePanel.add(osr, fd);
+        otherTimePanel.add(oso, fd);
 		
 		row1.add(otherTimePanel, td);
 		
@@ -144,11 +120,92 @@ public class TimeAccountingPanel extends ContentPanel {
 		miscTimes2.setHeading("Times (Hrs)");
 		
 		//TextArea desc = new TextArea();
-		desc.setFieldLabel("Description");
+		//desc.setFieldLabel("Description");
+		
 		miscTimes2.add(desc, new FormData(600, 50));	
         
 		row2.add(miscTimes2, td);
 		
 		add(row2);
-	}		
+		
+		setFieldAttributes();
+	}	
+	
+	protected void setFieldAttributes() {
+		setDefaultField("Scheduled", scheduled);
+		setDefaultField("Not Billable", notBillable);
+		setDefaultField("Short Notice", shortNotice);
+		setDefaultField("Time Billed", timeBilled);
+		setDefaultField("Unaccounted", unaccounted);
+		setDefaultField("Observed", observed);
+		
+		setDefaultField("Lost Time", lt);
+		setDefaultField("LT Weather", ltw);
+		setDefaultField("LT RFI", ltr);
+		setDefaultField("LT Other", lto);
+		
+		setDefaultField("Other Session", os);
+		setDefaultField("OS Weather", osw);
+		setDefaultField("OS RFI", osr);
+		setDefaultField("OS Other", oso);
+
+		desc.setFieldLabel("Description");
+	    // remind the user that they've changed a value		
+		desc.addListener(Events.Blur, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+	            GWT.log("Blur!", null);
+	            String value = ((TextArea) be.getSource()).getValue();
+	            String orgvl = ((TextArea) be.getSource()).getOriginalValue();
+	            GWT.log("comparing: " + value + " vs " + orgvl, null);
+	            if (orgvl.compareTo(value) == 0) {
+	            	((TextArea) be.getSource()).setStyleAttribute("color", "black");
+	            } else {
+	            	((TextArea) be.getSource()).setStyleAttribute("color", "red");
+	            }
+			}			
+    	});		
+	}
+	
+	private void setDefaultField(String label, NumberField nf) {
+		nf.setFieldLabel(label);
+		nf.setReadOnly(true);
+		// TODO: read only fields should just have their background color darkened!
+		//nf.setEnabled(false);
+		//nf.setStyleAttribute("border" , "5px solid line");
+		//nf.setStyleAttribute("background-color", "#FFFFFF");
+		nf.setStyleAttribute("color", "grey");
+		nf.setFormat(NumberFormat.getFormat("#0.00"));
+		nf.setValidator(new DSSTimeValidator()); 
+        // remind the user that they've changed a value		
+		nf.addListener(Events.Blur, new Listener<BaseEvent>() {
+			@Override
+			public void handleEvent(BaseEvent be) {
+	            GWT.log("Blur!", null);
+	            double value = ((NumberField) be.getSource()).getValue().doubleValue();
+	            double orgvl = ((NumberField) be.getSource()).getOriginalValue().doubleValue();
+	            if (orgvl == value) {
+	            	((NumberField) be.getSource()).setStyleAttribute("color", "black");
+	            } else {
+	            	((NumberField) be.getSource()).setStyleAttribute("color", "red");
+	            }
+			}			
+    	});
+	}
+	
+	protected void setEditable(NumberField nf) {
+		nf.setReadOnly(false);
+		nf.setStyleAttribute("color", "black");
+	}
+	
+	public void setDescription(String value) {
+	    // we will reset the state as well
+		desc.setValue(value);
+		desc.setOriginalValue(value);
+		desc.setStyleAttribute("color", "black");
+	}
+	
+	public String getDescription() {
+		return (desc.getValue() == null) ? "" : desc.getValue();
+	}
 }

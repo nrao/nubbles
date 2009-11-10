@@ -28,29 +28,30 @@ import edu.nrao.dss.client.util.TimeUtils;
 // TODO: this does more then just change a period - it can replace several periods
 // w/ a single period.  But it's also ideal for inserting backups.  so what to call it?
 
-class PeriodDialogBox extends Dialog {
+class ChangeScheduleDlg extends Dialog {
 
 	// TODO: need to refactor this into more methods
-	public PeriodDialogBox(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
+	public ChangeScheduleDlg(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
 		
 		super();
 		
 		// Basic Dlg settings
-		String heading = "Change Schedule";
+		String heading = "Insert Period";
 		setHeading(heading);
-		String txt = "Change the schedule for and around Period " + period.getHandle();
+		String txt = "Insert a new period around Period " + period.getHandle();
 		addText(txt);
 		setButtons(Dialog.OKCANCEL);
 		GWT.log("PeriodDialogBox", null);
 		
 		// now set up the form w/ all it's fields
 		final FormPanel fp = new FormPanel();
+		fp.setHeaderVisible(false);
 		
 		// starting with the start date
 	    final DateField changeDate = new DateField();
 	    changeDate.setValue(period.getStartDay());
 	    changeDate.setFieldLabel("Start Date");
-		changeDate.setToolTip("Set the start date for the time range to be changed");
+		changeDate.setToolTip("Set the start date for the start of new period");
 	    fp.add(changeDate);
 	    
 	    // start time
@@ -61,7 +62,7 @@ class PeriodDialogBox extends Dialog {
 	    changeTime.setFieldLabel("Start Time");
 	    changeTime.setAllowBlank(false);
 	    changeTime.setEditable(false);
-		changeTime.setToolTip("Set the start time for the time range to be changed");
+		changeTime.setToolTip("Set the start time for the start of new period");
 	    fp.add(changeTime);
 		
 		// duration
@@ -72,7 +73,7 @@ class PeriodDialogBox extends Dialog {
 			durChoices.put(key, m);
 			hours.add(key);
 		}
-		hours.setToolTip("Set duration of the time to be changed");
+		hours.setToolTip("Set duration (Hrs:Mins) of the new period");
 		hours.setFieldLabel("Duration");
 		hours.setEditable(false);
 		hours.setAllowBlank(false);

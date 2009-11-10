@@ -17,11 +17,13 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -251,6 +253,56 @@ public class Schedule extends ContentPanel {
 			}
 		});
 		northSchedule.add(emailButton);
+		
+		// publishes all periods currently displayed (state moved from pending to scheduled)
+		Button publishButton = new Button("Publish");
+		publishButton.setToolTip("Publishs all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
+		publishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				// make the JSON request for the periods so we can make appointments
+				// we need the same url in a different format
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
+	    		keys.put("start", startStr);
+	    		keys.put("duration", numCalendarDays);
+	    		keys.put("tz", timezone);	    		
+				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
+				JSONRequest.post("/periods/publish", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								System.out.println("/schedule/publish onSuccess");
+								updateCalendar();
+							}
+						});
+			}
+		});
+		northSchedule.add(publishButton);
+		
+		// deletes all pending periods currently displayed (state moved from pending to deleted)
+		Button deletePendingBtn = new Button("Delete Pending");
+		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
+		deletePendingBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				// make the JSON request for the periods so we can make appointments
+				// we need the same url in a different format
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
+	    		keys.put("start", startStr);
+	    		keys.put("duration", numCalendarDays);
+	    		keys.put("tz", timezone);	    		
+				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
+				JSONRequest.post("/periods/delete_pending", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								System.out.println("/schedule/delete_pending onSuccess");
+								updateCalendar();
+							}
+						});
+			}
+		});
+		northSchedule.add(deletePendingBtn);		
 		
 //	    // Factors
 //		// TODO need to refresh menu when ??

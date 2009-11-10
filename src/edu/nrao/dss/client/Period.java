@@ -3,6 +3,7 @@ package edu.nrao.dss.client;
 // WTF: I can't fucking use this!!!
 //import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.HashMap;
 
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -14,6 +15,7 @@ public class Period {
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormat DAY_FORMAT  = DateTimeFormat.getFormat("yyyy-MM-dd");
+    private static final DateTimeFormat TIME_FORMAT = DateTimeFormat.getFormat("HH:mm");
 
     public static Period parseJSON(JSONObject json) {
     	
@@ -24,27 +26,57 @@ public class Period {
         String time = json.get("time").isString().stringValue();
         Date st = DATE_FORMAT.parse(date + " " + time + ":00");
         Date day = DAY_FORMAT.parse(date);
-        //Date st = DATE_FORMAT.parse(json.get("start").isString().stringValue());
+        
         int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
         
         Period period = new Period(id, handle, st, dur, day, time);
+        
+        period.setBackup(json.get("backup").isBoolean().booleanValue());
+        period.setScore(json.get("score").isNumber().doubleValue());
+        period.setState(json.get("state").isString().stringValue());
         
         // now set the fields associated with time accounting
         period.setDescription(json.get("description").isString().stringValue());
         period.setScheduled(json.get("scheduled").isNumber().doubleValue());
         period.setShort_notice(json.get("short_notice").isNumber().doubleValue());
         period.setNot_billable(json.get("not_billable").isNumber().doubleValue());
-        
+        period.setObserved(json.get("observed").isNumber().doubleValue());
+        period.setBilled(json.get("time_billed").isNumber().doubleValue());
+        period.setUnaccounted(json.get("unaccounted_time").isNumber().doubleValue());
+
+        period.setOther_session(json.get("other_session").isNumber().doubleValue());
         period.setOther_session_weather(json.get("other_session_weather").isNumber().doubleValue());
         period.setOther_session_rfi(json.get("other_session_rfi").isNumber().doubleValue());
         period.setOther_session_other(json.get("other_session_other").isNumber().doubleValue());
+        
+        period.setLost_time(json.get("lost_time").isNumber().doubleValue());
         period.setLost_time_weather(json.get("lost_time_weather").isNumber().doubleValue());
         period.setLost_time_rfi(json.get("lost_time_rfi").isNumber().doubleValue());
         period.setLost_time_other(json.get("lost_time_other").isNumber().doubleValue());
         
         return period;
     }
+    
+    public HashMap<String, Object> toHashMap() {
+    	
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		
+		keys.put("description", description);
+		keys.put("scheduled", scheduled);
+		keys.put("not_billable", not_billable);
+		keys.put("short_notice", short_notice);
+		keys.put("lost_time_weather", lost_time_weather);
+		keys.put("lost_time_rfi", lost_time_rfi);
+		keys.put("lost_time_other", lost_time_other);
+		keys.put("other_session_weather", other_session_weather);
+		keys.put("other_session_rfi", other_session_rfi);
+		keys.put("other_session_other", other_session_other);
 
+		
+		return keys;
+    }
+	
+	
     private static double hours2minutes(double hours) {
     	return hours * 60.0;
     }
@@ -80,14 +112,24 @@ public class Period {
     	return new Date(endSecs);
     }
     
-    public double getLost_time() {
-    	return lost_time_weather + lost_time_rfi + lost_time_other;
+    public String getEndTime() {
+    	return TIME_FORMAT.format(getEnd());
     }
     
-    public double getOther_Session() {
-    	return other_session_weather + other_session_rfi + other_session_other;
+    public int getEndHour() {
+        Date end = getEnd();
+        String endStr = end.toString();
+        String hms = endStr.split(" ")[3];
+        return Integer.parseInt(hms.split(":")[0]);
     }
     
+    public int getEndMinute() {
+        Date end = getEnd();
+        String endStr = end.toString();
+        String hms = endStr.split(" ")[3];
+        return Integer.parseInt(hms.split(":")[1]);
+    }
+        
     public String getStartString() {
     	return start.toString(); // TBF
     }
@@ -199,6 +241,68 @@ public class Period {
 		return short_notice;
 	}
 
+	public void setObserved(double observed) {
+		this.observed = observed;
+	}
+
+	public double getObserved() {
+		return observed;
+	}
+
+	public void setBilled(double billed) {
+		this.billed = billed;
+	}
+
+	public double getBilled() {
+		return billed;
+	}
+
+	public void setUnaccounted(double unaccounted) {
+		this.unaccounted = unaccounted;
+	}
+
+	public double getUnaccounted() {
+		return unaccounted;
+	}
+
+	public void setOther_session(double other_session) {
+		this.other_session = other_session;
+	}
+
+	public double getOther_session() {
+		return other_session;
+	}
+
+	public void setLost_time(double lost_time) {
+		this.lost_time = lost_time;
+	}
+
+	public double getLost_time() {
+		return lost_time;
+	}
+	public void setScore(double score) {
+		this.score = score;
+	}
+
+	public double getScore() {
+		return score;
+	}
+	public void setBackup(boolean backup) {
+		this.backup = backup;
+	}
+
+	public boolean isBackup() {
+		return backup;
+	}
+	
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getState() {
+		return state;
+	}
+
 	// traditional period attributes
     private int      id;
     private String   handle; 
@@ -206,14 +310,23 @@ public class Period {
     private int      duration; // minutes
     private Date     start_day;
     private String   start_time;
+    private double   score;
+    private boolean  backup;
+    private String   state;
+    
     // time accounting (all in Hours)
     private String   description;
     private double   scheduled;
+    private double   observed;
+    private double   billed;
+    private double   unaccounted;
     private double   not_billable;
     private double   short_notice;
+    private double   lost_time;
     private double   lost_time_weather;
     private double   lost_time_rfi;
     private double   lost_time_other;
+    private double   other_session;
     private double   other_session_weather;
     private double   other_session_rfi;
     private double   other_session_other;

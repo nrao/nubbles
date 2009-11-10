@@ -25,8 +25,21 @@ public class Event {
 		this.title = title;
 		this.description = description;
 		this.start = start;
-		this.end = end;
+		this.end = getSafeEndDate(end); //don't end at midnight, but 1 min. before
 		createAppointments();
+	}
+	
+	private long getDayOffset(Date dt) {
+		return (dt.getTime() - msGmtOffset) % msInDay;
+	}
+	
+	// avoid wrap-around when a time block ends on midnight
+	private Date getSafeEndDate(Date end) {
+		if (getDayOffset(end) == 0) {
+			return new Date(end.getTime() - (60 * 1000)); // loose a minute! 
+		} else {
+			return end;
+		}
 	}
 	
 	// Date -> GMT day number
@@ -59,7 +72,7 @@ public class Event {
 		// map this single event to one or more appointments according to whether
 		// or not the event spans a GMT day.
 		long dayStart = getDay(start);
-		long dayEnd   = getDay(end);
+//		long dayEnd   = getDay(end);
 		int daySpan = getDaySpan();
 		Date apptStart;
 		Date apptEnd;
@@ -78,8 +91,8 @@ public class Event {
 			   // all continuing appointments start at the end of the day
 			   apptEnd = getEndDayDate(dayStart + i);
 		   }
-		   String strStart = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:SS").format(apptStart);
-		   String strEnd   = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:SS").format(apptEnd);
+//		   String strStart = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:SS").format(apptStart);
+//		   String strEnd   = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:SS").format(apptEnd);
 
 		   // our Event becomes one or more of their Appointments
 		   Appointment appt = new Appointment();

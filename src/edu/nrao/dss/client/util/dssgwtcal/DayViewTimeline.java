@@ -33,7 +33,9 @@ public /**
         "6", "7", "8", "9", "10", "11"};
     private final String AM = " AM";
     private final String PM = " PM";
-
+    // set this to change whether timeline uses AM, PM, or 24-hour style.
+    private boolean amPmTime = false;
+    
     public DayViewTimeline(HasSettings settings) {
         initWidget(timelinePanel);
         timelinePanel.setStylePrimaryName("time-strip");
@@ -62,7 +64,12 @@ public /**
 
         while (i < HOURS.length) {
 
-            String hour = HOURS[i];
+        	String hour;
+        	if (amPmTime) {
+                hour = HOURS[i];
+        	} else {
+            	hour = Integer.toString(i) + ":00";
+        	}
             i++;
 
             //block
@@ -77,15 +84,17 @@ public /**
             hourLabel.setStylePrimaryName("hour-text");
             flowPanel.add(hourLabel);
             
-            String amPm = "";
-            if(i<13)
-                amPm = AM;
-            else if(i>13)
-                amPm = PM;
-            
-            Label ampmLabel = new Label(amPm);
-            ampmLabel.setStylePrimaryName("ampm-text");
-            flowPanel.add(ampmLabel);
+            if (amPmTime) {
+	            String amPm = "";
+	            if(i<13)
+	                amPm = AM;
+	            else if(i>13)
+	                amPm = PM;
+	            
+	            Label ampmLabel = new Label(amPm);
+	            ampmLabel.setStylePrimaryName("ampm-text");
+	            flowPanel.add(ampmLabel);
+            }
 
             hourWrapper.add(flowPanel);
             

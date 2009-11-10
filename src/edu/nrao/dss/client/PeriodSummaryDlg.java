@@ -20,24 +20,37 @@ public class PeriodSummaryDlg extends Dialog {
 		setLayout(new FlowLayout());
 		
 		// Basic Dlg settings
-		String heading = "Period Summary Dialog";
-		setHeading(heading);
 		String txt = "Summary for Period " + period.getHandle();
-		addText(txt);
+		setHeading(txt);
 		setButtons(Dialog.OK);
 
-		// change the schedule?
+		// Insert a Period?
 		Button change = new Button();
-		change.setText("Change Schedule");
+		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
+		change.setText("Insert Period");
 	    change.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	@SuppressWarnings("deprecation")
 			public void handleEvent(BaseEvent be) {
 	    		GWT.log("Change Click", null);
-	    		PeriodDialogBox dlg = new PeriodDialogBox(period, sess_handles, sc);
+	    		ChangeScheduleDlg dlg = new ChangeScheduleDlg(period, sess_handles, sc);
 	    		close();
 	    	}
 	    });	
 	    add(change);
+	    
+	    // shfit period boundary?
+	    Button shift = new Button();
+		shift.setToolTip("Click this button to shift one of the boundaries of the period (start or end), with the correct time accounting.");
+		shift.setText("Shift Period Boundary");
+	    shift.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		GWT.log("shift Click", null);
+	    		ShiftPeriodBndDlg dlg = new ShiftPeriodBndDlg(period, sc); //period, sess_handles, sc);
+	    		close();
+	    	}
+	    });	
+	    add(shift);
 	    
 		// display summary info
 		PeriodSummaryPanel p = new PeriodSummaryPanel(period);
