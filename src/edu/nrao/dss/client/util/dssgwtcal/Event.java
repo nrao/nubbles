@@ -17,7 +17,8 @@ public class Event {
 	public boolean selected;
 	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 	private long msInDay = 24 * 60 * 60 * 1000;
-	private long msGmtOffset = 4 * 60 * 60 * 1000;
+	// Nov 1 - March 8, 2009
+	//private long msGmtOffset = 5 * 60 * 60 * 1000;
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     
@@ -29,8 +30,27 @@ public class Event {
 		createAppointments();
 	}
 	
+	private long getGmtOffsetMs(Date dt) {
+		long offset;
+		// TODO: how to get this to work forever?
+	    // 5 hours between Nov 1 2009, March 14, 2010, otherwise, 4 hours
+		Date nov1_2009  = DATE_FORMAT.parse("2009-11-01 00:00:00");
+		Date mar14_2010 = DATE_FORMAT.parse("2010-03-14 00:00:00");
+		if ((dt.before(nov1_2009)) || (dt.after(mar14_2010))) {
+			offset = 4;
+		} else {
+			offset = 5;
+		}
+	    return offset * 60 * 60 * 1000; // milliseconds
+	}
+	
+	private long getGmtOffsetMs(long day) {
+		Date dt = new Date(day * msInDay);
+		return getGmtOffsetMs(dt);
+	}
+	
 	private long getDayOffset(Date dt) {
-		return (dt.getTime() - msGmtOffset) % msInDay;
+		return (dt.getTime() - getGmtOffsetMs(dt)) % msInDay;
 	}
 	
 	// avoid wrap-around when a time block ends on midnight
@@ -45,19 +65,21 @@ public class Event {
 	// Date -> GMT day number
 	private long getDay(Date dt) {
 		long time = dt.getTime();
-		return (time - msGmtOffset) / msInDay;
+		return (time - getGmtOffsetMs(dt)) / msInDay;
 	}
 	
 	// GMT day number -> Date
 	private Date getDayDate(long day) {
-		long gmtDay = (msInDay * day) + msGmtOffset;
+		long gmtDay = (msInDay * day) + getGmtOffsetMs(day);
 		return new Date(gmtDay);
 	}
 	
+
+
 	// GMT day number -> last few seconds of that day as Date
 	private Date getEndDayDate(long day) {
 		// the next day is from day + i, so get that, then subtract a few seconds
-		long gmtDay = (msInDay * (day + 1)) + msGmtOffset;
+		long gmtDay = (msInDay * (day + 1)) + getGmtOffsetMs(day);
 		long msOffset = 60 * 1000; // 1 min. 
 		return new Date(gmtDay - msOffset);
 		
