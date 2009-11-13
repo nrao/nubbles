@@ -133,6 +133,11 @@ public class Explorer extends ContentPanel{
 		         null);
 	}
 	
+	// to be implemented by children
+	public void viewObject() {
+		//return grid.getSelectionModel().getSelectedItem();
+	}
+	
 	private void initToolBar() {
 		final PagingToolBar pagingToolBar = new PagingToolBar(50);
 		final TextField<String> pages = new TextField<String>();
@@ -155,7 +160,19 @@ public class Explorer extends ContentPanel{
 		
 		ToolBar toolBar = new ToolBar();
 		setTopComponent(toolBar);
-
+		
+		viewItem = new Button("View");
+		toolBar.add(viewItem);
+		viewItem.setToolTip("view row.");
+		viewItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        @Override
+	        public void componentSelected(ButtonEvent ce) {
+	            viewObject();	
+	        }
+	    });
+		// hide this button by default
+		viewItem.setVisible(false);
+		
 		addItem = new Button("Add");
 		toolBar.add(addItem);
 		addItem.setToolTip("Add a new row.");
@@ -327,7 +344,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	/** Provides basic spreadsheet-like functionality. */
-	private EditorGrid<BaseModelData> grid;
+	protected EditorGrid<BaseModelData> grid;
 
 	/** Use store.add() to remember dynamically created records. */
 	protected ListStore<BaseModelData> store;
@@ -352,6 +369,7 @@ public class Explorer extends ContentPanel{
 	
 	protected Button filterAction;
 	protected Button saveItem;
+	protected Button viewItem;
 	protected Button addItem;
 	protected Button removeApproval;
 	private Dialog removeDialog;

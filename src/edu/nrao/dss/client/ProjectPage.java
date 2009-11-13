@@ -42,6 +42,7 @@ public class ProjectPage extends ContentPanel {
 	public ProjectPage() {
 		initLayout();
 		initListeners();
+		updatePCodeOptions();
 	}
 	
 	private void initLayout() {
@@ -211,6 +212,7 @@ public class ProjectPage extends ContentPanel {
 				project_ids.clear();
 				JSONArray pcodes = json.get("project codes").isArray();
 				JSONArray ids    = json.get("project ids").isArray();
+				GWT.log("got num of pcodes: "+Integer.toString(pcodes.size()), null); 
 				for (int i = 0; i < pcodes.size(); ++i){
 					String pcode = pcodes.get(i).toString().replace('"', ' ').trim();
 					int id = (int) ids.get(i).isNumber().doubleValue();

@@ -28,6 +28,7 @@ public class ProjectExplorer extends Explorer {
 		super("/projects", new ProjectType());
 		initFilters();
 		initLayout(initColumnModel());
+		viewItem.setVisible(true);
 	}
 
 	private void initFilters() {
@@ -161,4 +162,16 @@ public class ProjectExplorer extends Explorer {
 	    };
 	    return editor;
 	}
+	
+	// when the view button gets pressed, go to the Project Page tab.
+	public void viewObject() {
+		BaseModelData bd = grid.getSelectionModel().getSelectedItem();
+		((Scheduler) parent).showProject((String) bd.get("pcode"));
+	}
+	
+	public void setParent(Component parent) {
+		this.parent = parent;
+	}
+	
+	private Component parent;
 }

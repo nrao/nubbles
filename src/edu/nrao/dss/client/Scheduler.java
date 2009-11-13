@@ -27,6 +27,7 @@ public class Scheduler extends Viewport implements EntryPoint {
 
         // project explorer tab
         tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
+        pe.setParent(this);
         
         // session explorer tab - we need to update the project info when it
         // comes into focus
@@ -92,6 +93,14 @@ public class Scheduler extends Viewport implements EntryPoint {
         return item;
     }
 
+    // brings focus to the Project Page tab and selects given period.
+    // this is called by any child widget (ex: Project Explorer) 
+    public void showProject(String pcode) {
+        TabItem ppTab =	tabPanel.findItem("Project Page", false);
+    	tabPanel.setSelection(ppTab);
+    	pp.setProject(pcode);
+    }
+    
     private final TabPanel         tabPanel = new TabPanel();
     private final ProjectExplorer  pe       = new ProjectExplorer();
     private final SessionExplorer  se       = new SessionExplorer();
