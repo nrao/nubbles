@@ -63,6 +63,15 @@ public class Scheduler extends Viewport implements EntryPoint {
     });        
         tabPanel.add(taTab);
         
+        TabItem ppTab = addTab(pp, "Project Page", "Per Project");
+        ppTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
+        	@Override
+        	public void componentSelected(TabPanelEvent tpe){
+        		pp.updatePCodeOptions();
+        	}
+        });	
+        tabPanel.add(ppTab);
+        
         // TODO Why does not "tabPanel.setAutoHeight(true);? work?
         tabPanel.setHeight(920);
 
@@ -76,6 +85,7 @@ public class Scheduler extends Viewport implements EntryPoint {
     
     private TabItem addTab(ContentPanel container, String title, String toolTip) {
         TabItem item = new TabItem(title);
+        item.setId(title);
         item.add(container);
         item.getHeader().setToolTip(toolTip);
         item.setLayout(new FitLayout());
@@ -87,4 +97,5 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final SessionExplorer  se       = new SessionExplorer();
     private final Schedule         sch      = new Schedule();
     private final TimeAccounting   ta       = new TimeAccounting();
+    private final ProjectPage      pp       = new ProjectPage();
 }
