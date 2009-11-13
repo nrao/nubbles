@@ -19,11 +19,13 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.ui.Anchor;
 
 
 public class ProjectPage extends ContentPanel {
 
-	private FormPanel projectForm = new FormPanel();	
+	private FormPanel projectForm = new FormPanel();
+	private Anchor anchor = new Anchor("Observers Project Page", "");	
 	private SimpleComboBox<String> projects = new SimpleComboBox<String>();
 	private TextField<String> name = new TextField<String>();
 	private TextField<String> pi   = new TextField<String>();
@@ -56,10 +58,12 @@ public class ProjectPage extends ContentPanel {
 		//projectForm.setHeading("Project");
 		//projectForm.setBorders(true);
         projectForm.setHeaderVisible(false);
-		
+
+        
 		// the project picker goes in this left-most form panel
 		projects.setFieldLabel("Project");
-		projectForm.add(projects);		
+		projectForm.add(projects);
+		
 		
 		name.setFieldLabel("Title");
 		name.setReadOnly(true);
@@ -81,10 +85,13 @@ public class ProjectPage extends ContentPanel {
 
 		schNotes.setFieldLabel("Scheduler Notes");
 		projectForm.add(schNotes, new FormData(500, 200));
-		
+
+    	anchor.setEnabled(false);
+    	anchor.setVisible(false);
+    	projectForm.add(anchor);
+    	
 	   	reset.setText("Reset");
     	projectForm.add(reset);
-    	
 
 	   	save.setText("Save");
     	projectForm.add(save);
@@ -167,6 +174,7 @@ public class ProjectPage extends ContentPanel {
 	    name.setValue(proj.get("name").isString().stringValue());
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
+	    setObserversLink();
 	    
 	    // for writable fields, set them up again so that changes
 	    // can be marked w/ red.
@@ -182,6 +190,14 @@ public class ProjectPage extends ContentPanel {
 		
 	}
 
+	private void setObserversLink() {
+		String name = projects.getSimpleValue();
+		String url = "https://dss.gb.nrao.edu/project/" + name;
+		anchor.setHref(url);
+		anchor.setText(name + " Observers Page");
+		anchor.setEnabled(true);
+		anchor.setVisible(true);
+	}
 	// gets all project codes form the server and populates the project combo
 	public void updatePCodeOptions() {
 		JSONRequest.get("/sessions/options"
