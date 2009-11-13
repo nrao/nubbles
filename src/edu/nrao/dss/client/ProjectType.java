@@ -18,6 +18,8 @@ public class ProjectType extends ModelType {
 		addField("PSC_time");
 		addField("sem_time");
 		addField("grade");
+		addField("notes");
+		addField("schd_notes");
 		addField("thesis");
 		addField("complete");
 	}

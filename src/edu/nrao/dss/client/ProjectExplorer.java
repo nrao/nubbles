@@ -113,6 +113,14 @@ public class ProjectExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
+	    column = new ColumnConfig("notes", "Notes", 80);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    configs.add(column);
+
+	    column = new ColumnConfig("schd_notes", "Schd. Notes", 80);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    configs.add(column);
+	    
 	    CheckColumnConfig checkColumn = new CheckColumnConfig("thesis", "Thesis?", 55);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);
