@@ -17,13 +17,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -70,6 +68,7 @@ public class Schedule extends ContentPanel {
 	private String timezone = "UTC";
 	private String baseUrl = "/periods/" + timezone;
 //	private FactorsWindow factorsWindow;
+	private FactorsDlg factorsDlg;
 
 	
 	private Integer numVacancyMinutes = 2;
@@ -304,54 +303,18 @@ public class Schedule extends ContentPanel {
 		});
 		northSchedule.add(deletePendingBtn);		
 		
-//	    // Factors
-//		// TODO need to refresh menu when ??
-//		factorsWindow = new FactorsWindow();
-//		final SimpleComboBox<String> factors = new SimpleComboBox<String>();
-//		final HashMap<String, Integer> facChoices = new HashMap<String, Integer>();
-//		factors.setForceSelection(true);
-//		JSONRequest.get("/sessions/options"
-//			      , new HashMap<String, Object>() {{
-//			    	  put("mode", "session_handles");
-//			        }}
-//			      , new JSONCallbackAdapter() {
-//			@Override
-//			public void onSuccess(JSONObject json) {
-//				JSONArray sessions = json.get("session handles").isArray();
-//				JSONArray ids = json.get("ids").isArray();
-//				for (int i = 0; i< ids.size(); i += 1) {
-//					String key = sessions.get(i).toString().replace('"', ' ').trim();
-//					facChoices.put(key, (int)(ids.get(i).isNumber().doubleValue()));
-//					factors.add(key);
-//				}
-//			}
-//    	});
-//		factors.setToolTip("Display a session's score factors.");
-//		factors.setFieldLabel("Factors");
-//		factors.setEditable(false);
-//	    factors.addListener(Events.Select, new Listener<BaseEvent>() {
-//	    	public void handleEvent(BaseEvent be) {
-//	    		String label = factors.getSimpleValue();
-//	    		Integer index = facChoices.get(label);
-//	    		factorsWindow.setHeading(label + " (" + timezone + ")");
-//	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-//	    		keys.put("id", index);
-//	    		keys.put("tz", timezone);
-//	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd 00:00:00").format(startVacancyDateTime);
-//	    		keys.put("start", startStr);
-//	    		keys.put("duration", 24*60*numCalendarDays);
-//				String msg = "Generating scheduling factors for " + label;
-//				final MessageBox box = MessageBox.wait("Getting factors", msg, "Be Patient ...");
-//				JSONRequest.get("/factors", keys,
-//						new JSONCallbackAdapter() {
-//							public void onSuccess(JSONObject json) {
-//								box.close();
-//								factorsWindow.update(json);
-//							}
-//						});
-//	    	}
-//	    });
-//		northSchedule.add(factors);
+		// Factors
+		Button factorsButton = new Button("Factors");
+		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
+		factorsDlg = new FactorsDlg();
+		factorsDlg.hide();
+		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				factorsDlg.show();
+			}
+		});
+		northSchedule.add(factorsButton);
 		
 		// 4 nominee controls:
 		final FormPanel northNominee = new FormPanel();
@@ -543,6 +506,10 @@ public class Schedule extends ContentPanel {
 		add(east, eastData);
 
 		updateCalendar();
+	}
+	
+	public FactorsDlg getFactorsDlg() {
+		return factorsDlg;
 	}
 	
 	private void updateNominees(ContentPanel panel) {

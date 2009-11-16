@@ -1,15 +1,12 @@
 package edu.nrao.dss.client;
 
-import com.extjs.gxt.charts.client.model.axis.Label;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -65,7 +62,9 @@ public class Scheduler extends Viewport implements EntryPoint {
         
         // TODO Why does not "tabPanel.setAutoHeight(true);? work?
         tabPanel.setHeight(920);
-
+        
+        // Factor access
+        factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));
 
         RootPanel rp = RootPanel.get();
         rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
@@ -87,4 +86,5 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final SessionExplorer  se       = new SessionExplorer();
     private final Schedule         sch      = new Schedule();
     private final TimeAccounting   ta       = new TimeAccounting();
+    private Factors                factors;
 }
