@@ -35,7 +35,6 @@ public class NomineePanel extends ContentPanel {
 	private DynamicHttpProxy<BaseListLoadResult<NomineeType>> proxy;
 	private BaseListLoader<BaseListLoadResult<NomineeModel>> loader;
 	private ListStore<NomineeModel> store;
-	private FactorsWindow factors;
 	private String rootUrl = "/nominees";
 	
 	public NomineePanel(Schedule sched) {
@@ -68,7 +67,6 @@ public class NomineePanel extends ContentPanel {
 		             schedule.updateCalendar();
 		           }  
 		         });
-		factors = new FactorsWindow();
 	}
 	
 	private HashMap<String, Object> nominee2Period(BaseModelData fields) {
@@ -103,7 +101,7 @@ public class NomineePanel extends ContentPanel {
 	}
 	
 	public void loadData() {
-		System.out.println("loadData");
+		//System.out.println("loadData");
 		loader.load();
 	}
 }

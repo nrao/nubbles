@@ -17,13 +17,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -47,8 +45,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
+//import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
@@ -70,6 +67,8 @@ public class Schedule extends ContentPanel {
 	private Integer numCalendarDays = 3;
 	private String timezone = "UTC";
 	private String baseUrl = "/periods/" + timezone;
+//	private FactorsWindow factorsWindow;
+	private FactorsDlg factorsDlg;
 
 	
 	private Integer numVacancyMinutes = 2;
@@ -115,7 +114,7 @@ public class Schedule extends ContentPanel {
 		final FormPanel northCalendar = new FormPanel();
 		northCalendar.setHeading("Calendar Controls");
 		northCalendar.setBorders(true);
-		northCalendar.setWidth("40%");
+		northCalendar.setWidth("35%");
 		north.add(northCalendar);
 		
 		// fields for form
@@ -179,24 +178,12 @@ public class Schedule extends ContentPanel {
 	    	}
 	    });
 		northCalendar.add(tz);
-
-/*		// Update Button
-	    final Button updateBtn;
-	    updateBtn = new Button("Update");
-		updateBtn.setToolTip("Modify the schedule and display range of calendar");
-	    updateBtn.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            updateCalendar();
-	    	}
-	    });
-		northCalendar.add(updateBtn);*/
-		
 		
 		// 1 schedule controls
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
 		northSchedule.setBorders(true);
-		northSchedule.setWidth("15%");
+		northSchedule.setWidth("25%");
 		north.add(northSchedule);
 		
 		// Auto schedules the current calendar
@@ -304,11 +291,24 @@ public class Schedule extends ContentPanel {
 		});
 		northSchedule.add(deletePendingBtn);		
 		
+		// Factors
+		Button factorsButton = new Button("Factors");
+		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
+		factorsDlg = new FactorsDlg();
+		factorsDlg.hide();
+		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				factorsDlg.show();
+			}
+		});
+		northSchedule.add(factorsButton);
+		
 		// 4 nominee controls:
 		final FormPanel northNominee = new FormPanel();
 		northNominee.setHeading("Vacancy Control");
 		northNominee.setBorders(true);
-	    northNominee.setWidth("45%");
+	    northNominee.setWidth("40%");
 		north.add(northNominee);
 			
 		// Nominee date
@@ -330,7 +330,6 @@ public class Schedule extends ContentPanel {
 		vacancyTime.setToolTip("Set the start time for the vacancy to be filled");
 	    vacancyTime.addListener(Events.Change, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		System.out.println("TimeField Listener time " + vacancyTime.getValue().toString());
 	            startVacancyTime = vacancyTime.getValue();
 	    	}
 	    });
@@ -497,6 +496,10 @@ public class Schedule extends ContentPanel {
 		updateCalendar();
 	}
 	
+	public FactorsDlg getFactorsDlg() {
+		return factorsDlg;
+	}
+	
 	private void updateNominees(ContentPanel panel) {
 		// TODO get start and duration from the calendar!
 		startVacancyDateTime = startVacancyDate;
@@ -520,8 +523,6 @@ public class Schedule extends ContentPanel {
 	}
 	
     public void updateCalendar() {	
-    	GWT.log("updateCalendar", null);
-
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
 		String url = baseUrl + "?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
