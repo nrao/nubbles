@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 
 
@@ -151,6 +152,13 @@ public class ProjectPage extends ContentPanel {
 
 	// retrieves the project's JSON
 	private void getProject(String pcode) {
+		
+		// don't bother if it doesn't even look like a valid pcode
+		if ((pcode == null) || (pcode.equals(new String("")))) {
+			Window.alert("You must select a valid project code.");
+			return;
+		}
+		
 		String url = "/projects/" + project_ids.get(pcode);
 		HashMap <String, Object> keys = new HashMap<String, Object>();
 		

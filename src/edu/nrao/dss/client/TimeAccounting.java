@@ -34,6 +34,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.util.TimeUtils;
 
@@ -110,9 +111,10 @@ protected void initLayout() {
 	  	public void handleEvent(BaseEvent be) {
 	  		GWT.log("projects Events.Valid", null);
 	  		// what are the sessions we can view?
-	  		updateProjectSessions();
-	  		// get all the time accounting info!
-	  		getProjectTimeAccounting();
+	  		if (updateProjectSessions()) {
+		  		// get all the time accounting info!
+		  		getProjectTimeAccounting();
+	  		}
 	   	}
 	});	
 	projectForm.add(projects);
@@ -459,13 +461,22 @@ private void updatePeriodOptions(final String pcode, final String sessionName) {
 
 // a project has been selected - populate the panel w/ info, and 
 // display candidate sessions to also view.
-protected void updateProjectSessions() {
+protected boolean updateProjectSessions() {
 	GWT.log("updateProjectSessions", null);
 	// update the sessions drop down and clear the current selection
 	String pcode = projects.getSimpleValue();
+	
+	// don't bother if it doesn't even look like a valid pcode
+	if ((pcode == null) || (pcode.equals(new String("")))) {
+		Window.alert("You must select a valid project code.");
+		return false;
+	}
+	
 	updateSessionOptions(pcode);
 	// hide the session panel until a session is choosen
 	session.setVisible(false);
+	
+	return true;
 }
 
 // gets the session names from the server and populates the session combobox
