@@ -1,5 +1,9 @@
 package edu.nrao.dss.client;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -44,9 +48,7 @@ public class ReceiverSchedule extends ContentPanel {
 	
 	private void getRcvrSchedule() {
 		JSONRequest.get("/receivers/schedule"  //, null
-//			      , new HashMap<String, Object>() {{
-//			    	  put("mode", "project_codes");
-//			        }}
+
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// translate the json to string arrays
@@ -56,9 +58,13 @@ public class ReceiverSchedule extends ContentPanel {
 				int numRcvrs = rcvrs.size();
 				// headers start w/ the date, then the list of the rcvrs
 				String[] headers = new String[numRcvrs + 1];
+				//ArrayList<String> rcvrList = new ArrayList<String>();
 				headers[0] = "Date";
+				String rcvr;
 				for (int i = 0; i < numRcvrs; i++) {
-					headers[i+1] = rcvrs.get(i).isString().stringValue();
+					rcvr = rcvrs.get(i).isString().stringValue();
+					headers[i+1] = rcvr;
+					//rcvrList.add(rcvr);
 				}
 				// get the rest of the schedule
 				JSONObject schedule = json.get("schedule").isObject();
@@ -67,23 +73,31 @@ public class ReceiverSchedule extends ContentPanel {
 				
 				int row = 0;
 				String value = "T";
-				for (String date : schedule.keySet()) {
+				// TODO: this doesn't sort the string list of dates properly!
+				TreeSet<String> orderedDays = new TreeSet<String>(schedule.keySet());
+				for (String date : orderedDays) { //schedule.keySet()) {
 					calendar[row][0] = date;
 					JSONArray onRcvrs = schedule.get(date).isArray();
-
+					ArrayList<String> onRcvrList = new ArrayList<String>();
+                    for (int i = 0; i < onRcvrs.size(); i++) {
+                    	onRcvrList.add(onRcvrs.get(i).isString().stringValue());
+                    }
 				    // go through the header's list of rcvrs
 					for (int i = 0; i < numRcvrs; i++) {
-						String rcvr = headers[i+1];
-						// TODO: if this receiver is in the current date's list of rcvrs, set it to 'T'
-						calendar[row][i+1] = rcvr; //value;
+						rcvr = headers[i+1];
+						if (onRcvrList.contains(rcvr)) {
+							calendar[row][i+1] = "T"; //value;
+						} else {
+							calendar[row][i+1] = "F"; //value;
+						}
 					}
+					onRcvrList.clear();
 					
 					row += 1;
 				}
 				// use that to create the grid
 				initRcvrScheduleGrid(numDays+1, headers.length, headers, calendar);
 				}
-			//}
 		});
 	}	
 }
