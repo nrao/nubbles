@@ -254,13 +254,24 @@ public class ProjectPage extends ContentPanel {
 				}
 				keys.put(key, value);
 			}
-			// now set the fields we're changing
-			keys.put("notes", obsNotes.getValue());
-			keys.put("schd_notes", schNotes.getValue());			
-			
 		}
         
-		JSONRequest.post("/projects/" + project_ids.get(pcode), keys,
+		// now set the fields we're changing
+		String v;
+		v = obsNotes.getValue();
+		if (v == null) {
+			v = "";
+		}
+		keys.put("notes", v);
+		v = schNotes.getValue();
+		if (v == null) {
+			v = "";
+		}			
+		keys.put("schd_notes", v);			
+				
+		String url = "/projects/" + project_ids.get(pcode);
+		
+		JSONRequest.post(url, keys,
 			      new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 	                GWT.log("updateProject onSuccess", null);
