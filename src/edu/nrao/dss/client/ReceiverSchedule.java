@@ -1,6 +1,7 @@
 package edu.nrao.dss.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -8,10 +9,15 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
 public class ReceiverSchedule extends ContentPanel {
+	
+	//04/11/2009
+    private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("MM/dd/yyyy");
+    
 	public ReceiverSchedule() {
 		initLayout();
 	}
@@ -19,85 +25,104 @@ public class ReceiverSchedule extends ContentPanel {
 	private void initLayout() {
 
 		setLayout(new RowLayout(Orientation.VERTICAL));
-		
 
 		setBorders(false);
 		setHeaderVisible(false);
-		
-		//initRcvrScheduleGrid();
+
+//		String[] hdrs = {"Date"};
+//		String[][] calendar = {{"Date"}};
+//		initRcvrScheduleGrid(1, 1, hdrs, calendar);
 		getRcvrSchedule();
 	}	
 	
 	private void initRcvrScheduleGrid(int rows, int cols, String[] header, String[][] schedule) {
-		
-		// TODO: get the rcvr schedule
-		// for now, fake it
-//		int rows = 3;
-//		int cols = 3;
-//		String[] header = {"Date", "L", "S"};
-//		String[][] schedule = {{"2009-10-1","T","F"}
-//		                     , {"2009-10-2","F","T"}
-//		                     , {"2009-10-3","T","F"}};
-                
-		
-		RcvrScheduleGrid grid = new RcvrScheduleGrid(rows, cols, header, schedule); 
+		RcvrScheduleGrid grid = new RcvrScheduleGrid(rows, cols, header, schedule);
 		add(grid);
 		show();
 		
 	}
 	
 	private void getRcvrSchedule() {
-		JSONRequest.get("/receivers/schedule"  //, null
-
+		JSONRequest.get("/receivers/schedule"  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				// translate the json to string arrays
 				GWT.log(json.toString(), null);
-				// construct the header
-				JSONArray rcvrs = json.get("receivers").isArray();
-				int numRcvrs = rcvrs.size();
-				// headers start w/ the date, then the list of the rcvrs
-				String[] headers = new String[numRcvrs + 1];
-				//ArrayList<String> rcvrList = new ArrayList<String>();
-				headers[0] = "Date";
-				String rcvr;
-				for (int i = 0; i < numRcvrs; i++) {
-					rcvr = rcvrs.get(i).isString().stringValue();
-					headers[i+1] = rcvr;
-					//rcvrList.add(rcvr);
-				}
-				// get the rest of the schedule
-				JSONObject schedule = json.get("schedule").isObject();
-				int numDays = schedule.keySet().size();
-				String[][] calendar = new String[numDays][numRcvrs + 1];
-				
-				int row = 0;
-				String value = "T";
-				// TODO: this doesn't sort the string list of dates properly!
-				TreeSet<String> orderedDays = new TreeSet<String>(schedule.keySet());
-				for (String date : orderedDays) { //schedule.keySet()) {
-					calendar[row][0] = date;
-					JSONArray onRcvrs = schedule.get(date).isArray();
-					ArrayList<String> onRcvrList = new ArrayList<String>();
-                    for (int i = 0; i < onRcvrs.size(); i++) {
-                    	onRcvrList.add(onRcvrs.get(i).isString().stringValue());
-                    }
-				    // go through the header's list of rcvrs
-					for (int i = 0; i < numRcvrs; i++) {
-						rcvr = headers[i+1];
-						if (onRcvrList.contains(rcvr)) {
-							calendar[row][i+1] = "T"; //value;
-						} else {
-							calendar[row][i+1] = "F"; //value;
-						}
-					}
-					onRcvrList.clear();
-					
-					row += 1;
-				}
-				// use that to create the grid
-				initRcvrScheduleGrid(numDays+1, headers.length, headers, calendar);
-				}
+				jsonToRcvrSchedule(json);
+			}
 		});
-	}	
+	}
+
+	private void jsonToRcvrSchedule(JSONObject json) {
+		// construct the header for the rcvr schedule calendar
+		JSONArray rcvrs = json.get("receivers").isArray();
+		int numRcvrs = rcvrs.size();
+		// headers start w/ the date, then the list of the rcvrs
+		String[] headers = new String[numRcvrs + 1];
+		headers[0] = "Date";
+		String rcvr;
+		for (int i = 0; i < numRcvrs; i++) {
+			rcvr = rcvrs.get(i).isString().stringValue();
+			headers[i+1] = rcvr;
+		}
+	
+		// now, get the rest of the schedule
+		JSONObject schedule = json.get("schedule").isObject();
+		int numDays = schedule.keySet().size();
+		String[][] calendar = getRcvrCalendar(schedule, headers, numDays);
+		
+		// use that to create the grid
+		initRcvrScheduleGrid(numDays+1, headers.length, headers, calendar);
+	}
+
+	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
+	// and converts it to a 2-D string representation of what we're supposed to display in the 
+	// Receiver Schedule calendar.
+	private String [][] getRcvrCalendar(JSONObject schedule, String[] headers, int numDays) {
+		String rcvr;
+		
+		// headers is each rcvr + the Date (first column)
+		int numRcvrs = headers.length - 1;
+		String[][] calendar = new String[numDays][headers.length];
+		
+		// the entries in this dictionary are date strings: we need to turn them into
+		// Date objects so we can sort them, then use them as keys to get the
+		// rcvr schedule in the correct order.
+		TreeSet<Date> dates = new TreeSet<Date>(); //schedule.keySet());
+		for (String dateStr : schedule.keySet()) {
+		    Date dt = DATE_FORMAT.parse(dateStr);
+		    dates.add(dt);
+		}
+		
+		// now we have the dates in the right order, so we can populate the calendar
+		int row = 0;
+		for (Date date : dates) { 
+			// the first column in each row is the date of the rcvr change
+			String dtStr = DATE_FORMAT.format(date);
+			calendar[row][0] = dtStr;
+			// here we have the rcvr's available on this date
+			JSONArray onRcvrs = schedule.get(dtStr).isArray();
+			// put them in an array so we can test if a given rcvr is
+			// available or not
+			ArrayList<String> onRcvrList = new ArrayList<String>();
+            for (int i = 0; i < onRcvrs.size(); i++) {
+            	onRcvrList.add(onRcvrs.get(i).isString().stringValue());
+            }
+		    // go through the header's list of rcvrs
+			for (int i = 0; i < numRcvrs; i++) {
+				rcvr = headers[i+1];
+				// if this rcvr is in the list of the available rcvrs
+				// indicate that somehow
+				if (onRcvrList.contains(rcvr)) {
+					calendar[row][i+1] = "T"; 
+				} else {
+					calendar[row][i+1] = "F"; 
+				}
+			}
+			onRcvrList.clear();
+			row += 1;
+		}    	
+		
+		return calendar;
+		
+	}
 }
