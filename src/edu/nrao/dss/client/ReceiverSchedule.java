@@ -6,20 +6,34 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 public class ReceiverSchedule extends ContentPanel {
 	
 	//04/11/2009
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("MM/dd/yyyy");
+    private int count = 0;
+    
+    private RcvrScheduleGrid grid = new RcvrScheduleGrid();
     
 	public ReceiverSchedule() {
 		initLayout();
+		
+		// populate the table w/ the rcvr schedule
+		getRcvrSchedule();
+
 	}
 	
 	private void initLayout() {
@@ -29,19 +43,9 @@ public class ReceiverSchedule extends ContentPanel {
 		setBorders(false);
 		setHeaderVisible(false);
 
-//		String[] hdrs = {"Date"};
-//		String[][] calendar = {{"Date"}};
-//		initRcvrScheduleGrid(1, 1, hdrs, calendar);
-		getRcvrSchedule();
+        add(grid);
 	}	
-	
-	private void initRcvrScheduleGrid(int rows, int cols, String[] header, String[][] schedule) {
-		RcvrScheduleGrid grid = new RcvrScheduleGrid(rows, cols, header, schedule);
-		add(grid);
-		show();
-		
-	}
-	
+
 	private void getRcvrSchedule() {
 		JSONRequest.get("/receivers/schedule"  
 			      , new JSONCallbackAdapter() {
@@ -71,7 +75,7 @@ public class ReceiverSchedule extends ContentPanel {
 		String[][] calendar = getRcvrCalendar(schedule, headers, numDays);
 		
 		// use that to create the grid
-		initRcvrScheduleGrid(numDays+1, headers.length, headers, calendar);
+		grid.loadSchedule(numDays, headers.length, headers, calendar);
 	}
 
 	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
