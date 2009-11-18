@@ -41,6 +41,8 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	private void setValues(Period p) {
 		GWT.log("PeriodTimeAccountPanel.setValues", null);
 		if (p != null) {
+			
+			// setting the value also entails maintaining state
 			setValue(scheduled, p.getScheduled());
 			setValue(observed, p.getObserved());
 			setValue(timeBilled, p.getBilled());
@@ -55,9 +57,10 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 			setValue(osw, p.getOther_session_weather());
 			setValue(osr, p.getOther_session_rfi());
 			setValue(oso, p.getOther_session_other());
-			//setValue(desc, p.getDescription());
-			desc.setValue(p.getDescription());
-			desc.setOriginalValue(p.getDescription());
+			
+			// Description is the only field not a NumberField
+			// so maintain it's state w/ it's own method
+			setDescription(p.getDescription());
 		}
 	}
 	
