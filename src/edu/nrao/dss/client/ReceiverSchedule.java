@@ -9,8 +9,10 @@ import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -27,6 +29,7 @@ public class ReceiverSchedule extends ContentPanel {
     private int count = 0;
     
     private RcvrScheduleGrid grid = new RcvrScheduleGrid();
+    private RcvrChangePanel change = new RcvrChangePanel();
     
 	public ReceiverSchedule() {
 		initLayout();
@@ -44,6 +47,7 @@ public class ReceiverSchedule extends ContentPanel {
 		setHeaderVisible(false);
 
         add(grid);
+        add(change, new RowData(1, -1, new Margins(4)));
 	}	
 
 	private void getRcvrSchedule() {
@@ -76,6 +80,43 @@ public class ReceiverSchedule extends ContentPanel {
 		
 		// use that to create the grid
 		grid.loadSchedule(numDays, headers.length, headers, calendar);
+		
+		// get the diff schedule
+		JSONArray diff = json.get("diff").isArray();
+		String[][] diffCalendar = new String[diff.size()][4];
+		String day, up, down, available, on;
+		for (int i = 0; i < diff.size(); i++) {
+			JSONObject diffDay = diff.get(i).isObject();
+			day = diffDay.get("day").isString().stringValue();
+			JSONArray ups = diffDay.get("up").isArray(); //.isString().stringValue();
+			up = "";
+			for (int j = 0; j<ups.size(); j++) {
+				up += ups.get(j).isString().stringValue() + " ";
+			}
+			JSONArray downs = diffDay.get("down").isArray(); // .isString().stringValue();
+			down = "";
+			for (int j = 0; j<downs.size(); j++) {
+				down += downs.get(j).isString().stringValue() + " ";
+			}
+			available = "";
+			for (int j=0; j<calendar.length; j++) {
+				if (calendar[j][0] == day) {
+					for (int k=0; k<calendar[j].length; k++) {
+						on = calendar[j][k];
+						if (on.compareTo("T") == 0) {
+							available += headers[k];
+						}
+						
+					}
+				}
+			}
+			diffCalendar[i][0] = day;
+			diffCalendar[i][1] = up;
+			diffCalendar[i][2] = down;
+			diffCalendar[i][3] = available;
+		}
+		change.loadSchedule(diffCalendar);
+		
 	}
 
 	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
