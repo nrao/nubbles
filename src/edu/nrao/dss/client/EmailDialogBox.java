@@ -50,21 +50,21 @@ class EmailDialogBox extends Dialog {
 		final TextArea addressText = new TextArea();
 		addressText.setFieldLabel("Addresses");
 		addressText.setValue(emails);
-		fp.add(addressText, new FormData(600, 100));
+		fp.add(addressText, new FormData(850, 100));
 		
 		final TextField subjectText = new TextField();
 		subjectText.setFieldLabel("Subject");
 		subjectText.setValue(subject);
-		fp.add(subjectText, new FormData(600, 25));
+		fp.add(subjectText, new FormData(850, 50));
 
 		final TextArea bodyText = new TextArea();
 		bodyText.setFieldLabel("Body");
 		bodyText.setStyleAttribute("font-family", "monospace");
 		bodyText.setValue(body);
-		fp.add(bodyText, new FormData(600, 350));
+		fp.add(bodyText, new FormData(850, 500));
 		
 		add(fp);
-		setSize(800, 650);
+		setSize(900, 700);
 
 		Button cancel = getButtonById(Dialog.CANCEL);
 		cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
