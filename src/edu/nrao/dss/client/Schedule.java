@@ -194,12 +194,11 @@ public class Schedule extends ContentPanel {
 			public void componentSelected(ButtonEvent be) {
 	    		HashMap<String, Object> keys = new HashMap<String, Object>();
 	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
-	    		String startTime = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 08:00:00 (ET)";
 	    		Integer numScheduleDays = numCalendarDays < 2 ? 1 : (numCalendarDays -1); 
 	    		keys.put("start", startStr);
 	    		keys.put("duration", numCalendarDays);
 	    		keys.put("tz", timezone);
-				String msg = "Scheduling from " + startTime + " until " + numScheduleDays.toString() + " days later at 8:00 (ET).";
+				String msg = "Scheduling from " + startStr + " (" + timezone + ")" + " until " + numScheduleDays.toString() + " days later at 8:00 (ET).";
 				final MessageBox box = MessageBox.wait("Calling Scheduling Algorithm", msg, "Be Patient ...");
 				JSONRequest.post("/runscheduler", keys,
 						new JSONCallbackAdapter() {
