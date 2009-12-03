@@ -199,6 +199,9 @@ public class TimeAccountingPanel extends ContentPanel {
 	}
 	
 	public void setDescription(String value) {
+		if (value == null) {
+			value = "";
+		}
 	    // we will reset the state as well
 		desc.setValue(value);
 		desc.setOriginalValue(value);

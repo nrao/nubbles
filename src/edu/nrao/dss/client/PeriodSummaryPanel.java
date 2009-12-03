@@ -31,6 +31,7 @@ public class PeriodSummaryPanel extends ContentPanel {
 	private CheckBox backup = new CheckBox();
 	private TextField<String> state = new TextField<String>();
 	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel();
+	private Button save = new Button();
 	
     public PeriodSummaryPanel(Period p) {
     	period = p;
@@ -89,7 +90,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     	// what else?
     	
     	// save the changes?
-    	Button save = new Button();
+    	//Button save = new Button();
     	save.setText("Save Period Time Accounting");
     	save.addListener(Events.OnClick, new Listener<BaseEvent>() {
     		public void handleEvent(BaseEvent be) {
@@ -109,6 +110,10 @@ public class PeriodSummaryPanel extends ContentPanel {
     	// Time Accounting get's its own form
     	ta.setHeading("Period Time Accounting");
     	ta.setPeriod(period);
+    }
+    
+    public void setSaveButtonVisible(boolean visible) {
+    	save.setVisible(visible);
     }
     
     public void updatePeriodForm(int periodId) {
@@ -153,5 +158,9 @@ public class PeriodSummaryPanel extends ContentPanel {
         	state.setValue(period.getState());
         }
     	
+    }
+    
+    public boolean hasChanged() {
+    	return ta.hasChanged();
     }
 }
