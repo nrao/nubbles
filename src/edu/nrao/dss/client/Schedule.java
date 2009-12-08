@@ -392,6 +392,13 @@ public class Schedule extends ContentPanel {
 		completed.setTitle("Include completed sessions?");
 		completed.setValue(false);
 		nomineeOptions.add(completed);
+		// rfi
+		CheckBox rfi = new CheckBox();
+		rfi.setBoxLabel("ignore RFIexclusion?");
+		rfi.setTitle("Ignore sessions' day time RFI exclusion?");
+		rfi.setValue(false);
+		nomineeOptions.add(rfi);
+		
 		northNominee.add(nomineeOptions);
 		
 	    // Fetch nominees
@@ -516,6 +523,7 @@ public class Schedule extends ContentPanel {
 		keys.put("blackout", (Boolean) nomineeOptions.get(2).getValue());    // ignore observer blackout times?
 		keys.put("backup", (Boolean) nomineeOptions.get(3).getValue());      // use only backup sessions?
 		keys.put("completed", (Boolean) nomineeOptions.get(4).getValue());   // include completed sessions?
+		keys.put("rfi", (Boolean) nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
 		east.updateKeys(keys);
 		east.loadData();
 		
