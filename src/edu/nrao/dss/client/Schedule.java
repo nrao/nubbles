@@ -202,7 +202,6 @@ public class Schedule extends ContentPanel {
 				JSONRequest.post("/runscheduler", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								System.out.println("runscheduler onSuccess");
 								updateCalendar();
 								box.close();
 							}
