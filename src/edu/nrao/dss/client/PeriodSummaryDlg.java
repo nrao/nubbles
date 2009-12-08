@@ -3,10 +3,14 @@ package edu.nrao.dss.client;
 import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
@@ -22,7 +26,8 @@ public class PeriodSummaryDlg extends Dialog {
 		// Basic Dlg settings
 		String txt = "Summary for Period " + period.getHandle();
 		setHeading(txt);
-		setButtons(Dialog.OK);
+		setButtons(Dialog.CANCEL);
+		
 
 		// Insert a Period?
 		Button change = new Button();
@@ -53,7 +58,7 @@ public class PeriodSummaryDlg extends Dialog {
 	    add(shift);
 	    
 		// display summary info
-		PeriodSummaryPanel p = new PeriodSummaryPanel(period);
+		final PeriodSummaryPanel p = new PeriodSummaryPanel(period);
 		add(p);
 		
 		// TODO: size correctly
@@ -63,12 +68,30 @@ public class PeriodSummaryDlg extends Dialog {
 		setAutoHeight(true);
 		show();
 		
-		Button ok = getButtonById(Dialog.OK);
-		ok.addListener(Events.OnClick, new Listener<BaseEvent>() {
+		// listener for close w/ out saving changes confirmation
+		final Listener<MessageBoxEvent> cancelListener = new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent ce) {
+            	Button b = (Button) ce.getButtonClicked();
+            	if (b.getItemId().compareTo("yes") == 0) {
+            		// they really want to exit w/ out saving changes
+            		close();
+            	}
+            }
+        };
+		
+		Button cancel = getButtonById(Dialog.CANCEL);
+		cancel.setText("Close");
+		cancel.setToolTip("Close this Dialog");
+		cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-				close();
+				// if they have unsaved changes, double check that they really want to exit
+				if (p.hasChanged()) {
+					MessageBox.confirm("Period Summary", "You have unsaved changes.  Exit anyways?", cancelListener);
+				} else {
+					close();
+				}
 			}
-		});		
+		});	
 	}	
 
 }

@@ -79,7 +79,7 @@ public class Event {
 	// GMT day number -> last few seconds of that day as Date
 	private Date getEndDayDate(long day) {
 		// the next day is from day + i, so get that, then subtract a few seconds
-		long gmtDay = (msInDay * (day + 1)) + getGmtOffsetMs(day);
+		long gmtDay = (msInDay * (day + 1)) + getGmtOffsetMs(day + 1);
 		long msOffset = 60 * 1000; // 1 min. 
 		return new Date(gmtDay - msOffset);
 		

@@ -10,9 +10,15 @@ public class DSSTimeValidator implements Validator {
 //	    String timeReg = "";
 //	    value.matches(timeReg)
     	if (value.endsWith(".00") || value.endsWith(".0") || value.endsWith(".25") || value.endsWith(".50") || value.endsWith(".5") || value.endsWith(".75")) {
-    		return null;
+    		//return null;
 		} else {
 			return "Time must be on 15-min boundary";
 		}		
+    	if (value.startsWith("-")) {
+    		return "Time must be positive hours";
+    	}
+    	
+    	// valid
+    	return null;
 	}
 }

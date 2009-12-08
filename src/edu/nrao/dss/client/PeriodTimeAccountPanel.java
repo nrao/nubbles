@@ -156,5 +156,38 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		setEditable(oso);
 		
 	}
+	
+	// TODO: should probably be able to put stuff like this in the base class
+	public boolean hasChanged() {
+		// check to see if any field has changed
+		if (hasChanged(scheduled) || 
+			hasChanged(notBillable) ||
+			hasChanged(shortNotice) ||
+			hasChanged(ltw) ||
+			hasChanged(ltr) ||
+			hasChanged(lto) ||
+			hasChanged(osw) ||
+			hasChanged(osr) ||
+			hasChanged(oso) ||
+			hasChanged(desc)
+			) {
+			return true;
+		} else {
+			return false;
+		}	
+	}	
+	
+	private boolean hasChanged(NumberField nf) {
+		double newValue = nf.getValue().doubleValue();
+		double oldValue = nf.getOriginalValue().doubleValue();
+		return (newValue != oldValue);
+	}
+	
+	private boolean hasChanged(TextArea ta) {
+		String newValue = ta.getValue() == null ? "" : ta.getValue();
+		String oldValue = ta.getOriginalValue() == null ? "" : ta.getOriginalValue();
+		return (newValue.compareTo(oldValue) != 0);
+	}
+	
 }
 
