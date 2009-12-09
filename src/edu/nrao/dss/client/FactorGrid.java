@@ -10,6 +10,8 @@ public class FactorGrid extends Grid {
 	private final static HashMap<String, String> abbr = new HashMap<String, String>();
 	static
 	{
+		abbr.put("wind_mph", "Vcleo [mph]");
+		abbr.put("wind_ms", "Vcorr [m/s]");
 		abbr.put("scienceGrade", "grade");
 		abbr.put("thesisProject", "thesis");
 		abbr.put("projectCompletion", "compl");
