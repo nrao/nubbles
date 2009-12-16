@@ -302,6 +302,10 @@ public class Period {
 	public String getState() {
 		return state;
 	}
+	
+	public boolean isScheduled() {
+		return state.compareTo("S") == 0;
+	}
 
 	// traditional period attributes
     private int      id;
