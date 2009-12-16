@@ -133,7 +133,8 @@ public class SessionExplorer extends Explorer {
        	new ColumnType("complete",       "Complete?",       65, Boolean.class),
        	new ColumnType("backup",         "Backup?",         55, Boolean.class),
         new ColumnType("transit",        "Transit?",        55, Boolean.class),
-        new ColumnType("nighttime",      "Night-time?",     55, Boolean.class)
+        new ColumnType("nighttime",      "Night-time?",     55, Boolean.class),
+        new ColumnType("lst_ex",         "LST Exclusion",  100, String.class)
        	
     	};
 }
