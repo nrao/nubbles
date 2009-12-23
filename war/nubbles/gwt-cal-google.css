@@ -166,11 +166,11 @@
 	position: absolute;
 	font-size: 11px;
 	font-family: arial;
-	border: 1px solid #000;
+	/*border: 1px solid #000;*/
 	overflow: hidden;
-	filter: alpha(opacity = 50);
-	opacity: .5;
-        -moz-opacity: .5;
+	filter: alpha(opacity = 75);
+	opacity: .75;
+    -moz-opacity: .75;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 }
@@ -183,7 +183,8 @@
 	padding-left: 8px;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
-
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
 }
 
 .gwt-cal .gwt-appointment .body {
@@ -248,35 +249,34 @@
 	filter: alpha(opacity=100)  
 		progid:DXImageTransform.Microsoft.dropshadow(OffX=3, OffY=3,Color='#C7C7C7', Positive='true');
 	opacity: 1;
-        -moz-opacity:1;
+    -moz-opacity:1;
 }
 
-/* Appointment panel styles by color theme (Secondary styles) */
-	/* Green */
-.gwt-cal .gwt-appointment-green {
-	border: 1px solid rgb(82, 136, 0);
-	background-color: rgb(140, 191, 64);
-	color: #FFF;
-}
-.gwt-cal .gwt-appointment-green .header {
-	background: #528800;
-	color: #FFF;
-	font-weight:normal;
+
+/* Multi-day appointment section */
+.gwt-cal .multiDayBody {
+    width:100%;
+    background:#E8EEF7;
+    table-layout: fixed;
 }
 
-.gwt-cal .gwt-appointment-selected.gwt-appointment-green .header {
-	background: #528800;
-	color: #FFF;
-	font-weight:normal;
+.gwt-cal .multiDayBody .splitter {
+	height: 5px;
+	_height: 5px;
+	border-top: 0px solid #C3D9FF;
+	background: #C3D9FF;
+	border-bottom: 0px solid #C3D9FF;
 }
 
-.gwt-cal .gwt-appointment-selected.gwt-appointment-green .footer {
-	border-bottom: 3px double white;
+.gwt-cal .leftEmptyCell {
+    background: #C3D9FF;
+    width:50px;
+}
+.gwt-cal .rightEmptyCell {
+    background: #C3D9FF;
 }
 
-.gwt-cal .gwt-appointment-green .timeline-fill {
-	background-color: rgb(140, 191, 64);
-}
+
 
 
 /* Blue */
@@ -301,6 +301,491 @@
 .gwt-cal .gwt-appointment-blue .timeline-fill {
 	background-color: #668CD9;
 }
-/* An html element can have 1 or many styles, separated by spaces. */
-	/* example: class="gwt-appointment gwt-appointment-green" has properties of both styles, the second takes precedence */
-	
+
+
+/* RED */
+.gwt-cal .gwt-appointment-red {
+	border: 1px solid #A32929;
+	background: #D96666;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-red .header {
+	background: #A32929;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-red .header {
+	background: #A32929;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-red .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-red .timeline-fill {
+	background-color: #D96666;
+}
+
+
+/* Pink */
+.gwt-cal .gwt-appointment-pink {
+	border: 1px solid #B1365F;
+	background: #E67399;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-pink .header {
+	background: #B1365F;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-pink .header {
+	background: #B1365F;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-pink .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-pink .timeline-fill {
+	background-color: #E67399;
+}
+
+
+/* Purple */
+.gwt-cal .gwt-appointment-purple {
+	border: 1px solid #7A367A;
+	background: #B373B3;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-purple .header {
+	background: #7A367A;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-purple .header {
+	background: #7A367A;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-purple .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-purple .timeline-fill {
+	background-color: #B373B3;
+}
+
+
+/* Dark Purple */
+.gwt-cal .gwt-appointment-darkpurple {
+	border: 1px solid #5229A3;
+	background: #8C66D9;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-darkpurple .header {
+	background: #5229A3;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-darkpurple .header {
+	background: #5229A3;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-darkpurple .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-darkpurple .timeline-fill {
+	background-color: #8C66D9;
+}
+
+
+/* Steel Blue */
+.gwt-cal .gwt-appointment-steelblue {
+	border: 1px solid #29527A;
+	background: #668CB3;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-steelblue .header {
+	background: #29527A;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-steelblue .header {
+	background: #29527A;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-steelblue .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-steelblue .timeline-fill {
+	background-color: #668CB3;
+}
+
+
+/* Light Blue */
+.gwt-cal .gwt-appointment-lightblue {
+	border: 1px solid #1B887A;
+	background: #59BFB3;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-lightblue .header {
+	background: #1B887A;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightblue .header {
+	background: #1B887A;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightblue .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-lightblue .timeline-fill {
+	background-color: #59BFB3;
+}
+
+
+/* Teal */
+.gwt-cal .gwt-appointment-teal {
+	border: 1px solid #28754E;
+	background: #65AD89;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-teal .header {
+	background: #28754E;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-teal .header {
+	background: #28754E;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-teal .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-teal .timeline-fill {
+	background-color: #65AD89;
+}
+
+/* Green */
+.gwt-cal .gwt-appointment-green {
+	border: 1px solid #0D7813;
+	background: #4CB052;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-green .header {
+	background: #0D7813;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-green .footer {
+	border-bottom: 3px double white;
+}
+
+/* Light Green */
+.gwt-cal .gwt-appointment-lightgreen {
+	border: 1px solid #528800;
+	background: #8CBF40;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-lightgreen .header {
+	background: #528800;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightgreen .header {
+	background: #528800;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightgreen .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-lightgreen .timeline-fill {
+	background-color: #8CBF40;
+}
+
+
+/* Yellow Green */
+.gwt-cal .gwt-appointment-yellowgreen {
+	border: 1px solid #88880E;
+	background: #BFBF4D;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-yellowgreen .header {
+	background: #88880E;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-yellowgreen .header {
+	background: #88880E;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-yellowgreen .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-yellowgreen .timeline-fill {
+	background-color: #BFBF4D;
+}
+
+
+/* Yellow */
+.gwt-cal .gwt-appointment-yellow {
+	border: 1px solid #AB8B00;
+	background: #E0C240;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-yellow .header {
+	background: #AB8B00;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-yellow .header {
+	background: #AB8B00;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-yellow .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-yellow .timeline-fill {
+	background-color: #E0C240;
+}
+
+
+/* Orange */
+.gwt-cal .gwt-appointment-orange {
+	border: 1px solid #BE6D00;
+	background: #F2A640;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-orange .header {
+	background: #BE6D00;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-orange .header {
+	background: #BE6D00;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-orange .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-orange .timeline-fill {
+	background-color: #F2A640;
+}
+
+
+/* Red Orange */
+.gwt-cal .gwt-appointment-redorange {
+	border: 1px solid #B1440E;
+	background: #E6804D;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-redorange .header {
+	background: #B1440E;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-redorange .header {
+	background: #B1440E;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-redorange .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-redorange .timeline-fill {
+	background-color: #E6804D;
+}
+
+
+/* Light Brow */
+.gwt-cal .gwt-appointment-lightbrown {
+	border: 1px solid #865A5A;
+	background: #BE9494;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-lightbrown .header {
+	background: #865A5A;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightbrown .header {
+	background: #865A5A;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightbrown .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-lightbrown .timeline-fill {
+	background-color: #BE9494;
+}
+
+
+/* Light Purple*/
+.gwt-cal .gwt-appointment-lightpurple {
+	border: 1px solid #705770;
+	background: #A992A9;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-lightpurple .header {
+	background: #705770;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightpurple .header {
+	background: #705770;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightpurple .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-lightpurple .timeline-fill {
+	background-color: #A992A9;
+}
+
+
+/* Grey */
+.gwt-cal .gwt-appointment-grey {
+	border: 1px solid #4E5D6C;
+	background: #8997A5;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-grey .header {
+	background: #4E5D6C;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-grey .header {
+	background: #4E5D6C;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-grey .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-grey .timeline-fill {
+	background-color: #8997A5;
+}
+
+
+/* Blue Grey*/
+.gwt-cal .gwt-appointment-bluegrey {
+	border: 1px solid #5A6986;
+	background: #94A2bE;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-bluegrey .header {
+	background: #5A6986;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-bluegrey .header {
+	background: #5A6986;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-bluegrey .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-bluegrey .timeline-fill {
+	background-color: #94A2bE;
+}
+
+
+/* Light Teal */
+.gwt-cal .gwt-appointment-lightteal {
+	border: 1px solid #4A716C;
+	background: #85AAA5;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-lightteal .header {
+	background: #4A716C;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightteal .header {
+	background: #4A716C;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-lightteal .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-lightteal .timeline-fill {
+	background-color: #85AAA5;
+}
+
+
+/* Yellow Grey */
+.gwt-cal .gwt-appointment-yellowgrey {
+	border: 1px solid #6E6E41;
+	background: #A7A77D;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-yellowgrey .header {
+	background: #6E6E41;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-yellowgrey .header {
+	background: #6E6E41;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-yellowgrey .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-yellowgrey .timeline-fill {
+	background-color: #A7A77D;
+}
+
+
+/* Brown */
+.gwt-cal .gwt-appointment-brown {
+	border: 1px solid #8D6F47;
+	background: #C4A883;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-brown .header {
+	background: #8D6F47;
+	color: #FFF;
+}
+.gwt-cal .gwt-appointment-selected.gwt-appointment-brown .header {
+	background: #8D6F47;
+	color: #FFF;
+}
+
+.gwt-cal .gwt-appointment-selected.gwt-appointment-brown .footer {
+	border-bottom: 3px double white;
+}
+
+.gwt-cal .gwt-appointment-brown .timeline-fill {
+	background-color: #C4A883;
+}
+
+
+
+
+/* multi-day appointments have no footer */
+.gwt-cal .multiDayBody .gwt-appointment .footer,
+.gwt-cal .multiDayBody .gwt-appointment-selected .footer {
+	display:none;
+}
+/* and header fills the entire appointment body */
+.gwt-cal .multiDayBody .gwt-appointment .header,
+.gwt-cal .multiDayBody .gwt-appointment-selected .header {
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	height:100%;
+}
+
+

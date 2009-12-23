@@ -47,7 +47,6 @@ class JSONRequest implements RequestCallback {
 	}
 
 	public void onResponseReceived(Request request, Response response) {
-		//GWT.log(response.getText(), null);
 		if (cb == null) {
 			// We don't care about the response.
 			return;
@@ -65,7 +64,6 @@ class JSONRequest implements RequestCallback {
 				cb.onSuccess(json);
 			}
 		} catch (Exception e) {
-			GWT.log("json exception" + response.getText(), null);
 			cb.onError("json parse failed", null);
 		}
 	}

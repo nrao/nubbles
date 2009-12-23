@@ -222,7 +222,6 @@ public class Schedule extends ContentPanel {
 				JSONRequest.get("/schedule/email", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								System.out.println("/schedule/email onSuccess");
 								JSONArray emails = json.get("emails").isArray();
 								String addr = "";
 								for (int i = 0; i < emails.size(); ++i)
@@ -258,7 +257,6 @@ public class Schedule extends ContentPanel {
 				JSONRequest.post("/periods/publish", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								System.out.println("/schedule/publish onSuccess");
 								updateCalendar();
 							}
 						});
@@ -283,7 +281,6 @@ public class Schedule extends ContentPanel {
 				JSONRequest.post("/periods/delete_pending", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								System.out.println("/schedule/delete_pending onSuccess");
 								updateCalendar();
 							}
 						});

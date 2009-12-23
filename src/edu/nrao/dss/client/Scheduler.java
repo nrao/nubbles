@@ -54,11 +54,11 @@ public class Scheduler extends Viewport implements EntryPoint {
         
         TabItem taTab = addTab(ta, "Time Accounting", "Manage Time Accounting");
         taTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
-    	@Override
-    	public void componentSelected(TabPanelEvent tpe){
-    		ta.updatePCodeOptions();
-    	}
-    });        
+	    	@Override
+	    	public void componentSelected(TabPanelEvent tpe){
+	    		ta.updatePCodeOptions();
+	    	}
+        });        
         tabPanel.add(taTab);
         
         TabItem ppTab = addTab(pp, "Project Page", "Per Project");
