@@ -357,7 +357,7 @@ public class Schedule extends ContentPanel {
 		// Nominee options		
 		northNominee.add(new LabelField());
 		//final CheckBoxGroup nomineeOptions = new CheckBoxGroup();
-		nomineeOptions.setSpacing(10);
+		nomineeOptions.setSpacing(15);
 		nomineeOptions.setFieldLabel("Selection Options");
 		// timeBetween
 		CheckBox timeBetween = new CheckBox();
