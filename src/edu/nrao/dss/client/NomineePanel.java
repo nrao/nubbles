@@ -101,7 +101,6 @@ public class NomineePanel extends ContentPanel {
 	}
 	
 	public void loadData() {
-		//System.out.println("loadData");
 		loader.load();
 	}
 }

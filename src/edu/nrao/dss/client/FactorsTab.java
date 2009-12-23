@@ -1,9 +1,12 @@
 package edu.nrao.dss.client;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 
 public class FactorsTab implements FactorsDisplay {
@@ -15,16 +18,27 @@ public class FactorsTab implements FactorsDisplay {
 	}
 	
 	@Override
-	public void show(String title, String[] headers, String[][] factors) {
+	public void show(String title, String banner, String[] headers, String[][] factors) {
 		GWT.log("FactorsWindows.show", null);
 		FactorGrid grid = new FactorGrid(factors.length, headers.length, headers, factors);
         TabItem item = new TabItem(title);
-        item.add(grid);
+        ContentPanel cp = createContentPanel(banner, grid);
+        item.add(cp);
         item.getHeader().setToolTip(title);
         item.setLayout(new FitLayout());
         item.setScrollMode(Scroll.ALWAYS);
         item.setClosable(true);
         panel.add(item);
+	}
+	
+	public ContentPanel createContentPanel(String banner, FactorGrid grid) {
+		ContentPanel panel = new ContentPanel();
+		panel.setHeading(banner);
+		panel.setLayout(new RowLayout(Orientation.VERTICAL));
+		
+		panel.add(grid);
+		
+		return panel;
 	}
 
 }
