@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class FactorsTab implements FactorsDisplay {
 	
@@ -26,7 +27,6 @@ public class FactorsTab implements FactorsDisplay {
         item.add(cp);
         item.getHeader().setToolTip(title);
         item.setLayout(new FitLayout());
-        item.setScrollMode(Scroll.ALWAYS);
         item.setClosable(true);
         panel.add(item);
 	}
@@ -34,9 +34,10 @@ public class FactorsTab implements FactorsDisplay {
 	public ContentPanel createContentPanel(String banner, FactorGrid grid) {
 		ContentPanel panel = new ContentPanel();
 		panel.setHeading(banner);
-		panel.setLayout(new RowLayout(Orientation.VERTICAL));
+		panel.setLayout(new FitLayout());
 		
-		panel.add(grid);
+		ScrollPanel sp = new ScrollPanel(grid);
+		panel.add(sp);
 		
 		return panel;
 	}
