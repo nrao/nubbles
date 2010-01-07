@@ -61,3 +61,18 @@ h1 {
 .gwt-FactorGrid-zero {
   color: #FF0000; # red;
 }
+
+.gwt-RcvrSchdGrid-header {
+  font-weight: bold;
+  background-color: #FFE4C4; # bisque;
+}
+
+.gwt-RcvrSchdGrid-on {
+  font-weight: bold;
+  background-color: #90EE90; # lightgreen;
+}
+
+.gwt-RcvrSchdGrid-off {
+  font-weight: bold;
+  background-color: #FF6666; # lightred;
+}

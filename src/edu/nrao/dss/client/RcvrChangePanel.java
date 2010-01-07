@@ -34,8 +34,8 @@ public class RcvrChangePanel extends ContentPanel {
 		periods.setFieldLabel("Change Date");
 		fp.add(periods);
 		
-		finalRcvrs.setFieldLabel("Rcvrs available at end of day");
-		fp.add(finalRcvrs);
+		//finalRcvrs.setFieldLabel("Rcvrs available at end of day");
+		//fp.add(finalRcvrs);
 		
 		goingUpRcvrs.setFieldLabel("Rcvrs going up");
 		fp.add(goingUpRcvrs);
