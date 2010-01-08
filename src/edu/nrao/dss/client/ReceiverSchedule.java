@@ -88,23 +88,30 @@ public class ReceiverSchedule extends ContentPanel {
 		for (int i = 0; i < diff.size(); i++) {
 			JSONObject diffDay = diff.get(i).isObject();
 			day = diffDay.get("day").isString().stringValue();
+			// get the list of rcvrs that are going up this day
 			JSONArray ups = diffDay.get("up").isArray(); //.isString().stringValue();
 			up = "";
 			for (int j = 0; j<ups.size(); j++) {
 				up += ups.get(j).isString().stringValue() + " ";
 			}
+			// get the list of rcvrs that are going down this day
 			JSONArray downs = diffDay.get("down").isArray(); // .isString().stringValue();
 			down = "";
 			for (int j = 0; j<downs.size(); j++) {
 				down += downs.get(j).isString().stringValue() + " ";
 			}
+			// for this same day, use the earlier rcvr calendar to determine the 
+			// longer list of rcvrs that will be available at the end of this day
 			available = "";
 			for (int j=0; j<calendar.length; j++) {
-				if (calendar[j][0] == day) {
+				String calDay = calendar[j][0];
+				//if (calendar[j][0] == day) {
+				if (calDay.compareTo(day) == 0) {
+					// grab the rcvrs that are on ("T")
 					for (int k=0; k<calendar[j].length; k++) {
 						on = calendar[j][k];
 						if (on.compareTo("T") == 0) {
-							available += headers[k];
+							available += headers[k] + " ";
 						}
 						
 					}
