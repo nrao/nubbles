@@ -11,11 +11,8 @@ public class RcvrScheduleGrid extends FlexTable {
 	}	
 	
 	private void initLayout() {
-	    FlexCellFormatter cellFormatter = getFlexCellFormatter();
-	    cellFormatter.setHorizontalAlignment(0, 1,
-		        HasHorizontalAlignment.ALIGN_LEFT);
+
 	    addStyleName("cw-FlexTable");
-	    setWidth("32em");
 	    setCellSpacing(2);
 	    setCellPadding(1);	
 	    
@@ -33,12 +30,15 @@ public class RcvrScheduleGrid extends FlexTable {
 			// TODO: how to set the width of these columns?
 			//getColumnFormatter().setWidth(col, "200px");
 			setHTML(0, col, headers[col]);
+			getCellFormatter().setHorizontalAlignment(0, col, HasHorizontalAlignment.ALIGN_CENTER);
 			getCellFormatter().setStyleName(0, col, styleBase + "header");
+			
+			getCellFormatter().setWidth(0, col, "200");
 			
 		}
 		
 		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
-		
+
 		
 		// now the data
 		for (int row = 0; row < rows; row++) {
