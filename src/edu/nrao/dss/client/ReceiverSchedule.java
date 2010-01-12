@@ -2,6 +2,7 @@ package edu.nrao.dss.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,7 +30,8 @@ public class ReceiverSchedule extends ContentPanel {
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("MM/dd/yyyy");
     private int count = 0;
     
-    private RcvrScheduleGrid grid = new RcvrScheduleGrid();
+    //private RcvrScheduleGrid grid = new RcvrScheduleGrid();
+    private RcvrSchdGridPanel grid = new RcvrSchdGridPanel();
     private RcvrChangePanel change = new RcvrChangePanel();
     private RcvrSchdEditPanel edit = new RcvrSchdEditPanel();
     
@@ -37,7 +39,8 @@ public class ReceiverSchedule extends ContentPanel {
 		initLayout();
 		
 		// populate the table w/ the rcvr schedule
-		getRcvrSchedule();
+		//getRcvrSchedule();
+		grid.setupCalendar();
 
 	}
 	
@@ -54,12 +57,19 @@ public class ReceiverSchedule extends ContentPanel {
         add(edit, new RowData(1, -1, new Margins(4)));
         
         //TODO: better way to bind?
+        grid.setParent(this);
         edit.setParent(this);
         
 	}	
 
-	public void getRcvrSchedule() {
-		JSONRequest.get("/receivers/schedule"  
+	public void getRcvrSchedule(Date start, int numDays, boolean showMaintenanceDays) {
+		
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
+		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start) + " 00:00:00";
+		keys.put("startdate", startStr);
+		keys.put("duration", numDays);
+		JSONRequest.get("/receivers/schedule", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				GWT.log(json.toString(), null);
@@ -68,6 +78,10 @@ public class ReceiverSchedule extends ContentPanel {
 		});
 	}
 
+	public void updateRcvrSchedule() {
+	    grid.getRcvrSchedule();	
+	}
+	
 	private void jsonToRcvrSchedule(JSONObject json) {
 		// construct the header for the rcvr schedule calendar
 		JSONArray rcvrs = json.get("receivers").isArray();

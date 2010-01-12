@@ -187,7 +187,7 @@ public class RcvrSchdEditPanel extends ContentPanel {
 				GWT.log(json.toString(), null);
 				
 				// reload the calendar
-				parent.getRcvrSchedule();
+				parent.updateRcvrSchedule();
 
 			
 			}
