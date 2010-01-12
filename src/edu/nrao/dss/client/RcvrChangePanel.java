@@ -26,7 +26,7 @@ public class RcvrChangePanel extends ContentPanel {
 	
 	private void initLayout() {
 		setLayout(new FlowLayout());
-		setHeading("Receiver Change Panel");
+		setHeading("Receiver Change Day Details");
 		
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);

@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -30,6 +31,7 @@ public class ReceiverSchedule extends ContentPanel {
     
     private RcvrScheduleGrid grid = new RcvrScheduleGrid();
     private RcvrChangePanel change = new RcvrChangePanel();
+    private RcvrSchdEditPanel edit = new RcvrSchdEditPanel();
     
 	public ReceiverSchedule() {
 		initLayout();
@@ -43,14 +45,20 @@ public class ReceiverSchedule extends ContentPanel {
 
 		setLayout(new RowLayout(Orientation.VERTICAL));
 
+		setScrollMode(Scroll.AUTO);
 		setBorders(false);
 		setHeaderVisible(false);
 
         add(grid);
         add(change, new RowData(1, -1, new Margins(4)));
+        add(edit, new RowData(1, -1, new Margins(4)));
+        
+        //TODO: better way to bind?
+        edit.setParent(this);
+        
 	}	
 
-	private void getRcvrSchedule() {
+	public void getRcvrSchedule() {
 		JSONRequest.get("/receivers/schedule"  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
@@ -123,7 +131,18 @@ public class ReceiverSchedule extends ContentPanel {
 			diffCalendar[i][3] = available;
 		}
 		change.loadSchedule(diffCalendar);
+		edit.loadSchedule(diffCalendar);
 		
+		// get the maintenance days
+		JSONArray maintJson = json.get("maintenance").isArray();		
+		String[] maintenanceDays = new String[maintJson.size()];
+		String mDay;
+		for (int i = 0; i < maintJson.size(); i++) {
+			JSONObject mObj = maintJson.get(i).isObject();
+			mDay = mObj.get("date").isString().stringValue();
+			maintenanceDays[i] = mDay;
+		}
+		edit.setMaintenanceDays(maintenanceDays);
 	}
 
 	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
