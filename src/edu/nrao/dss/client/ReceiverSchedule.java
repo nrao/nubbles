@@ -157,6 +157,7 @@ public class ReceiverSchedule extends ContentPanel {
 			maintenanceDays[i] = mDay;
 		}
 		edit.setMaintenanceDays(maintenanceDays);
+		grid.setMaintenanceDays(maintenanceDays);
 	}
 
 	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
