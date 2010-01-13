@@ -42,7 +42,7 @@ public class RcvrSchdEditPanel extends ContentPanel {
 	
 	private void initLayout() {
 		setLayout(new FlowLayout());
-		setHeading("Receiver Schedule Edit Details");
+		setHeading("Create new or modify exisitng Receiver Change Date");
 		
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
@@ -66,9 +66,11 @@ public class RcvrSchdEditPanel extends ContentPanel {
 		fp.add(finalRcvrs);
 		
 		goingUpRcvrs.setFieldLabel("Rcvrs going up");
+		goingUpRcvrs.setAllowBlank(true);
 		fp.add(goingUpRcvrs);
 		
 		goingDownRcvrs.setFieldLabel("Rcvrs going down");
+		goingDownRcvrs.setAllowBlank(true);
 		fp.add(goingDownRcvrs);
 		
 
@@ -92,6 +94,7 @@ public class RcvrSchdEditPanel extends ContentPanel {
 	    
 	    save.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
+	    		GWT.log("Save.onClick", null);
 	    		// send date, ups & downs to servers to change schedule!
 	    		changeRcvrSchedule();
 	    	}
@@ -176,8 +179,12 @@ public class RcvrSchdEditPanel extends ContentPanel {
 		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(day.getValue()) + " 00:00:00";
 		keys.put("startdate", startStr);
-		keys.put("up", goingUpRcvrs.getValue());
-		keys.put("down", goingDownRcvrs.getValue());
+		
+		// watch for nulls in the rcvr entries
+		String upStr = goingUpRcvrs.getValue();
+		String downStr = goingDownRcvrs.getValue();
+		keys.put("up", upStr == null ? "" : upStr);
+		keys.put("down", downStr == null ? "" : downStr);
 		
 		JSONRequest.post("/receivers/change_schedule", keys  
 			      , new JSONCallbackAdapter() {

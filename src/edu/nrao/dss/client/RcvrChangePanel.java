@@ -1,14 +1,21 @@
 package edu.nrao.dss.client;
 
+import java.util.HashMap;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.json.client.JSONObject;
 
 public class RcvrChangePanel extends ContentPanel {
 
@@ -16,8 +23,13 @@ public class RcvrChangePanel extends ContentPanel {
 	private TextField<String> finalRcvrs = new TextField<String>();
 	private TextField<String> goingUpRcvrs = new TextField<String>();
 	private TextField<String> goingDownRcvrs = new TextField<String>();
+	private DateField shiftDate = new DateField();
+	private Button shift = new Button();
+	private Button delete = new Button();
 	
 	private String[][] diffSchedule;
+	
+	private ReceiverSchedule parent;
 	
 	public RcvrChangePanel() {
 		initLayout();
@@ -26,7 +38,7 @@ public class RcvrChangePanel extends ContentPanel {
 	
 	private void initLayout() {
 		setLayout(new FlowLayout());
-		setHeading("Receiver Change Day Details");
+		setHeading("View Details, Shift Date"); //, or Delete.");
 		
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
@@ -35,13 +47,26 @@ public class RcvrChangePanel extends ContentPanel {
 		fp.add(periods);
 		
 		finalRcvrs.setFieldLabel("Rcvrs available at end of day");
+		finalRcvrs.setReadOnly(true);
 		fp.add(finalRcvrs);
 		
 		goingUpRcvrs.setFieldLabel("Rcvrs going up");
+		goingUpRcvrs.setReadOnly(true);
 		fp.add(goingUpRcvrs);
 		
 		goingDownRcvrs.setFieldLabel("Rcvrs going down");
+		goingDownRcvrs.setReadOnly(true);
 		fp.add(goingDownRcvrs);
+		
+		shiftDate.setFieldLabel("Shift Change Date");
+		fp.add(shiftDate);
+		
+		shift.setText("Shift Date");
+		fp.add(shift);
+		
+		// TODO
+		delete.setText("Delete");
+		//fp.add(delete);
 		
 		add(fp);
 	}
@@ -52,7 +77,27 @@ public class RcvrChangePanel extends ContentPanel {
 		  		// go git it
 		  		setPeriod(periods.getSimpleValue());
 		   	}
-		});		
+		});
+
+		// TODO: would like to do away with the shift button, but this event
+		// is firing twice!!!
+//		shiftDate.addListener(Events.Valid, new Listener<BaseEvent>() {
+//		  	public void handleEvent(BaseEvent be) {
+//		  		// TODO: why are we getting called twice???
+//		  		// confirm that they want to shift this date
+//		  		GWT.log("calling shiftRcvrChangeDate", null);
+//		  		shiftRcvrChangeDate();
+//		   	}
+//		});		
+
+		shift.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+		  		// confirm that they want to shift this date
+		  		GWT.log("calling shiftRcvrChangeDate", null);
+		  		shiftRcvrChangeDate();
+			
+			}
+		});
 	}
 	
 	public void loadSchedule(String[][] diffSchedule) {
@@ -75,6 +120,43 @@ public class RcvrChangePanel extends ContentPanel {
 			}
 		}
 		
+	}
+	
+	private void shiftRcvrChangeDate() {
+
+		// make sure we have valid inputs
+		String from_date = periods.getSimpleValue();
+		if (from_date == null || from_date.compareTo("") == 0) {
+			return;
+		}
+		String to_date   = DateTimeFormat.getFormat("MM/dd/yyyy").format(shiftDate.getValue()); //%m/%d/%Y
+		
+		// don't bother doing anything if the dates haven't changed
+		if (from_date.compareTo(to_date) == 0) {
+			GWT.log("not shifting: same dates", null);
+			return;
+		}
+		
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		keys.put("from", from_date);
+		keys.put("to",   to_date);
+		
+		GWT.log("shifting: " + from_date + " to " + to_date, null);
+		JSONRequest.post("/receivers/shift_date", keys  
+			      , new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json) {
+				
+				GWT.log("rcvr shift date success", null);
+				GWT.log(json.toString(), null);
+				
+				// reload the calendar
+				parent.updateRcvrSchedule();
+			}
+		});	
+	}
+	
+	public void setParent(ReceiverSchedule rs) {
+		parent = rs;
 	}
  	
 }
