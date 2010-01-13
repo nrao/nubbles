@@ -59,6 +59,7 @@ public class ReceiverSchedule extends ContentPanel {
         //TODO: better way to bind?
         grid.setParent(this);
         edit.setParent(this);
+        change.setParent(this);
         
 	}	
 

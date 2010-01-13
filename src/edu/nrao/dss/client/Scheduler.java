@@ -70,7 +70,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         });	
         tabPanel.add(ppTab);
         
-        //tabPanel.add(addTab(rs, "Receiver Schedule", "Change the Receiver Schedule"));
+        tabPanel.add(addTab(rs, "Receiver Schedule", "Change the Receiver Schedule"));
         
         // TODO Why does not "tabPanel.setAutoHeight(true);? work?
         tabPanel.setHeight(920);
@@ -109,5 +109,5 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final TimeAccounting   ta       = new TimeAccounting();
     private Factors                factors;
     private final ProjectPage      pp       = new ProjectPage();
-    //private final ReceiverSchedule rs       = new ReceiverSchedule();
+    private final ReceiverSchedule rs       = new ReceiverSchedule();
 }
