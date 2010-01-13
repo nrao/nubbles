@@ -49,12 +49,41 @@ public class FactorsAccess {
 		String dec  = json.get("dec").isString().stringValue();
 		String freq = json.get("freq").isString().stringValue();
 		boolean schedulable = json.get("alive").isBoolean().booleanValue();
+		boolean open = json.get("open").isBoolean().booleanValue();
+		boolean time = json.get("time").isBoolean().booleanValue();
+		boolean not_complete = json.get("not_complete").isBoolean().booleanValue();
+		boolean enabled = json.get("enabled").isBoolean().booleanValue();
+		boolean authorized = json.get("authorized").isBoolean().booleanValue();
+		boolean observers = json.get("observers").isBoolean().booleanValue();
 		banner = label + ": (RA, Dec) = (" +
 		         ra + " Hr, " +
 		         dec + " Deg); Freq = " +
 		         freq + " GHz";
 		if (!schedulable) {
-			banner += "; Note, session is not schedulable at any time this trimester.";
+			StringBuilder buf = new StringBuilder();
+			buf.append(";    Not schedulable: ");
+			if (!open) {
+				buf.append("Not type open.  ");
+			}
+			if (!time) {
+				buf.append("Time exhausted.  ");
+			}
+			if (!not_complete) {
+				buf.append("Marked completed.  ");
+			}
+			if (!enabled) {
+				buf.append("Not enabled.  ");
+			}
+			if (!authorized) {
+				buf.append("Not authorized.  ");
+			}
+			if (!observers) {
+				buf.append("No observers.  ");
+			}
+			if (!open && !time && !not_complete && !enabled && !authorized) {
+				buf.append("Do you need any other reasons this cannot be scheduled?");
+			}
+			banner += buf.toString();
 		}
 	}
 
