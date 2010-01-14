@@ -177,7 +177,10 @@ public class RcvrSchdEditPanel extends ContentPanel {
 		
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
-		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(day.getValue()) + " 00:00:00";
+		// NOTE: even though rcvr changes happen at some time during the day, we still need to specify a datetime,
+		// so in the DB, all rcvrs are expected to be up by 16:00 UTC - not that it matters, as the Maint. will
+		// probably cover this time
+		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(day.getValue()) + " 16:00:00";
 		keys.put("startdate", startStr);
 		
 		// watch for nulls in the rcvr entries
