@@ -66,7 +66,7 @@ public class RcvrChangePanel extends ContentPanel {
 		
 		// TODO
 		delete.setText("Delete");
-		//fp.add(delete);
+		fp.add(delete);
 		
 		add(fp);
 	}
@@ -98,6 +98,15 @@ public class RcvrChangePanel extends ContentPanel {
 			
 			}
 		});
+		
+		delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+		  		// confirm that they want to shift this date
+		  		GWT.log("calling deleteRcvrChangeDate", null);
+		  		deleteRcvrChangeDate();
+			
+			}
+		});		
 	}
 	
 	public void loadSchedule(String[][] diffSchedule) {
@@ -128,8 +137,10 @@ public class RcvrChangePanel extends ContentPanel {
 		String from_date = periods.getSimpleValue();
 		if (from_date == null || from_date.compareTo("") == 0) {
 			return;
+		} else {
+			from_date += " 16:00:00";
 		}
-		String to_date   = DateTimeFormat.getFormat("MM/dd/yyyy").format(shiftDate.getValue()); //%m/%d/%Y
+		String to_date   = DateTimeFormat.getFormat("MM/dd/yyyy").format(shiftDate.getValue())  + " 16:00:00"; //%m/%d/%Y
 		
 		// don't bother doing anything if the dates haven't changed
 		if (from_date.compareTo(to_date) == 0) {
@@ -155,6 +166,32 @@ public class RcvrChangePanel extends ContentPanel {
 		});	
 	}
 	
+	private void deleteRcvrChangeDate() {
+
+		// make sure we have valid inputs
+		String from_date = periods.getSimpleValue();
+		if (from_date == null || from_date.compareTo("") == 0) {
+			return;
+		} else {
+			from_date += " 16:00:00";
+		}
+		
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		keys.put("startdate", from_date);
+		
+		GWT.log("deleting: " + from_date, null);
+		JSONRequest.post("/receivers/delete_date", keys  
+			      , new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json) {
+				
+				GWT.log("rcvr delete date success", null);
+				GWT.log(json.toString(), null);
+				
+				// reload the calendar
+				parent.updateRcvrSchedule();
+			}
+		});	
+	}	
 	public void setParent(ReceiverSchedule rs) {
 		parent = rs;
 	}
