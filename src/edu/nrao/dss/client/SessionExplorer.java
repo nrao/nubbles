@@ -119,7 +119,7 @@ public class SessionExplorer extends Explorer {
         new ColumnType("PSC_time",       "PSC Time",        60, Double.class),
         new ColumnType("total_time",     "Total Time",      60, Double.class),
         new ColumnType("sem_time",       "Trimester Time",  100, Double.class),
-        new ColumnType("grade",          "Grade",           50, GradeField.class),
+        new ColumnType("grade",          "Grade",           50, Double.class),
         new ColumnType("freq",           "Freq",            50, Double.class),
         new ColumnType("receiver",       "Receiver(s)",    100, String.class),
         new ColumnType("req_min",        "Req Min",         60, Double.class),
