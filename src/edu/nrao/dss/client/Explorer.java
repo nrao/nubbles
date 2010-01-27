@@ -306,6 +306,9 @@ public class Explorer extends ContentPanel{
 							model.set(fName, value.isBoolean().booleanValue());
 						} else if (value.isString() != null) {
 							model.set(fName, value.isString().stringValue());
+						} else if (value.isNull() != null) {
+							// TODO: should this really be a no-op
+							//Window.alert("null JSON value type");
 						} else {
 							Window.alert("unknown JSON value type");
 						}
