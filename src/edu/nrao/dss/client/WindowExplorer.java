@@ -101,10 +101,20 @@ public class WindowExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
 	private static final ColumnType[] columnTypes = {
-		new ColumnType("handle",   "Session (Project) VP", 220, SessionField.class),
-        new ColumnType("start",    "Start",                70,  DateEditField.class),
-        new ColumnType("duration", "Duration",             55,  Integer.class),
-        new ColumnType("end",      "Last",                 70,  DateEditField.class)
+		new ColumnType("handle",           "Session (Project) VP", 220, SessionField.class),
+        new ColumnType("start",            "Start",                70,  DateEditField.class),
+        new ColumnType("duration",         "Duration",             55,  Integer.class),
+        new ColumnType("end",              "Last",                 70,  DateEditField.class),
+        new ColumnType("default_date",     "D. Date",              70,  DateEditField.class),
+        new ColumnType("default_time",     "D. Time",              50, TimeField.class),
+        new ColumnType("default_duration", "D. Dur.",              55,  Integer.class),
+        new ColumnType("default_state",    "D.S.",                 30,  DisplayField.class),
+        
+        new ColumnType("choosen_date",     "C. Date",              70,  DateEditField.class),
+        new ColumnType("choosen_time",     "C. Time",              50, TimeField.class),
+        new ColumnType("choosen_duration", "C. Dur.",              55,  Integer.class),
+        new ColumnType("choosen_state",    "C.S.",                 30,  DisplayField.class)
+        
 		
 
 	};
