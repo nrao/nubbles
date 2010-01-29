@@ -38,6 +38,8 @@ public class Scheduler extends Viewport implements EntryPoint {
         	}
         });
         tabPanel.add(seTab);
+
+        tabPanel.add(addTab(we, "Window Explorer", "Define and edit windows."));
         
         // schedule tab - we need to update the session/project info when it
         // comes into focus
@@ -105,6 +107,7 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final TabPanel         tabPanel = new TabPanel();
     private final ProjectExplorer  pe       = new ProjectExplorer();
     private final SessionExplorer  se       = new SessionExplorer();
+    private final WindowExplorer  we       = new WindowExplorer();
     private final Schedule         sch      = new Schedule();
     private final TimeAccounting   ta       = new TimeAccounting();
     private Factors                factors;

@@ -19,14 +19,16 @@ public class Event {
 	private long msInDay = 24 * 60 * 60 * 1000;
 	// Nov 1 - March 8, 2009
 	//private long msGmtOffset = 5 * 60 * 60 * 1000;
+	private String type;
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     
-	public Event(String title, String description, Date start, Date end) {
+	public Event(String title, String description, Date start, Date end, String type) {
 		this.title = title;
 		this.description = description;
 		this.start = start;
 		this.end = getSafeEndDate(end); //don't end at midnight, but 1 min. before
+		this.type = type;
 		createAppointments();
 	}
 	
@@ -129,8 +131,13 @@ public class Event {
 		   }
 		   appt.setDescription(desc);
 		   
-		   // TODO: scores -> colors?
-		   appt.addStyleName("gwt-appointment-blue");
+		   // TODO: need to improve the way we indicate period attributes
+		   if (type == "windowed") {
+			   appt.addStyleName("gwt-appointment-yellow");
+			   
+		   } else {
+			   appt.addStyleName("gwt-appointment-blue");
+		   }
 		   
 		   appointments.add(appt);
 		}

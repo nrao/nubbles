@@ -54,6 +54,14 @@ public class Period {
         period.setLost_time_rfi(json.get("lost_time_rfi").isNumber().doubleValue());
         period.setLost_time_other(json.get("lost_time_other").isNumber().doubleValue());
         
+        // is there windowed information?
+        if (json.get("windowed").isBoolean().booleanValue()) {
+        	period.setWindowed(true);
+        	period.setWindowedInfo(json);
+        } else {
+        	period.setWindowed(false);
+        }
+        	
         return period;
     }
     
@@ -88,6 +96,23 @@ public class Period {
     	this.duration = dur;
     	this.start_day = start_day;
     	this.start_time = start_time;
+    }
+    
+    private void setWindowedInfo(JSONObject json) {
+    	String date;
+    	long msDiff;
+        date = json.get("wstart").isString().stringValue();
+        Date wstart = DAY_FORMAT.parse(date);
+        date = json.get("wend").isString().stringValue();
+        Date wend = DAY_FORMAT.parse(date);
+        
+        // how many days in front of this period does the window start?
+        msDiff = this.start_day.getTime() - wstart.getTime();
+        windowDaysAhead = (int) (msDiff / (1000 * 60 * 60 * 24)); 
+        
+        msDiff = wend.getTime() - this.start_day.getTime();
+        windowDaysAfter = (int) (msDiff / (1000 * 60 * 60 * 24)); 
+        
     }
     
     public String getHandle() {
@@ -307,6 +332,30 @@ public class Period {
 		return state.compareTo("S") == 0;
 	}
 
+	public void setWindowed(boolean windowed) {
+		this.windowed = windowed;
+	}
+
+	public boolean isWindowed() {
+		return windowed;
+	}
+
+	public void setWindowDaysAhead(int windowDaysAhead) {
+		this.windowDaysAhead = windowDaysAhead;
+	}
+
+	public int getWindowDaysAhead() {
+		return windowDaysAhead;
+	}
+
+	public void setWindowDaysAfter(int windowDaysAfter) {
+		this.windowDaysAfter = windowDaysAfter;
+	}
+
+	public int getWindowDaysAfter() {
+		return windowDaysAfter;
+	}
+
 	// traditional period attributes
     private int      id;
     private String   handle; 
@@ -334,5 +383,11 @@ public class Period {
     private double   other_session_weather;
     private double   other_session_rfi;
     private double   other_session_other;
+    
+    // window info
+    private boolean windowed;
+    private int windowDaysAhead;
+    private int windowDaysAfter;
+    
     
 }

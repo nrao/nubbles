@@ -576,7 +576,14 @@ public class Schedule extends ContentPanel {
 		for(Period p : periods) {
                 // TODO: format title & description better			
 			    String title = Integer.toString(p.getId());
-			    Event event = new Event(title, p.getHandle(), p.getStart(), p.getEnd());
+			    String windowInfo = "";
+			    String type = "not windowed!"; // TODO: need better way to indicate period attributes
+			    if (p.isWindowed()) {
+			    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
+			    	type = "windowed";
+			    }
+			    String desc = p.getHandle() + windowInfo;
+			    Event event = new Event(title, desc, p.getStart(), p.getEnd(), type);
 		        dayView.addAppointments(event.getAppointments());
 		        
 		}
