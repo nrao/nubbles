@@ -39,7 +39,7 @@ public class WindowCalendar extends ContentPanel {
 		setScrollMode(Scroll.AUTO);
 		setBorders(false);
 		setHeaderVisible(true);
-		setHeading("Receiver Schedule");
+		setHeading("Window Calendar");
 		
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
@@ -215,6 +215,8 @@ public class WindowCalendar extends ContentPanel {
 		}
 	
 		// now display it!
+		//calendar = new WindowCalTable();
+		//add(calendar);
 		calendar.loadCalendar(numWindows, numDays + 1, headers, cal);
 	}
 
