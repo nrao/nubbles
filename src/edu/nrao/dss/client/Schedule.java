@@ -580,7 +580,7 @@ public class Schedule extends ContentPanel {
 			    String type = "not windowed!"; // TODO: need better way to indicate period attributes
 			    if (p.isWindowed()) {
 			    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
-			    	type = "windowed";
+			    	type = p.isDefaultPeriod() ? "default period" : "choosen period";
 			    }
 			    String desc = p.getHandle() + windowInfo;
 			    Event event = new Event(title, desc, p.getStart(), p.getEnd(), type);

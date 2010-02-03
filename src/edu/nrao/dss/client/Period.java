@@ -111,8 +111,9 @@ public class Period {
         windowDaysAhead = (int) (msDiff / (1000 * 60 * 60 * 24)); 
         
         msDiff = wend.getTime() - this.start_day.getTime();
-        windowDaysAfter = (int) (msDiff / (1000 * 60 * 60 * 24)); 
+        windowDaysAfter = (int) (msDiff / (1000 * 60 * 60 * 24));
         
+        setDefaultPeriod(json.get("wdefault").isBoolean().booleanValue());
     }
     
     public String getHandle() {
@@ -356,6 +357,14 @@ public class Period {
 		return windowDaysAfter;
 	}
 
+	public void setDefaultPeriod(boolean defaultPeriod) {
+		this.defaultPeriod = defaultPeriod;
+	}
+
+	public boolean isDefaultPeriod() {
+		return defaultPeriod;
+	}
+
 	// traditional period attributes
     private int      id;
     private String   handle; 
@@ -388,6 +397,7 @@ public class Period {
     private boolean windowed;
     private int windowDaysAhead;
     private int windowDaysAfter;
+    private boolean defaultPeriod;
     
     
 }

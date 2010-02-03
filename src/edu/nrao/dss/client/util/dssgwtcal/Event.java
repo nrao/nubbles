@@ -132,8 +132,12 @@ public class Event {
 		   appt.setDescription(desc);
 		   
 		   // TODO: need to improve the way we indicate period attributes
-		   if (type == "windowed") {
-			   appt.addStyleName("gwt-appointment-yellow");
+		   if (type != "not windowed!") {
+			   if (type == "default period") {
+				   appt.addStyleName("gwt-appointment-green");
+			   } else {
+				   appt.addStyleName("gwt-appointment-yellow");
+			   }
 			   
 		   } else {
 			   appt.addStyleName("gwt-appointment-blue");
