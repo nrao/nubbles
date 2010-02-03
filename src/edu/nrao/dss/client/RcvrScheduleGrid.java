@@ -139,9 +139,12 @@ public class RcvrScheduleGrid extends FlexTable {
     }
     
 	private void clearAll() {
-		for (int i = 0; i < getRowCount(); i++) {
-			removeRow(i);
-		}
+		// WTF: I can't believe that this is the only thing that really works - 
+		// what a sucky interface!
+		int rowCount = getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			removeRow(0);
+		}		
 	}
 	
 	private boolean isMaintenanceDay(String day) {
