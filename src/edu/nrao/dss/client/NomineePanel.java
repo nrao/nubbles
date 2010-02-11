@@ -57,8 +57,7 @@ public class NomineePanel extends ContentPanel {
 		nominees.setStore(store);
 		// TODO How to change the format of a field, i.e., duration and score?
 		//nominees.setSimpleTemplate("<b>{sess_name}</b> ({proj_name}) {duration} minutes {TimeUtil.min2sex(duration)}");
-		nominees.setSimpleTemplate("<b>{sess_name}</b> ({proj_name}) {score} for {durationStr}");   // TBF windows
-//		nominees.setSimpleTemplate("<b>{sess_name}</b> {sess_type} ({proj_name}) {scoreStr} for {durationStr}");
+		nominees.setSimpleTemplate("<b>{sess_name}</b> {sess_type} ({proj_name}) {scoreStr} for {durationStr}");
 		add(nominees);
 		nominees.getSelectionModel().addListener(Events.SelectionChange,  
 		         new Listener<SelectionChangedEvent<BaseModel>>() {  
