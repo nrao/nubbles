@@ -8,10 +8,10 @@ public class NomineeType extends ModelType {
         this.setTotalName("total");
         
         addField("sess_name");
-        addField("sess_type");
+//        addField("sess_type");
         addField("proj_name");
         addField("score");
-        addField("scoreStr");
+//        addField("scoreStr");
         addField("duration");
         addField("durationStr");
 	}

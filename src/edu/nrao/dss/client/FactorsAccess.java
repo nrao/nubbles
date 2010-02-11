@@ -49,7 +49,8 @@ public class FactorsAccess {
 		String dec  = json.get("dec").isString().stringValue();
 		String freq = json.get("freq").isString().stringValue();
 		boolean schedulable = json.get("alive").isBoolean().booleanValue();
-		boolean type = json.get("type").isBoolean().booleanValue();
+		boolean open = json.get("open").isBoolean().booleanValue();   // TBF window
+//		boolean type = json.get("type").isBoolean().booleanValue();
 		boolean time = json.get("time").isBoolean().booleanValue();
 		boolean not_complete = json.get("not_complete").isBoolean().booleanValue();
 		boolean enabled = json.get("enabled").isBoolean().booleanValue();
@@ -62,9 +63,12 @@ public class FactorsAccess {
 		if (!schedulable) {
 			StringBuilder buf = new StringBuilder();
 			buf.append(";    Not schedulable: ");
-			if (!type) {
-				buf.append("Not open or no viable windows.  ");
+			if (!open) {                             // TBF window
+				buf.append("Not type open.  ");
 			}
+//			if (!type) {
+//			    buf.append("Not open or no viable windows.  ");
+//		    }
 			if (!time) {
 				buf.append("Time exhausted.  ");
 			}
@@ -80,7 +84,8 @@ public class FactorsAccess {
 			if (!observers) {
 				buf.append("No observers.  ");
 			}
-			if (!type && !time && !not_complete && !enabled && !authorized) {
+//			if (!type && !time && !not_complete && !enabled && !authorized) { // TBF winow
+			if (!open && !time && !not_complete && !enabled && !authorized) {
 				buf.append("Do you need any other reasons this cannot be scheduled?");
 			}
 			banner += buf.toString();
