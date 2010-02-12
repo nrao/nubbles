@@ -1,6 +1,7 @@
 package edu.nrao.dss.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -26,6 +27,24 @@ public class PeriodSummaryDlg extends Dialog {
 	private Dialog removeDialog;
 	protected Button removeApproval;
 	private Schedule sc_handle;
+	
+	private void publishPeriod() {
+		String url = "/periods/publish/" + Integer.toString(period.getId());
+		GWT.log("publish period: " + url, null);
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		JSONRequest.post(url, keys,
+				new JSONCallbackAdapter() {
+					public void onSuccess(JSONObject json) {
+						//updateCalendar();
+						if (sc_handle != null) {
+						    sc_handle.updateCalendar();
+						}
+						// TODO: really we should refresh this dialog, but no time
+						// for that refactoring right now.
+						close();
+					}
+				});		
+	}
 	
 	// A Period can be deleted if it's not in the scheduled state, or it's
 	// time accounting has been reconciled so that there is no Time Billed.
@@ -105,6 +124,18 @@ public class PeriodSummaryDlg extends Dialog {
 	    	}
 	    });	
 	    add(delete);
+	    
+		// Publish the Period?
+		Button publish = new Button();
+		publish.setToolTip("Click this button to publish this Period.");
+		publish.setText("Publish Period");
+	    publish.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		publishPeriod();
+	    	}
+	    });	
+	    add(publish);	
 	    
 		// Insert a Period?
 		Button change = new Button();
