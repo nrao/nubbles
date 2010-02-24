@@ -243,7 +243,8 @@ class SessionColConfig extends ColumnConfig {
 				if (val != null) {
 					return Conversions.radiansToTime(((Double) val).doubleValue());
 				} else {
-					return "00:00:00";
+					// display a blank string here in place of "00:00:00" so users no it is null
+					return ""; 
 				}
 			}
 		});
@@ -281,7 +282,8 @@ class SessionColConfig extends ColumnConfig {
 				if (val != null) {
 					return Conversions.radiansToSexagesimal(((Double) val).doubleValue());
 				} else {
-					return "00:00:00";
+					// display a blank string here in place of "00:00:00" so users no it is null
+					return ""; 
 				}
 			}
 		});
