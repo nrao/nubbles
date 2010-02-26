@@ -110,6 +110,10 @@ public class ProjectExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
+	    column = new ColumnConfig("remaining", "Remaining Time", 130);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    configs.add(column);
+	    
 	    column = new ColumnConfig("grade", "Grade(s)", 80);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
