@@ -448,10 +448,12 @@ private void updatePeriodOptions(final String pcode, final String sessionName) {
 			for (int i = 0; i < ps.size(); ++i){
 				// the periods drop down is populated w/ descriptions of the periods
 				String p = ps.get(i).toString().replace('"', ' ').trim();
-				periods.add(p);
 				String id = ids.get(i).toString().replace('"', ' ').trim();
+				// the labels displayed need to be unique, so we add the period id at the end
+				String label = p + " (" + id + ")";
+				periods.add(label);
 				// we need to save the mapping from 'description' to 'id'
-				periodInfo.put(p, Integer.parseInt(id));
+				periodInfo.put(label, Integer.parseInt(id));
 				
 			}
 			//session.setVisible(false);
