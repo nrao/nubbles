@@ -222,7 +222,7 @@ public class Explorer extends ContentPanel{
 		removeDialog.hide();
 
 	
-		Button removeItem = new Button("Delete");
+		removeItem = new Button("Delete");
 		toolBar.add(removeItem);
 		removeItem.setToolTip("Delete a row.");
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -374,6 +374,7 @@ public class Explorer extends ContentPanel{
 	protected Button saveItem;
 	protected Button viewItem;
 	protected Button addItem;
+	protected Button removeItem;
 	protected Button removeApproval;
 	private Dialog removeDialog;
 	

@@ -18,6 +18,10 @@ public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
 		super("/periods/UTC", new PeriodType(columnTypes));
 		initLayout(initColumnModel());
+		
+		// TODO: for now we're disabling delete so that time accounting is done correctly,
+		// we need it to eventually behave like the Delete Period button in the Period Summary
+		removeItem.disable();
 	}
 	
 	private ColumnModel initColumnModel() {
