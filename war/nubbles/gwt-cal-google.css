@@ -155,8 +155,44 @@
 }
 
 
+/* 
+Label panels also are rendered to the screen as Div's (Primary style), 
+but only because they are based off Appointments, which is the only way
+we could figure out how to do these
+*/
 
+.gwt-cal .gwt-label {
+	position: absolute;
+	font-size: 11px;
+	font-family: arial;
+    /*color: #FF0000;*/
+    color: #000000;
+	/*border: 1px solid #000;*/
+	overflow: hidden;
+	filter: alpha(opacity = 75);
+	opacity: .75;
+    -moz-opacity: .75;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
 
+.gwt-cal .gwt-label .header {
+	white-space: nowrap;
+	overflow: hidden;
+	color: #FFF;
+	padding: 1px;
+	padding-left: 8px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+}
+
+.gwt-cal .gwt-label .body {
+	padding-left: 8px;
+	padding-top: 1px;
+	white-space: wrap;
+}
 
 
 

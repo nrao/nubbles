@@ -130,17 +130,66 @@ public class DayView extends CalendarView {
             ArrayList<AppointmentAdapter> appointmentAdapters =
                     layoutStrategy.doLayout(filteredList, i, getDays());
 
-            // add all appointments back to the grid
-            //CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//            // add all appointments back to the grid
+//            //CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             for (AppointmentAdapter appt : appointmentAdapters) {
                 this.dayViewBody.getGrid().grid.add((Widget) appt.getAppointment());
-
             }
 
+            // TODO: get the scores
+            //addScores(null, i, getDays(), tmpDate);
+            
             tmpDate.setDate(tmpDate.getDate() + 1);
         }
     }
 
+    // adds the scores for this day to each quarter of the calendar's day
+    public void addScores(float scores[], int dayIndex, int numDays, Date date) {
+
+    	// compute where horizontally this line of scores should be printed
+        float lefts[] = new float[numDays];
+        for (int i = 0; i < numDays; i++) {
+        	lefts[i] = i*(100.0f/numDays);
+        }
+        float thisLeft = lefts[dayIndex]; 
+        
+        float widths = 32.3f; // constant width 
+        float quarterHeight = 30.0f; // height of one quarter == (2 px/min)(15 min)
+        float qTop = 0.0f;
+        Date start = date;
+        Date end;
+        int numQtrs = 24 * 4;  // each hour has 4 15-min quarters
+        String desc;
+        
+        for (int q = 0; q < numQtrs; q++) {
+        	
+        	// figure out where this score goes
+        	qTop = (q*quarterHeight);
+        	start = new Date(start.getTime() + (1000 * 60 * 15 * q));
+        	end = new Date(start.getTime() + (1000 * 60 * 14));
+        	// TODO: use the passed in score
+        	desc = Integer.toString(q);
+        	
+        	// here's the object that will hold our score
+        	Label score = new Label();
+        	score.setDescription(desc);
+        	score.setTitle("");
+        	score.setStart(start);
+        	score.setEnd(end);
+        	score.setLeft(thisLeft);
+        	score.setWidth(widths);
+        	score.setHeight(quarterHeight);
+        	score.setTop(qTop);      
+        	
+        	// add it to the calendar!
+        	this.dayViewBody.getGrid().grid.add((Widget) score); 
+        	
+        	// TODO: if the score is zero, make it red.
+        	if (desc.compareTo("10") == 0) {
+        	    DOM.setStyleAttribute(score.getElement(), "color", "FF0000");
+        	}    
+        }        
+    }
     public void scrollToHour(int hour) {
         dayViewBody.getScrollPanel().setScrollPosition(hour *
                 getSettings().getIntervalsPerHour() * getSettings().getPixelsPerInterval());
