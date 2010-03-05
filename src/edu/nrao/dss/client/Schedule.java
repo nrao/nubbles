@@ -69,6 +69,12 @@ public class Schedule extends ContentPanel {
 	private String baseUrl = "/periods/" + timezone;
 //	private FactorsWindow factorsWindow;
 	private FactorsDlg factorsDlg;
+	
+	// scoring sessions
+	private Scores scores;
+	private ScoresComboBox scoresComboBox;
+	private ScoresForCalendar scoresDisplay;
+	private float[] calendarScores; 
 
 	
 	private Integer numVacancyMinutes = 2;
@@ -301,6 +307,12 @@ public class Schedule extends ContentPanel {
 		});
 		northSchedule.add(factorsButton);
 		
+		// Scores
+		scoresComboBox = new ScoresComboBox(this);
+		scoresComboBox.setFieldLabel("Scores");
+        northSchedule.add(scoresComboBox);
+        scores = new Scores(scoresComboBox, new ScoresForCalendar(this));
+		
 		// 4 nominee controls:
 		final FormPanel northNominee = new FormPanel();
 		northNominee.setHeading("Vacancy Control");
@@ -504,6 +516,10 @@ public class Schedule extends ContentPanel {
 		return factorsDlg;
 	}
 	
+	public ScoresComboBox getScoresComboBox() {
+	    return scoresComboBox;	
+	}
+	
 	private void updateNominees(ContentPanel panel) {
 		// TODO get start and duration from the calendar!
 		startVacancyDateTime = startVacancyDate;
@@ -587,7 +603,19 @@ public class Schedule extends ContentPanel {
 		        dayView.addAppointments(event.getAppointments());
 		        
 		}
+		
+		//dayView.add
 		dayView.resumeLayout();
+		
+		// clear the header if no scores being displayed
+        if (dayView.getScores() == null) {
+        	setCalendarHeader("Calendar");
+        }
+		
+		// clear out the scores so that next time the calendar is update,
+		// unless new scores have been provided, the present display of scores
+		// is erased
+		dayView.clearScores();
     }
     
     // gets all the session handles (sess name (proj name)) and holds on to them
@@ -608,6 +636,23 @@ public class Schedule extends ContentPanel {
         		   }
        );
 
-    }    
+    }   
+    
+	public void setCalendarScores(float[] scores) {
+	    dayView.setScores(scores);
+	}
+	
+	public Date getStartCalendarDay() {
+	    return startCalendarDay;	
+	}
+	
+	public int getNumCalendarDays() {
+		return numCalendarDays;
+	}
+	
+	public void setCalendarHeader(String header) {
+		center.setHeading(header);
+	}
+
 }	
 	

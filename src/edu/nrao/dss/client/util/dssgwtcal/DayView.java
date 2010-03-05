@@ -8,6 +8,8 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.NumberFormat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,6 +37,9 @@ public class DayView extends CalendarView {
     // </editor-fold>
 
     // <editor-fold desc="Constructors" defaultState="collapse">
+    
+    private float[] scores;
+    
     public DayView() {
         this(CalendarSettings.DEFAULT_SETTINGS);
     }
@@ -136,15 +141,18 @@ public class DayView extends CalendarView {
                 this.dayViewBody.getGrid().grid.add((Widget) appt.getAppointment());
             }
 
-            // TODO: get the scores
-            //addScores(null, i, getDays(), tmpDate);
+            // there should be a score for each 15-min interval in our calendar
+            int expNumScores = getDays() * 24 * 4; 
+            if (scores != null && scores.length == expNumScores) {
+            	addScoreLabels(scores, i, getDays(), tmpDate);
+            }
             
             tmpDate.setDate(tmpDate.getDate() + 1);
         }
     }
 
     // adds the scores for this day to each quarter of the calendar's day
-    public void addScores(float scores[], int dayIndex, int numDays, Date date) {
+    private void addScoreLabels(float scores[], int dayIndex, int numDays, Date date) {
 
     	// compute where horizontally this line of scores should be printed
         float lefts[] = new float[numDays];
@@ -160,6 +168,7 @@ public class DayView extends CalendarView {
         Date end;
         int numQtrs = 24 * 4;  // each hour has 4 15-min quarters
         String desc;
+        int scoreOffset = dayIndex * numQtrs;
         
         for (int q = 0; q < numQtrs; q++) {
         	
@@ -167,8 +176,8 @@ public class DayView extends CalendarView {
         	qTop = (q*quarterHeight);
         	start = new Date(start.getTime() + (1000 * 60 * 15 * q));
         	end = new Date(start.getTime() + (1000 * 60 * 14));
-        	// TODO: use the passed in score
-        	desc = Integer.toString(q);
+        	float scoreValue = scores[q + scoreOffset];
+        	desc = NumberFormat.getFormat("#0.00").format((double) scoreValue);
         	
         	// here's the object that will hold our score
         	Label score = new Label();
@@ -184,8 +193,7 @@ public class DayView extends CalendarView {
         	// add it to the calendar!
         	this.dayViewBody.getGrid().grid.add((Widget) score); 
         	
-        	// TODO: if the score is zero, make it red.
-        	if (desc.compareTo("10") == 0) {
+        	if (scoreValue == 0.0) {
         	    DOM.setStyleAttribute(score.getElement(), "color", "FF0000");
         	}    
         }        
@@ -278,5 +286,17 @@ public class DayView extends CalendarView {
 
     }
 
+	public void setScores(float[] scores) {
+		this.scores = scores;
+	}
+
+	public float[] getScores() {
+		return scores;
+	}
+
+	public void clearScores() {
+		scores = null;
+	}
+	
     // </editor-fold>
 }
