@@ -63,8 +63,15 @@ public class NomineePanel extends ContentPanel {
 		         new Listener<SelectionChangedEvent<BaseModel>>() {  
 		           public void handleEvent(SelectionChangedEvent<BaseModel> be) {  
 			         BaseModelData baseModelData = (BaseModelData) (be.getSelectedItem());
+			         
+			         // add the selected period to the Period Explorer
 		             schedule.west.addRecord(nominee2Period(baseModelData));
 		             schedule.updateCalendar();
+		             
+			         // and show the Session's scores on the calendar
+			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
+                     schedule.showSessionScores(name);
+                     schedule.updateCalendar();
 		           }  
 		         });
 	}

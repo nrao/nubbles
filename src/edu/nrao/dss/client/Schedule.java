@@ -653,6 +653,12 @@ public class Schedule extends ContentPanel {
 	public void setCalendarHeader(String header) {
 		center.setHeading(header);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void showSessionScores(String session) {
+		scoresComboBox.setSimpleValue(session);
+		scoresComboBox.getSessionScores(session);
+	}
 
 }	
 	

@@ -2,6 +2,7 @@ package edu.nrao.dss.client;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -16,6 +17,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	private ScoresDisplay display;
 	private ScoresAccess access;
     private Schedule schedulePanel;
+	private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
     
     // TODO, WTF: used for seeing if this is a new request, to avoid bug where
     // we are getting event twice.
@@ -34,7 +36,6 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	private void initLayout() {
 		
 	    // get the options
-		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
 		setForceSelection(true);
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
@@ -54,13 +55,15 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		addListener(Events.Valid, new Listener<BaseEvent>() {
 		    public void handleEvent(BaseEvent be) {
 		        String session = (String) getSimpleValue();
-			    GWT.log("got session " + session + " " + Integer.toString(sessionsMap.get(session)) , null);
-			    int id = sessionsMap.get(session);
-			    // TODO: time stuff should come from parent panel
-			    getScores(id, session);
+		    	getSessionScores(session);
 			}
 		});
 		
+	}
+
+	public void getSessionScores(String session) {
+	    int id = sessionsMap.get(session);
+	    getScores(id, session);
 	}
 	
 	private void getScores(int id, String name) {
