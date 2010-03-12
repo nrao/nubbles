@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -18,10 +19,6 @@ public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
 		super("/periods/UTC", new PeriodType(columnTypes));
 		initLayout(initColumnModel());
-		
-		// TODO: for now we're disabling delete so that time accounting is done correctly,
-		// we need it to eventually behave like the Delete Period button in the Period Summary
-		removeItem.disable();
 	}
 	
 	private ColumnModel initColumnModel() {
@@ -39,6 +36,26 @@ public class PeriodExplorer extends Explorer {
 		}
 	    return new ColumnModel(configs);
 	}
+	
+	// override this method from the parent class so that we can enforce that only pending
+	// periods are removed from this explorer
+	protected void setRemoveItemListener() {
+		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				// TODO: check state of period
+				String state = grid.getSelectionModel().getSelectedItem().get("state");
+				// if pending, do this
+				if (state.compareTo("P") == 0) {
+					removeDialog.show();
+				} else {
+				    // if not, let them know they can't
+					MessageBox.alert("Not Allowed To Delete This Period", "Please use the Period Summary Dialog to delete a non-Pending Period.", null);
+				}	
+			}
+		});
+	}
+
 	
 	public void addButtonsListener(final Schedule schedule) {
 		saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -88,6 +105,7 @@ public class PeriodExplorer extends Explorer {
         new ColumnType("lst",                   "LST",                   55, DisplayField.class),
         new ColumnType("duration",              "Duration",              55, Double.class),
         new ColumnType("score",                 "Score",                 40, ScoreField.class),
+        //new ColumnType("receivers",             "Rcvrs",                 40, String.class),
        	new ColumnType("not_billable",          "Not Bill",              50, Double.class),
        	new ColumnType("backup",                "Backup?",               70, Boolean.class),
        	

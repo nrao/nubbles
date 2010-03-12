@@ -229,13 +229,9 @@ public class Explorer extends ContentPanel{
 		removeItem = new Button("Delete");
 		toolBar.add(removeItem);
 		removeItem.setToolTip("Delete a row.");
-		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				removeDialog.show();
-			}
-		});
-
+		// make it so that children can override this behavior
+		setRemoveItemListener();
+	
 		// add a generic button that can be changed for whatever purpose a child class may have for it
 		actionItem = new Button("Action");
 		toolBar.add(actionItem);
@@ -302,7 +298,16 @@ public class Explorer extends ContentPanel{
 					}
 				});
 	}
-	
+
+	protected void setRemoveItemListener() {
+		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				removeDialog.show();
+			}
+		});
+	}
+
 	protected void addRecord(HashMap<String, Object> fields) {
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
@@ -393,7 +398,7 @@ public class Explorer extends ContentPanel{
 	protected Button addItem;
 	protected Button removeItem;
 	protected Button removeApproval;
-	private Dialog removeDialog;
+	protected Dialog removeDialog;
 	protected Button actionItem;
 	
 	protected FilterItem filter;
