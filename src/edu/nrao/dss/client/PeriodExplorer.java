@@ -105,7 +105,7 @@ public class PeriodExplorer extends Explorer {
         new ColumnType("lst",                   "LST",                   55, DisplayField.class),
         new ColumnType("duration",              "Duration",              55, Double.class),
         new ColumnType("score",                 "Score",                 40, ScoreField.class),
-        //new ColumnType("receivers",             "Rcvrs",                 40, String.class),
+        new ColumnType("receivers",             "Rcvrs",                 40, String.class),
        	new ColumnType("not_billable",          "Not Bill",              50, Double.class),
        	new ColumnType("backup",                "Backup?",               70, Boolean.class),
        	
