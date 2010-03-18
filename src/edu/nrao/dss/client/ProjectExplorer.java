@@ -10,6 +10,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -27,7 +29,7 @@ public class ProjectExplorer extends Explorer {
 	public ProjectExplorer() {
 		super("/projects", new ProjectType());
 		initFilters();
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
 		viewItem.setVisible(true);
 	}
 

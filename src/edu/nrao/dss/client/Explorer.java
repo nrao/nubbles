@@ -49,16 +49,17 @@ import com.google.gwt.user.client.Window;
 
 public class Explorer extends ContentPanel{
 	public Explorer(String url, ModelType mType) {
-		rootURL = url;
-		modelType = mType;
+		rootURL     = url;
+		modelType   = mType;
 		defaultDate = "";
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void initLayout(ColumnModel cm) {
+	protected void initLayout(ColumnModel cm, Boolean createToolBar) {
+		
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
-		commitState = false;
+		setCommitState(false);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
@@ -78,8 +79,11 @@ public class Explorer extends ContentPanel{
 		grid.setBorders(true);
 
 		initListeners();
-		initToolBar();
+		if (createToolBar) {
+		    initToolBar();
+		}
 		loadData();
+		
 	}
 	
 	private void addPlugins() {
@@ -89,7 +93,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	public void loadData() {
-		loader.load(0, pageSize);
+		loader.load(0, getPageSize());
 	}
 	
 	private void initListeners() {
@@ -111,7 +115,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void save(ModelData model) {
-		if (!commitState) {
+		if (!isCommitState()) {
 			return;
 		}
 		ArrayList<String> keys   = new ArrayList<String>();
@@ -148,7 +152,7 @@ public class Explorer extends ContentPanel{
 				if (e.getKeyCode() == 13) {
 					int page_size = Integer.valueOf(pages.getValue()).intValue();
 					pagingToolBar.setPageSize(page_size);
-					pageSize = page_size;
+					setPageSize(page_size);
 					loadData();
 				}
 			}
@@ -268,9 +272,9 @@ public class Explorer extends ContentPanel{
 		saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				commitState = true;
+				setCommitState(true);
 				store.commitChanges();
-				commitState = false;
+				setCommitState(false);
 				loadData();
 				grid.getView().refresh(true);
 			}
@@ -346,6 +350,22 @@ public class Explorer extends ContentPanel{
 		proxy.setBuilder(builder);
 	}
 	
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setCommitState(boolean commitState) {
+		this.commitState = commitState;
+	}
+
+	public boolean isCommitState() {
+		return commitState;
+	}
+
 	/** Provides basic spreadsheet-like functionality. */
 	protected EditorGrid<BaseModelData> grid;
 
@@ -376,7 +396,7 @@ public class Explorer extends ContentPanel{
 	protected Button addItem;
 	protected Button removeItem;
 	protected Button removeApproval;
-	private Dialog removeDialog;
+	protected Dialog removeDialog;
 	
 	protected FilterItem filter;
 	

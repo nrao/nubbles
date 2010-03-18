@@ -29,7 +29,7 @@ public class WindowExplorer extends Explorer {
 	public WindowExplorer() {
 		super("/windows", new WindowType(columnTypes));
 		initFilters();
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
 		updateSessionOptions();
 	}
 	

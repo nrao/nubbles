@@ -17,7 +17,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
 		super("/periods/UTC", new PeriodType(columnTypes));
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
 		
 		// TODO: for now we're disabling delete so that time accounting is done correctly,
 		// we need it to eventually behave like the Delete Period button in the Period Summary
