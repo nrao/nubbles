@@ -29,6 +29,8 @@ import com.google.gwt.json.client.JSONObject;
 
 public class InvestigatorExplorer extends Explorer {
 
+	private Integer project_id;
+
 	public InvestigatorExplorer() {
 		super("/investigators", new InvestigatorType());
 		initLayout(initColumnModel(), false);
@@ -75,7 +77,7 @@ public class InvestigatorExplorer extends Explorer {
 //	        	addRecord(fields);
 	        	Window w = new Window();
 				InvestigatorForm addInvest = new InvestigatorForm(
-						w, getRootURL());
+						w, InvestigatorExplorer.this);
 				addInvest.show();
 				w.add(addInvest);
 				w.setSize(375, 175);
@@ -165,11 +167,20 @@ List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 	}
 	
 	public void loadProject(Integer project_id) {
+		this.setProject_id(project_id);
 		String url = getRootURL() + "?project_id=" + project_id;
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = getProxy();
 		proxy.setBuilder(builder);
 		loadData();
+	}
+
+	public void setProject_id(Integer project_id) {
+		this.project_id = project_id;
+	}
+
+	public Integer getProject_id() {
+		return project_id;
 	}
 
 }

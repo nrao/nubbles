@@ -8,6 +8,7 @@ public class InvestigatorType extends ModelType {
 		setRoot("investigators");
 		setTotalName("total");
 		
+		addField("id");
 		addField("name");
 		addField("pi");
 		addField("contact");

@@ -27,14 +27,13 @@ public class InvestigatorForm extends LayoutContainer {
     private VerticalPanel vp;
     private SimpleComboBox<String> users      = new SimpleComboBox<String>();
     private HashMap<String, Integer> user_ids = new HashMap<String, Integer>();
-    private Window window;
-    private String projectURL;
-    
-    private FormData formData;  
-
-    public InvestigatorForm(Window w, String projectURL) {
+    private Window window;  
+    private FormData formData;
+	private InvestigatorExplorer investigatorExplorer;
+	
+    public InvestigatorForm(Window w, InvestigatorExplorer investExp) {
     	window     = w;
-    	this.projectURL = projectURL;
+    	investigatorExplorer = investExp;
     }
     
 	@Override  
@@ -66,9 +65,13 @@ public class InvestigatorForm extends LayoutContainer {
 			HashMap<String, Object> data = new HashMap<String, Object>();
 			data.put("investigator", user);
 			
-			JSONRequest.post(projectURL, data, new JSONCallbackAdapter() {
+			JSONRequest.post(investigatorExplorer.getRootURL(), data, new JSONCallbackAdapter() {
 				@SuppressWarnings("deprecation")
 				public void onSuccess(JSONObject json) {
+					HashMap<String, Object> fields = new HashMap<String, Object>();
+		        	fields.put("project_id", investigatorExplorer.getProject_id());
+		        	fields.put("user_id", user_ids.get(users.getSimpleValue()));
+		        	investigatorExplorer.addRecord(fields);
 					window.close();
 				}
 			});
