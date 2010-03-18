@@ -142,6 +142,10 @@ public class Explorer extends ContentPanel{
 		//return grid.getSelectionModel().getSelectedItem();
 	}
 	
+	// to be implemented by children
+	public void actionOnObject() {
+		//return grid.getSelectionModel().getSelectedItem();
+	}	
 	private void initToolBar() {
 		final PagingToolBar pagingToolBar = new PagingToolBar(50);
 		final TextField<String> pages = new TextField<String>();
@@ -229,13 +233,22 @@ public class Explorer extends ContentPanel{
 		removeItem = new Button("Delete");
 		toolBar.add(removeItem);
 		removeItem.setToolTip("Delete a row.");
-		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				removeDialog.show();
-			}
-		});
-
+		// make it so that children can override this behavior
+		setRemoveItemListener();
+	
+		// add a generic button that can be changed for whatever purpose a child class may have for it
+		actionItem = new Button("Action");
+		toolBar.add(actionItem);
+		//actionItem.setToolTip("view row.");
+		actionItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        @Override
+	        public void componentSelected(ButtonEvent ce) {
+	            actionOnObject();	
+	        }
+	    });
+		// hide this button by default
+		actionItem.setVisible(false);
+		
 		toolBar.add(new SeparatorToolItem());
 
 		filter = new FilterItem(Explorer.this);
@@ -289,7 +302,16 @@ public class Explorer extends ContentPanel{
 					}
 				});
 	}
-	
+
+	protected void setRemoveItemListener() {
+		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				removeDialog.show();
+			}
+		});
+	}
+
 	protected void addRecord(HashMap<String, Object> fields) {
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
@@ -397,6 +419,7 @@ public class Explorer extends ContentPanel{
 	protected Button removeItem;
 	protected Button removeApproval;
 	protected Dialog removeDialog;
+	protected Button actionItem;
 	
 	protected FilterItem filter;
 	

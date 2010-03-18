@@ -1,88 +1,95 @@
 package edu.nrao.dss.client;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Map;
 import java.util.HashMap;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.Time;
-import com.extjs.gxt.ui.client.widget.form.TimeField;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.TabItem;  
+import com.extjs.gxt.ui.client.widget.TabPanel;  
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Element;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 
-import edu.nrao.dss.client.util.TimeUtils;
 
 // TODO: this does more then just change a period - it can replace several periods
 // w/ a single period.  But it's also ideal for inserting backups.  so what to call it?
 
 class EmailDialogBox extends Dialog {
-	public EmailDialogBox(String emails, String subject, String body) {
+	public EmailDialogBox(String addrs[], String subj[], String bod[]) {
 		super();
-		
+
 		// Basic Dlg settings
 		setHeading("Email Schedule");
-		addText("Review (and edit) the schedule e-mail before sending it to observers and staff.");
+		addText("Review (and edit) the schedule e-mails before sending them to observers and staff.");
 		setButtons(Dialog.OKCANCEL);
 		GWT.log("EmailDialogBox", null);
-
-		// now set up the form w/ all it's fields
-		final FormPanel fp = new FormPanel();
-
-		final TextArea addressText = new TextArea();
-		addressText.setFieldLabel("Addresses");
-		addressText.setValue(emails);
-		fp.add(addressText, new FormData(850, 100));
 		
-		final TextField subjectText = new TextField();
-		subjectText.setFieldLabel("Subject");
-		subjectText.setValue(subject);
-		fp.add(subjectText, new FormData(850, 50));
+		address = addrs;
+		subject = subj;
+		body = bod;
 
-		final TextArea bodyText = new TextArea();
-		bodyText.setFieldLabel("Body");
-		bodyText.setStyleAttribute("font-family", "monospace");
-		bodyText.setValue(body);
-		fp.add(bodyText, new FormData(850, 500));
+		for (int i = 0; i < 3; ++i)
+		{
+			tareas.put(tab_title[i], new HashMap<String, TextArea>());
+		}
+	}
+
+	
+	@Override
+	protected void onRender(Element parent, int index) {
+		super.onRender(parent, index);
+
+		TabPanel email_tabs = new TabPanel();
+		email_tabs.setAutoWidth(true);
+		email_tabs.setAutoHeight(true);
+
+		for (int i = 0; i < 3; ++i)
+		{
+			email_tabs.add(addTab(tab_title[i], tab_tool_tip[i], address[i], subject[i], body[i]));
+		}
 		
-		add(fp);
-		setSize(900, 700);
-
+		add(email_tabs);
+		setSize(950, 700);
+		
 		Button cancel = getButtonById(Dialog.CANCEL);
 		cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
 				close();
 			}
 		});
-
+		
 		Button ok = getButtonById(Dialog.OK);
 		ok.addListener(Events.OnClick,new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
 	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		keys.put("subject", subjectText.getValue());
-	    		keys.put("body", bodyText.getValue());
-	    		keys.put("emails", addressText.getValue());
+	    		
+	    		for (int i = 0; i < 3; ++i)
+	    		{
+	    			Map<String, TextArea> ta = tareas.get(tab_title[i]);
+	    			TextArea subjectText = ta.get("subject:");
+	    			TextArea bodyText = ta.get("body:");
+	    			TextArea addressText = ta.get("to:");
+	    			
+		    		keys.put(subject_key[i], subjectText.getValue());
+		    		keys.put(body_key[i], bodyText.getValue());
+		    		keys.put(address_key[i], addressText.getValue());
+	    		}
+	    		
 	    		final MessageBox box = MessageBox.wait("Sending Email", "Sending scheduling e-mails to observers and staff.", "Be Patient ...");
 				JSONRequest.post("/schedule/email", keys,
 						new JSONCallbackAdapter() {
+							@Override
 							public void onSuccess(JSONObject json) {
 								GWT.log("/schedule/email (POST) onSuccess", null);
 								box.close();
@@ -91,5 +98,62 @@ class EmailDialogBox extends Dialog {
 				close();
 			}
 		});
+		
 	}
+	
+
+	private TabItem addTab(String title, String toolTip, String addr, String subj, String body)
+	{
+		TabItem item = new TabItem(title);
+		VerticalPanel vp = new VerticalPanel();
+
+		item.setAutoHeight(true);
+		item.setLayout(new FitLayout());
+		item.setId(title);
+		item.getHeader().setToolTip(toolTip);
+		
+		vp.setSpacing(10);
+		vp.setScrollMode(Style.Scroll.NONE);
+		vp.add(email_field(title, "to:", addr, 850, 100));
+		vp.add(email_field(title, "subject:", subj, 850, 50));
+		vp.add(email_field(title, "body:", body, 850, 400));
+		
+		item.add(vp );
+		return item;
+	}
+
+	private HorizontalPanel email_field(String title, String label, String content, int width, int height)
+	{
+		Map<String, TextArea> ta = tareas.get(title);
+		
+		HorizontalPanel hp = new HorizontalPanel();
+		Text field_label = new Text();
+		TextArea field_text = new TextArea();
+		field_label.setText(label);
+		field_label.setWidth(50);
+		field_text.setValue(content);
+		field_text.setSize(width, height);
+		field_text.setStyleAttribute("font-family", "monospace");
+		// TBF: Use this line instead of above for extGWT 2.x!!!!
+//		field_text.setInputStyleAttribute("font-family", "monospace");
+		hp.add(field_label);
+		hp.add(field_text);
+		ta.put(label, field_text);
+		return hp;
+	}
+	
+	TabPanel email_panel = new TabPanel();
+	String address[] = new String[3];
+	String subject[] = new String[3];
+	String body[] = new String[3];
+	
+	String tab_title[] = {"observer", "deleted", "staff"};
+	String tab_tool_tip[] = {"email to scheduled observers", "email to observers of deleted periods", "email to staff"};
+	String address_key[] = {"observer_address", "deleted_address", "staff_address"};
+	String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
+	String body_key[] = {"observer_body", "deleted_body", "staff_body"};
+
+	Map<String,Map<String, TextArea>> tareas = new HashMap<String, Map<String, TextArea>>();
+
+
 }
