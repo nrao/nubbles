@@ -12,6 +12,8 @@ public class UserType extends ModelType {
 		addField("last_name");
 		addField("sanctioned");
 		addField("projects");
+		addField("role");
+		addField("username");
 	}
 
 }

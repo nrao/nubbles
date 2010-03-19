@@ -141,34 +141,6 @@ public class ProjectExplorer extends Explorer {
 	    return new ColumnModel(configs);
 	}
 	
-	private CellEditor initCombo(String[] options) {
-	    final SimpleComboBox<String> combo = new SimpleComboBox<String>();
-	    combo.setForceSelection(true);
-	    combo.setTriggerAction(TriggerAction.ALL);
-	    for (String o : options) {
-	    	combo.add(o);
-	    }
-
-	    CellEditor editor = new CellEditor(combo) {
-	      @Override
-	      public Object preProcessValue(Object value) {
-	        if (value == null) {
-	          return value;
-	        }
-	        return combo.findModel(value.toString());
-	      }
-
-	      @Override
-	      public Object postProcessValue(Object value) {
-	        if (value == null) {
-	          return value;
-	        }
-	        return ((ModelData) value).get("value");
-	      }
-	    };
-	    return editor;
-	}
-	
 	// when the view button gets pressed, go to the Project Page tab.
 	public void viewObject() {
 		BaseModelData bd = grid.getSelectionModel().getSelectedItem();

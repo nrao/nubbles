@@ -135,7 +135,11 @@ public class UserExplorer extends Explorer {
 	private ColumnModel initColumnModel() {
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		
-		ColumnConfig column = new ColumnConfig("first_name", "First Name", 100);
+		ColumnConfig column = new ColumnConfig("username", "Username", 100);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    configs.add(column);
+	    
+	    column = new ColumnConfig("first_name", "First Name", 100);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 	    
@@ -147,6 +151,10 @@ public class UserExplorer extends Explorer {
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
+	    
+	    column = new ColumnConfig("role", "Role", 80);
+	    column.setEditor(initCombo(new String[]{"Administrator", "Observer", "Operator"}));
+	    configs.add(column);
 	    
 	    column = new ColumnConfig("projects", "Projects", 800);
 	    column.setEditor(new CellEditor(new TextField<String>()));
