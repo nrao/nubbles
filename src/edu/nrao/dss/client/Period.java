@@ -30,7 +30,7 @@ public class Period {
         int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
         
         Period period = new Period(id, handle, st, dur, day, time);
-        
+        period.setMocAck(json.get("moc_ack").isBoolean().booleanValue());
         period.setBackup(json.get("backup").isBoolean().booleanValue());
         period.setHScore(json.get("sscore").isNumber().doubleValue());
         period.setCScore(json.get("cscore").isNumber().doubleValue());
@@ -90,7 +90,7 @@ public class Period {
     	return hours * 60.0;
     }
     
-    public Period(int id, String handle, Date start, int dur, Date start_day, String start_time ) {
+    public Period(int id, String handle, Date start, int dur, Date start_day, String start_time) {
     	this.id = id;
     	this.handle = handle;
     	this.start = start; 
@@ -168,6 +168,15 @@ public class Period {
     public String getDurationString() {
     	return TimeUtils.min2sex(duration);
     }
+    
+    public void setMocAck(boolean ack) {
+    	moc_ack = ack;
+    }
+    
+    public boolean getMocAck() {
+    	return moc_ack;
+    }
+    
     public int getId() {
     	return id;
     }
@@ -381,6 +390,7 @@ public class Period {
     private String   handle; 
     private Date     start;
     private int      duration; // minutes
+    private boolean  moc_ack;
     private Date     start_day;
     private String   start_time;
     private double   hscore;

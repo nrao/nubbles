@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -22,15 +23,43 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 
 
 public class WindowExplorer extends Explorer {
+	
+    private AssignWindowPeriodDlg assignDlg;
+	
 	public WindowExplorer() {
 		super("/windows", new WindowType(columnTypes));
 		initFilters();
 		initLayout(initColumnModel());
 		updateSessionOptions();
+
+	}
+
+	protected void initLayout(ColumnModel cm) {
+	    super.initLayout(cm);
+	    
+	    actionItem.setVisible(true);
+	    actionItem.setText("Assign Period");
+	    
+	    assignDlg = new AssignWindowPeriodDlg();
+	    assignDlg.hide();
+	    
+	}
+	
+	public void actionOnObject() {
+	    //MessageBox.alert("got it", "dog", null);
+		BaseModelData bd = grid.getSelectionModel().getSelectedItem();
+		//String sessionId = (String) bd.get("id");
+		double windowId = bd.get("id");	 
+		String sessionHandle = bd.get("handle");
+		
+		GWT.log("Got Session ID: " + Double.toString(windowId), null);
+		
+		assignDlg.show(sessionHandle, (int) windowId);
 	}
 	
 	private ColumnModel initColumnModel() {

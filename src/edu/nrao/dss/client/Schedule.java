@@ -225,18 +225,39 @@ public class Schedule extends ContentPanel {
 	    		HashMap<String, Object> keys = new HashMap<String, Object>();
 				String msg = "Generating scheduling email for observations over the next two days";
 				final MessageBox box = MessageBox.wait("Getting Email Text", msg, "Be Patient ...");
+				
+				// Must set keys here somehow to transmit proper time range.  What is the time range?
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
+	    		keys.put("start", startStr);
+	    		keys.put("duration", numCalendarDays);
+	    		keys.put("tz", timezone);
+	    		
 				JSONRequest.get("/schedule/email", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								JSONArray emails = json.get("emails").isArray();
-								String addr = "";
-								for (int i = 0; i < emails.size(); ++i)
+								String addr[] = new String[3];
+								String subject[] = new String[3];
+								String body[] = new String[3];
+								String address_key[] = {"observer_address", "deleted_address", "staff_address"};
+								String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
+								String body_key[] = {"observer_body", "deleted_body", "staff_body"};
+								                   
+								for (int j = 0; j < 3; ++j)
 								{
-									addr += emails.get(i).isString().stringValue() + ", ";
+									JSONArray emails = json.get(address_key[j]).isArray();
+									//String addr = "";
+									addr[j] = "";
+									
+									for (int i = 0; i < emails.size(); ++i)
+									{
+										addr[j] += emails.get(i).isString().stringValue() + ", ";
+									}
+	
+									addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
+									subject[j] = json.get(subject_key[j]).isString().stringValue();
+									body[j] = json.get(body_key[j]).isString().stringValue();
 								}
-								addr = addr.substring(0, addr.length() - 2); // Get rid of last comma.
-								String subject = json.get("subject").isString().stringValue();
-								String body = json.get("body").isString().stringValue();
+								
 								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
 								dlg.show();
 								box.close();
@@ -248,7 +269,7 @@ public class Schedule extends ContentPanel {
 		
 		// publishes all periods currently displayed (state moved from pending to scheduled)
 		Button publishButton = new Button("Publish");
-		publishButton.setToolTip("Publishs all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
+		publishButton.setToolTip("Publishes all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
 		publishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
@@ -473,7 +494,7 @@ public class Schedule extends ContentPanel {
 		getSessionOptions();
 		dayView.addValueChangeHandler(new ValueChangeHandler<Appointment>(){
 	        public void onValueChange(ValueChangeEvent<Appointment> event) {
-	        	// seed the PeriodDialog w/ details from the period that just got clckd
+	        	// seed the PeriodDialog w/ details from the period that just got clicked
 	            String periodUrl = "/periods/UTC/" + event.getValue().getTitle();
 	    	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
 		            @Override
