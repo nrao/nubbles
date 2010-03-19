@@ -27,7 +27,8 @@ public class PeriodSummaryPanel extends ContentPanel {
 	private TextField<String> label = new TextField<String>();
 	private TextField<String> start = new TextField<String>();
 	private TextField<String> dur = new TextField<String>();
-	private NumberField score = new NumberField();
+	private NumberField hscore = new NumberField();
+	private NumberField cscore = new NumberField();
 	private CheckBox backup = new CheckBox();
 	private TextField<String> state = new TextField<String>();
 	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel();
@@ -71,11 +72,15 @@ public class PeriodSummaryPanel extends ContentPanel {
     	periodForm2.setHeaderVisible(false);
     	
     	// score
-    	score.setFieldLabel("Score");
-    	score.setReadOnly(true);
+    	hscore.setFieldLabel("Historical Score");
+    	hscore.setReadOnly(true);
+    	cscore.setFieldLabel("Current Score");
+    	cscore.setReadOnly(true);
     	// TODO
-    	score.setStyleAttribute("color", "grey");
-    	periodForm2.add(score);
+    	hscore.setStyleAttribute("color", "grey");
+    	periodForm2.add(hscore);
+    	cscore.setStyleAttribute("color", "grey");
+    	periodForm2.add(cscore);
     	
     	// backup 
     	backup.setFieldLabel("Backup");
@@ -153,7 +158,8 @@ public class PeriodSummaryPanel extends ContentPanel {
         	label.setValue(period.getHandle());
         	start.setValue(period.getStartString());
         	dur.setValue(period.getDurationString());
-        	score.setValue(period.getScore());
+        	hscore.setValue(period.getHScore());
+        	cscore.setValue(period.getCScore());
         	backup.setValue(period.isBackup());
         	state.setValue(period.getState());
         }
