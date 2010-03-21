@@ -103,8 +103,8 @@ public class UserExplorer extends Explorer {
 			public void componentSelected(ButtonEvent ce) {
 				for (SimpleComboBox<String> f : advancedFilters) {
 					f.reset();
-					filter.getTextField().setValue("");
 				}
+				filter.getTextField().setValue("");
 			}
 		});
 		toolBar.add(reset);
