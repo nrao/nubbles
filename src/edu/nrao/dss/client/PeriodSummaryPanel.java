@@ -1,5 +1,7 @@
 package edu.nrao.dss.client;
 
+import java.util.HashMap;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -29,6 +31,7 @@ public class PeriodSummaryPanel extends ContentPanel {
 	private TextField<String> dur = new TextField<String>();
 	private NumberField score = new NumberField();
 	private CheckBox backup = new CheckBox();
+	private CheckBox moc_ack = new CheckBox();
 	private TextField<String> state = new TextField<String>();
 	private PeriodTimeAccountPanel ta = new PeriodTimeAccountPanel();
 	private Button save = new Button();
@@ -63,6 +66,21 @@ public class PeriodSummaryPanel extends ContentPanel {
     	periodForm.add(label);
     	periodForm.add(start);
     	periodForm.add(dur);
+    	
+    	moc_ack.setFieldLabel("MOC Acknowledged");
+    	periodForm.add(moc_ack);
+    	moc_ack.addListener(Events.OnClick, new Listener<BaseEvent>() {
+    		public void handleEvent(BaseEvent be) {
+    			GWT.log("Updating period's moc_ack field", null);
+    			String url = "/period/" + Integer.toString(period.getId()) + "/toggle_moc";
+    			HashMap<String, Object> keys = new HashMap<String, Object>();
+    			JSONRequest.post(url, keys,
+    					new JSONCallbackAdapter() {
+    						public void onSuccess(JSONObject json) {
+    						}
+    					});		
+    		}
+    	});
     	
     	lc.add(periodForm, td);
     	
@@ -153,6 +171,7 @@ public class PeriodSummaryPanel extends ContentPanel {
         	label.setValue(period.getHandle());
         	start.setValue(period.getStartString());
         	dur.setValue(period.getDurationString());
+        	moc_ack.setValue(period.getMocAck());
         	score.setValue(period.getScore());
         	backup.setValue(period.isBackup());
         	state.setValue(period.getState());
