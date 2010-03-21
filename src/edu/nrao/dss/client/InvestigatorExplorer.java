@@ -140,7 +140,9 @@ public class InvestigatorExplorer extends Explorer {
 List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		
 		ColumnConfig column = new ColumnConfig("name", "Name", 100);
-	    column.setEditor(new CellEditor(new TextField<String>()));
+		CellEditor editor = new CellEditor(new TextField<String>());
+		editor.disable();
+	    column.setEditor(editor);
 	    configs.add(column);
 	   
 	    CheckColumnConfig checkColumn = new CheckColumnConfig("pi", "PI", 65);

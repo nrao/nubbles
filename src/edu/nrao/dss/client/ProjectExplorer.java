@@ -89,11 +89,15 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(column);
 	    
 	    column = new ColumnConfig("pi", "PI", 100);
-	    column.setEditor(new CellEditor(new TextField<String>()));
+	    CellEditor editor   = new CellEditor(new TextField<String>());
+	    editor.disable();
+	    column.setEditor(editor);
 	    configs.add(column);
 
 	    column = new ColumnConfig("co_i", "Co-I", 150);
-	    column.setEditor(new CellEditor(new TextField<String>()));
+	    editor   = new CellEditor(new TextField<String>());
+	    editor.disable();
+	    column.setEditor(editor);
 	    configs.add(column);
 
 	    column = new ColumnConfig("type", "Type", 80);
