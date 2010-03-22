@@ -108,8 +108,8 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final TabPanel         tabPanel = new TabPanel();
     private final ProjectExplorer  pe       = new ProjectExplorer();
     private final SessionExplorer  se       = new SessionExplorer();
-    private final WindowExplorer  we       = new WindowExplorer();
-    private final WindowCalendar  wc       = new WindowCalendar();
+    private final WindowExplorer   we       = new WindowExplorer();
+    private final WindowCalendar   wc       = new WindowCalendar();
     private final Schedule         sch      = new Schedule();
     private final TimeAccounting   ta       = new TimeAccounting();
     private Factors                factors;
