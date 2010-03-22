@@ -25,9 +25,10 @@ public class Scheduler extends Viewport implements EntryPoint {
         // project explorer tab
         tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
         pe.setParent(this);
-        
+
+        // TODO: this needs to get sponsor tested first
         // user explorer tab
-        tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
+        //tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
         
         // session explorer tab - we need to update the project info when it
         // comes into focus
@@ -111,7 +112,8 @@ public class Scheduler extends Viewport implements EntryPoint {
     private final TabPanel         tabPanel = new TabPanel();
     private final ProjectExplorer  pe       = new ProjectExplorer();
     private final SessionExplorer  se       = new SessionExplorer();
-    private final UserExplorer ue           = new UserExplorer();
+    // TODO: this needs to get sponsor tested first
+    //private final UserExplorer ue           = new UserExplorer();
     private final WindowExplorer  we        = new WindowExplorer();
     private final WindowCalendar  wc        = new WindowCalendar();
     private final Schedule         sch      = new Schedule();

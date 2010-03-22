@@ -106,8 +106,9 @@ public class ProjectPage extends ContentPanel {
     	projectForm.add(save);
     	
     	add(projectForm);
-		add(new HTML("<br/><h2>Project Team</h2><br/>"));
-		add(investigatorExplorer);
+	    // TODO: this needs to get sponsor tested first
+		//add(new HTML("<br/><h2>Project Team</h2><br/>"));
+		//add(investigatorExplorer);
 		
 	}
 
