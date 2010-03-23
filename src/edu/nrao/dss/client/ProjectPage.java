@@ -67,7 +67,7 @@ public class ProjectPage extends ContentPanel {
 		//projectForm.setHeading("Project");
 		//projectForm.setBorders(true);
         projectForm.setHeaderVisible(false);
-        projectForm.add(new HTML("<h2>Project Information</h2><br/>"));
+        projectForm.add(new HTML("<h2>Project Information</h2>"));
 		
 		// the project picker goes in this left-most form panel
 		projects.setFieldLabel("Project");
@@ -106,9 +106,8 @@ public class ProjectPage extends ContentPanel {
     	projectForm.add(save);
     	
     	add(projectForm);
-	    // TODO: this needs to get sponsor tested first
-		//add(new HTML("<br/><h2>Project Team</h2><br/>"));
-		//add(investigatorExplorer);
+		add(new HTML("<h2>Project Team</h2>"));
+		add(investigatorExplorer);
 		
 	}
 

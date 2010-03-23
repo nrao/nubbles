@@ -59,22 +59,15 @@ public class InvestigatorForm extends LayoutContainer {
       Button b = new Button("Submit");
       b.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void componentSelected(ButtonEvent ce) {
-			String user = users.getSimpleValue();
-			HashMap<String, Object> data = new HashMap<String, Object>();
-			data.put("investigator", user);
+			HashMap<String, Object> fields = new HashMap<String, Object>();
+        	fields.put("project_id", investigatorExplorer.getProject_id());
+        	fields.put("user_id", user_ids.get(users.getSimpleValue()));
+        	investigatorExplorer.addRecord(fields);
+        	window.close();
 			
-			JSONRequest.post(investigatorExplorer.getRootURL(), data, new JSONCallbackAdapter() {
-				@SuppressWarnings("deprecation")
-				public void onSuccess(JSONObject json) {
-					HashMap<String, Object> fields = new HashMap<String, Object>();
-		        	fields.put("project_id", investigatorExplorer.getProject_id());
-		        	fields.put("user_id", user_ids.get(users.getSimpleValue()));
-		        	investigatorExplorer.addRecord(fields);
-					window.close();
-				}
-			});
 		}
     	  
       });
