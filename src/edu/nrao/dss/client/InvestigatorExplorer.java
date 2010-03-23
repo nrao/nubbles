@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 
@@ -95,6 +96,7 @@ public class InvestigatorExplorer extends Explorer {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				Double id = grid.getSelectionModel().getSelectedItem().get("id");
+				GWT.log(rootURL);
 				JSONRequest.delete(rootURL + "/" + id.intValue(),
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
