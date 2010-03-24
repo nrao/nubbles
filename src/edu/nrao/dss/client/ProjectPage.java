@@ -146,6 +146,27 @@ public class ProjectPage extends ContentPanel {
     			updateProject(projects.getSimpleValue());
     		}
     	});
+    	
+    	investigatorExplorer.saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				updateProject(projects.getSimpleValue());
+			}
+    	});
+    	
+    	investigatorExplorer.removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+    		    updateProject(projects.getSimpleValue());
+			}
+    	});
+    	
+    	investigatorExplorer.getAddInvest().getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				updateProject(projects.getSimpleValue());
+			}
+    	});
 		
 	}
 	

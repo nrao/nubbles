@@ -30,9 +30,10 @@ public class InvestigatorForm extends LayoutContainer {
     private Window window;  
     private FormData formData;
 	private InvestigatorExplorer investigatorExplorer;
+	private Button submit = new Button("Submit");
 	
     public InvestigatorForm(Window w, InvestigatorExplorer investExp) {
-    	window     = w;
+    	setWindow(w);
     	investigatorExplorer = investExp;
     }
     
@@ -56,8 +57,7 @@ public class InvestigatorForm extends LayoutContainer {
       users.setFieldLabel("User");
       form.add(users);
     
-      Button b = new Button("Submit");
-      b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+      getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
 
 		@SuppressWarnings("deprecation")
 		@Override
@@ -66,12 +66,12 @@ public class InvestigatorForm extends LayoutContainer {
         	fields.put("project_id", investigatorExplorer.getProject_id());
         	fields.put("user_id", user_ids.get(users.getSimpleValue()));
         	investigatorExplorer.addRecord(fields);
-        	window.close();
+        	getWindow().close();
 			
 		}
     	  
       });
-      form.addButton(b);
+      form.addButton(getSubmit());
       
       Button c = new Button("Cancel");
       c.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -79,7 +79,7 @@ public class InvestigatorForm extends LayoutContainer {
 		@SuppressWarnings("deprecation")
 		@Override
 		public void componentSelected(ButtonEvent ce) {
-			window.close();
+			getWindow().close();
 		} 
       });
       form.addButton(c); 
@@ -87,7 +87,7 @@ public class InvestigatorForm extends LayoutContainer {
       form.setButtonAlign(HorizontalAlignment.CENTER);  
     
       FormButtonBinding binding = new FormButtonBinding(form);  
-      binding.addButton(b);  
+      binding.addButton(getSubmit());  
     
       vp.add(form);  
     }
@@ -114,5 +114,21 @@ public class InvestigatorForm extends LayoutContainer {
 				}
 			}
 		});
+	}
+
+	public void setWindow(Window window) {
+		this.window = window;
+	}
+
+	public Window getWindow() {
+		return window;
+	}
+
+	public void setSubmit(Button submit) {
+		this.submit = submit;
+	}
+
+	public Button getSubmit() {
+		return submit;
 	}
 }

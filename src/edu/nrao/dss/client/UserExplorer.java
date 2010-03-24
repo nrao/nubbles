@@ -89,28 +89,12 @@ public class UserExplorer extends Explorer {
 		ToolBar toolBar = new ToolBar();
 		setTopComponent(toolBar);
 		
-		filter = new FilterItem(UserExplorer.this);
+		filter = new FilterItem(UserExplorer.this, true);
 		toolBar.add(filter.getTextField());
 
 		for (SimpleComboBox<String> f : advancedFilters) {
 			toolBar.add(new SeparatorToolItem());
 		    toolBar.add(f);
-		}
-		toolBar.add(new SeparatorToolItem());
-		Button reset = new Button("Reset");
-		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				for (SimpleComboBox<String> f : advancedFilters) {
-					f.reset();
-				}
-				filter.getTextField().setValue("");
-			}
-		});
-		toolBar.add(reset);
-		toolBar.add(new SeparatorToolItem());
-		if (filterAction != null) {
-			toolBar.add(filterAction);
 		}
 		
 		toolBar.add(new FillToolItem());

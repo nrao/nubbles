@@ -253,7 +253,7 @@ public class Explorer extends ContentPanel{
 		
 		toolBar.add(new SeparatorToolItem());
 
-		filter = new FilterItem(Explorer.this);
+		filter = new FilterItem(Explorer.this, false);
 		toolBar.add(filter.getTextField());
 
 		for (SimpleComboBox<String> f : advancedFilters) {

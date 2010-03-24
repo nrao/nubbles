@@ -31,10 +31,13 @@ import com.google.gwt.json.client.JSONObject;
 public class InvestigatorExplorer extends Explorer {
 
 	private Integer project_id;
+	private InvestigatorForm addInvest;
 
 	public InvestigatorExplorer() {
 		super("/investigators", new InvestigatorType());
 		initLayout(initColumnModel(), false);
+		setAddInvest(new InvestigatorForm(
+				new Window(), InvestigatorExplorer.this));
 		initInvestigatorToolBar();
 		setHeight(250);
 		setWidth(600);
@@ -71,16 +74,9 @@ public class InvestigatorExplorer extends Explorer {
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
-//	        	HashMap<String, Object> fields = new HashMap<String, Object>();
-//	        	if (defaultDate != "") {
-//	        		fields.put("date", defaultDate);
-//	        	}
-//	        	addRecord(fields);
-	        	Window w = new Window();
-				InvestigatorForm addInvest = new InvestigatorForm(
-						w, InvestigatorExplorer.this);
-				addInvest.show();
-				w.add(addInvest);
+	        	Window w = getAddInvest().getWindow();
+				getAddInvest().show();
+				w.add(getAddInvest());
 				w.setSize(375, 175);
 				w.show();
 	        }
@@ -185,6 +181,14 @@ List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
 	public Integer getProject_id() {
 		return project_id;
+	}
+
+	public void setAddInvest(InvestigatorForm addInvest) {
+		this.addInvest = addInvest;
+	}
+
+	public InvestigatorForm getAddInvest() {
+		return addInvest;
 	}
 
 }
