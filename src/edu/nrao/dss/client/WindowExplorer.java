@@ -67,7 +67,7 @@ public class WindowExplorer extends Explorer {
 		CheckColumnConfig checkColumn;
 		for (ColumnType ct : columnTypes) {
 			if (ct.getClasz() != Boolean.class) {
-				GWT.log("WE: "+ct.getName(), null);				
+				//GWT.log("WE: "+ct.getName(), null);				
 			    configs.add(new WindowColConfig(ct.getId(), ct.getName(), ct.getLength(), ct.getClasz()));
 			} else {
 				checkColumn = new CheckColumnConfig(ct.getId(), ct.getName(), ct.getLength());
@@ -186,7 +186,7 @@ public class WindowExplorer extends Explorer {
 				//advancedFilters.get(0).clearSelections();
 				
 				JSONArray sessHandles = json.get("session handles").isArray();
-				GWT.log("got num of sessions: "+Integer.toString(sessHandles.size()), null); 
+				//GWT.log("got num of sessions: "+Integer.toString(sessHandles.size()), null); 
 				for (int i = 0; i < sessHandles.size(); ++i){
 					String sessHandle = sessHandles.get(i).toString().replace('"', ' ').trim();
 					String sessName = sessHandle.split(" ")[0];

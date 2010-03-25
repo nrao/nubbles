@@ -115,7 +115,7 @@ public class SessionInfoPanel extends ContentPanel {
 				sessIds.clear();
 				JSONArray sessHandles = json.get("session handles").isArray();
 				JSONArray ids    = json.get("ids").isArray();
-				GWT.log("got num of sessions: "+Integer.toString(sessHandles.size()), null); 
+				//GWT.log("got num of sessions: "+Integer.toString(sessHandles.size()), null); 
 				for (int i = 0; i < sessHandles.size(); ++i){
 					String sessHandle = sessHandles.get(i).toString().replace('"', ' ').trim();
 					int id = (int) ids.get(i).isNumber().doubleValue();
