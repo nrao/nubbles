@@ -18,7 +18,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
 		super("/periods/UTC", new PeriodType(columnTypes));
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
+		
 	}
 	
 	private ColumnModel initColumnModel() {

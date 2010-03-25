@@ -10,6 +10,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -27,7 +29,7 @@ public class ProjectExplorer extends Explorer {
 	public ProjectExplorer() {
 		super("/projects", new ProjectType());
 		initFilters();
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
 		viewItem.setVisible(true);
 	}
 
@@ -87,11 +89,15 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(column);
 	    
 	    column = new ColumnConfig("pi", "PI", 100);
-	    column.setEditor(new CellEditor(new TextField<String>()));
+	    CellEditor editor   = new CellEditor(new TextField<String>());
+	    editor.disable();
+	    column.setEditor(editor);
 	    configs.add(column);
 
 	    column = new ColumnConfig("co_i", "Co-I", 150);
-	    column.setEditor(new CellEditor(new TextField<String>()));
+	    editor   = new CellEditor(new TextField<String>());
+	    editor.disable();
+	    column.setEditor(editor);
 	    configs.add(column);
 
 	    column = new ColumnConfig("type", "Type", 80);
@@ -137,34 +143,6 @@ public class ProjectExplorer extends Explorer {
 	    checkBoxes.add(checkColumn);
 	    
 	    return new ColumnModel(configs);
-	}
-	
-	private CellEditor initCombo(String[] options) {
-	    final SimpleComboBox<String> combo = new SimpleComboBox<String>();
-	    combo.setForceSelection(true);
-	    combo.setTriggerAction(TriggerAction.ALL);
-	    for (String o : options) {
-	    	combo.add(o);
-	    }
-
-	    CellEditor editor = new CellEditor(combo) {
-	      @Override
-	      public Object preProcessValue(Object value) {
-	        if (value == null) {
-	          return value;
-	        }
-	        return combo.findModel(value.toString());
-	      }
-
-	      @Override
-	      public Object postProcessValue(Object value) {
-	        if (value == null) {
-	          return value;
-	        }
-	        return ((ModelData) value).get("value");
-	      }
-	    };
-	    return editor;
 	}
 	
 	// when the view button gets pressed, go to the Project Page tab.

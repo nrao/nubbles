@@ -34,13 +34,13 @@ public class WindowExplorer extends Explorer {
 	public WindowExplorer() {
 		super("/windows", new WindowType(columnTypes));
 		initFilters();
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
 		updateSessionOptions();
 
 	}
 
 	protected void initLayout(ColumnModel cm) {
-	    super.initLayout(cm);
+	    super.initLayout(cm, true);
 	    
 	    actionItem.setVisible(true);
 	    actionItem.setText("Assign Period");

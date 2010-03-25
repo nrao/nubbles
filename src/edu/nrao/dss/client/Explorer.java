@@ -32,6 +32,8 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -49,16 +51,17 @@ import com.google.gwt.user.client.Window;
 
 public class Explorer extends ContentPanel{
 	public Explorer(String url, ModelType mType) {
-		rootURL = url;
-		modelType = mType;
+		rootURL     = url;
+		modelType   = mType;
 		defaultDate = "";
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void initLayout(ColumnModel cm) {
+	protected void initLayout(ColumnModel cm, Boolean createToolBar) {
+		
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
-		commitState = false;
+		setCommitState(false);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
@@ -78,8 +81,11 @@ public class Explorer extends ContentPanel{
 		grid.setBorders(true);
 
 		initListeners();
-		initToolBar();
+		if (createToolBar) {
+		    initToolBar();
+		}
 		loadData();
+		
 	}
 	
 	private void addPlugins() {
@@ -89,7 +95,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	public void loadData() {
-		loader.load(0, pageSize);
+		loader.load(0, getPageSize());
 	}
 	
 	private void initListeners() {
@@ -111,7 +117,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void save(ModelData model) {
-		if (!commitState) {
+		if (!isCommitState()) {
 			return;
 		}
 		ArrayList<String> keys   = new ArrayList<String>();
@@ -152,7 +158,7 @@ public class Explorer extends ContentPanel{
 				if (e.getKeyCode() == 13) {
 					int page_size = Integer.valueOf(pages.getValue()).intValue();
 					pagingToolBar.setPageSize(page_size);
-					pageSize = page_size;
+					setPageSize(page_size);
 					loadData();
 				}
 			}
@@ -247,7 +253,7 @@ public class Explorer extends ContentPanel{
 		
 		toolBar.add(new SeparatorToolItem());
 
-		filter = new FilterItem(Explorer.this);
+		filter = new FilterItem(Explorer.this, false);
 		toolBar.add(filter.getTextField());
 
 		for (SimpleComboBox<String> f : advancedFilters) {
@@ -261,8 +267,8 @@ public class Explorer extends ContentPanel{
 			public void componentSelected(ButtonEvent ce) {
 				for (SimpleComboBox<String> f : advancedFilters) {
 					f.reset();
-					filter.getTextField().setValue("");
 				}
+				filter.getTextField().setValue("");
 			}
 		});
 		toolBar.add(reset);
@@ -281,9 +287,9 @@ public class Explorer extends ContentPanel{
 		saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				commitState = true;
+				setCommitState(true);
 				store.commitChanges();
-				commitState = false;
+				setCommitState(false);
 				loadData();
 				grid.getView().refresh(true);
 			}
@@ -354,6 +360,34 @@ public class Explorer extends ContentPanel{
 		return filter;
 	}
 	
+	protected CellEditor initCombo(String[] options) {
+	    final SimpleComboBox<String> combo = new SimpleComboBox<String>();
+	    combo.setForceSelection(true);
+	    combo.setTriggerAction(TriggerAction.ALL);
+	    for (String o : options) {
+	    	combo.add(o);
+	    }
+
+	    CellEditor editor = new CellEditor(combo) {
+	      @Override
+	      public Object preProcessValue(Object value) {
+	        if (value == null) {
+	          return value;
+	        }
+	        return combo.findModel(value.toString());
+	      }
+
+	      @Override
+	      public Object postProcessValue(Object value) {
+	        if (value == null) {
+	          return value;
+	        }
+	        return ((ModelData) value).get("value");
+	      }
+	    };
+	    return editor;
+	}
+	
 	public DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> getProxy() {
 		return proxy;
 	}
@@ -368,6 +402,22 @@ public class Explorer extends ContentPanel{
 		proxy.setBuilder(builder);
 	}
 	
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setCommitState(boolean commitState) {
+		this.commitState = commitState;
+	}
+
+	public boolean isCommitState() {
+		return commitState;
+	}
+
 	/** Provides basic spreadsheet-like functionality. */
 	protected EditorGrid<BaseModelData> grid;
 

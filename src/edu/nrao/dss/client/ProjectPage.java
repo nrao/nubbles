@@ -1,12 +1,15 @@
 package edu.nrao.dss.client;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -19,8 +22,10 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.widget.Window;
+//import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HTML;
 
 
 public class ProjectPage extends ContentPanel {
@@ -31,14 +36,16 @@ public class ProjectPage extends ContentPanel {
 	private TextField<String> name = new TextField<String>();
 	private TextField<String> pi   = new TextField<String>();
 	private TextField<String> coi  = new TextField<String>();
-	private TextArea schNotes = new TextArea();
-	private TextArea obsNotes = new TextArea();
+	private TextArea schNotes      = new TextArea();
+	private TextArea obsNotes      = new TextArea();
 	private Button save = new Button();
 	private Button reset = new Button();
 	
     private HashMap<String, Integer> project_ids = new HashMap<String, Integer>();
     private JSONObject projectJson;
     private FormData fd = new FormData(500, 25);
+    
+    private InvestigatorExplorer investigatorExplorer = new InvestigatorExplorer();
 	
 	public ProjectPage() {
 		initLayout();
@@ -60,8 +67,8 @@ public class ProjectPage extends ContentPanel {
 		//projectForm.setHeading("Project");
 		//projectForm.setBorders(true);
         projectForm.setHeaderVisible(false);
-
-        
+        projectForm.add(new HTML("<h2>Project Information</h2>"));
+		
 		// the project picker goes in this left-most form panel
 		projects.setFieldLabel("Project");
 		projectForm.add(projects);
@@ -98,7 +105,10 @@ public class ProjectPage extends ContentPanel {
 	   	save.setText("Save");
     	projectForm.add(save);
     	
-		add(projectForm);
+    	add(projectForm);
+		add(new HTML("<h2>Project Team</h2>"));
+		add(investigatorExplorer);
+		
 	}
 
 	private void initListeners() {
@@ -136,6 +146,27 @@ public class ProjectPage extends ContentPanel {
     			updateProject(projects.getSimpleValue());
     		}
     	});
+    	
+    	investigatorExplorer.saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				updateProject(projects.getSimpleValue());
+			}
+    	});
+    	
+    	investigatorExplorer.removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+    		    updateProject(projects.getSimpleValue());
+			}
+    	});
+    	
+    	investigatorExplorer.getAddInvest().getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				updateProject(projects.getSimpleValue());
+			}
+    	});
 		
 	}
 	
@@ -155,7 +186,7 @@ public class ProjectPage extends ContentPanel {
 		
 		// don't bother if it doesn't even look like a valid pcode
 		if ((pcode == null) || (pcode.equals(new String("")))) {
-			Window.alert("You must select a valid project code.");
+			//Window.alert("You must select a valid project code.");
 			return;
 		}
 		
@@ -169,7 +200,9 @@ public class ProjectPage extends ContentPanel {
 				projectJson = json;
 				populateProjectPage(json);
 			}
-		});		
+		});
+		
+		investigatorExplorer.loadProject(project_ids.get(pcode));
 		
 	}
 	
@@ -207,6 +240,15 @@ public class ProjectPage extends ContentPanel {
 		anchor.setEnabled(true);
 		anchor.setVisible(true);
 	}
+	
+	public Integer getSelectedProjectID() {
+		return project_ids.get(projects.getSimpleValue());
+	}
+	
+	public void reload() {
+		getProject(projects.getSimpleValue());
+	}
+	
 	// gets all project codes form the server and populates the project combo
 	public void updatePCodeOptions() {
 		JSONRequest.get("/sessions/options"

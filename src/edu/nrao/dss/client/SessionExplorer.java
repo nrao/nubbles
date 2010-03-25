@@ -21,7 +21,7 @@ public class SessionExplorer extends Explorer {
 	public SessionExplorer() {
 		super("/sessions", new SessionType(columnTypes));
 		initFilters();
-		initLayout(initColumnModel());
+		initLayout(initColumnModel(), true);
 	}
 	
 	private void initFilters() {
