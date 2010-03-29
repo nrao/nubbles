@@ -73,7 +73,6 @@ public class ReceiverSchedule extends ContentPanel {
 		JSONRequest.get("/receivers/schedule", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				GWT.log(json.toString(), null);
 				jsonToRcvrSchedule(json);
 			}
 		});

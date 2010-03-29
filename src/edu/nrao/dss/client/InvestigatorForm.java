@@ -30,9 +30,10 @@ public class InvestigatorForm extends LayoutContainer {
     private Window window;  
     private FormData formData;
 	private InvestigatorExplorer investigatorExplorer;
+	private Button submit = new Button("Submit");
 	
     public InvestigatorForm(Window w, InvestigatorExplorer investExp) {
-    	window     = w;
+    	setWindow(w);
     	investigatorExplorer = investExp;
     }
     
@@ -56,29 +57,21 @@ public class InvestigatorForm extends LayoutContainer {
       users.setFieldLabel("User");
       form.add(users);
     
-      Button b = new Button("Submit");
-      b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+      getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void componentSelected(ButtonEvent ce) {
-			String user = users.getSimpleValue();
-			HashMap<String, Object> data = new HashMap<String, Object>();
-			data.put("investigator", user);
+			HashMap<String, Object> fields = new HashMap<String, Object>();
+        	fields.put("project_id", investigatorExplorer.getProject_id());
+        	fields.put("user_id", user_ids.get(users.getSimpleValue()));
+        	investigatorExplorer.addRecord(fields);
+        	getWindow().close();
 			
-			JSONRequest.post(investigatorExplorer.getRootURL(), data, new JSONCallbackAdapter() {
-				@SuppressWarnings("deprecation")
-				public void onSuccess(JSONObject json) {
-					HashMap<String, Object> fields = new HashMap<String, Object>();
-		        	fields.put("project_id", investigatorExplorer.getProject_id());
-		        	fields.put("user_id", user_ids.get(users.getSimpleValue()));
-		        	investigatorExplorer.addRecord(fields);
-					window.close();
-				}
-			});
 		}
     	  
       });
-      form.addButton(b);
+      form.addButton(getSubmit());
       
       Button c = new Button("Cancel");
       c.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -86,7 +79,7 @@ public class InvestigatorForm extends LayoutContainer {
 		@SuppressWarnings("deprecation")
 		@Override
 		public void componentSelected(ButtonEvent ce) {
-			window.close();
+			getWindow().close();
 		} 
       });
       form.addButton(c); 
@@ -94,7 +87,7 @@ public class InvestigatorForm extends LayoutContainer {
       form.setButtonAlign(HorizontalAlignment.CENTER);  
     
       FormButtonBinding binding = new FormButtonBinding(form);  
-      binding.addButton(b);  
+      binding.addButton(getSubmit());  
     
       vp.add(form);  
     }
@@ -121,5 +114,21 @@ public class InvestigatorForm extends LayoutContainer {
 				}
 			}
 		});
+	}
+
+	public void setWindow(Window window) {
+		this.window = window;
+	}
+
+	public Window getWindow() {
+		return window;
+	}
+
+	public void setSubmit(Button submit) {
+		this.submit = submit;
+	}
+
+	public Button getSubmit() {
+		return submit;
 	}
 }

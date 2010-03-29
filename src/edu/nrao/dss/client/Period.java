@@ -32,7 +32,8 @@ public class Period {
         Period period = new Period(id, handle, st, dur, day, time);
         period.setMocAck(json.get("moc_ack").isBoolean().booleanValue());
         period.setBackup(json.get("backup").isBoolean().booleanValue());
-        period.setScore(json.get("score").isNumber().doubleValue());
+        period.setHScore(json.get("sscore").isNumber().doubleValue());
+        period.setCScore(json.get("cscore").isNumber().doubleValue());
         period.setState(json.get("state").isString().stringValue());
         
         // now set the fields associated with time accounting
@@ -315,13 +316,23 @@ public class Period {
 	public double getLost_time() {
 		return lost_time;
 	}
-	public void setScore(double score) {
-		this.score = score;
+	
+	public void setHScore(double score) {
+		this.hscore = score;
 	}
 
-	public double getScore() {
-		return score;
+	public void setCScore(double score) {
+		this.cscore = score;
 	}
+
+	public double getHScore() {
+		return hscore;
+	}
+	
+	public double getCScore() {
+		return cscore;
+	}
+	
 	public void setBackup(boolean backup) {
 		this.backup = backup;
 	}
@@ -382,7 +393,8 @@ public class Period {
     private boolean  moc_ack;
     private Date     start_day;
     private String   start_time;
-    private double   score;
+    private double   hscore;
+    private double   cscore;
     private boolean  backup;
     private String   state;
     

@@ -9,15 +9,15 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class FilterItem extends MenuItem {
-	public FilterItem(final Explorer explorer) {
+	public FilterItem(final Explorer explorer, Boolean submitOnEnter) {
 		super("Filter");
 		textField = new TextField<String>();
 		setTitle("Display rows containing ...");
-		// see todo below
-		//defineListener(explorer);
+		if (submitOnEnter) {
+			defineListener(explorer);
+		}
 	}
 	
-	// TODO Remove this method or get it to pass advance filtering parameters
 	private void defineListener(final Explorer explorer) {
 		textField.addKeyListener(new KeyListener() {
 			@Override

@@ -450,7 +450,7 @@ public class Schedule extends ContentPanel {
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		west.addButtonsListener(this);
 		west.setDefaultDate(startCalendarDay);
-		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 720);
+		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 780);
 		westData.setMargins(new Margins(5));
 		westData.setSplit(true);
 		westData.setCollapsible(true);
@@ -494,7 +494,7 @@ public class Schedule extends ContentPanel {
 		getSessionOptions();
 		dayView.addValueChangeHandler(new ValueChangeHandler<Appointment>(){
 	        public void onValueChange(ValueChangeEvent<Appointment> event) {
-	        	// seed the PeriodDialog w/ details from the period that just got clckd
+	        	// seed the PeriodDialog w/ details from the period that just got clicked
 	            String periodUrl = "/periods/UTC/" + event.getValue().getTitle();
 	    	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
 		            @Override
