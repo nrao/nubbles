@@ -92,7 +92,7 @@ public class InvestigatorExplorer extends Explorer {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				Double id = grid.getSelectionModel().getSelectedItem().get("id");
-				GWT.log(rootURL);
+				//GWT.log(rootURL);
 				JSONRequest.delete(rootURL + "/" + id.intValue(),
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
