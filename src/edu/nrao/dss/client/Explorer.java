@@ -54,6 +54,15 @@ public class Explorer extends ContentPanel{
 		rootURL     = url;
 		modelType   = mType;
 		defaultDate = "";
+		pagingToolBar = null;
+	}
+	
+	public Explorer(String url, ModelType mType, PagingToolBar ptb)
+	{
+		rootURL = url;
+		modelType = mType;
+		defaultDate = "";
+		pagingToolBar = ptb;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -149,7 +158,11 @@ public class Explorer extends ContentPanel{
 		//return grid.getSelectionModel().getSelectedItem();
 	}	
 	private void initToolBar() {
-		final PagingToolBar pagingToolBar = new PagingToolBar(50);
+		if (pagingToolBar == null)
+		{
+			pagingToolBar = new PagingToolBar(50);
+		}
+		
 		final TextField<String> pages = new TextField<String>();
 		pages.setWidth(30);
 		pages.setValue("50");
@@ -168,7 +181,7 @@ public class Explorer extends ContentPanel{
 		setBottomComponent(pagingToolBar);
 		pagingToolBar.bind(loader);
 		
-		ToolBar toolBar = new ToolBar();
+		toolBar = new ToolBar();
 		setTopComponent(toolBar);
 		
 		viewItem = new Button("View");
@@ -450,6 +463,8 @@ public class Explorer extends ContentPanel{
 	protected Button removeApproval;
 	protected Dialog removeDialog;
 	protected Button actionItem;
+	protected ToolBar toolBar;
+	protected PagingToolBar pagingToolBar;
 	
 	protected FilterItem filter;
 	

@@ -9,6 +9,9 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -23,14 +26,83 @@ import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
+import edu.nrao.dss.client.ProjectEmailPagingToolBar;
 
 public class ProjectExplorer extends Explorer {
 	public ProjectExplorer() {
-		super("/projects", new ProjectType());
+		super("/projects", new ProjectType(), new ProjectEmailPagingToolBar(50));
+		// ugly downcast, but we know that we have a ProjectEmailPagingToolBar now
+		selectionPagingToolBar = (ProjectEmailPagingToolBar)pagingToolBar;
 		initFilters();
-		initLayout(initColumnModel(), true);
+		initLayout(initColumnModel(), true);  // creates grid
+		selectionPagingToolBar.setGrid(grid); // uses grid, must come after initLayout
+		
+		clearButton = new Button("Clear selections");
+		clearButton.setToolTip("Press to de-select grid items");
+		toolBar.insert(new SeparatorToolItem(), 17);
+		toolBar.insert(clearButton, 18);
+		
+		emailButton = new Button("Email");
+		toolBar.insert(new SeparatorToolItem(), 19);
+		toolBar.insert(emailButton, 20);
+		emailButton.setToolTip("Email investigators");
+		setEmailButtonListener();
+		setClearButtonListener();
 		viewItem.setVisible(true);
+	}
+	
+	private void setClearButtonListener() {
+		clearButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				grid.getSelectionModel().deselectAll();
+			}
+		});
+	}
+	
+	private void setEmailButtonListener() {
+		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				int count = store.getCount();
+				String text = "The number of cached objects in the store is " + count;
+				text += "\n";
+				List<BaseModelData> selection_list = grid.getSelectionModel().getSelectedItems();
+				
+				if (!selection_list.isEmpty())
+				{
+					for (int i = 0; i < selection_list.size(); ++i)
+					{
+						text += " " + selection_list.get(i).get("pcode");
+					}
+				}
+				else
+				{
+					for (int i = 0; i < count; ++i)
+					{	
+						text += " " + store.getAt(i).get("pcode");
+					}
+				}
+				
+				testDialog = new Dialog();
+				testDialog.setHeading("Testing dialog box");
+				testDialog.addText(text);
+				testDialog.setButtons(Dialog.OK);
+				
+				Button ok = testDialog.getButtonById(Dialog.OK);
+				ok.addListener(Events.OnClick, new Listener<BaseEvent>() {
+					public void handleEvent(BaseEvent be) {
+						testDialog.hide();
+					}
+				});
+
+				testDialog.show();
+			}
+		});
 	}
 
 	private void initFilters() {
@@ -156,4 +228,8 @@ public class ProjectExplorer extends Explorer {
 	}
 	
 	private Component parent;
+	private Button emailButton;
+	private Button clearButton;
+	private Dialog testDialog;
+	private ProjectEmailPagingToolBar selectionPagingToolBar;
 }

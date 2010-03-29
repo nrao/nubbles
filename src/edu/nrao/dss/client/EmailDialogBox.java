@@ -65,7 +65,7 @@ class EmailDialogBox extends Dialog {
 		Button cancel = getButtonById(Dialog.CANCEL);
 		cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-				close();
+				hide();
 			}
 		});
 		
@@ -95,7 +95,7 @@ class EmailDialogBox extends Dialog {
 								box.close();
 							}
 						});
-				close();
+				hide();
 			}
 		});
 		
@@ -133,9 +133,9 @@ class EmailDialogBox extends Dialog {
 		field_label.setWidth(50);
 		field_text.setValue(content);
 		field_text.setSize(width, height);
-		field_text.setStyleAttribute("font-family", "monospace");
+//		field_text.setStyleAttribute("font-family", "monospace");
 		// TBF: Use this line instead of above for extGWT 2.x!!!!
-//		field_text.setInputStyleAttribute("font-family", "monospace");
+		field_text.setInputStyleAttribute("font-family", "monospace");
 		hp.add(field_label);
 		hp.add(field_text);
 		ta.put(label, field_text);
