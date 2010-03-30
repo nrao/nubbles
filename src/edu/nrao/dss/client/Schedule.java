@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -58,6 +59,7 @@ import edu.nrao.dss.client.util.dssgwtcal.Event;
 public class Schedule extends ContentPanel {
 	
 	public ScheduleCalendar west;
+	public VacancyControl northNominee;
 	private NomineePanel east;
 	private ContentPanel center;
 
@@ -77,11 +79,11 @@ public class Schedule extends ContentPanel {
 	private float[] calendarScores; 
 
 	
-	private Integer numVacancyMinutes = 2;
-	private Date startVacancyDate = new Date();
-	private Time startVacancyTime = new Time();
+	Integer numVacancyMinutes = 2;
+	Date startVacancyDate = new Date();
+	Time startVacancyTime = new Time();
 	public Date startVacancyDateTime = new Date();
-	private CheckBoxGroup nomineeOptions = new CheckBoxGroup();
+	//private CheckBoxGroup nomineeOptions = new CheckBoxGroup();
 	
 	private ArrayList<String> sess_handles = new ArrayList<String>();
 	
@@ -116,13 +118,15 @@ public class Schedule extends ContentPanel {
 		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
 		north.setLayout(northLayout);
 
-		// 4 calendar controls:
+		// calendar controls:
 		final FormPanel northCalendar = new FormPanel();
 		northCalendar.setHeading("Calendar Controls");
 		northCalendar.setBorders(true);
 		northCalendar.setWidth("35%");
 		north.add(northCalendar);
 		
+        northNominee = new VacancyControl(this);
+        
 		// fields for form
 		// Date - when this changes, change the start of the calendar view
 		final DateField vacancyDate = new DateField();
@@ -134,7 +138,7 @@ public class Schedule extends ContentPanel {
 	    	public void handleEvent(BaseEvent be) {
 	            startCalendarDay = dt.getValue();
 	            startVacancyDate = startCalendarDay;
-	            vacancyDate.setValue(startVacancyDate);
+	            northNominee.vacancyDate.setValue(startVacancyDate);
 	            updateCalendar();
 	    	}
 	    });
@@ -334,113 +338,8 @@ public class Schedule extends ContentPanel {
         northSchedule.add(scoresComboBox);
         scores = new Scores(scoresComboBox, new ScoresForCalendar(this));
 		
-		// 4 nominee controls:
-		final FormPanel northNominee = new FormPanel();
-		northNominee.setHeading("Vacancy Control");
-		northNominee.setBorders(true);
-	    northNominee.setWidth("40%");
-		north.add(northNominee);
-			
-		// Nominee date
-	    vacancyDate.setValue(startVacancyDate);
-	    vacancyDate.setFieldLabel("Start Date");
-		vacancyDate.setToolTip("Set the start day for the vacancy to be filled");
-	    vacancyDate.addListener(Events.Valid, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            startVacancyDate = vacancyDate.getValue();
-	    	}
-	    });
-	    northNominee.add(vacancyDate);
-	    
-	    // Nominee time
-	    final TimeField vacancyTime = new TimeField();
-	    vacancyTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
-	    vacancyTime.setValue(startVacancyTime);
-	    vacancyTime.setFieldLabel("Start Time");
-		vacancyTime.setToolTip("Set the start time for the vacancy to be filled");
-	    vacancyTime.addListener(Events.Change, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            startVacancyTime = vacancyTime.getValue();
-	    	}
-	    });
-	    northNominee.add(vacancyTime);
-
-		// Nominee maximum duration
-		final SimpleComboBox<String> hours = new SimpleComboBox<String>();
-		final HashMap<String, Integer> durChoices = new HashMap<String, Integer>();
-		String noChoice = new String("none");
-		durChoices.put(noChoice, 0);
-		hours.add(noChoice);
-		hours.setForceSelection(true);
-		for (int m = 15; m < 12*60+15; m += 15) {
-			String key = TimeUtils.min2sex(m);
-			durChoices.put(key, m);
-			hours.add(key);
-		}
-		hours.setToolTip("Set the maximum vacancy duration");
-		hours.setFieldLabel("Duration");
-		hours.setEditable(false);
-	    hours.addListener(Events.Select, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	    		numVacancyMinutes = durChoices.get(hours.getSimpleValue()); 
-	    	}
-	    });
-		northNominee.add(hours);
-		
-		// Nominee options		
-		northNominee.add(new LabelField());
-		//final CheckBoxGroup nomineeOptions = new CheckBoxGroup();
-		nomineeOptions.setSpacing(15);
-		nomineeOptions.setFieldLabel("Selection Options");
-		// timeBetween
-		CheckBox timeBetween = new CheckBox();
-		timeBetween.setBoxLabel("ignore timeBetween?");
-		timeBetween.setTitle("Ignore sessions' timeBetween limits?");
-		timeBetween.setValue(false);
-		nomineeOptions.add(timeBetween);
-		// minimum
-		CheckBox minimum = new CheckBox();
-		minimum.setBoxLabel("ignore minimum?");
-		minimum.setTitle("Ignore sessions' minimum duration limits?");
-		minimum.setValue(false);
-		nomineeOptions.add(minimum);
-		// blackout
-		CheckBox blackout = new CheckBox();
-		blackout.setBoxLabel("ignore blackout?");
-		blackout.setTitle("Ignore observers' blackout periods?");
-		blackout.setValue(false);
-		nomineeOptions.add(blackout);
-		// backup
-		CheckBox backup = new CheckBox();
-		backup.setBoxLabel("only backups?");
-		backup.setTitle("Use only sessions marked as backups?");
-		backup.setValue(false);
-		nomineeOptions.add(backup);
-		// completed
-		CheckBox completed = new CheckBox();
-		completed.setBoxLabel("use completed?");
-		completed.setTitle("Include completed sessions?");
-		completed.setValue(false);
-		nomineeOptions.add(completed);
-		// rfi
-		CheckBox rfi = new CheckBox();
-		rfi.setBoxLabel("ignore RFIexclusion?");
-		rfi.setTitle("Ignore sessions' day time RFI exclusion?");
-		rfi.setValue(false);
-		nomineeOptions.add(rfi);
-		
-		northNominee.add(nomineeOptions);
-		
-	    // Fetch nominees
-		final Button nomineesButton = new Button("Nominees");
-		nomineesButton.setToolTip("Request possible periods for the selected time");
-	    nomineesButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            updateNominees(east);
-	    	}
-	    });
-		northNominee.add(nomineesButton);
-		
+		// Nominee controls:
+        north.add(northNominee);
 		
 		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 200);
 		northData.setMargins(new Margins(5,5,0,5));
@@ -541,9 +440,12 @@ public class Schedule extends ContentPanel {
 	    return scoresComboBox;	
 	}
 	
-	private void updateNominees(ContentPanel panel) {
-		// TODO get start and duration from the calendar!
+	//private void updateNominees(ContentPanel panel) {
+	public void updateNominees() {
+		GWT.log("updateNominees start", null);
+		GWT.log("    startVacancyDate " + startVacancyDate.toString(), null);
 		startVacancyDateTime = startVacancyDate;
+		GWT.log("    startVacancyTime " + startVacancyTime.toString(), null);
 		startVacancyDateTime.setHours(startVacancyTime.getHour());
 		startVacancyDateTime.setMinutes(startVacancyTime.getMinutes());
 		startVacancyDateTime.setSeconds(0);
@@ -552,16 +454,17 @@ public class Schedule extends ContentPanel {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("start", startStr);
 		keys.put("duration", numVacancyMinutes);
-		keys.put("timeBetween", (Boolean) nomineeOptions.get(0).getValue()); // ignore timeBetween limit?
-		keys.put("minimum", (Boolean) nomineeOptions.get(1).getValue());     // ignore minimum duration limit?
-		keys.put("blackout", (Boolean) nomineeOptions.get(2).getValue());    // ignore observer blackout times?
-		keys.put("backup", (Boolean) nomineeOptions.get(3).getValue());      // use only backup sessions?
-		keys.put("completed", (Boolean) nomineeOptions.get(4).getValue());   // include completed sessions?
-		keys.put("rfi", (Boolean) nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
+		keys.put("timeBetween", (Boolean) northNominee.nomineeOptions.get(0).getValue()); // ignore timeBetween limit?
+		keys.put("minimum", (Boolean) northNominee.nomineeOptions.get(1).getValue());     // ignore minimum duration limit?
+		keys.put("blackout", (Boolean) northNominee.nomineeOptions.get(2).getValue());    // ignore observer blackout times?
+		keys.put("backup", (Boolean) northNominee.nomineeOptions.get(3).getValue());      // use only backup sessions?
+		keys.put("completed", (Boolean) northNominee.nomineeOptions.get(4).getValue());   // include completed sessions?
+		keys.put("rfi", (Boolean) northNominee.nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
 		east.updateKeys(keys);
 		east.loadData();
+		GWT.log("updateNominees finished", null);
 		
-		panel.setHeading("Nominee Periods for " + startStr + " " + timezone);
+		east.setHeading("Nominee Periods for " + startStr + " " + timezone);
 	}
 	
     public void updateCalendar() {	
@@ -574,6 +477,7 @@ public class Schedule extends ContentPanel {
 		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = west.pe.getProxy();
 		proxy.setBuilder(builder);
 		west.setDefaultDate(startCalendarDay);
+		GWT.log("    updateCalendar: calling loadData", null);
 		west.pe.loadData();
 		
 		// now get the calendar to load these
@@ -585,6 +489,7 @@ public class Schedule extends ContentPanel {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("startPeriods", startStr);
 		keys.put("daysPeriods", Integer.toString(numCalendarDays));
+		GWT.log("    updateCalendar: request periods for calendar", null);
 	    JSONRequest.get(baseUrl, keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
@@ -600,6 +505,7 @@ public class Schedule extends ContentPanel {
 	                        }
 	                	}
 	                }
+	            	GWT.log("        updateCalendar: calling loadAppointments " + Integer.toString(periods.size()), null);
 	                // update the gwt-cal widget
 	                loadAppointments(periods);
 	            }

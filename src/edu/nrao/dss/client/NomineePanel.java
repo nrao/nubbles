@@ -62,16 +62,27 @@ public class NomineePanel extends ContentPanel {
 		nominees.getSelectionModel().addListener(Events.SelectionChange,  
 		         new Listener<SelectionChangedEvent<BaseModel>>() {  
 		           public void handleEvent(SelectionChangedEvent<BaseModel> be) {  
+		        	 GWT.log("Nominees SelectionChange listener event!", null);
+		        	 GWT.log(be.toString(), null);
 			         BaseModelData baseModelData = (BaseModelData) (be.getSelectedItem());
+			         if (baseModelData == null) {
+			        	 GWT.log("nominees.getSelectionModel returned null", null);
+			        	 return;
+			         }
 			         
 			         // add the selected period to the Period Explorer
+			         GWT.log("schedule.west.addRecord", null);
 		             schedule.west.addRecord(nominee2Period(baseModelData));
+		             GWT.log("schedule.updateCalendar 1", null);
 		             schedule.updateCalendar();
 		             
 			         // and show the Session's scores on the calendar
 			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
+			         GWT.log("schedule.showSessionScores", null);
                      schedule.showSessionScores(name);
-                     schedule.updateCalendar();
+                     //TODO  last think I did before mothballing
+                     //GWT.log("schedule.updateCalendar 2", null);
+                     //schedule.updateCalendar();
 		           }  
 		         });
 	}
@@ -102,7 +113,7 @@ public class NomineePanel extends ContentPanel {
 		urlData.append(rootUrl);
 		urlData.append("?");
 		urlData.append(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
-		GWT.log(urlData.toString(), null);
+		GWT.log("        updateKeys " + urlData.toString(), null);
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 		proxy.setBuilder(builder);
 	}
