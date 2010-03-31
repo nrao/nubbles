@@ -315,7 +315,7 @@ public class Explorer extends ContentPanel{
 	}
 
 	protected void addRecord(HashMap<String, Object> fields) {
-		GWT.log(fields.toString(), null);
+		//GWT.log(fields.toString(), null);
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {

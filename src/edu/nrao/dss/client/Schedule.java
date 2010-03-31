@@ -7,34 +7,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-//import com.bradrydzewski.gwt.calendar.client.Appointment;
-//import com.bradrydzewski.gwt.calendar.client.AppointmentInterface;
-//import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
-//import com.bradrydzewski.gwt.calendar.client.DayView;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.DataList;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.Time;
-import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
@@ -46,9 +32,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-//import com.google.gwt.user.client.Window;
 
-import edu.nrao.dss.client.util.TimeUtils;
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
 import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
 import edu.nrao.dss.client.util.dssgwtcal.DayView;
@@ -65,15 +49,14 @@ public class Schedule extends ContentPanel {
 
 	private DayView dayView;
 	
-	private Date startCalendarDay = new Date();
-	private Integer numCalendarDays = 3;
-	private String timezone = "UTC";
-	private String baseUrl = "/periods/" + timezone;
-//	private FactorsWindow factorsWindow;
+	Date startCalendarDay = new Date();
+	Integer numCalendarDays = 3;
+	String timezone = "UTC";
+	String baseUrl = "/periods/" + timezone;
 	private FactorsDlg factorsDlg;
 	
 	// scoring sessions
-	private Scores scores;
+	Scores scores;
 	private ScoresComboBox scoresComboBox;
 	private ScoresForCalendar scoresDisplay;
 	private float[] calendarScores; 
@@ -83,7 +66,6 @@ public class Schedule extends ContentPanel {
 	Date startVacancyDate = new Date();
 	Time startVacancyTime = new Time();
 	public Date startVacancyDateTime = new Date();
-	//private CheckBoxGroup nomineeOptions = new CheckBoxGroup();
 	
 	private ArrayList<String> sess_handles = new ArrayList<String>();
 	
@@ -101,7 +83,6 @@ public class Schedule extends ContentPanel {
 		setLayout(new BorderLayout());
 		
 		// bells & whistles for this content panel
-		//setHeading("Schedule Stuff"); 
 		setCollapsible(false);
 		setBodyBorder(false);
 		setFrame(false);
@@ -119,83 +100,13 @@ public class Schedule extends ContentPanel {
 		north.setLayout(northLayout);
 
 		// calendar controls:
-		final FormPanel northCalendar = new FormPanel();
-		northCalendar.setHeading("Calendar Controls");
-		northCalendar.setBorders(true);
-		northCalendar.setWidth("35%");
+		final FormPanel northCalendar = new CalendarControl(this);
+;
 		north.add(northCalendar);
 		
         northNominee = new VacancyControl(this);
         
-		// fields for form
-		// Date - when this changes, change the start of the calendar view
-		final DateField vacancyDate = new DateField();
-	    final DateField dt = new DateField();
-	    dt.setValue(startCalendarDay);
-	    dt.setFieldLabel("Start Date");
-		dt.setToolTip("Set the schedule and display start day");
-	    dt.addListener(Events.Valid, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            startCalendarDay = dt.getValue();
-	            startVacancyDate = startCalendarDay;
-	            northNominee.vacancyDate.setValue(startVacancyDate);
-	            updateCalendar();
-	    	}
-	    });
-	    northCalendar.add(dt);
-
-		// Days - when this changes, change the length of the calendar view
-		final SimpleComboBox<Integer> days;
-		days = new SimpleComboBox<Integer>();
-		days.setForceSelection(true);
-		days.add(1);
-		days.add(2);
-		days.add(3);
-		days.add(4);
-		days.add(5);
-		days.add(6);
-		days.add(7);
-		days.setToolTip("Set the schedule and display duration");
-
-		days.setFieldLabel("Days");
-		days.setEditable(false);
-		days.setSimpleValue(numCalendarDays);
-	    days.addListener(Events.Valid, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	    		numCalendarDays = days.getSimpleValue(); 
-	            updateCalendar();
-	    	}
-	    });
-		northCalendar.add(days);
-		
-		// Timezone - controls the reference for all the date/times in the tab
-		final SimpleComboBox<String> tz;
-		tz = new SimpleComboBox<String>();
-		tz.setForceSelection(true);
-		tz.add("UTC");
-		tz.add("ET");
-		tz.setToolTip("Set the timezone for all dates/times");
-
-		tz.setFieldLabel("TZ");
-		tz.setEditable(false);
-		tz.setSimpleValue(timezone);
-	    tz.addListener(Events.Valid, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	    		timezone = tz.getSimpleValue();
-	    		baseUrl = "/periods/" + timezone;
-	        	west.pe.setRootURL(baseUrl);
-	            updateCalendar();
-	    	}
-	    });
-		northCalendar.add(tz);
-		
-		// Scores
-		scoresComboBox = new ScoresComboBox(this);
-		scoresComboBox.setFieldLabel("Scores");
-        northCalendar.add(scoresComboBox);
-        scores = new Scores(scoresComboBox, new ScoresForCalendar(this));
-		
-		// 1 schedule controls
+		// schedule controls
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
 		northSchedule.setBorders(true);

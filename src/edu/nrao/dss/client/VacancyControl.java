@@ -29,7 +29,6 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 import edu.nrao.dss.client.util.TimeUtils;
@@ -38,10 +37,11 @@ public class VacancyControl extends FormPanel {
 	
 	private static final DateTimeFormat DATETIME_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm");
 	
-	public DateField vacancyDate;
-	public TimeField vacancyTime;
-	public SimpleComboBox<String> hours;
+	DateField vacancyDate;
+	private TimeField vacancyTime;
+	private SimpleComboBox<String> hours;
 	public CheckBoxGroup nomineeOptions = new CheckBoxGroup();
+	
 	private Schedule schedule;
 	private class Hole {
 		public Hole(Date d, Time t, Integer m) {

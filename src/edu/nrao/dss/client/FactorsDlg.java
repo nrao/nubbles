@@ -25,7 +25,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	private Integer sessionId;
 	public Date start = new Date();
 	private Integer duration = 4; // hours
-	private String timeZone = "ET";
+	private String timeZone = "UTC";
 	private FactorsDisplay display;
 	private FactorsAccess access;
 
