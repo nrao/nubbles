@@ -38,7 +38,7 @@ public class ScoresAccess {
 				.format(start);
 		keys.put("start", startStr);
 		keys.put("duration", minutes);
-		String msg = "Generating scheduling scores for " + label;
+		String msg = "Generating calendar scores for " + label;
 		box = MessageBox.wait("Getting scores", msg, "Be Patient ...");
 		return keys;
 	}

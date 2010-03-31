@@ -86,32 +86,10 @@ public class PeriodExplorer extends Explorer {
 		store.addStoreListener(new StoreListener<BaseModelData>() {
 			@Override
 			public void handleEvent(StoreEvent<BaseModelData> se) {
-				GWT.log("hhhheeeeeeeelllllllllloooooo?", null);
-	            //GWT.log(se.toString(), null);
-				//List<? extends BaseModelData> xxxx = se.getStore().getModels();
 				List<BaseModelData> data = (List<BaseModelData>) se.getStore().getModels();
-//				for (BaseModelData datum : data) {
-//					//BaseModelData first = data.get(0);
-//					//Collection<String> names = datum.getPropertyNames();
-//					//GWT.log(names.toString(), null);
-//					//first.get
-//					Double value = datum.get("duration");
-//					GWT.log(value.getClass().toString(), null);
-//					GWT.log(value.toString(), null);
-//				}
 				schedule.northNominee.setVacancyOptions(data);
-	            //GWT.log(se.getStore().getModels().toString(), null);
-	            //GWT.log(se.getStore().getModels().get(0).getClass().toString(), null);
 			}
 		});
-
-/*		// TODO Instead of listening to each button, we should just listen to the store!
-		store.addListener(Events.Update, new Listener<StoreEvent>() {
-			public void handleEvent(StoreEvent se) {
-				GWT.log("hhhheeeeeeeelllllllllloooooo?", null);
-	            GWT.log(se.toString(), null);
-			}
-		});*/
 	}
 	
 	public void setDefaultDate(Date date) {

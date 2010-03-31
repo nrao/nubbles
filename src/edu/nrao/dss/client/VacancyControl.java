@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DataListEvent;
@@ -61,7 +62,6 @@ public class VacancyControl extends FormPanel {
 	}
 	
 	public void setVacancyOptions(List<BaseModelData> data) {
-		GWT.log(">>>> setVacancyOptions start", null);
 		holes.clear();
 		vacancyShortcut.removeAll();
 		if (data.size() <= 0) {
@@ -70,20 +70,18 @@ public class VacancyControl extends FormPanel {
 		Date end = toDate(data.get(0));
 		for (BaseModelData datum : data) {
 			Date t = toDate(datum);
-			GWT.log(">>>>     " + t.toString() + " " + end.toString(), null);
 			long t_msec = t.getTime();
 			long end_msec = end.getTime();
 			// Is there a hole?
 			if (end_msec < t_msec) {
 				long msecs = t_msec - end_msec;
 				String hm_str = TimeUtils.min2sex((int)(msecs/(60*1000)));
-				String key = DATETIME_FORMAT.format(end) + " for " + hm_str;
+				String key = "gap at " + DATETIME_FORMAT.format(end) + " for " + hm_str;
 				holes.put(key, new Hole(datePart(end), timePart(end), msec2minutes(msecs)));
 				vacancyShortcut.add(key);
 			}
 			end = getEnd(t, toDuration(datum));
 		}
-		GWT.log(">>>> setVacancyOptions end", null);
 	}
 	
 	private Date datePart(Date d) {
@@ -133,25 +131,23 @@ public class VacancyControl extends FormPanel {
 		LayoutContainer leftContainer = new LayoutContainer();
 		leftContainer.setBorders(false);
 		leftContainer.setWidth("60%");
-		//leftContainer.setSize(50, 50);
 		leftContainer.setLayout(new FormLayout());
 		topContainer.add(leftContainer);
 		LayoutContainer rightContainer = new LayoutContainer();
 		rightContainer.setBorders(false);
-		//rightContainer.setWidth("40%");
-		//leftContainer.setSize(50, 50);
 		rightContainer.setLayout(new FormLayout());
 		topContainer.add(rightContainer);
 		
 		// Nominee vacancies
-	    vacancyShortcut.setTitle("Schedule Holes");  //TODO does not work
 	    vacancyShortcut.setToolTip("Selectable list of unscheduled gaps in the displayed schedule");
+	    vacancyShortcut.setScrollMode(Style.Scroll.AUTOY);  // TODO does not work
 	    rightContainer.add(vacancyShortcut);
 	    Listener shortcutListener = new Listener<DataListEvent>() {
 	    	public void handleEvent(DataListEvent be) {
-	    		GWT.log(be.toString(), null);
+	    		if (be.getSelected() == null) {
+	    			return;
+	    		}
 	    		DataListItem dli = be.getSelected().get(0);
-	    		GWT.log(dli.getText(), null);
 	    		Hole h = holes.get(dli.getText());
 	    		vacancyDate.setValue(h.date);
 	    		schedule.startVacancyDate = h.date;
@@ -159,7 +155,6 @@ public class VacancyControl extends FormPanel {
 	    		schedule.startVacancyTime = h.time;
 	    		hours.setSimpleValue(TimeUtils.min2sex(h.duration));
 	    		schedule.numVacancyMinutes = h.duration;
-	    		GWT.log("calling schedule.updateNominees", null);
 	    		schedule.updateNominees();
 	    	}
 	    };

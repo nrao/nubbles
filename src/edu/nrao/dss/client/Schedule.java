@@ -189,6 +189,12 @@ public class Schedule extends ContentPanel {
 	    });
 		northCalendar.add(tz);
 		
+		// Scores
+		scoresComboBox = new ScoresComboBox(this);
+		scoresComboBox.setFieldLabel("Scores");
+        northCalendar.add(scoresComboBox);
+        scores = new Scores(scoresComboBox, new ScoresForCalendar(this));
+		
 		// 1 schedule controls
 		final FormPanel northSchedule = new FormPanel();
 		northSchedule.setHeading("Schedule Control");
@@ -332,12 +338,6 @@ public class Schedule extends ContentPanel {
 		});
 		northSchedule.add(factorsButton);
 		
-		// Scores
-		scoresComboBox = new ScoresComboBox(this);
-		scoresComboBox.setFieldLabel("Scores");
-        northSchedule.add(scoresComboBox);
-        scores = new Scores(scoresComboBox, new ScoresForCalendar(this));
-		
 		// Nominee controls:
         north.add(northNominee);
 		
@@ -442,10 +442,7 @@ public class Schedule extends ContentPanel {
 	
 	//private void updateNominees(ContentPanel panel) {
 	public void updateNominees() {
-		GWT.log("updateNominees start", null);
-		GWT.log("    startVacancyDate " + startVacancyDate.toString(), null);
 		startVacancyDateTime = startVacancyDate;
-		GWT.log("    startVacancyTime " + startVacancyTime.toString(), null);
 		startVacancyDateTime.setHours(startVacancyTime.getHour());
 		startVacancyDateTime.setMinutes(startVacancyTime.getMinutes());
 		startVacancyDateTime.setSeconds(0);
@@ -462,7 +459,6 @@ public class Schedule extends ContentPanel {
 		keys.put("rfi", (Boolean) northNominee.nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
 		east.updateKeys(keys);
 		east.loadData();
-		GWT.log("updateNominees finished", null);
 		
 		east.setHeading("Nominee Periods for " + startStr + " " + timezone);
 	}
@@ -477,7 +473,6 @@ public class Schedule extends ContentPanel {
 		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = west.pe.getProxy();
 		proxy.setBuilder(builder);
 		west.setDefaultDate(startCalendarDay);
-		GWT.log("    updateCalendar: calling loadData", null);
 		west.pe.loadData();
 		
 		// now get the calendar to load these
@@ -489,7 +484,6 @@ public class Schedule extends ContentPanel {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("startPeriods", startStr);
 		keys.put("daysPeriods", Integer.toString(numCalendarDays));
-		GWT.log("    updateCalendar: request periods for calendar", null);
 	    JSONRequest.get(baseUrl, keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
@@ -505,7 +499,6 @@ public class Schedule extends ContentPanel {
 	                        }
 	                	}
 	                }
-	            	GWT.log("        updateCalendar: calling loadAppointments " + Integer.toString(periods.size()), null);
 	                // update the gwt-cal widget
 	                loadAppointments(periods);
 	            }
