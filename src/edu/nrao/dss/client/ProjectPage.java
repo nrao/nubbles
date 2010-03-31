@@ -210,7 +210,7 @@ public class ProjectPage extends ContentPanel {
 	protected void populateProjectPage(JSONObject json) {
 		
 		JSONObject proj = json.get("project").isObject();
-		GWT.log("name: " + proj.get("name").toString(), null);
+		//GWT.log("name: " + proj.get("name").toString(), null);
 		
 		// read-only fields
 	    name.setValue(proj.get("name").isString().stringValue());
@@ -262,7 +262,7 @@ public class ProjectPage extends ContentPanel {
 				project_ids.clear();
 				JSONArray pcodes = json.get("project codes").isArray();
 				JSONArray ids    = json.get("project ids").isArray();
-				GWT.log("got num of pcodes: "+Integer.toString(pcodes.size()), null); 
+				//GWT.log("got num of pcodes: "+Integer.toString(pcodes.size()), null); 
 				for (int i = 0; i < pcodes.size(); ++i){
 					String pcode = pcodes.get(i).toString().replace('"', ' ').trim();
 					int id = (int) ids.get(i).isNumber().doubleValue();
