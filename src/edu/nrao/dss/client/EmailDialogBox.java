@@ -67,20 +67,32 @@ class EmailDialogBox extends Dialog {
 		});
 		
 		Button ok = getButtonById(Dialog.OK);
+		ok.setText("Send");
 		ok.addListener(Events.OnClick,new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
 	    		HashMap<String, Object> keys = new HashMap<String, Object>();
 	    		
 	    		for (int i = 0; i < 3; ++i)
 	    		{
+	    			String to_field, subject_field, body_field;
 	    			Map<String, TextArea> ta = tareas.get(tab_title[i]);
 	    			TextArea subjectText = ta.get("subject:");
 	    			TextArea bodyText = ta.get("body:");
 	    			TextArea addressText = ta.get("to:");
+	    			to_field = addressText.getValue();
+	    			subject_field = subjectText.getValue();
+	    			body_field = bodyText.getValue();
 	    			
-		    		keys.put(subject_key[i], subjectText.getValue());
-		    		keys.put(body_key[i], bodyText.getValue());
-		    		keys.put(address_key[i], addressText.getValue());
+	    			if (to_field == null)
+	    			{
+	    				continue;
+	    			}
+	    			
+	    			subject_field = (subject_field == null) ? "" : subject_field;
+	    			body_field = (body_field == null) ? "" : body_field;
+		    		keys.put(subject_key[i], subject_field);
+		    		keys.put(body_key[i], body_field);
+		    		keys.put(address_key[i], to_field);
 	    		}
 	    		
 	    		final MessageBox box = MessageBox.wait("Sending Email", "Sending scheduling e-mails to observers and staff.", "Be Patient ...");

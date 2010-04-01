@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.RequestBuilder;
@@ -240,26 +241,37 @@ public class Schedule extends ContentPanel {
 								String address_key[] = {"observer_address", "deleted_address", "staff_address"};
 								String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
 								String body_key[] = {"observer_body", "deleted_body", "staff_body"};
-								                   
-								for (int j = 0; j < 3; ++j)
-								{
-									JSONArray emails = json.get(address_key[j]).isArray();
-									//String addr = "";
-									addr[j] = "";
-									
-									for (int i = 0; i < emails.size(); ++i)
-									{
-										addr[j] += emails.get(i).isString().stringValue() + ", ";
-									}
 	
-									addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
-									subject[j] = json.get(subject_key[j]).isString().stringValue();
-									body[j] = json.get(body_key[j]).isString().stringValue();
+								try
+								{
+									for (int j = 0; j < 3; ++j)
+									{
+										JSONArray emails = json.get(address_key[j]).isArray();
+										//String addr = "";
+										addr[j] = "";
+
+										for (int i = 0; i < emails.size(); ++i)
+										{
+											addr[j] += emails.get(i).isString().stringValue() + ", ";
+										}
+
+										if (addr[j].length() > 2)
+										{
+											addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
+										}
+
+										subject[j] = json.get(subject_key[j]).isString().stringValue();
+										body[j] = json.get(body_key[j]).isString().stringValue();
+									}
+
+									EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
+									dlg.show();
+									box.close();
 								}
-								
-								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
-								dlg.show();
-								box.close();
+								catch (Exception e)
+								{
+									GWT.log("JSON Email request: " + e);
+								}
 							}
 						});
 			}
