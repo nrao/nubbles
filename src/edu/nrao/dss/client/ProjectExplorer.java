@@ -3,7 +3,6 @@ package edu.nrao.dss.client;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -14,6 +13,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -31,11 +31,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import edu.nrao.dss.client.ProjectEmailPagingToolBar;
+import edu.nrao.dss.client.ProjectsEmailDialogBox;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
 
 public class ProjectExplorer extends Explorer {
 	public ProjectExplorer() {
 		super("/projects", new ProjectType(), new ProjectEmailPagingToolBar(50));
-		// ugly downcast, but we know that we have a ProjectEmailPagingToolBar now
+		// downcast, but we know that we have a ProjectEmailPagingToolBar now
 		selectionPagingToolBar = (ProjectEmailPagingToolBar)pagingToolBar;
 		initFilters();
 		initLayout(initColumnModel(), true);  // creates grid
@@ -59,7 +62,8 @@ public class ProjectExplorer extends Explorer {
 		clearButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				grid.getSelectionModel().deselectAll();
+				grid.getSelectionModel().deselectAll();   // clear actual grid
+				selectionPagingToolBar.clearSelections(); // clear multi-page selections
 			}
 		});
 	}
@@ -68,41 +72,130 @@ public class ProjectExplorer extends Explorer {
 		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				int count = store.getCount();
-				String text = "The number of cached objects in the store is " + count;
-				text += "\n";
-				List<BaseModelData> selection_list = grid.getSelectionModel().getSelectedItems();
+				String pcodes = "";
+				List<String> selection_list = selectionPagingToolBar.getSelections();
 				
 				if (!selection_list.isEmpty())
 				{
 					for (int i = 0; i < selection_list.size(); ++i)
 					{
-						text += " " + selection_list.get(i).get("pcode");
-					}
-				}
-				else
-				{
-					for (int i = 0; i < count; ++i)
-					{	
-						text += " " + store.getAt(i).get("pcode");
+						pcodes += selection_list.get(i) + " ";
 					}
 				}
 				
-				testDialog = new Dialog();
-				testDialog.setHeading("Testing dialog box");
-				testDialog.addText(text);
-				testDialog.setButtons(Dialog.OK);
-				
-				Button ok = testDialog.getButtonById(Dialog.OK);
-				ok.addListener(Events.OnClick, new Listener<BaseEvent>() {
-					public void handleEvent(BaseEvent be) {
-						testDialog.hide();
-					}
-				});
-
-				testDialog.show();
+				getEmailAddresses(pcodes);
 			}
 		});
+	}
+	
+	
+	private String unpackJSONArray(JSONArray ja)
+	{
+		String s = "";
+
+		for (int i = 0; i < ja.size(); ++i)
+		{
+			s += ja.get(i).isString().stringValue() + ", ";
+		}
+
+		if (s.length() > 2)
+		{
+			s = s.substring(0, s.length() - 2); // Get rid of last comma.
+		}
+		
+		return s;
+	}
+	
+	
+	private void getEmailAddresses(String pcodes)
+	{
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		String msg = "Generating email addresses for selected projects";
+		final MessageBox box = MessageBox.wait("Getting Email Addresses", msg, "Be Patient ...");
+		String url = "/projects/email";
+		
+		if (pcodes.equals(""))
+		{
+			SimpleComboValue<String> value;
+			
+			for (int i = 0; i < advancedFilters.size(); ++i)
+			{
+				value = advancedFilters.get(i).getValue();
+			
+				if (value != null)
+				{
+					keys.put(filterNames[i], value.getValue());
+				}
+			}
+			
+			String filterText = filter.getTextField().getValue();
+			
+			if (filterText != null)
+			{
+				keys.put("filterText", filterText);
+			}
+		}
+		else
+		{
+			keys.put("pcodes", pcodes);
+		}
+
+		GWT.log("getEmailAddresses(): URL = " + url);
+
+		JSONRequest.get(url, keys,
+				new JSONCallbackAdapter()
+				{
+					public void onSuccess(JSONObject json)
+					{
+						String pi_addr;
+						String pc_addr;
+						String ci_addr;
+						String pcodes;
+
+						try  // grid could be uninitialized.
+						{
+							JSONArray pi_emails = json.get("PI-Addresses").isArray();
+							pi_addr = unpackJSONArray(pi_emails);
+							GWT.log("getEmailAddresses: pi");
+							
+							JSONArray pc_emails = json.get("PC-Addresses").isArray();
+							pc_addr = unpackJSONArray(pc_emails);
+							GWT.log("getEmailAddresses: pc");
+
+							JSONArray ci_emails = json.get("CO-I-Addresses").isArray();
+							ci_addr = unpackJSONArray(ci_emails);
+							GWT.log("getEmailAddresses: ci");
+
+							JSONArray proj_codes = json.get("PCODES").isArray();
+							pcodes = unpackJSONArray(proj_codes);
+							GWT.log("getEmailAddresses: pcodes");
+
+							box.close();
+							testDialog = new Dialog();
+							testDialog.setHeading("Testing dialog box");
+							testDialog.addText(pi_addr + " === " + pc_addr + " === " + ci_addr + " === " + pcodes);
+							testDialog.setButtons(Dialog.OK);
+
+							Button ok = testDialog.getButtonById(Dialog.OK);
+							ok.addListener(Events.OnClick, new Listener<BaseEvent>()
+							{
+								public void handleEvent(BaseEvent be)
+								{
+									testDialog.hide();
+								}
+							});
+
+							//testDialog.show();
+							ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pi_addr, pc_addr, ci_addr);
+							dlg.show();
+						}
+						catch (Exception e)
+						{
+							String text = "getEmailAddresses(): Caught exception " + e;
+							GWT.log(text);
+						}						
+					}
+				});
 	}
 
 	private void initFilters() {
@@ -117,10 +210,12 @@ public class ProjectExplorer extends Explorer {
 		filterAction.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be){
-				String filtersURL = "?";
+				selectionPagingToolBar.clearSelections(); // filtering should clear old selections.
+				filtersURL = "?";
 				
 				SimpleComboValue<String> value;
-				String[] filterNames = new String[] {"filterType", "filterSem", "filterClp"};
+				filterNames = new String[] {"filterType", "filterSem", "filterClp"};
+				
 				for (int i = 0; i < advancedFilters.size(); i++) {
 					value = advancedFilters.get(i).getValue();
 					if (value != null) {
@@ -134,7 +229,9 @@ public class ProjectExplorer extends Explorer {
 				} else {
 					filterText = "";
 				}
-				String url = getRootURL() + filtersURL + filterText;
+				
+				filtersURL += filterText;
+				String url = getRootURL() + filtersURL;
 				RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 				DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = getProxy();
 				proxy.setBuilder(builder);
@@ -226,6 +323,9 @@ public class ProjectExplorer extends Explorer {
 	public void setParent(Component parent) {
 		this.parent = parent;
 	}
+	
+	private String filtersURL;
+	private String filterNames[];
 	
 	private Component parent;
 	private Button emailButton;

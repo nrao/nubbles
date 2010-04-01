@@ -22,9 +22,6 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 
 
-// TODO: this does more then just change a period - it can replace several periods
-// w/ a single period.  But it's also ideal for inserting backups.  so what to call it?
-
 class EmailDialogBox extends Dialog {
 	public EmailDialogBox(String addrs[], String subj[], String bod[]) {
 		super();
