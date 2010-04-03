@@ -31,7 +31,7 @@ import com.google.gwt.json.client.JSONObject;
 class SessionColConfig extends ColumnConfig {
 
 	@SuppressWarnings("unchecked")
-	public SessionColConfig(String fName, String name, int width, Class clasz) {
+	public SessionColConfig(String fName, String name, int width, Boolean disabled, Class clasz) {
 		super(fName, name, width);
 		
 		this.clasz = clasz;
@@ -59,7 +59,7 @@ class SessionColConfig extends ColumnConfig {
 		} else if (clasz == PCodeField.class) {
 			setPCodeOptions();
 		} else {
-			textField();
+			textField(disabled);
 		}
 	};
 
@@ -225,8 +225,12 @@ class SessionColConfig extends ColumnConfig {
 	}
 
 	/** Construct an editable field supporting free-form text. */
-	private void textField() {
-		setEditor(new CellEditor(new TextField<String>()));
+	private void textField(Boolean disabled) {
+		CellEditor editor = new CellEditor(new TextField<String>());
+		if (disabled) {
+			editor.disable();
+		}
+		setEditor(editor);
 	}
 
 	private void hourField() {

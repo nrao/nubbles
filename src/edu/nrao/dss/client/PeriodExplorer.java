@@ -98,17 +98,17 @@ public class PeriodExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
 	private static final ColumnType[] columnTypes = {
-       	new ColumnType("handle",                "Session (Project) VP", 220, SessionField.class),
-       	new ColumnType("stype",                 "T",                     20, DisplayField.class),
-       	new ColumnType("state",                 "S",                     20, DisplayField.class),
-        new ColumnType("date",                  "Day",                   70, DateEditField.class),
-        new ColumnType("time",                  "Time",                  40, TimeField.class),
-        new ColumnType("lst",                   "LST",                   55, DisplayField.class),
-        new ColumnType("duration",              "Duration",              55, Double.class),
-        new ColumnType("sscore",                "Hist Score",            65, ScoreField.class),
-        //new ColumnType("cscore",                "Curr Score",            65, ScoreField.class),
-        new ColumnType("receivers",             "Rcvrs",                 40, String.class),
-       	new ColumnType("not_billable",          "Not Bill",              45, Double.class),
-       	new ColumnType("backup",                "Backup?",               55, Boolean.class),
+       	new ColumnType("handle",                "Session (Project) VP", 220, false, SessionField.class),
+       	new ColumnType("stype",                 "T",                     20, false, DisplayField.class),
+       	new ColumnType("state",                 "S",                     20, false, DisplayField.class),
+        new ColumnType("date",                  "Day",                   70, false, DateEditField.class),
+        new ColumnType("time",                  "Time",                  40, false, TimeField.class),
+        new ColumnType("lst",                   "LST",                   55, false, DisplayField.class),
+        new ColumnType("duration",              "Duration",              55, false, Double.class),
+        new ColumnType("sscore",                "Hist Score",            65, false, ScoreField.class),
+        //new ColumnType("cscore",                "Curr Score",            65, false, ScoreField.class),
+        new ColumnType("receivers",             "Rcvrs",                 40, false, String.class),
+       	new ColumnType("not_billable",          "Not Bill",              45, false, Double.class),
+       	new ColumnType("backup",                "Backup?",               55, false, Boolean.class),
 	};
 }

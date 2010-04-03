@@ -33,6 +33,7 @@ public class SessionExplorer extends Explorer {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
 		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol"	
 		};
+		advancedFilters.add(initCombo("Proj Complete", new String[] {"True", "False"}, 100));
 		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}, 100));
 		advancedFilters.add(initCombo("Science Type", ScienceField.values, 100));
 		advancedFilters.add(initCombo("Receiver", receivers, 80));
@@ -65,7 +66,7 @@ public class SessionExplorer extends Explorer {
 				
 				String filtersURL = "?";
 				String filterVal;
-				String[] filterNames = new String[] {"filterType", "filterSci", "filterRcvr", "filterFreq", "filterSem", "filterClp", "filterEnb"};
+				String[] filterNames = new String[] {"filterProjClp", "filterType", "filterSci", "filterRcvr", "filterFreq", "filterSem", "filterClp", "filterEnb"};
 				for (int i = 0; i < advancedFilters.size(); i++) {
 					SimpleComboValue<String> value = advancedFilters.get(i).getValue();
 					if (value != null) {
@@ -99,7 +100,7 @@ public class SessionExplorer extends Explorer {
 		CheckColumnConfig checkColumn;
 		for (ColumnType ct : columnTypes) {
 			if (ct.getClasz() != Boolean.class) {
-			    configs.add(new SessionColConfig(ct.getId(), ct.getName(), ct.getLength(), ct.getClasz()));
+			    configs.add(new SessionColConfig(ct.getId(), ct.getName(), ct.getLength(), ct.getDisabled(), ct.getClasz()));
 			} else {
 				checkColumn = new CheckColumnConfig(ct.getId(), ct.getName(), ct.getLength());
 			    checkColumn.setEditor(new CellEditor(new CheckBox()));
@@ -117,32 +118,33 @@ public class SessionExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
     private static final ColumnType[] columnTypes = {
-       	new ColumnType("pcode",          "Proj Code",      100, PCodeField.class),
-        new ColumnType("name",           "Name",           100, String.class), 
-        new ColumnType("source",         "Source",         100, String.class),
-        new ColumnType("orig_ID",        "Orig ID",         50, Integer.class),
-        new ColumnType("type",           "Type",            60, STypeField.class),
-        new ColumnType("science",        "Science",         75, ScienceField.class),
-        new ColumnType("PSC_time",       "PSC Time",        60, Double.class),
-        new ColumnType("total_time",     "Total Time",      60, Double.class),
-        new ColumnType("sem_time",       "Trimester Time",  100, Double.class),
-        new ColumnType("remaining",      "Remaining Time",  100, Double.class),
-        new ColumnType("grade",          "Grade",           50, Double.class),
-        new ColumnType("freq",           "Freq",            50, Double.class),
-        new ColumnType("receiver",       "Receiver(s)",    100, String.class),
-        new ColumnType("req_min",        "Req Min",         60, Double.class),
-        new ColumnType("req_max",        "Req Max",         60, Double.class),
-        new ColumnType("coord_mode",     "Coord Mode",      75, CoordModeField.class),
-        new ColumnType("source_h",       "Source RA",       75, HourField.class),
-        new ColumnType("source_v",       "Source Dec",      75, DegreeField.class),
-        new ColumnType("between",        "Between",         60, Double.class),
-       	new ColumnType("authorized",     "Authorized?",     70, Boolean.class),
-       	new ColumnType("enabled",        "Enabled?",        65, Boolean.class),
-       	new ColumnType("complete",       "Complete?",       65, Boolean.class),
-       	new ColumnType("backup",         "Backup?",         55, Boolean.class),
-        new ColumnType("transit",        "Transit?",        55, Boolean.class),
-        new ColumnType("nighttime",      "Night-time?",     55, Boolean.class),
-        new ColumnType("lst_ex",         "LST Exclusion",  100, String.class)
+       	new ColumnType("pcode",            "Proj Code",      100, false, PCodeField.class),
+       	new ColumnType("project_complete", "Proj Complete",   85, true,  String.class),
+        new ColumnType("name",             "Name",           100, false, String.class), 
+        new ColumnType("source",           "Source",         100, false, String.class),
+        new ColumnType("orig_ID",          "Orig ID",         50, false, Integer.class),
+        new ColumnType("type",             "Type",            60, false, STypeField.class),
+        new ColumnType("science",          "Science",         75, false, ScienceField.class),
+        new ColumnType("PSC_time",         "PSC Time",        60, false, Double.class),
+        new ColumnType("total_time",       "Total Time",      60, false, Double.class),
+        new ColumnType("sem_time",         "Trimester Time",  100, false, Double.class),
+        new ColumnType("remaining",        "Remaining Time",  100, false, Double.class),
+        new ColumnType("grade",            "Grade",           50, false, Double.class),
+        new ColumnType("freq",             "Freq",            50, false, Double.class),
+        new ColumnType("receiver",         "Receiver(s)",    100, false, String.class),
+        new ColumnType("req_min",          "Req Min",         60, false, Double.class),
+        new ColumnType("req_max",          "Req Max",         60, false, Double.class),
+        new ColumnType("coord_mode",       "Coord Mode",      75, false, CoordModeField.class),
+        new ColumnType("source_h",         "Source RA",       75, false, HourField.class),
+        new ColumnType("source_v",         "Source Dec",      75, false, DegreeField.class),
+        new ColumnType("between",          "Between",         60, false, Double.class),
+       	new ColumnType("authorized",       "Authorized?",     70, false, Boolean.class),
+       	new ColumnType("enabled",          "Enabled?",        65, false, Boolean.class),
+       	new ColumnType("complete",         "Complete?",       65, false, Boolean.class),
+       	new ColumnType("backup",           "Backup?",         55, false, Boolean.class),
+        new ColumnType("transit",          "Transit?",        55, false, Boolean.class),
+        new ColumnType("nighttime",        "Night-time?",     55, false, Boolean.class),
+        new ColumnType("lst_ex",           "LST Exclusion",  100, false, String.class)
        	
     	};
 }
