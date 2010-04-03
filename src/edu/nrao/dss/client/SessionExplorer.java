@@ -26,7 +26,8 @@ public class SessionExplorer extends Explorer {
 	
 	private void initFilters() {
 		String[] frequencies = new String[] {
-			"> 2 GHz", "> 5 GHz", "> 10 GHz", "> 20 GHz", "> 30 GHz", "> 40 GHz"	
+			"> 2 GHz", "> 5 GHz", "> 10 GHz", "> 20 GHz", "> 30 GHz", "> 40 GHz",
+			"<= 2 GHz", "<= 5 GHz", "<= 10 GHz", "<= 20 GHz", "<= 30 GHz", "<= 40 GHz"
 		};
 		String[] receivers = new String[] {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
@@ -49,12 +50,18 @@ public class SessionExplorer extends Explorer {
 			@Override
 			public void componentSelected(ButtonEvent be){
 				HashMap<String, String> freqMap = new HashMap<String, String>();
-				freqMap.put("> 2 GHz", "2");
-				freqMap.put("> 5 GHz", "5");
-				freqMap.put("> 10 GHz", "10");
-				freqMap.put("> 20 GHz", "20");
-				freqMap.put("> 30 GHz", "30");
-				freqMap.put("> 40 GHz", "40");
+				freqMap.put("> 2 GHz",  ">2");
+				freqMap.put("> 5 GHz",  ">5");
+				freqMap.put("> 10 GHz", ">10");
+				freqMap.put("> 20 GHz", ">20");
+				freqMap.put("> 30 GHz", ">30");
+				freqMap.put("> 40 GHz", ">40");
+				freqMap.put("<= 2 GHz",  "<=2");
+				freqMap.put("<= 5 GHz",  "<=5");
+				freqMap.put("<= 10 GHz", "<=10");
+				freqMap.put("<= 20 GHz", "<=20");
+				freqMap.put("<= 30 GHz", "<=30");
+				freqMap.put("<= 40 GHz", "<=40");
 				
 				String filtersURL = "?";
 				String filterVal;
