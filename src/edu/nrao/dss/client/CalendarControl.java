@@ -21,7 +21,6 @@ public class CalendarControl extends FormPanel {
 		setBorders(true);
 		setWidth("35%");
 		
-		// fields for form
 		// Date - when this changes, change the start of the calendar view
 	    final DateField dt = new DateField();
 	    dt.setValue(schedule.startCalendarDay);

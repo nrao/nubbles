@@ -88,6 +88,7 @@ public class PeriodExplorer extends Explorer {
 			public void handleEvent(StoreEvent<BaseModelData> se) {
 				List<BaseModelData> data = (List<BaseModelData>) se.getStore().getModels();
 				schedule.northNominee.setVacancyOptions(data);
+				schedule.northSchedule.setScheduleSummary(data);
 			}
 		});
 	}

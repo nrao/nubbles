@@ -1,0 +1,255 @@
+package edu.nrao.dss.client;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+
+import edu.nrao.dss.client.util.TimeUtils;
+
+public class ScheduleControl extends FormPanel {
+	
+	private Schedule schedule;
+	private LabelField scheduleAverage, currentAverage, unscheduledTime;
+	private boolean schedulePressed;
+	int dataSize;
+	private NumberFormat scoreFormat = NumberFormat.getFormat("0.00");
+	
+	public FactorsDlg factorsDlg;
+	
+	public ScheduleControl(Schedule sched) {
+		schedule = sched;
+		initLayout();
+	}
+	
+	public void setScheduleSummary(List<BaseModelData> data) {
+		if (!schedulePressed) {
+			dataSize = data.size();
+		}
+		if (data.size() <= 0) {
+			return;
+		}
+
+		// Note: time computation done in minutes
+		long msecPerMinute = 60*1000;
+		double total_scheduled = 0.0;
+		long total_empty = 0;
+		double total_score = 0.0;
+		
+		BaseModelData init = data.get(0);
+		Date t = TimeUtils.toDate(init);
+		long   end      = t.getTime()/msecPerMinute;
+		double dur      = 0.0; //init.get("duration");
+		long   duration = 0; //Math.round(60.*dur);
+		long   start    = 0;
+		double score    = 0.0;
+		
+		for (BaseModelData datum : data) {
+			t = TimeUtils.toDate(datum);
+			start = t.getTime()/msecPerMinute;
+			dur = datum.get("duration");
+			duration = Math.round(60.*dur);
+			score = datum.get("cscore");
+			total_scheduled += duration;
+			total_score += duration*score;
+			total_empty += start - end;
+			end = start + duration;
+		}
+		double currentAverageValue = total_score/total_scheduled;
+		currentAverage.setValue(scoreFormat.format(currentAverageValue));
+		if (schedulePressed && dataSize != data.size()) {
+			scheduleAverage.setValue(scoreFormat.format(currentAverageValue));
+			schedulePressed = false;
+			dataSize = data.size();
+		}
+		unscheduledTime.setValue(TimeUtils.min2sex((int)total_empty));
+	}
+	
+	private void initLayout() {
+		setHeading("Schedule Control");
+		setBorders(true);
+		setWidth("25%");
+		HBoxLayout thisLayout = new HBoxLayout();
+		thisLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
+		this.setLayout(thisLayout);
+		
+		LayoutContainer leftContainer = new LayoutContainer();
+		leftContainer.setBorders(false);
+		leftContainer.setWidth("50%");
+		leftContainer.setLayout(new FormLayout());
+		this.add(leftContainer);
+		LayoutContainer rightContainer = new LayoutContainer();
+		rightContainer.setBorders(false);
+		rightContainer.setLayout(new FormLayout());
+		this.add(rightContainer);
+		
+		// Auto schedules the current calendar
+		Button scheduleButton = new Button("Schedule");
+		schedulePressed = false;
+		scheduleButton.setToolTip("Generate a schedule for free periods over the specified calendar range");
+		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				schedulePressed = true;
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
+	    		Integer numScheduleDays = schedule.numCalendarDays < 2 ? 1 : (schedule.numCalendarDays -1); 
+	    		keys.put("start", startStr);
+	    		keys.put("duration", schedule.numCalendarDays);
+	    		keys.put("tz", schedule.timezone);
+				String msg = "Scheduling from " + startStr + " (" + schedule.timezone + ")" + " until " + numScheduleDays.toString() + " days later at 8:00 (ET).";
+				final MessageBox box = MessageBox.wait("Calling Scheduling Algorithm", msg, "Be Patient ...");
+				JSONRequest.post("/runscheduler", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								schedule.updateCalendar();
+								box.close();
+							}
+						});
+			}
+		});
+		leftContainer.add(scheduleButton);
+		
+		Button emailButton = new Button("Email");
+		emailButton.setToolTip("Emails a schedule to staff and observers starting now and covering the next two days");
+		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+				String msg = "Generating scheduling email for observations over the next two days";
+				final MessageBox box = MessageBox.wait("Getting Email Text", msg, "Be Patient ...");
+				
+				// Must set keys here somehow to transmit proper time range.  What is the time range?
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
+	    		keys.put("start", startStr);
+	    		keys.put("duration", schedule.numCalendarDays);
+	    		keys.put("tz", schedule.timezone);
+	    		
+				JSONRequest.get("/schedule/email", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								String addr[] = new String[3];
+								String subject[] = new String[3];
+								String body[] = new String[3];
+								String address_key[] = {"observer_address", "deleted_address", "staff_address"};
+								String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
+								String body_key[] = {"observer_body", "deleted_body", "staff_body"};
+								                   
+								for (int j = 0; j < 3; ++j)
+								{
+									JSONArray emails = json.get(address_key[j]).isArray();
+									//String addr = "";
+									addr[j] = "";
+									
+									for (int i = 0; i < emails.size(); ++i)
+									{
+										addr[j] += emails.get(i).isString().stringValue() + ", ";
+									}
+	
+									addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
+									subject[j] = json.get(subject_key[j]).isString().stringValue();
+									body[j] = json.get(body_key[j]).isString().stringValue();
+								}
+								
+								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
+								dlg.show();
+								box.close();
+							}
+						});
+			}
+		});
+		leftContainer.add(emailButton);
+		
+		// publishes all periods currently displayed (state moved from pending to scheduled)
+		Button publishButton = new Button("Publish");
+		publishButton.setToolTip("Publishes all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
+		publishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				// make the JSON request for the periods so we can make appointments
+				// we need the same url in a different format
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
+	    		keys.put("start", startStr);
+	    		keys.put("duration", schedule.numCalendarDays);
+	    		keys.put("tz", schedule.timezone);	    		
+				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
+				JSONRequest.post("/periods/publish", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								schedule.updateCalendar();
+							}
+						});
+			}
+		});
+		leftContainer.add(publishButton);
+		
+		// deletes all pending periods currently displayed (state moved from pending to deleted)
+		Button deletePendingBtn = new Button("Delete Pending");
+		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
+		deletePendingBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				// make the JSON request for the periods so we can make appointments
+				// we need the same url in a different format
+	    		HashMap<String, Object> keys = new HashMap<String, Object>();
+	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
+	    		keys.put("start", startStr);
+	    		keys.put("duration", schedule.numCalendarDays);
+	    		keys.put("tz", schedule.timezone);	    		
+				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
+				JSONRequest.post("/periods/delete_pending", keys,
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								schedule.updateCalendar();
+							}
+						});
+			}
+		});
+		leftContainer.add(deletePendingBtn);		
+		
+		// Factors
+		Button factorsButton = new Button("Factors");
+		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
+		factorsDlg = new FactorsDlg();
+		factorsDlg.hide();
+		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				factorsDlg.show();
+			}
+		});
+		leftContainer.add(factorsButton);
+		
+		scheduleAverage = new LabelField();
+		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
+		scheduleAverage.setFieldLabel("Schedule Average Score");
+		rightContainer.add(scheduleAverage);
+		
+		currentAverage = new LabelField();
+		currentAverage.setToolTip("Current average score of displayed periods");
+		currentAverage.setFieldLabel("Current Average Score");
+		rightContainer.add(currentAverage);
+		
+		unscheduledTime = new LabelField();
+		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
+		unscheduledTime.setFieldLabel("Unscheduled Time");
+		rightContainer.add(unscheduledTime);
+	}
+}

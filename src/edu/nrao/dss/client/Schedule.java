@@ -44,6 +44,7 @@ public class Schedule extends ContentPanel {
 	
 	public ScheduleCalendar west;
 	public VacancyControl northNominee;
+	ScheduleControl northSchedule;
 	private NomineePanel east;
 	private ContentPanel center;
 
@@ -53,7 +54,6 @@ public class Schedule extends ContentPanel {
 	Integer numCalendarDays = 3;
 	String timezone = "UTC";
 	String baseUrl = "/periods/" + timezone;
-	private FactorsDlg factorsDlg;
 	
 	// scoring sessions
 	Scores scores;
@@ -82,7 +82,7 @@ public class Schedule extends ContentPanel {
 		setHeaderVisible(true);
 		setLayout(new BorderLayout());
 		
-		// bells & whistles for this content panel
+		// ======================== Controls ===================================
 		setCollapsible(false);
 		setBodyBorder(false);
 		setFrame(false);
@@ -99,163 +99,22 @@ public class Schedule extends ContentPanel {
 		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
 		north.setLayout(northLayout);
 
-		// calendar controls:
+		// on the left, calendar controls:
 		final FormPanel northCalendar = new CalendarControl(this);
-;
 		north.add(northCalendar);
 		
+		// in the middle, schedule controls
+        northSchedule = new ScheduleControl(this);
+        north.add(northSchedule);
+		
+		// on the right, nominee controls:
         northNominee = new VacancyControl(this);
-        
-		// schedule controls
-		final FormPanel northSchedule = new FormPanel();
-		northSchedule.setHeading("Schedule Control");
-		northSchedule.setBorders(true);
-		northSchedule.setWidth("25%");
-		north.add(northSchedule);
-		
-		// Auto schedules the current calendar
-		Button scheduleButton = new Button("Schedule");
-		scheduleButton.setToolTip("Generate a schedule for free periods over the specified calendar range");
-		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
-	    		Integer numScheduleDays = numCalendarDays < 2 ? 1 : (numCalendarDays -1); 
-	    		keys.put("start", startStr);
-	    		keys.put("duration", numCalendarDays);
-	    		keys.put("tz", timezone);
-				String msg = "Scheduling from " + startStr + " (" + timezone + ")" + " until " + numScheduleDays.toString() + " days later at 8:00 (ET).";
-				final MessageBox box = MessageBox.wait("Calling Scheduling Algorithm", msg, "Be Patient ...");
-				JSONRequest.post("/runscheduler", keys,
-						new JSONCallbackAdapter() {
-							public void onSuccess(JSONObject json) {
-								updateCalendar();
-								box.close();
-							}
-						});
-			}
-		});
-		northSchedule.add(scheduleButton);
-		
-		Button emailButton = new Button("Email");
-		emailButton.setToolTip("Emails a schedule to staff and observers starting now and covering the next two days");
-		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-				String msg = "Generating scheduling email for observations over the next two days";
-				final MessageBox box = MessageBox.wait("Getting Email Text", msg, "Be Patient ...");
-				
-				// Must set keys here somehow to transmit proper time range.  What is the time range?
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
-	    		keys.put("start", startStr);
-	    		keys.put("duration", numCalendarDays);
-	    		keys.put("tz", timezone);
-	    		
-				JSONRequest.get("/schedule/email", keys,
-						new JSONCallbackAdapter() {
-							public void onSuccess(JSONObject json) {
-								String addr[] = new String[3];
-								String subject[] = new String[3];
-								String body[] = new String[3];
-								String address_key[] = {"observer_address", "deleted_address", "staff_address"};
-								String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
-								String body_key[] = {"observer_body", "deleted_body", "staff_body"};
-								                   
-								for (int j = 0; j < 3; ++j)
-								{
-									JSONArray emails = json.get(address_key[j]).isArray();
-									//String addr = "";
-									addr[j] = "";
-									
-									for (int i = 0; i < emails.size(); ++i)
-									{
-										addr[j] += emails.get(i).isString().stringValue() + ", ";
-									}
-	
-									addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
-									subject[j] = json.get(subject_key[j]).isString().stringValue();
-									body[j] = json.get(body_key[j]).isString().stringValue();
-								}
-								
-								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
-								dlg.show();
-								box.close();
-							}
-						});
-			}
-		});
-		northSchedule.add(emailButton);
-		
-		// publishes all periods currently displayed (state moved from pending to scheduled)
-		Button publishButton = new Button("Publish");
-		publishButton.setToolTip("Publishes all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
-		publishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				// make the JSON request for the periods so we can make appointments
-				// we need the same url in a different format
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
-	    		keys.put("start", startStr);
-	    		keys.put("duration", numCalendarDays);
-	    		keys.put("tz", timezone);	    		
-				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
-				JSONRequest.post("/periods/publish", keys,
-						new JSONCallbackAdapter() {
-							public void onSuccess(JSONObject json) {
-								updateCalendar();
-							}
-						});
-			}
-		});
-		northSchedule.add(publishButton);
-		
-		// deletes all pending periods currently displayed (state moved from pending to deleted)
-		Button deletePendingBtn = new Button("Delete Pending");
-		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
-		deletePendingBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				// make the JSON request for the periods so we can make appointments
-				// we need the same url in a different format
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay) + " 00:00:00";
-	    		keys.put("start", startStr);
-	    		keys.put("duration", numCalendarDays);
-	    		keys.put("tz", timezone);	    		
-				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
-				JSONRequest.post("/periods/delete_pending", keys,
-						new JSONCallbackAdapter() {
-							public void onSuccess(JSONObject json) {
-								updateCalendar();
-							}
-						});
-			}
-		});
-		northSchedule.add(deletePendingBtn);		
-		
-		// Factors
-		Button factorsButton = new Button("Factors");
-		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
-		factorsDlg = new FactorsDlg();
-		factorsDlg.hide();
-		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				factorsDlg.show();
-			}
-		});
-		northSchedule.add(factorsButton);
-		
-		// Nominee controls:
         north.add(northNominee);
 		
 		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 200);
 		northData.setMargins(new Margins(5,5,0,5));
-		//northData.
 
+		// ======================== Displays ===================================
 		// to the left, the period explorer
 		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		west.addButtonsListener(this);
@@ -265,8 +124,7 @@ public class Schedule extends ContentPanel {
 		westData.setSplit(true);
 		westData.setCollapsible(true);
 
-
-		// to the right, the calendar
+		// in the middle, the calendar
 		center = new ContentPanel(); // TODO extend to bottom of panel
 /*		center = new ContentPanel() {
 			protected void onRender(Element target, int index) {
@@ -326,7 +184,7 @@ public class Schedule extends ContentPanel {
 		//centerData.setSplit(true);
 		//centerData.setCollapsible(true);
 		
-		// in the east, nominee periods
+		// to the right, nominee periods
 		east = new NomineePanel(this);
 
 		BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST, 300);
@@ -344,14 +202,13 @@ public class Schedule extends ContentPanel {
 	}
 	
 	public FactorsDlg getFactorsDlg() {
-		return factorsDlg;
+		return northSchedule.factorsDlg;
 	}
 	
 	public ScoresComboBox getScoresComboBox() {
 	    return scoresComboBox;	
 	}
 	
-	//private void updateNominees(ContentPanel panel) {
 	public void updateNominees() {
 		startVacancyDateTime = startVacancyDate;
 		startVacancyDateTime.setHours(startVacancyTime.getHour());

@@ -19,7 +19,6 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
@@ -35,7 +34,7 @@ import edu.nrao.dss.client.util.TimeUtils;
 
 public class VacancyControl extends FormPanel {
 	
-	private static final DateTimeFormat DATETIME_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm");
+//	private static final DateTimeFormat DATETIME_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm");
 	
 	DateField vacancyDate;
 	private TimeField vacancyTime;
@@ -67,49 +66,49 @@ public class VacancyControl extends FormPanel {
 		if (data.size() <= 0) {
 			return;
 		}
-		Date end = toDate(data.get(0));
+		Date end = TimeUtils.toDate(data.get(0));
 		for (BaseModelData datum : data) {
-			Date t = toDate(datum);
+			Date t = TimeUtils.toDate(datum);
 			long t_msec = t.getTime();
 			long end_msec = end.getTime();
 			// Is there a hole?
 			if (end_msec < t_msec) {
 				long msecs = t_msec - end_msec;
 				String hm_str = TimeUtils.min2sex((int)(msecs/(60*1000)));
-				String key = "gap at " + DATETIME_FORMAT.format(end) + " for " + hm_str;
-				holes.put(key, new Hole(datePart(end), timePart(end), msec2minutes(msecs)));
+				String key = "gap at " + TimeUtils.DATETIME_FORMAT.format(end) + " for " + hm_str;
+				holes.put(key, new Hole(TimeUtils.datePart(end), TimeUtils.timePart(end), TimeUtils.msec2minutes(msecs)));
 				vacancyShortcut.add(key);
 			}
-			end = getEnd(t, toDuration(datum));
+			end = TimeUtils.getEnd(t, TimeUtils.toDuration(datum));
 		}
 	}
 	
-	private Date datePart(Date d) {
-		return new Date(d.getYear(), d.getMonth(), d.getDate());
-	}
-	
-	private Time timePart(Date d) {
-		return new Time(d.getHours(), d.getMinutes());
-	}
-	
-	private Integer msec2minutes(long ms) {
-		return (int) (ms/(60*1000));
-	}
-	
-	private Date toDate(BaseModelData d) {
-		return DATETIME_FORMAT.parse(d.get("date").toString() + " " + d.get("time").toString());
-	}
-	
-	private Double toDuration(BaseModelData d) {
-		return d.get("duration");
-	}
-	
-    public Date getEnd(Date start, Double duration) {
-    	long startSecs = start.getTime();
-    	// add the duration (in hours) to this time in milli-seconds
-    	long endMsecs = (long) (startSecs + (duration * 60.0 * 60.0 * 1000.0));
-    	return new Date(endMsecs);
-    }
+//	private Date datePart(Date d) {
+//		return new Date(d.getYear(), d.getMonth(), d.getDate());
+//	}
+//	
+//	private Time timePart(Date d) {
+//		return new Time(d.getHours(), d.getMinutes());
+//	}
+//	
+//	private Integer msec2minutes(long ms) {
+//		return (int) (ms/(60*1000));
+//	}
+//	
+//	private Date toDate(BaseModelData d) {
+//		return DATETIME_FORMAT.parse(d.get("date").toString() + " " + d.get("time").toString());
+//	}
+//	
+//	private Double toDuration(BaseModelData d) {
+//		return d.get("duration");
+//	}
+//	
+//    public Date getEnd(Date start, Double duration) {
+//    	long startSecs = start.getTime();
+//    	// add the duration (in hours) to this time in milli-seconds
+//    	long endMsecs = (long) (startSecs + (duration * 60.0 * 60.0 * 1000.0));
+//    	return new Date(endMsecs);
+//    }
     
 	private void initLayout() {
 		setHeading("Vacancy Control");
@@ -208,7 +207,7 @@ public class VacancyControl extends FormPanel {
 		leftContainer.add(hours);
 		
 		// Nominee options		
-		add(new LabelField());
+		//add(new LabelField());
 		//final CheckBoxGroup nomineeOptions = new CheckBoxGroup();
 		nomineeOptions.setSpacing(15);
 		nomineeOptions.setFieldLabel("Selection Options");
