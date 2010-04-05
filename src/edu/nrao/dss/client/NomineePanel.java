@@ -63,10 +63,12 @@ public class NomineePanel extends ContentPanel {
 		         new Listener<SelectionChangedEvent<BaseModel>>() {  
 		           public void handleEvent(SelectionChangedEvent<BaseModel> be) {  
 			         BaseModelData baseModelData = (BaseModelData) (be.getSelectedItem());
+			         if (baseModelData == null) {
+			        	 return;
+			         }
 			         
 			         // add the selected period to the Period Explorer
 		             schedule.west.addRecord(nominee2Period(baseModelData));
-		             schedule.updateCalendar();
 		             
 			         // and show the Session's scores on the calendar
 			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
@@ -102,7 +104,6 @@ public class NomineePanel extends ContentPanel {
 		urlData.append(rootUrl);
 		urlData.append("?");
 		urlData.append(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
-		GWT.log(urlData.toString(), null);
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 		proxy.setBuilder(builder);
 	}

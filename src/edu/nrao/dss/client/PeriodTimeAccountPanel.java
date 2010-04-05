@@ -39,7 +39,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	}
 	
 	private void setValues(Period p) {
-		GWT.log("PeriodTimeAccountPanel.setValues", null);
+		//GWT.log("PeriodTimeAccountPanel.setValues", null);
 		if (p != null) {
 			
 			// setting the value also entails maintaining state
@@ -84,7 +84,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		// send all the non-derived values to the server so that time accounting
 		// for the entire project can be updated
 		// 1. update the period object
-        GWT.log("setting period values", null);
+        //GWT.log("setting period values", null);
         
 		period.setDescription(getDescription());
 		period.setScheduled(scheduled.getValue().doubleValue());
@@ -99,17 +99,17 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		
 		// 2. convert this info to JSON like stuff
 		HashMap <String, Object> keys = period.toHashMap();
-		GWT.log("setting keys", null);
+		//GWT.log("setting keys", null);
 		
 		// 3. send the json
 		JSONRequest.post("/period/" + Integer.toString(period.getId()) + "/time_accounting", keys,
 				new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json) {
-						GWT.log("periods/time_accounting onSuccess", null);
+						//GWT.log("periods/time_accounting onSuccess", null);
                         // TODO: now get all the project level time accounting again, since
 						// it all may have changed.
 						if (parent != null) {
-							GWT.log("calling parent.setTimeAcctFromJSON", null);
+							//GWT.log("calling parent.setTimeAcctFromJSON", null);
 							parent.setTimeAccountingFromJSON(json);
 						}
 						// now, make sure we update ourselves
@@ -123,7 +123,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	
     public void updatePeriodForm(int periodId) {
     	// get this period from the server and populate the form
-        GWT.log("updatePeriodForm", null);
+        //GWT.log("updatePeriodForm", null);
         // TODO - should pick up timezone from Schedule
     	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
     		      , new JSONCallbackAdapter() {
@@ -131,7 +131,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
             	// JSON period -> JAVA period
              	Period period = Period.parseJSON(json.get("period").isObject());
              	setPeriod(period);
-                GWT.log("period onSuccess", null);          
+                //GWT.log("period onSuccess", null);          
     		}
     	});    	
     }

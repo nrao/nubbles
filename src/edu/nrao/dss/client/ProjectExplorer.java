@@ -134,7 +134,7 @@ public class ProjectExplorer extends Explorer {
 			keys.put("pcodes", pcodes);
 		}
 
-		GWT.log("getEmailAddresses(): URL = " + url);
+//		GWT.log("getEmailAddresses(): URL = " + url);
 
 		JSONRequest.get(url, keys,
 				new JSONCallbackAdapter()
@@ -150,19 +150,19 @@ public class ProjectExplorer extends Explorer {
 						{
 							JSONArray pi_emails = json.get("PI-Addresses").isArray();
 							pi_addr = unpackJSONArray(pi_emails);
-							GWT.log("getEmailAddresses: pi");
+//							GWT.log("getEmailAddresses: pi");
 							
 							JSONArray pc_emails = json.get("PC-Addresses").isArray();
 							pc_addr = unpackJSONArray(pc_emails);
-							GWT.log("getEmailAddresses: pc");
+//							GWT.log("getEmailAddresses: pc");
 
 							JSONArray ci_emails = json.get("CO-I-Addresses").isArray();
 							ci_addr = unpackJSONArray(ci_emails);
-							GWT.log("getEmailAddresses: ci");
+//							GWT.log("getEmailAddresses: ci");
 
 							JSONArray proj_codes = json.get("PCODES").isArray();
 							pcodes = unpackJSONArray(proj_codes);
-							GWT.log("getEmailAddresses: pcodes");
+//							GWT.log("getEmailAddresses: pcodes");
 
 							box.close();
 							testDialog = new Dialog();
@@ -186,7 +186,7 @@ public class ProjectExplorer extends Explorer {
 						catch (Exception e)
 						{
 							String text = "getEmailAddresses(): Caught exception " + e;
-							GWT.log(text);
+//							GWT.log(text);
 						}						
 					}
 				});
