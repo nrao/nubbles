@@ -94,7 +94,6 @@ public class ProjectsEmailDialogBox extends Dialog {
 						new JSONCallbackAdapter() {
 							@Override
 							public void onSuccess(JSONObject json) {
-								GWT.log("/projects/email (POST) onSuccess", null);
 								box.close();
 							}
 						});
@@ -208,10 +207,9 @@ public class ProjectsEmailDialogBox extends Dialog {
 		field_label.setWidth(50);
 		field_text.setValue(content);
 		field_text.setSize(width, height);
-		GWT.log("email_field: " + field_text.getMaxLength());
-		field_text.setStyleAttribute("font-family", "monospace");
+		//field_text.setStyleAttribute("font-family", "monospace");
 		// TBF: Use this line instead of above for extGWT 2.x!!!!
-		//field_text.setInputStyleAttribute("font-family", "monospace");
+		field_text.setInputStyleAttribute("font-family", "monospace");
 		hp.add(field_label);
 		hp.add(field_text);
 		tareas.put(label, field_text);
