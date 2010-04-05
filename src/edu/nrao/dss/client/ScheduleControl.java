@@ -227,7 +227,7 @@ public class ScheduleControl extends FormPanel {
 		// Factors
 		Button factorsButton = new Button("Factors");
 		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
-		factorsDlg = new FactorsDlg();
+		factorsDlg = new FactorsDlg(schedule);
 		factorsDlg.hide();
 		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
