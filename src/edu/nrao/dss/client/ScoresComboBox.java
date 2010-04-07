@@ -30,7 +30,10 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		super();
 		this.schedulePanel = schedulePanel;
 		initLayout();
-		
+		lastStart = new Date();
+		lastNumDays = 0;
+		lastTimeZone = "";
+		lastSessionId = 0;
 	}
 	
 	private void initLayout() {
@@ -79,7 +82,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 			lastTimeZone = tz;
 			lastSessionId = id;
 			// go get the scores
-		    access.request(display, id, name, start, (numDays * 24 *60), tz);
+		    access.request(display, id, name, start, (numDays * 24 * 60), tz);
 		}
 	}
 	

@@ -19,8 +19,8 @@ public class ScoresAccess {
 	public void request(final ScoresDisplay display, Integer sessionId,
 			final String label, final Date start, Integer minutes,
 			final String timezone) {
-		JSONRequest.get("/factors", formKeys(sessionId, label, start, minutes,
-				timezone), new JSONCallbackAdapter() {
+		HashMap<String, Object> keys = formKeys(sessionId, label, start, minutes, timezone);
+		JSONRequest.get("/factors", keys, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				float[] scores = extractScores(json);
 				display.show(label, scores);

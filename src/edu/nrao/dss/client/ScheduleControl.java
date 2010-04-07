@@ -63,7 +63,14 @@ public class ScheduleControl extends FormPanel {
 		for (BaseModelData datum : data) {
 			t = TimeUtils.toDate(datum);
 			start = t.getTime()/msecPerMinute;
-			dur = datum.get("duration");
+			Object value = datum.get("duration");
+			// This is needed because newly entered values from the user are of type
+			// String, but only become Double upon being returned from the server
+			if (value.getClass() == String.class) {
+				dur = Double.valueOf(value.toString());
+			} else {
+				dur = datum.get("duration");
+			}
 			duration = Math.round(60.*dur);
 			score = datum.get("cscore");
 			total_scheduled += duration;

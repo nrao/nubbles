@@ -6,14 +6,26 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.google.gwt.core.client.GWT;
 
 public class CalendarControl extends FormPanel {
 	
 	private Schedule schedule;
 	
+	// scoring sessions
+	Scores scores;
+	private ScoresComboBox scoresComboBox;
+//	private ScoresForCalendar scoresDisplay;
+	
 	public CalendarControl(Schedule sched) {
 		schedule = sched;
 		initLayout();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void showSessionScores(String session) {
+		scoresComboBox.setSimpleValue(session);
+		scoresComboBox.getSessionScores(session);
 	}
 	
 	private void initLayout() {
@@ -82,7 +94,7 @@ public class CalendarControl extends FormPanel {
 		add(tz);
 		
 		// Scores
-		ScoresComboBox scoresComboBox = new ScoresComboBox(schedule);
+		scoresComboBox = new ScoresComboBox(schedule);
 		scoresComboBox.setFieldLabel("Scores");
         add(scoresComboBox);
         schedule.scores = new Scores(scoresComboBox, new ScoresForCalendar(schedule));

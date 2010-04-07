@@ -1,11 +1,13 @@
 package edu.nrao.dss.client;
 
+import com.google.gwt.core.client.GWT;
+
 public class ScoresForCalendar implements ScoresDisplay {
 
 	Schedule schedulePanel;
 	
-	public ScoresForCalendar(Schedule schedulePanel) {
-	    this.schedulePanel = schedulePanel;
+	public ScoresForCalendar(Schedule sched) {
+	    schedulePanel = sched;
 	}
 	
 	@Override

@@ -72,8 +72,8 @@ public class NomineePanel extends ContentPanel {
 		             
 			         // and show the Session's scores on the calendar
 			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
-                     schedule.showSessionScores(name);
-                     schedule.updateCalendar();
+			         schedule.northCalendar.showSessionScores(name);
+                     //schedule.updateCalendar();
 		           }  
 		         });
 	}
@@ -84,7 +84,8 @@ public class NomineePanel extends ContentPanel {
 		retval.put("date", DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startVacancyDateTime));
 		retval.put("time", DateTimeFormat.getFormat("HH:mm").format(schedule.startVacancyDateTime));
 		retval.put("duration", (Double)fields.get("duration")/60.0);
-		retval.put("score", (Double)fields.get("score"));
+		retval.put("sscore", (Double)fields.get("score"));
+		retval.put("cscore", (Double)fields.get("score"));
 		//retval.put("forecast", null);
 		retval.put("backup", false);
 		return retval;

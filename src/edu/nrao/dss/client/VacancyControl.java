@@ -76,40 +76,13 @@ public class VacancyControl extends FormPanel {
 				long msecs = t_msec - end_msec;
 				String hm_str = TimeUtils.min2sex((int)(msecs/(60*1000)));
 				String key = "gap at " + TimeUtils.DATETIME_FORMAT.format(end) + " for " + hm_str;
-				holes.put(key, new Hole(TimeUtils.datePart(end), TimeUtils.timePart(end), TimeUtils.msec2minutes(msecs)));
+				holes.put(key, new Hole(datePart(end), timePart(end), msec2minutes(msecs)));
 				vacancyShortcut.add(key);
 			}
-			end = TimeUtils.getEnd(t, TimeUtils.toDuration(datum));
+			end = getEnd(t, toDuration(datum));
 		}
 	}
 	
-//	private Date datePart(Date d) {
-//		return new Date(d.getYear(), d.getMonth(), d.getDate());
-//	}
-//	
-//	private Time timePart(Date d) {
-//		return new Time(d.getHours(), d.getMinutes());
-//	}
-//	
-//	private Integer msec2minutes(long ms) {
-//		return (int) (ms/(60*1000));
-//	}
-//	
-//	private Date toDate(BaseModelData d) {
-//		return DATETIME_FORMAT.parse(d.get("date").toString() + " " + d.get("time").toString());
-//	}
-//	
-//	private Double toDuration(BaseModelData d) {
-//		return d.get("duration");
-//	}
-//	
-//    public Date getEnd(Date start, Double duration) {
-//    	long startSecs = start.getTime();
-//    	// add the duration (in hours) to this time in milli-seconds
-//    	long endMsecs = (long) (startSecs + (duration * 60.0 * 60.0 * 1000.0));
-//    	return new Date(endMsecs);
-//    }
-    
 	private void initLayout() {
 		setHeading("Vacancy Control");
 		setBorders(false);
@@ -143,10 +116,11 @@ public class VacancyControl extends FormPanel {
 	    rightContainer.add(vacancyShortcut);
 	    Listener shortcutListener = new Listener<DataListEvent>() {
 	    	public void handleEvent(DataListEvent be) {
-	    		if (be.getSelected() == null) {
+	    		List<DataListItem> selection = be.getSelected();
+	    		if (selection == null || selection.size() == 0) {
 	    			return;
 	    		}
-	    		DataListItem dli = be.getSelected().get(0);
+	    		DataListItem dli = selection.get(0);
 	    		Hole h = holes.get(dli.getText());
 	    		vacancyDate.setValue(h.date);
 	    		schedule.startVacancyDate = h.date;
@@ -191,7 +165,7 @@ public class VacancyControl extends FormPanel {
 		durChoices.put(noChoice, 0);
 		hours.add(noChoice);
 		hours.setForceSelection(true);
-		for (int m = 15; m < 12*60+15; m += 15) {
+		for (int m = 15; m < 24*60+15; m += 15) {
 			String key = TimeUtils.min2sex(m);
 			durChoices.put(key, m);
 			hours.add(key);
@@ -261,4 +235,34 @@ public class VacancyControl extends FormPanel {
 		leftContainer.add(new AdapterField(nomineesButton));
 	}
 
+	
+	private Date datePart(Date d) {
+		return new Date(d.getYear(), d.getMonth(), d.getDate());
+	}
+	
+	private Time timePart(Date d) {
+		return new Time(d.getHours(), d.getMinutes());
+	}
+	
+	private Integer msec2minutes(long ms) {
+		return (int) (ms/(60*1000));
+	}
+	
+	private Double toDuration(BaseModelData d) {
+		Object value = d.get("duration");
+		// This is needed because newly entered values from the user are of type
+		// String, but only become Double upon being returned from the server.
+		if (value.getClass() == String.class) {
+			return Double.valueOf(value.toString());
+		} else {
+		    return d.get("duration");
+	    }
+	}
+	
+    private Date getEnd(Date start, Double duration) {
+    	long startSecs = start.getTime();
+    	// add the duration (in hours) to this time in milli-seconds
+    	long endMsecs = (long) (startSecs + (duration * 60.0 * 60.0 * 1000.0));
+    	return new Date(endMsecs);
+    }
 }
