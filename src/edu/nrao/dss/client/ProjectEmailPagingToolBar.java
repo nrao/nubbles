@@ -108,7 +108,7 @@ public class ProjectEmailPagingToolBar extends PagingToolBar {
     	List<BaseModelData> selection_list;
     	List<String> selected_pcodes;
     	
-    	GWT.log("ProjectEmailPagingToolBar: getPageSelections(1) called");
+//    	GWT.log("ProjectEmailPagingToolBar: getPageSelections(1) called");
     	
     	try  // grid could be uninitialized.
     	{
@@ -130,10 +130,10 @@ public class ProjectEmailPagingToolBar extends PagingToolBar {
     	catch (Exception e)
     	{
     		text += "Caught exception " + e;
-    		GWT.log(text);
+//    		GWT.log(text);
     	}
     	
-    	GWT.log("ProjectEmailPagingToolBar: getPageSelections() called");
+//    	GWT.log("ProjectEmailPagingToolBar: getPageSelections() called");
     }
     
     private void setPageSelections()
@@ -171,10 +171,10 @@ public class ProjectEmailPagingToolBar extends PagingToolBar {
     	catch (Exception e)
        	{
     		text += "Caught exception " + e;
-    		GWT.log(text);
+//    		GWT.log(text);
     	}
   	   	
-    	GWT.log("ProjectEmailPagingToolBar: setPageSelections() called");
+//    	GWT.log("ProjectEmailPagingToolBar: setPageSelections() called");
     }
     
 	private EditorGrid<BaseModelData> grid;

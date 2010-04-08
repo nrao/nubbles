@@ -72,7 +72,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     	periodForm.add(moc_ack);
     	moc_ack.addListener(Events.OnClick, new Listener<BaseEvent>() {
     		public void handleEvent(BaseEvent be) {
-    			GWT.log("Updating period's moc_ack field", null);
+    			//GWT.log("Updating period's moc_ack field", null);
     			String url = "/period/" + Integer.toString(period.getId()) + "/toggle_moc";
     			HashMap<String, Object> keys = new HashMap<String, Object>();
     			JSONRequest.post(url, keys,
@@ -117,7 +117,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     	save.setText("Save Period Time Accounting");
     	save.addListener(Events.OnClick, new Listener<BaseEvent>() {
     		public void handleEvent(BaseEvent be) {
-    			GWT.log("Save!", null);
+    			//GWT.log("Save!", null);
     			ta.sendUpdates();
     		}
     	});
@@ -141,7 +141,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     
     public void updatePeriodForm(int periodId) {
     	// get this period from the server and populate the form
-        GWT.log("updatePeriodForm", null);
+        //GWT.log("updatePeriodForm", null);
         // TODO - should pick up timezone from Schedule
     	JSONRequest.get("/periods/UTC/" + Integer.toString(periodId)
     		      , new JSONCallbackAdapter() {
@@ -149,7 +149,7 @@ public class PeriodSummaryPanel extends ContentPanel {
             	// JSON period -> JAVA period
              	Period period = Period.parseJSON(json.get("period").isObject());
              	setPeriod(period);
-                GWT.log("period onSuccess", null);          
+                //GWT.log("period onSuccess", null);          
     		}
     	});    		
     	

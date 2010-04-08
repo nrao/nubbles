@@ -109,7 +109,7 @@ protected void initLayout() {
 	// when a project gets picked, populate the sessions combo
 	projects.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
-	  		GWT.log("projects Events.Valid", null);
+	  		//GWT.log("projects Events.Valid", null);
 	  		// what are the sessions we can view?
 	  		if (updateProjectSessions()) {
 		  		// get all the time accounting info!
@@ -124,7 +124,7 @@ protected void initLayout() {
 	sessions.setFieldLabel("Session");
 	sessions.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
-	  		GWT.log("session Events.Valid", null);
+	  		//GWT.log("session Events.Valid", null);
 	  		// now that a session has been picked, what periods can we view?
 	  		updateSessionPeriods();
 	   	}
@@ -134,7 +134,7 @@ protected void initLayout() {
 	Button saveProj = new Button("Save Project Time Accounting");
 	saveProj.addListener(Events.OnClick, new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent be) {
-			GWT.log("Save!", null);
+			//GWT.log("Save!", null);
 			// save changes to project times, and display new time accounting
 			sendProjectAllotments();
 		}
@@ -196,7 +196,7 @@ protected void initLayout() {
 	periods.setFieldLabel("Period");
 	periods.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
-	  		GWT.log("period Events.Valid", null);
+	  		//GWT.log("period Events.Valid", null);
 	  		// a period has been picked! display it!
 	  		updatePeriod();
 	   	}
@@ -221,11 +221,11 @@ protected void initLayout() {
 	sessionTime.addListener(Events.Blur, new Listener<BaseEvent>() {
 		@Override
 		public void handleEvent(BaseEvent be) {
-            GWT.log("Blur!", null);	
-            GWT.log("original value: " + sessionTime.getOriginalValue().toString(), null);
-            GWT.log("value: " + sessionTime.getValue().toString(), null);
+            //GWT.log("Blur!", null);	
+            //GWT.log("original value: " + sessionTime.getOriginalValue().toString(), null);
+            //GWT.log("value: " + sessionTime.getValue().toString(), null);
             if (sessionTime.getValue().doubleValue() != sessionTime.getOriginalValue().doubleValue()) {
-		        GWT.log("Value changed!", null);
+		        //GWT.log("Value changed!", null);
 		        sessionTime.setStyleAttribute("color", "red");
 	        } else {
 		        sessionTime.setStyleAttribute("color", "black");
@@ -238,7 +238,7 @@ protected void initLayout() {
 	Button saveSess = new Button("Save Session Time Accounting");
 	saveSess.addListener(Events.OnClick, new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent be) {
-			GWT.log("Save Session!", null);
+			//GWT.log("Save Session!", null);
 			// save changes to project times, and display new time accounting
 			sendSessionAllotment();
 		}
@@ -304,13 +304,13 @@ private void sendSessionAllotment() {
 
 	keys.put("total_time", sessionTime.getValue().doubleValue());
 	keys.put("description", sessionTimeAccounting.getDescription());
-	GWT.log("sending to url: " + url, null);
+	//GWT.log("sending to url: " + url, null);
 	
 	JSONRequest.post(url, keys, new JSONCallbackAdapter() {
 		// this url returns all the time accounting for the whole proj., 
 		// so use it to update the whole UI
 		public void onSuccess(JSONObject json) {
-			GWT.log("sendSessoinAllotment onsuccess; setting json", null);
+			//GWT.log("sendSessoinAllotment onsuccess; setting json", null);
 			timeAccountingJson = json;
 			//populateProjTimeAccounting(json);
 			setTimeAccountingFromJSON(json);
@@ -328,7 +328,7 @@ protected void getProjectTimeAccounting() {
 			// take the project level time accounting info, and populate the panel w/ it.
 			//populateProjTimeAccounting(json);
 			setTimeAccountingFromJSON(json);
-            GWT.log("/projects/time_accounting onSuccess", null);          
+            //GWT.log("/projects/time_accounting onSuccess", null);          
 		}
 	});    			
 }
@@ -338,11 +338,11 @@ protected void getProjectTimeAccounting() {
 public void setTimeAccountingFromJSON(JSONObject json) {
 	// make sure the project & session panels get updated;
 	// periods get updated by default
-	GWT.log("setTimeAccountingFromJSON!", null);
+	//GWT.log("setTimeAccountingFromJSON!", null);
 	timeAccountingJson = json;
 	populateProjTimeAccounting(json);
 	String name = sessionName.getValue();
-	GWT.log("setting sess: ? " + name, null);
+	//GWT.log("setting sess: ? " + name, null);
 	if (name != null & name != "") {
 		populateSessTimeAccounting(json, name);
 	}
@@ -380,7 +380,7 @@ private void populateSessTimeAccounting(JSONObject json, String sessName) {
     	String name = session.get("name").isString().stringValue();
     	if (name.equals(sessName)) {
     		// got it!
-    		GWT.log("matched session name " + sessName, null);
+    		//GWT.log("matched session name " + sessName, null);
     		sessionName.setValue(sessName);
     		sessionGrade.setValue(session.get("grade").isNumber().doubleValue());
     		double time = session.get("total_time").isNumber().doubleValue();
@@ -395,7 +395,7 @@ private void populateSessTimeAccounting(JSONObject json, String sessName) {
 
 // a period has been selected - so update the period summary panel
 protected void updatePeriod() {
-	GWT.log("updatePeriod", null);
+	//GWT.log("updatePeriod", null);
 	// what's the period id for chosen period (displayed using time info)?
 	String name = periods.getSimpleValue();
 	int periodId = periodInfo.get(name);
@@ -407,7 +407,7 @@ protected void updatePeriod() {
 // a session has been selected - populate it's panel 
 protected void updateSessionPeriods() {
 	
-	GWT.log("updateSessionPeriods", null);
+	//GWT.log("updateSessionPeriods", null);
 	// show the session panel
 	session.setVisible(true);
 	
@@ -429,7 +429,7 @@ protected void updateSessionPeriods() {
 
 // a session has been selected, so now what are the periods that we can choose from?
 private void updatePeriodOptions(final String pcode, final String sessionName) {
-    GWT.log("updatePeriodOptions", null);
+    //GWT.log("updatePeriodOptions", null);
 	JSONRequest.get("/sessions/options"
 		      , new HashMap<String, Object>() {{
 		    	  put("mode", "periods");
@@ -464,7 +464,7 @@ private void updatePeriodOptions(final String pcode, final String sessionName) {
 // a project has been selected - populate the panel w/ info, and 
 // display candidate sessions to also view.
 protected boolean updateProjectSessions() {
-	GWT.log("updateProjectSessions", null);
+	//GWT.log("updateProjectSessions", null);
 	// update the sessions drop down and clear the current selection
 	String pcode = projects.getSimpleValue();
 	
@@ -483,7 +483,7 @@ protected boolean updateProjectSessions() {
 
 // gets the session names from the server and populates the session combobox
 private void updateSessionOptions(final String pcode) {
-    GWT.log("updateSessionOptions", null);
+    //GWT.log("updateSessionOptions", null);
 	JSONRequest.get("/sessions/options"
 		      , new HashMap<String, Object>() {{
 		    	  put("mode", "session_names");

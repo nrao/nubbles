@@ -1,11 +1,17 @@
 package edu.nrao.dss.client;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -77,13 +83,14 @@ public class PeriodExplorer extends Explorer {
 	            schedule.updateCalendar();
 			}
 		});
-/*		// TODO Instead of listening to each button, we should just listen to the store!
-		store.addListener(Events.Update, new Listener<StoreEvent>() {
-			public void handleEvent(StoreEvent se) {
-				GWT.log("hhhheeeeeeeelllllllllloooooo?", null);
-	            GWT.log(se.toString(), null);
+		store.addStoreListener(new StoreListener<BaseModelData>() {
+			@Override
+			public void handleEvent(StoreEvent<BaseModelData> se) {
+				List<BaseModelData> data = (List<BaseModelData>) se.getStore().getModels();
+				schedule.northNominee.setVacancyOptions(data);
+				schedule.northSchedule.setScheduleSummary(data);
 			}
-		});*/
+		});
 	}
 	
 	public void setDefaultDate(Date date) {
@@ -106,7 +113,7 @@ public class PeriodExplorer extends Explorer {
         new ColumnType("lst",                   "LST",                   55, false, DisplayField.class),
         new ColumnType("duration",              "Duration",              55, false, Double.class),
         new ColumnType("sscore",                "Hist Score",            65, false, ScoreField.class),
-        //new ColumnType("cscore",                "Curr Score",            65, false, ScoreField.class),
+        new ColumnType("cscore",                "Curr Score",            65, false, ScoreField.class),
         new ColumnType("receivers",             "Rcvrs",                 40, false, String.class),
        	new ColumnType("not_billable",          "Not Bill",              45, false, Double.class),
        	new ColumnType("backup",                "Backup?",               55, false, Boolean.class),

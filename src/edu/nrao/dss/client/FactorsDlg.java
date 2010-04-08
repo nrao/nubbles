@@ -21,17 +21,18 @@ import com.google.gwt.json.client.JSONObject;
 
 public class FactorsDlg extends Dialog implements FactorsControl {
 
+	private Schedule schedule;
 	private String label;
 	private Integer sessionId;
 	public Date start = new Date();
 	private Integer duration = 4; // hours
-	private String timeZone = "ET";
 	private FactorsDisplay display;
 	private FactorsAccess access;
 
 	@SuppressWarnings("serial")
-	public FactorsDlg() {
+	public FactorsDlg(Schedule sched) {
 		super();
+		schedule = sched;
 		
 		// Basic Dlg settings
 		setHeading("Factor Session");
@@ -81,19 +82,6 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	    timeField.setFieldLabel("Start Time");
 		timeField.setToolTip("Set the start time for the vacancy to be filled");
 	    fp.add(timeField);
-
-		// TimeZone
-		final SimpleComboBox<String> tz;
-		tz = new SimpleComboBox<String>();
-		tz.setForceSelection(true);
-		tz.add("UTC");
-		tz.add("ET");
-		tz.setToolTip("Set the timezone for all dates/times");
-
-		tz.setFieldLabel("TZ");
-		tz.setEditable(false);
-		tz.setSimpleValue(timeZone);
-		fp.add(tz);
 		
 		// start duration
 	    final NumberField hours = new NumberField();
@@ -122,8 +110,6 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 				// session
 	    		label = sessions.getSimpleValue();
 	    		sessionId = sessionsMap.get(label);
-	    		// timezone
-				timeZone = tz.getSimpleValue();
 				// start
 				start = startDateField.getValue();
 				Time startTime = timeField.getValue();
@@ -141,7 +127,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	    		
                 hide();
                 
-                access.request(display, sessionId, label, start, getDuration(), timeZone);
+                access.request(display, sessionId, label, start, getDuration(), schedule.timezone);
 			}
 		});
 	}

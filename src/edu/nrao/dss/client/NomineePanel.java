@@ -63,15 +63,17 @@ public class NomineePanel extends ContentPanel {
 		         new Listener<SelectionChangedEvent<BaseModel>>() {  
 		           public void handleEvent(SelectionChangedEvent<BaseModel> be) {  
 			         BaseModelData baseModelData = (BaseModelData) (be.getSelectedItem());
+			         if (baseModelData == null) {
+			        	 return;
+			         }
 			         
 			         // add the selected period to the Period Explorer
 		             schedule.west.addRecord(nominee2Period(baseModelData));
-		             schedule.updateCalendar();
 		             
 			         // and show the Session's scores on the calendar
 			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
-                     schedule.showSessionScores(name);
-                     schedule.updateCalendar();
+			         schedule.northCalendar.showSessionScores(name);
+                     //schedule.updateCalendar();
 		           }  
 		         });
 	}
@@ -82,7 +84,8 @@ public class NomineePanel extends ContentPanel {
 		retval.put("date", DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startVacancyDateTime));
 		retval.put("time", DateTimeFormat.getFormat("HH:mm").format(schedule.startVacancyDateTime));
 		retval.put("duration", (Double)fields.get("duration")/60.0);
-		retval.put("score", (Double)fields.get("score"));
+		retval.put("sscore", (Double)fields.get("score"));
+		retval.put("cscore", (Double)fields.get("score"));
 		//retval.put("forecast", null);
 		retval.put("backup", false);
 		return retval;
@@ -102,7 +105,6 @@ public class NomineePanel extends ContentPanel {
 		urlData.append(rootUrl);
 		urlData.append("?");
 		urlData.append(JSONRequest.kv2url(strKeys.toArray(new String[]{}), strValues.toArray(new String[]{})));
-		GWT.log(urlData.toString(), null);
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 		proxy.setBuilder(builder);
 	}

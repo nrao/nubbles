@@ -47,7 +47,7 @@ public class RcvrScheduleGrid extends FlexTable {
 			
 		}
 		
-		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
+//		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
 		
 		// now the data
 		if (showMaintenance) {
@@ -122,10 +122,10 @@ public class RcvrScheduleGrid extends FlexTable {
     	Date end   = DATE_FORMAT.parse(endStr);
     	ArrayList<Date> mdays = new ArrayList<Date>();
     	
-    	GWT.log("start: "+startStr, null);
+//    	GWT.log("start: "+startStr, null);
     	for (int i = 0; i < maintenanceDays.length; i++) {
     		// is this day in our range?
-    		GWT.log(maintenanceDays[i], null);
+//    		GWT.log(maintenanceDays[i], null);
     		Date mday = DATE_FORMAT_MAINT.parse(maintenanceDays[i]);
     		if (mday.after(start) && mday.before(end)) {
     		    mdays.add(mday);	

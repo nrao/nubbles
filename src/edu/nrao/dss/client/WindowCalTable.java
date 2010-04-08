@@ -36,7 +36,7 @@ public class WindowCalTable extends FlexTable {
 			
 		}
 		
-		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
+//		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
 		
 		// now the data
         loadAllDates(rows, cols, schedule);
