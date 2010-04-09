@@ -20,7 +20,6 @@ public class FactorsTab implements FactorsDisplay {
 	
 	@Override
 	public void show(String title, String banner, String[] headers, String[][] factors) {
-		GWT.log("FactorsWindows.show", null);
 		FactorGrid grid = new FactorGrid(factors.length, headers.length, headers, factors);
         TabItem item = new TabItem(title);
         ContentPanel cp = createContentPanel(banner, grid);
