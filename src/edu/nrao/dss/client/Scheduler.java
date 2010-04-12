@@ -1,12 +1,16 @@
 package edu.nrao.dss.client;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -36,7 +40,6 @@ public class Scheduler extends Viewport implements EntryPoint {
         	public void componentSelected(TabPanelEvent tpe){
         		SessionColConfig pcodeConfig = (SessionColConfig) se.getPcodeConfig();
         		pcodeConfig.updatePCodeOptions();
-        		se.loadData();
         	}
         });
         tabPanel.add(seTab);
@@ -79,6 +82,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         
         // TODO Why does not "tabPanel.setAutoHeight(true);? work?
         tabPanel.setHeight(920);
+        //tabPanel.setAutoHeight(true);
         
         // Factor access
         factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));

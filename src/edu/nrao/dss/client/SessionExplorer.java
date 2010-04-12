@@ -6,8 +6,11 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WidgetListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -15,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class SessionExplorer extends Explorer {
@@ -118,7 +122,7 @@ public class SessionExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
     private static final ColumnType[] columnTypes = {
-       	new ColumnType("pcode",            "Proj Code",      100, false, PCodeField.class),
+    	new ColumnType("pcode",            "Proj Code",      100, false, PCodeField.class),
        	new ColumnType("project_complete", "Proj Complete",   85, true,  String.class),
         new ColumnType("name",             "Name",           100, false, String.class), 
         new ColumnType("source",           "Source",         100, false, String.class),
