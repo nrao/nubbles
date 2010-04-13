@@ -48,6 +48,7 @@ public class FactorsAccess {
 		String ra   = json.get("ra").isString().stringValue();
 		String dec  = json.get("dec").isString().stringValue();
 		String freq = json.get("freq").isString().stringValue();
+		String xi = json.get("xi").isString().stringValue();
 		boolean type = json.get("type").isBoolean().booleanValue();
 		boolean time = json.get("time").isBoolean().booleanValue();
 		boolean not_complete = json.get("not_complete").isBoolean().booleanValue();
@@ -58,6 +59,9 @@ public class FactorsAccess {
 		         ra + " Hr, " +
 		         dec + " Deg); Freq = " +
 		         freq + " GHz";
+		if (!xi.equals("1.00")) {
+			banner += "; Xi = " + xi;
+		}
 		boolean schedulable = type && time && not_complete && enabled && authorized && observers;
 		if (!schedulable) {
 			StringBuilder buf = new StringBuilder();

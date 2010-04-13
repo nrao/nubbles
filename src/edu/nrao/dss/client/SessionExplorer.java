@@ -6,8 +6,11 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WidgetListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -15,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
 public class SessionExplorer extends Explorer {
@@ -118,7 +122,7 @@ public class SessionExplorer extends Explorer {
 	private List<ColumnConfig> configs;
 
     private static final ColumnType[] columnTypes = {
-       	new ColumnType("pcode",            "Proj Code",      100, false, PCodeField.class),
+    	new ColumnType("pcode",            "Proj Code",      100, false, PCodeField.class),
        	new ColumnType("project_complete", "Proj Complete",   85, true,  String.class),
         new ColumnType("name",             "Name",           100, false, String.class), 
         new ColumnType("source",           "Source",         100, false, String.class),
@@ -138,7 +142,7 @@ public class SessionExplorer extends Explorer {
         new ColumnType("source_h",         "Source RA",       75, false, HourField.class),
         new ColumnType("source_v",         "Source Dec",      75, false, DegreeField.class),
         new ColumnType("between",          "Between",         60, false, Double.class),
-        new ColumnType("xi_factor",        "Min Tsys Factor", 90, false, Double.class),
+        new ColumnType("xi_factor",        "Xi",              40, false, Double.class),
        	new ColumnType("authorized",       "Authorized?",     70, false, Boolean.class),
        	new ColumnType("enabled",          "Enabled?",        60, false, Boolean.class),
        	new ColumnType("complete",         "Complete?",       65, false, Boolean.class),
