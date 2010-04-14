@@ -60,12 +60,12 @@ public class FactorsAccess {
 		         dec + " Deg); Freq = " +
 		         freq + " GHz";
 		if (!xi.equals("1.00")) {
-			banner += "; Xi = " + xi;
+			banner += "; <font color=gold>Xi = " + xi + "</font>";
 		}
 		boolean schedulable = type && time && not_complete && enabled && authorized && observers;
 		if (!schedulable) {
 			StringBuilder buf = new StringBuilder();
-			buf.append(";    Not schedulable: ");
+			buf.append(";    <font color=red>Not schedulable:</font> ");
 			if (!type) {
 			    buf.append("Not open or no viable windows.  ");
 		    }
