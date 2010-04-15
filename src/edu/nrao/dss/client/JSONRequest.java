@@ -15,8 +15,10 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 
 interface JSONCallback {
 	public void onSuccess(JSONObject json);
@@ -31,7 +33,39 @@ class JSONCallbackAdapter implements JSONCallback {
 	public void onError(String error, JSONObject json) {
 		if (json != null && json.containsKey("message")) {
 			MessageBox.alert(error, getString(json, "message"), null);
-		} else {
+		}
+		else if (json != null && json.containsKey("exception_data"))
+		{
+			try
+			{
+				String emsg = "Oh, dear!  An unexpected error has occured on the server.";
+				emsg += "Please cut and paste this traceback when notifying the DSS team.\n\n";
+				emsg += "Traceback (most recent call last):\n";
+				JSONObject einfo = json.get("exception_data").isObject();
+				String exception_type = einfo.get("exception_type").toString();
+				String exception_data = einfo.get("exception_args").toString();
+				JSONArray tb = einfo.get("exception_traceback").isArray();
+				
+				for (int i = 0; i < tb.size(); ++i)
+				{
+					emsg += tb.get(i);
+				}
+				
+				// all this is needed to display the traceback properly, with line breaks, etc.
+				// MessageBox is a JavaScript creature that only understands HTML
+				emsg += exception_type + ": " + exception_data;
+				emsg = emsg.replace("<", "&lt;").replace(">", "&gt;").replace("\\\"", "&quot;");
+				emsg = emsg.replace("\n", "<br/>").replace("\\n", "<br/>");
+				MessageBox.alert("Error", emsg, null);
+			}
+			catch (Exception e)
+			{
+				String m = e.toString();
+				MessageBox.alert("Error", "exception in error handler: " + m, null);
+			}
+		}
+		else 
+		{
 			MessageBox.alert("Error", error, null);
 		}
 	}
