@@ -106,8 +106,8 @@ class EmailDialogBox extends Dialog {
 							@Override
 							public void onError(String error, JSONObject json)
 							{
-								super.onError(error, json);
 								box.close();
+								super.onError(error, json);
 							}
 						});
 				hide();
@@ -149,8 +149,8 @@ class EmailDialogBox extends Dialog {
 		field_text.setValue(content);
 		field_text.setSize(width, height);
 		// TBF: Use setInputStyleAttribute for extGWT 2.1 +!!!!
-		//field_text.setStyleAttribute("font-family", "monospace");
-		field_text.setInputStyleAttribute("font-family", "monospace");
+		field_text.setStyleAttribute("font-family", "monospace");
+		//field_text.setInputStyleAttribute("font-family", "monospace");
 		hp.add(field_label);
 		hp.add(field_text);
 		ta.put(label, field_text);

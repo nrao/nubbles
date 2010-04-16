@@ -8,7 +8,6 @@ import java.util.Set;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -18,7 +17,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 
 interface JSONCallback {
 	public void onSuccess(JSONObject json);
@@ -38,8 +36,9 @@ class JSONCallbackAdapter implements JSONCallback {
 		{
 			try
 			{
-				String emsg = "Oh, dear!  An unexpected error has occured on the server.";
-				emsg += "Please cut and paste this traceback when notifying the DSS team.\n\n";
+				String emsg = "An unexpected error has occured on the server. ";
+				emsg += "You can help the DSS team solve this problem by cutting and pasting ";
+				emsg += "this traceback when reporting this error.\n\n";
 				emsg += "Traceback (most recent call last):\n";
 				JSONObject einfo = json.get("exception_data").isObject();
 				String exception_type = einfo.get("exception_type").toString();
@@ -54,9 +53,8 @@ class JSONCallbackAdapter implements JSONCallback {
 				// all this is needed to display the traceback properly, with line breaks, etc.
 				// MessageBox is a JavaScript creature that only understands HTML
 				emsg += exception_type + ": " + exception_data;
-				emsg = emsg.replace("<", "&lt;").replace(">", "&gt;").replace("\\\"", "&quot;");
-				emsg = emsg.replace("\n", "<br/>").replace("\\n", "<br/>");
-				MessageBox.alert("Error", emsg, null);
+				emsg = toHTML(emsg);
+				MessageBox.alert(error, emsg, null);
 			}
 			catch (Exception e)
 			{
@@ -66,12 +64,35 @@ class JSONCallbackAdapter implements JSONCallback {
 		}
 		else 
 		{
-			MessageBox.alert("Error", error, null);
+			String msg = ": ";
+			
+			if (json != null)
+			{
+				msg += "An unexpeted error has occurred.  You can help the DSS team solve this problem ";
+				msg += "by cutting and pasting this JSON object when reporting the error.\n\n";
+				msg += "JSON object:\n";
+				msg += json.toString();
+				msg = toHTML(msg);
+			}
+			else
+			{
+				msg += "No response received from server.  This could indicate a network ";
+				msg += "problem, or that the server is down.";
+			}
+
+			MessageBox.alert("Error", error + msg, null);
 		}
 	}
 
 	protected String getString(JSONObject json, String key) {
 		return JSONRequest.getString(json, key);
+	}
+	
+	private String toHTML(String str)
+	{
+		str = str.replace("<", "&lt;").replace(">", "&gt;").replace("\\\"", "&quot;");
+		str = str.replace("\n", "<br/>").replace("\\n", "<br/>");
+		return str;
 	}
 }
 

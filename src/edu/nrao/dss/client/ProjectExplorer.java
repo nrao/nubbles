@@ -134,8 +134,6 @@ public class ProjectExplorer extends Explorer {
 			keys.put("pcodes", pcodes);
 		}
 
-//		GWT.log("getEmailAddresses(): URL = " + url);
-
 		JSONRequest.get(url, keys,
 				new JSONCallbackAdapter()
 				{
@@ -144,50 +142,25 @@ public class ProjectExplorer extends Explorer {
 						String pi_addr;
 						String pc_addr;
 						String ci_addr;
-						String pcodes;
 
-						try  // grid could be uninitialized.
-						{
-							JSONArray pi_emails = json.get("PI-Addresses").isArray();
-							pi_addr = unpackJSONArray(pi_emails);
-//							GWT.log("getEmailAddresses: pi");
-							
-							JSONArray pc_emails = json.get("PC-Addresses").isArray();
-							pc_addr = unpackJSONArray(pc_emails);
-//							GWT.log("getEmailAddresses: pc");
+						JSONArray pi_emails = json.get("PI-Addresses").isArray();
+						pi_addr = unpackJSONArray(pi_emails);
 
-							JSONArray ci_emails = json.get("CO-I-Addresses").isArray();
-							ci_addr = unpackJSONArray(ci_emails);
-//							GWT.log("getEmailAddresses: ci");
+						JSONArray pc_emails = json.get("PC-Addresses").isArray();
+						pc_addr = unpackJSONArray(pc_emails);
 
-							JSONArray proj_codes = json.get("PCODES").isArray();
-							pcodes = unpackJSONArray(proj_codes);
-//							GWT.log("getEmailAddresses: pcodes");
+						JSONArray ci_emails = json.get("CO-I-Addresses").isArray();
+						ci_addr = unpackJSONArray(ci_emails);
 
-							box.close();
-							testDialog = new Dialog();
-							testDialog.setHeading("Testing dialog box");
-							testDialog.addText(pi_addr + " === " + pc_addr + " === " + ci_addr + " === " + pcodes);
-							testDialog.setButtons(Dialog.OK);
-
-							Button ok = testDialog.getButtonById(Dialog.OK);
-							ok.addListener(Events.OnClick, new Listener<BaseEvent>()
-							{
-								public void handleEvent(BaseEvent be)
-								{
-									testDialog.hide();
-								}
-							});
-
-							//testDialog.show();
-							ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pi_addr, pc_addr, ci_addr);
-							dlg.show();
-						}
-						catch (Exception e)
-						{
-							String text = "getEmailAddresses(): Caught exception " + e;
-//							GWT.log(text);
-						}						
+						box.close();
+						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pi_addr, pc_addr, ci_addr);
+						dlg.show();
+					}
+					
+					public void onError(String error, JSONObject json)
+					{
+						super.onError(error, json);
+						box.close();
 					}
 				});
 	}
@@ -324,6 +297,5 @@ public class ProjectExplorer extends Explorer {
 	private Component parent;
 	private Button emailButton;
 	private Button clearButton;
-	private Dialog testDialog;
 	private ProjectEmailPagingToolBar selectionPagingToolBar;
 }

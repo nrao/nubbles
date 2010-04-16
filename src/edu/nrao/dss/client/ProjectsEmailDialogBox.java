@@ -96,6 +96,12 @@ public class ProjectsEmailDialogBox extends Dialog {
 							public void onSuccess(JSONObject json) {
 								box.close();
 							}
+							
+							public void onError(String error, JSONObject json)
+							{
+								box.close();
+								super.onError(error, json);
+							}
 						});
 				hide();
 			}
@@ -207,7 +213,7 @@ public class ProjectsEmailDialogBox extends Dialog {
 		field_label.setWidth(50);
 		field_text.setValue(content);
 		field_text.setSize(width, height);
-		// TBF: Use this line instead of below for extGWT 2.x!!!!
+		// TBF: Use setInputStyleAttribute for extGWT 2.1+!!!!
         field_text.setStyleAttribute("font-family", "monospace");
 		//field_text.setInputStyleAttribute("font-family", "monospace");
 		hp.add(field_label);
