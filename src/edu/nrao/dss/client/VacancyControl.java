@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -165,11 +166,14 @@ public class VacancyControl extends FormPanel {
 		durChoices.put(noChoice, 0);
 		hours.add(noChoice);
 		hours.setForceSelection(true);
+		hours.setTriggerAction(TriggerAction.ALL);
+		
 		for (int m = 15; m < 24*60+15; m += 15) {
 			String key = TimeUtils.min2sex(m);
 			durChoices.put(key, m);
 			hours.add(key);
 		}
+		
 		hours.setToolTip("Set the maximum vacancy duration");
 		hours.setFieldLabel("Duration");
 		hours.setEditable(false);

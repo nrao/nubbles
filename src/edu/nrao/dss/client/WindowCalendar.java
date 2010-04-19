@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -51,6 +52,7 @@ public class WindowCalendar extends ContentPanel {
 		// for how long?
 		int maxDays = 30;
 		numDays.setFieldLabel("# Days");
+		numDays.setTriggerAction(TriggerAction.ALL);
 		for (int i = 2; i < maxDays; i++) {
 			numDays.add(Integer.toString(i));
 		}

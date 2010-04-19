@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -94,6 +95,7 @@ public class ShiftPeriodBndDlg extends Dialog {
         reasons.setFieldLabel("Reason");
         reasons.setEditable(false);
         reasons.setAllowBlank(false);
+        reasons.setTriggerAction(TriggerAction.ALL);
         fp.add(reasons);
         
 		// notes

@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;  
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;  
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FormData;  
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -55,6 +56,7 @@ public class InvestigatorForm extends LayoutContainer {
       form.setWidth(350);  
    
       users.setFieldLabel("User");
+      users.setTriggerAction(TriggerAction.ALL);
       form.add(users);
     
       getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {

@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -73,6 +74,8 @@ class ChangeScheduleDlg extends Dialog {
 			durChoices.put(key, m);
 			hours.add(key);
 		}
+		
+		hours.setTriggerAction(TriggerAction.ALL); 
 		hours.setToolTip("Set duration (Hrs:Mins) of the new period");
 		hours.setFieldLabel("Duration");
 		hours.setEditable(false);
@@ -85,6 +88,8 @@ class ChangeScheduleDlg extends Dialog {
 		for (String handle : sess_handles) {
 			sessions.add(handle);
 		}
+
+		sessions.setTriggerAction(TriggerAction.ALL);
 		sessions.setToolTip("Choose the session for the new period to be inserted.");
 		sessions.setFieldLabel("Session");
 		sessions.setEditable(false);
@@ -92,6 +97,7 @@ class ChangeScheduleDlg extends Dialog {
 		
 		// why?
         final SimpleComboBox<String> reasons = new SimpleComboBox<String>();
+        reasons.setTriggerAction(TriggerAction.ALL);
         reasons.add("other_session_weather");
         reasons.add("other_session_rfi");
         reasons.add("other_session_other");

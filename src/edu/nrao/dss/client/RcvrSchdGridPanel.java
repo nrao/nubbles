@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -48,6 +49,7 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		fp.add(start);
 		
 		// for how long?
+		numMonths.setTriggerAction(TriggerAction.ALL);
 		numMonths.setFieldLabel("# Months");
 		numMonths.add("1");
 		numMonths.add("2");

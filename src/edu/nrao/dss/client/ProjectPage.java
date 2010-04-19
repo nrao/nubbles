@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -70,6 +71,7 @@ public class ProjectPage extends ContentPanel {
         projectForm.add(new HTML("<h2>Project Information</h2>"));
 		
 		// the project picker goes in this left-most form panel
+        projects.setTriggerAction(TriggerAction.ALL);
 		projects.setFieldLabel("Project");
 		projectForm.add(projects);
 		

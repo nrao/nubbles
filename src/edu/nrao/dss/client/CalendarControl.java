@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 
 public class CalendarControl extends FormPanel {
@@ -62,6 +63,7 @@ public class CalendarControl extends FormPanel {
 		days.setFieldLabel("Days");
 		days.setEditable(false);
 		days.setSimpleValue(schedule.numCalendarDays);
+		days.setTriggerAction(TriggerAction.ALL);
 	    days.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	    		schedule.numCalendarDays = days.getSimpleValue(); 
@@ -74,6 +76,7 @@ public class CalendarControl extends FormPanel {
 		final SimpleComboBox<String> tz;
 		tz = new SimpleComboBox<String>();
 		tz.setForceSelection(true);
+		tz.setTriggerAction(TriggerAction.ALL);
 		tz.add("UTC");
 		tz.add("ET");
 		tz.setToolTip("Set the timezone for all dates/times");

@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
@@ -44,6 +45,7 @@ public class RcvrChangePanel extends ContentPanel {
 		fp.setHeaderVisible(false);
 		
 		periods.setFieldLabel("Change Date");
+		periods.setTriggerAction(TriggerAction.ALL);
 		fp.add(periods);
 		
 		finalRcvrs.setFieldLabel("Rcvrs available at end of day");

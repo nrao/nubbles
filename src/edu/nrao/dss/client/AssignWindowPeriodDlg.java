@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.Time;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -45,6 +46,7 @@ public class AssignWindowPeriodDlg extends Dialog {
 		periods.setFieldLabel("Periods");
 		//sessions.setSimpleValue("Maintenance (Maintenance)"); // TODO fails
 		periods.setEditable(false);
+		periods.setTriggerAction(TriggerAction.ALL);
 		
 		fp.add(periods, new FormData(300, 300));
 

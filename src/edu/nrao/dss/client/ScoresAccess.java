@@ -26,6 +26,12 @@ public class ScoresAccess {
 				display.show(label, scores);
 				box.close();
 			}
+			
+			public void onError(String error, JSONObject json)
+			{
+				box.close();
+				super.onError(error, json);
+			}
 		});
 	}
 

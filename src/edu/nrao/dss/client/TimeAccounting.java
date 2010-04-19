@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -106,6 +107,7 @@ protected void initLayout() {
 	
 	// the project picker goes in this left-most form panel
 	projects.setFieldLabel("Project");
+	projects.setTriggerAction(TriggerAction.ALL);
 	// when a project gets picked, populate the sessions combo
 	projects.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
@@ -122,6 +124,7 @@ protected void initLayout() {
 	
 	// followed by the session picker
 	sessions.setFieldLabel("Session");
+	sessions.setTriggerAction(TriggerAction.ALL);
 	sessions.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {
 	  		//GWT.log("session Events.Valid", null);
@@ -193,6 +196,7 @@ protected void initLayout() {
 	sessionForm.add(sessionName);
 
 	// followed by the period picker
+	periods.setTriggerAction(TriggerAction.ALL);
 	periods.setFieldLabel("Period");
 	periods.addListener(Events.Valid, new Listener<BaseEvent>() {
 	  	public void handleEvent(BaseEvent be) {

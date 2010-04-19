@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -46,7 +47,7 @@ public class SessionInfoPanel extends ContentPanel {
 
         sessForm.setHeaderVisible(false);
 
-        
+        sessions.setTriggerAction(TriggerAction.ALL);
 		sessions.setFieldLabel("Session");
 		sessForm.add(sessions);	
 

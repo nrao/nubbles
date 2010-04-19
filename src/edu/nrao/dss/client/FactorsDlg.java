@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
@@ -66,6 +67,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		sessions.setFieldLabel("Sessions");
 		sessions.setSimpleValue("Maintenance (Maintenance)"); // TODO fails
 		sessions.setEditable(false);
+		sessions.setTriggerAction(TriggerAction.ALL);
 		fp.add(sessions);
 		
 		// start date
