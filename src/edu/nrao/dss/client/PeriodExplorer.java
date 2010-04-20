@@ -87,8 +87,8 @@ public class PeriodExplorer extends Explorer {
 			@Override
 			public void handleEvent(StoreEvent<BaseModelData> se) {
 				List<BaseModelData> data = (List<BaseModelData>) se.getStore().getModels();
-				schedule.northNominee.setVacancyOptions(data);
-				schedule.northSchedule.setScheduleSummary(data);
+				schedule.vacancyControl.setVacancyOptions(data);
+				schedule.scheduleControl.setScheduleSummary(data);
 			}
 		});
 	}
@@ -116,6 +116,5 @@ public class PeriodExplorer extends Explorer {
         new ColumnType("cscore",                "Curr Score",            65, false, ScoreField.class),
         new ColumnType("receivers",             "Rcvrs",                 40, false, String.class),
        	new ColumnType("not_billable",          "Not Bill",              45, false, Double.class),
-       	new ColumnType("backup",                "Backup?",               55, false, Boolean.class),
 	};
 }

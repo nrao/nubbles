@@ -68,11 +68,11 @@ public class NomineePanel extends ContentPanel {
 			         }
 			         
 			         // add the selected period to the Period Explorer
-		             schedule.west.addRecord(nominee2Period(baseModelData));
+		             schedule.scheduleExplorer.addRecord(nominee2Period(baseModelData));
 		             
 			         // and show the Session's scores on the calendar
 			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
-			         schedule.northCalendar.showSessionScores(name);
+			         schedule.calendarControl.showSessionScores(name);
                      //schedule.updateCalendar();
 		           }  
 		         });
