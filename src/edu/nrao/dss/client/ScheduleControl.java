@@ -104,6 +104,7 @@ public class ScheduleControl extends FormPanel {
 		
 		String col1Width = "200px";
 		String col2Width = "400px";
+		String labelFontSize = "11";
 		
 		TableLayout tb = new TableLayout(2);
 		tb.setWidth("100%");
@@ -151,6 +152,7 @@ public class ScheduleControl extends FormPanel {
         add(left, tdLeft);
 
         // now for the right hand side w/ all the status fields
+        // make the font a little smaller to save a little space
 		final FormPanel right = new FormPanel();
 		right.setHeaderVisible(false);
 		right.setBorders(false);
@@ -158,16 +160,19 @@ public class ScheduleControl extends FormPanel {
 		scheduleAverage = new LabelField();
 		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
 		scheduleAverage.setFieldLabel("Schedule Average Score");
+		scheduleAverage.setLabelStyle("font-size : " + labelFontSize);
 		right.add(scheduleAverage);
 		
 		currentAverage = new LabelField();
 		currentAverage.setToolTip("Current average score of displayed periods");
 		currentAverage.setFieldLabel("Current Average Score");
+		currentAverage.setLabelStyle("font-size : " + labelFontSize);
 		right.add(currentAverage);
 		
 		unscheduledTime = new LabelField();
 		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
 		unscheduledTime.setFieldLabel("Unscheduled Time");
+		unscheduledTime.setLabelStyle("font-size : " + labelFontSize);
 		right.add(unscheduledTime);
 		
 		// add the right hand side w/ all the status fields
