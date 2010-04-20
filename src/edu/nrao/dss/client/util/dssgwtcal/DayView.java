@@ -148,7 +148,7 @@ public class DayView extends CalendarView {
             	addScoreLabels(scores, i, getDays(), tmpDate);
             }
 
-            addSchedulingLabels(i, getDays(), tmpDate);
+            addSchedulingRange(i, getDays(), tmpDate);
        	
             tmpDate.setDate(tmpDate.getDate() + 1);
         }
@@ -164,12 +164,13 @@ public class DayView extends CalendarView {
     	}
     }
     
-    private void addSchedulingLabels(int dayIndex, int numDays, Date date) {
+    private void addSchedulingRange(int dayIndex, int numDays, Date date) {
     	
     	float thisLeft;
         String desc;
         String color;
         int startHour;
+        int offset = 7;
     	
     	if ((dayIndex != 0) && (dayIndex != (numDays - 1))) {
     		return;  // no label needed unless its first day or last day
@@ -178,18 +179,17 @@ public class DayView extends CalendarView {
     			// first day
     			desc = "Start";
     			color = "green";
-    			thisLeft = 0.0f;
+    			thisLeft = (100.0f/numDays) - offset;
     			startHour = estHourToTimezone(8);
     		} else {
     			// last day
     			desc = "End";
     			color = "red";
-    			thisLeft = ((numDays - 1)*100.0f)/numDays;
+    			thisLeft = ((numDays*100.0f)/numDays) - offset;
     	        startHour = estHourToTimezone(8);
     		}
     	}
-        float leftOffset = 15.0f;
-        
+
         float widths = 32.3f; // constant width 
         float quarterHeight = this.getSettings().getPixelsPerInterval(); //30.0f; // height of one quarter == (2 px/min)(15 min)
         float qTop = 0.0f;
@@ -207,7 +207,7 @@ public class DayView extends CalendarView {
     	lb.setTitle("");
     	lb.setStart(start);
     	lb.setEnd(end);
-    	lb.setLeft(thisLeft + leftOffset);
+    	lb.setLeft(thisLeft);
     	lb.setWidth(widths);
     	lb.setHeight(quarterHeight);
     	lb.setTop(qTop);
