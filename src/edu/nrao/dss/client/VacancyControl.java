@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DataListEvent;
@@ -24,6 +25,8 @@ import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
@@ -54,10 +57,12 @@ public class VacancyControl extends FormPanel {
 	};
 	private HashMap<String, Hole> holes = new HashMap<String, Hole>();
 	final private DataList vacancyShortcut = new DataList();
+	private Button nomineesButton;
 	
 	public VacancyControl(Schedule sched) {
 		schedule = sched;
 		initLayout();
+		initListeners();
 	}
 	
 	public void setVacancyOptions(List<BaseModelData> data) {
@@ -86,64 +91,49 @@ public class VacancyControl extends FormPanel {
 	private void initLayout() {
 		setHeading("Vacancy Control");
 		setBorders(false);
-	    setWidth("40%");
-	    VBoxLayout thisLayout = new VBoxLayout();
-	    thisLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-	    this.setLayout(thisLayout);
+	    setWidth("100%");
 	    
-		LayoutContainer topContainer = new LayoutContainer();
-		topContainer.setBorders(false);
-		//topContainer.setSize(100, 100);
-		topContainer.setHeight("75%");
-		HBoxLayout topLayout = new HBoxLayout();
-	    topLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
-		topContainer.setLayout(topLayout);
-		this.add(topContainer);
+	    String leftWidth = "300px";
+	    String rightWidth = "300px";
+	    String bottomWidth = "100%";
+	    
+		TableLayout tb = new TableLayout(2);
+		//tb.setWidth("50%");
+		tb.setBorder(0);
+		setLayout(tb);
+
+		TableData tdLeft = new TableData();
+		tdLeft.setVerticalAlign(VerticalAlignment.TOP);
+		// TODO: why must I do this, just to get the two forms to share space?
+		tdLeft.setColspan(1);
+		tdLeft.setWidth(leftWidth);
 		
-		LayoutContainer leftContainer = new LayoutContainer();
-		leftContainer.setBorders(false);
-		leftContainer.setWidth("60%");
-		leftContainer.setLayout(new FormLayout());
-		topContainer.add(leftContainer);
-		LayoutContainer rightContainer = new LayoutContainer();
-		rightContainer.setBorders(false);
-		rightContainer.setLayout(new FormLayout());
-		topContainer.add(rightContainer);
+		TableData tdRight = new TableData();
+		tdRight.setVerticalAlign(VerticalAlignment.TOP);
+		// TODO: why must I do this, just to get the two forms to share space?
+		tdRight.setColspan(1);
+		tdRight.setWidth(rightWidth);
+
+		TableData tdBottom = new TableData();
+		tdBottom.setVerticalAlign(VerticalAlignment.TOP);
+		// TODO: why must I do this, just to get the two forms to share space?
+		tdBottom.setColspan(2);
+		tdBottom.setWidth(bottomWidth);
 		
-		// Nominee vacancies
-	    vacancyShortcut.setToolTip("Selectable list of unscheduled gaps in the displayed schedule");
-	    vacancyShortcut.setScrollMode(Style.Scroll.AUTOY);  // TODO does not work
-	    rightContainer.add(vacancyShortcut);
-	    Listener shortcutListener = new Listener<DataListEvent>() {
-	    	public void handleEvent(DataListEvent be) {
-	    		List<DataListItem> selection = be.getSelected();
-	    		if (selection == null || selection.size() == 0) {
-	    			return;
-	    		}
-	    		DataListItem dli = selection.get(0);
-	    		Hole h = holes.get(dli.getText());
-	    		vacancyDate.setValue(h.date);
-	    		schedule.startVacancyDate = h.date;
-	    		vacancyTime.setDateValue(h.time.getDate());
-	    		schedule.startVacancyTime = h.time;
-	    		hours.setSimpleValue(TimeUtils.min2sex(h.duration));
-	    		schedule.numVacancyMinutes = h.duration;
-	    		schedule.updateNominees();
-	    	}
-	    };
-	    vacancyShortcut.addListener(Events.SelectionChange, shortcutListener);
-			
+		FormPanel left = new FormPanel();
+		left.setHeaderVisible(false);
+		left.setBodyBorder(false);
+		
+		FormPanel right = new FormPanel();
+		right.setHeaderVisible(false);
+		
+		// The left hand side has datetime controls 	
 		// Nominee date
 	    vacancyDate = new DateField();
 	    //vacancyDate.setValue(startVacancyDate);
 	    vacancyDate.setFieldLabel("Start Date");
 		vacancyDate.setToolTip("Set the start day for the vacancy to be filled");
-	    vacancyDate.addListener(Events.Valid, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            schedule.startVacancyDate = vacancyDate.getValue();
-	    	}
-	    });
-	    leftContainer.add(vacancyDate);
+	    left.add(vacancyDate);
 	    
 	    // Nominee time
 	    vacancyTime = new TimeField();
@@ -151,12 +141,8 @@ public class VacancyControl extends FormPanel {
 	    //vacancyTime.setValue(startVacancyTime);
 	    vacancyTime.setFieldLabel("Start Time");
 		vacancyTime.setToolTip("Set the start time for the vacancy to be filled");
-	    vacancyTime.addListener(Events.Change, new Listener<BaseEvent>() {
-	    	public void handleEvent(BaseEvent be) {
-	            schedule.startVacancyTime = vacancyTime.getValue();
-	    	}
-	    });
-	    leftContainer.add(vacancyTime);
+
+	    left.add(vacancyTime);
 
 		// Nominee maximum duration
 		hours = new SimpleComboBox<String>();
@@ -173,17 +159,34 @@ public class VacancyControl extends FormPanel {
 		hours.setToolTip("Set the maximum vacancy duration");
 		hours.setFieldLabel("Duration");
 		hours.setEditable(false);
+		// this is NOT in initListeners cause we need durChoices
 	    hours.addListener(Events.Select, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	    		schedule.numVacancyMinutes = durChoices.get(hours.getSimpleValue()); 
 	    	}
 	    });
-		leftContainer.add(hours);
+		left.add(hours);
+
+	    // Fetch nominees
+		nomineesButton = new Button("Nominees");
+		nomineesButton.setToolTip("Request possible periods for the selected time");
+		left.add(new AdapterField(nomineesButton));
 		
+		add(left, tdLeft);
+
+		// The right hand side has all the gaps
+		// Nominee vacancies
+	    vacancyShortcut.setToolTip("Selectable list of unscheduled gaps in the displayed schedule");
+	    vacancyShortcut.setScrollMode(Style.Scroll.AUTOY);  // TODO does not work
+	    right.add(vacancyShortcut);
+	    
+	    add(right, tdRight);
+		
+		// Finally, on the bottom go the options
 		// Nominee options		
 		//add(new LabelField());
 		//final CheckBoxGroup nomineeOptions = new CheckBoxGroup();
-		nomineeOptions.setSpacing(15);
+		nomineeOptions.setSpacing(3); //15);
 		nomineeOptions.setFieldLabel("Selection Options");
 		// timeBetween
 		CheckBox timeBetween = new CheckBox();
@@ -222,19 +225,53 @@ public class VacancyControl extends FormPanel {
 		rfi.setValue(false);
 		nomineeOptions.add(rfi);
 		
-		this.add(nomineeOptions);
+		this.add(nomineeOptions, tdBottom);
 		
-	    // Fetch nominees
-		final Button nomineesButton = new Button("Nominees");
-		nomineesButton.setToolTip("Request possible periods for the selected time");
+	}
+	
+	private void initListeners() {
+		
+	    Listener shortcutListener = new Listener<DataListEvent>() {
+	    	public void handleEvent(DataListEvent be) {
+	    		List<DataListItem> selection = be.getSelected();
+	    		if (selection == null || selection.size() == 0) {
+	    			return;
+	    		}
+	    		DataListItem dli = selection.get(0);
+	    		Hole h = holes.get(dli.getText());
+	    		vacancyDate.setValue(h.date);
+	    		schedule.startVacancyDate = h.date;
+	    		vacancyTime.setDateValue(h.time.getDate());
+	    		schedule.startVacancyTime = h.time;
+	    		hours.setSimpleValue(TimeUtils.min2sex(h.duration));
+	    		schedule.numVacancyMinutes = h.duration;
+	    		schedule.updateNominees();
+	    	}
+	    };
+	    
+	    vacancyDate.addListener(Events.Valid, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	            schedule.startVacancyDate = vacancyDate.getValue();
+	    	}
+	    });
+	    
+	    vacancyTime.addListener(Events.Change, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	            schedule.startVacancyTime = vacancyTime.getValue();
+	    	}
+	    });
+	    
+	    vacancyShortcut.addListener(Events.SelectionChange, shortcutListener);
+	    
+	    
+   
+	    
 	    nomineesButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	            schedule.updateNominees();
 	    	}
-	    });
-		leftContainer.add(new AdapterField(nomineesButton));
+	    });		
 	}
-
 	
 	private Date datePart(Date d) {
 		return new Date(d.getYear(), d.getMonth(), d.getDate());

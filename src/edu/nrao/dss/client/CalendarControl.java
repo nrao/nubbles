@@ -29,7 +29,7 @@ public class CalendarControl extends FormPanel {
 	private void initLayout() {
 		setHeading("Calendar Control");
 		setBorders(true);
-		setWidth("35%");
+		setWidth("100%");
 		
 		// Date - when this changes, change the start of the calendar view
 	    final DateField dt = new DateField();
@@ -40,7 +40,7 @@ public class CalendarControl extends FormPanel {
 	    	public void handleEvent(BaseEvent be) {
 	            schedule.startCalendarDay = dt.getValue();
 	            schedule.startVacancyDate = schedule.startCalendarDay;
-	            schedule.northNominee.vacancyDate.setValue(schedule.startVacancyDate);
+	            schedule.vacancyControl.vacancyDate.setValue(schedule.startVacancyDate);
 	            schedule.updateCalendar();
 	    	}
 	    });
@@ -83,9 +83,10 @@ public class CalendarControl extends FormPanel {
 		tz.setSimpleValue(schedule.timezone);
 	    tz.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		schedule.timezone = tz.getSimpleValue();
+	    		//schedule.timezone = tz.getSimpleValue();
+	    		schedule.setTimezone(tz.getSimpleValue());
 	    		schedule.baseUrl = "/periods/" + schedule.timezone;
-	        	schedule.west.pe.setRootURL(schedule.baseUrl);
+	        	schedule.scheduleExplorer.pe.setRootURL(schedule.baseUrl);
 	            schedule.updateCalendar();
 	    	}
 	    });

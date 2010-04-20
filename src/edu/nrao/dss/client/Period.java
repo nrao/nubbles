@@ -30,6 +30,7 @@ public class Period {
         int dur = (int) hours2minutes(json.get("duration").isNumber().doubleValue());
         
         Period period = new Period(id, handle, st, dur, day, time);
+        period.setSession(json.get("session_name").isString().stringValue());
         period.setMocAck(json.get("moc_ack").isBoolean().booleanValue());
         period.setBackup(json.get("backup").isBoolean().booleanValue());
         period.setHScore(json.get("sscore").isNumber().doubleValue());
@@ -385,9 +386,18 @@ public class Period {
 		return defaultPeriod;
 	}
 
+	public void setSession(String session) {
+		this.session = session;
+	}
+
+	public String getSession() {
+		return session;
+	}
+
 	// traditional period attributes
     private int      id;
     private String   handle; 
+    private String   session;
     private Date     start;
     private int      duration; // minutes
     private boolean  moc_ack;

@@ -42,12 +42,12 @@ import edu.nrao.dss.client.util.dssgwtcal.Event;
 
 public class Schedule extends ContentPanel {
 	
-	public ScheduleCalendar west;
-	public VacancyControl northNominee;
-	public CalendarControl northCalendar;
-	public ScheduleControl northSchedule;
-	private NomineePanel east;
-	private ContentPanel center;
+	public ScheduleCalendar scheduleExplorer;
+	public VacancyControl vacancyControl;
+	public CalendarControl calendarControl;
+	public ScheduleControl scheduleControl;
+	private NomineePanel nomineePanel;
+	private ContentPanel calendar;
 
 	private DayView dayView;
 	
@@ -75,10 +75,11 @@ public class Schedule extends ContentPanel {
 	}
 	
 	protected void initLayout() {
+		
+		
 		setHeaderVisible(true);
 		setLayout(new BorderLayout());
 		
-		// ======================== Controls ===================================
 		setCollapsible(false);
 		setBodyBorder(false);
 		setFrame(false);
@@ -87,64 +88,62 @@ public class Schedule extends ContentPanel {
 		getHeader().addTool(new ToolButton("x-tool-gear"));
 		getHeader().addTool(new ToolButton("x-tool-close"));
 
-		// now for the child panels:
-		// At the top, control widgets
-
-		final LayoutContainer north = new LayoutContainer();
-		HBoxLayout northLayout = new HBoxLayout();
-		northLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
-		north.setLayout(northLayout);
-
-		// on the left, calendar controls:
-		northCalendar = new CalendarControl(this);
-		north.add(northCalendar);
-		
-		// in the middle, schedule controls
-        northSchedule = new ScheduleControl(this);
-        north.add(northSchedule);
-		
-		// on the right, nominee controls:
-        northNominee = new VacancyControl(this);
-        north.add(northNominee);
-        
-		BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 200);
-		northData.setMargins(new Margins(5,5,0,5));
-
-		// ======================== Displays ===================================
-		// to the left, the period explorer
-		west = new ScheduleCalendar(startCalendarDay, numCalendarDays);
-		west.addButtonsListener(this);
-		west.setDefaultDate(startCalendarDay);
-		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 780);
+        // basic layout: controls to the west, calendar in the center		
+		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 760);
+		westData.setMinSize(50);
+		westData.setMaxSize(1000);
 		westData.setMargins(new Margins(5));
 		westData.setSplit(true);
 		westData.setCollapsible(true);
 
+		BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER); ;
+		centerData.setMargins(new Margins(5, 0, 5, 0));
+		
+		// now for the child panels:
+		// to the side, control widgets
+		// ======================== Controls ===================================
+		final ContentPanel controlsContainer = new ContentPanel();
+		controlsContainer.setFrame(true);
+		controlsContainer.setBorders(true);
+		controlsContainer.setHeading("Controls");
+
+		calendarControl = new CalendarControl(this);
+		calendarControl.setCollapsible(true);
+		controlsContainer.add(calendarControl);
+		
+        scheduleControl = new ScheduleControl(this);
+        scheduleControl.setCollapsible(true);
+        controlsContainer.add(scheduleControl);
+		
+        vacancyControl = new VacancyControl(this);
+        vacancyControl.setCollapsible(true);
+        vacancyControl.collapse();
+        controlsContainer.add(vacancyControl);
+
+		nomineePanel = new NomineePanel(this);
+		nomineePanel.setCollapsible(true);
+		nomineePanel.collapse();
+		controlsContainer.add(nomineePanel);
+		
+		scheduleExplorer = new ScheduleCalendar(startCalendarDay, numCalendarDays);
+		scheduleExplorer.addButtonsListener(this);
+		scheduleExplorer.setDefaultDate(startCalendarDay);
+		scheduleExplorer.setCollapsible(true);
+		scheduleExplorer.setHeight(300);
+ 		controlsContainer.add(scheduleExplorer);
+		
 		// in the middle, the calendar
-		center = new ContentPanel(); // TODO extend to bottom of panel
-/*		center = new ContentPanel() {
-			protected void onRender(Element target, int index) {
-				super.onRender(target, index);
-				el().addEventsSunk(Event.ONCLICK);
-			}
-		};
-		center.addListener(Events.OnClick,
-				new Listener<BaseEvent>() {
-				    public void handleEvent(BaseEvent be) {
-					    GWT.log(be.toString(), null);
-					    GWT.log(be.getSource().toString(), null);
-					    GWT.log(be.getClass().toString(), null);
-					    GWT.log(be.getType().toString(), null);
-				    }
-			    });*/
-  		center.setHeading("Calendar");
-		center.setScrollMode(Scroll.AUTOX);
+		// ======================== Calendar ===================================
+		calendar = new ContentPanel(); // TODO extend to bottom of panel
+  		calendar.setHeading("Calendar");
+		calendar.setScrollMode(Scroll.AUTOX);
 		
 		// calendar
 		dayView = new DayView();
 		dayView.setDate(startCalendarDay); //calendar date, not required
 		dayView.setDays((int) numCalendarDays); //number of days displayed at a time, not required
 		dayView.setWidth("100%");
+		dayView.setHeight("100%");
 		dayView.setTitle("Schedule Calendar");
 		CalendarSettings settings = new CalendarSettings();
 		// this fixes offset issue with time labels
@@ -152,6 +151,7 @@ public class Schedule extends ContentPanel {
 		// 15-min. boundaries!
 		settings.setIntervalsPerHour(4);
 		settings.setEnableDragDrop(true);
+		settings.setPixelsPerInterval(12); // shrink the calendar!
 		dayView.setSettings(settings);
 		// when a period is clicked, a user can insert a different session
 		// but we need all those session names
@@ -159,46 +159,31 @@ public class Schedule extends ContentPanel {
 		dayView.addValueChangeHandler(new ValueChangeHandler<Appointment>(){
 	        public void onValueChange(ValueChangeEvent<Appointment> event) {
 	        	// seed the PeriodDialog w/ details from the period that just got clicked
-	            String periodUrl = "/periods/UTC/" + event.getValue().getTitle();
+	            String periodUrl = "/periods/UTC/" + event.getValue().getEventId();
 	    	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
 		            @Override
 		            public void onSuccess(JSONObject json) {
 		            	// JSON period -> JAVA period
 	                 	Period period = Period.parseJSON(json.get("period").isObject());
                         // display info about this period, and give options to change it
-	                 	PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, sess_handles, (Schedule) north.getParent());
+	                 	PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, sess_handles, (Schedule) controlsContainer.getParent());
 		            }
 		    });	            
 	            
 	        }               
 	    });	
 		//dayView.addSelectionHandler(handler); // TODO handle nominee selection in calendar?
-		center.add(dayView);
-		
-		BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER); //, 500);
-		centerData.setMargins(new Margins(5, 0, 5, 0));
-		//centerData.setSplit(true);
-		//centerData.setCollapsible(true);
-		
-		// to the right, nominee periods
-		east = new NomineePanel(this);
-
-		BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST, 300);
-		eastData.setMargins(new Margins(5));
-		eastData.setSplit(true);
-		eastData.setCollapsible(true);
+		calendar.add(dayView);
 		
 		// add all the components to this parent panel
-		add(north, northData);
-		add(west, westData);
-		add(center, centerData);
-		add(east, eastData);
+		add(controlsContainer, westData);
+		add(calendar, centerData);
 
 		updateCalendar();
 	}
 	
 	public FactorsDlg getFactorsDlg() {
-		return northSchedule.factorsDlg;
+		return scheduleControl.factorsDlg;
 	}
 	
 	public void updateNominees() {
@@ -211,16 +196,17 @@ public class Schedule extends ContentPanel {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("start", startStr);
 		keys.put("duration", numVacancyMinutes);
-		keys.put("timeBetween", (Boolean) northNominee.nomineeOptions.get(0).getValue()); // ignore timeBetween limit?
-		keys.put("minimum", (Boolean) northNominee.nomineeOptions.get(1).getValue());     // ignore minimum duration limit?
-		keys.put("blackout", (Boolean) northNominee.nomineeOptions.get(2).getValue());    // ignore observer blackout times?
-		keys.put("backup", (Boolean) northNominee.nomineeOptions.get(3).getValue());      // use only backup sessions?
-		keys.put("completed", (Boolean) northNominee.nomineeOptions.get(4).getValue());   // include completed sessions?
-		keys.put("rfi", (Boolean) northNominee.nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
-		east.updateKeys(keys);
-		east.loadData();
+		keys.put("timeBetween", (Boolean) vacancyControl.nomineeOptions.get(0).getValue()); // ignore timeBetween limit?
+		keys.put("minimum", (Boolean) vacancyControl.nomineeOptions.get(1).getValue());     // ignore minimum duration limit?
+		keys.put("blackout", (Boolean) vacancyControl.nomineeOptions.get(2).getValue());    // ignore observer blackout times?
+		keys.put("backup", (Boolean) vacancyControl.nomineeOptions.get(3).getValue());      // use only backup sessions?
+		keys.put("completed", (Boolean) vacancyControl.nomineeOptions.get(4).getValue());   // include completed sessions?
+		keys.put("rfi", (Boolean) vacancyControl.nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
+		nomineePanel.updateKeys(keys);
+		nomineePanel.loadData();
 		
-		east.setHeading("Nominee Periods for " + startStr + " " + timezone);
+		nomineePanel.setHeading("Nominee Periods for " + startStr + " " + timezone);
+		nomineePanel.expand();
 	}
 	
     public void updateCalendar() {	
@@ -230,10 +216,10 @@ public class Schedule extends ContentPanel {
 		
 		// get the period explorer to load these
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = west.pe.getProxy();
+		DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy = scheduleExplorer.pe.getProxy();
 		proxy.setBuilder(builder);
-		west.setDefaultDate(startCalendarDay);
-		west.pe.loadData();
+		scheduleExplorer.setDefaultDate(startCalendarDay);
+		scheduleExplorer.pe.loadData();
 		
 		// now get the calendar to load these
 		dayView.setDate(startCalendarDay); //calendar date, not required
@@ -271,15 +257,15 @@ public class Schedule extends ContentPanel {
 		dayView.clearAppointments();
 		for(Period p : periods) {
                 // TODO: format title & description better			
-			    String title = Integer.toString(p.getId());
+			    String title = ""; //Integer.toString(p.getId());
 			    String windowInfo = "";
 			    String type = "not windowed!"; // TODO: need better way to indicate period attributes
 			    if (p.isWindowed()) {
 			    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
 			    	type = p.isDefaultPeriod() ? "default period" : "choosen period";
 			    }
-			    String desc = p.getHandle() + windowInfo;
-			    Event event = new Event(title, desc, p.getStart(), p.getEnd(), type);
+			    String desc = p.getSession() + windowInfo;
+			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getEnd(), type);
 		        dayView.addAppointments(event.getAppointments());
 		        
 		}
@@ -331,7 +317,12 @@ public class Schedule extends ContentPanel {
 	}
 	
 	public void setCalendarHeader(String header) {
-		center.setHeading(header);
+		calendar.setHeading(header);
+	}
+	
+	public void setTimezone(String tz) {
+		dayView.setTimezone(tz);
+		this.timezone = tz;
 	}
 
 }	

@@ -63,6 +63,7 @@ public class Appointment extends Composite implements AppointmentInterface {
 		}
 	}
 
+	private int eventId;
 	private String title;
 	private String description;
 	private Date start;
@@ -214,6 +215,14 @@ public class Appointment extends Composite implements AppointmentInterface {
 
 	public Widget getResizeHandle() {
 		return footerPanel;
+	}
+
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
+	}
+
+	public int getEventId() {
+		return eventId;
 	}
         
 //        @Override

@@ -10,6 +10,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 // appointments map to blocks of time on our calendar.
 
 public class Event {
+	public int id;
 	public String title;
 	public String description;
 	public Date start;
@@ -23,7 +24,8 @@ public class Event {
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     
-	public Event(String title, String description, Date start, Date end, String type) {
+	public Event(int id, String title, String description, Date start, Date end, String type) {
+		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.start = start;
@@ -120,6 +122,7 @@ public class Event {
 
 		   // our Event becomes one or more of their Appointments
 		   Appointment appt = new Appointment();
+		   appt.setEventId(id);
 		   appt.setStart(apptStart);
 		   appt.setEnd(apptEnd);
 		   

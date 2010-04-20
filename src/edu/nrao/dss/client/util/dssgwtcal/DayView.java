@@ -39,6 +39,7 @@ public class DayView extends CalendarView {
     // <editor-fold desc="Constructors" defaultState="collapse">
     
     private float[] scores;
+    private String timezone;
     
     public DayView() {
         this(CalendarSettings.DEFAULT_SETTINGS);
@@ -146,11 +147,77 @@ public class DayView extends CalendarView {
             if (scores != null && scores.length == expNumScores) {
             	addScoreLabels(scores, i, getDays(), tmpDate);
             }
-            
+
+            addSchedulingLabels(i, getDays(), tmpDate);
+       	
             tmpDate.setDate(tmpDate.getDate() + 1);
         }
     }
 
+    private int estHourToTimezone(int estHour) {
+    	// TODO: take day-light savings into account
+    	int offset = 4;
+    	if (timezone == "UTC") {
+    		return estHour + offset;
+    	} else {
+    		return estHour;
+    	}
+    }
+    
+    private void addSchedulingLabels(int dayIndex, int numDays, Date date) {
+    	
+    	float thisLeft;
+        String desc;
+        String color;
+        int startHour;
+    	
+    	if ((dayIndex != 0) && (dayIndex != (numDays - 1))) {
+    		return;  // no label needed unless its first day or last day
+    	} else {
+    		if (dayIndex == 0) {
+    			// first day
+    			desc = "Start";
+    			color = "green";
+    			thisLeft = 0.0f;
+    			startHour = estHourToTimezone(8);
+    		} else {
+    			// last day
+    			desc = "End";
+    			color = "red";
+    			thisLeft = ((numDays - 1)*100.0f)/numDays;
+    	        startHour = estHourToTimezone(8);
+    		}
+    	}
+        float leftOffset = 15.0f;
+        
+        float widths = 32.3f; // constant width 
+        float quarterHeight = this.getSettings().getPixelsPerInterval(); //30.0f; // height of one quarter == (2 px/min)(15 min)
+        float qTop = 0.0f;
+        Date start = date;
+        Date end;
+        int numQtrs = 24 * 4;  // each hour has 4 15-min quarters
+        int scoreOffset = dayIndex * numQtrs;
+    	
+        qTop = (startHour*4) * quarterHeight;
+        start = new Date(start.getTime() + (1000 * 60 * 15 * startHour));
+        end = new Date(start.getTime() + (1000 * 60 * 14));
+        
+    	Label lb = new Label();
+    	lb.setDescription(desc);
+    	lb.setTitle("");
+    	lb.setStart(start);
+    	lb.setEnd(end);
+    	lb.setLeft(thisLeft + leftOffset);
+    	lb.setWidth(widths);
+    	lb.setHeight(quarterHeight);
+    	lb.setTop(qTop);
+    	
+    	DOM.setStyleAttribute(lb.getElement(), "color", color);
+    	
+    	// add it to the calendar!
+    	this.dayViewBody.getGrid().grid.add((Widget) lb);   	
+    }
+    
     // adds the scores for this day to each quarter of the calendar's day
     private void addScoreLabels(float scores[], int dayIndex, int numDays, Date date) {
 
@@ -162,7 +229,7 @@ public class DayView extends CalendarView {
         float thisLeft = lefts[dayIndex]; 
         
         float widths = 32.3f; // constant width 
-        float quarterHeight = 30.0f; // height of one quarter == (2 px/min)(15 min)
+        float quarterHeight = this.getSettings().getPixelsPerInterval(); //30.0f; // height of one quarter == (2 px/min)(15 min)
         float qTop = 0.0f;
         Date start = date;
         Date end;
@@ -189,6 +256,7 @@ public class DayView extends CalendarView {
         	score.setWidth(widths);
         	score.setHeight(quarterHeight);
         	score.setTop(qTop);      
+    	    DOM.setStyleAttribute(score.getElement(), "size", "1");
         	
         	// add it to the calendar!
         	this.dayViewBody.getGrid().grid.add((Widget) score); 
@@ -207,7 +275,9 @@ public class DayView extends CalendarView {
     public void setHeight(String height) {
 
         super.setHeight(height);
-        dayViewBody.setHeight(getOffsetHeight() - 2 - dayViewHeader.getOffsetHeight() + "px");
+        // TODO: don't know why, but this produces a neg. result - causing a crash 
+        //dayViewBody.setHeight(getOffsetHeight() - 2 - dayViewHeader.getOffsetHeight() + "px");
+        dayViewBody.setHeight(height);
     }
 
     @Override
@@ -296,6 +366,14 @@ public class DayView extends CalendarView {
 
 	public void clearScores() {
 		scores = null;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+
+	public String getTimezone() {
+		return timezone;
 	}
 	
     // </editor-fold>

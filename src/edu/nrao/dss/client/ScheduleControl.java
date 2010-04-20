@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -14,6 +15,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -33,9 +36,16 @@ public class ScheduleControl extends FormPanel {
 	
 	public FactorsDlg factorsDlg;
 	
+	private Button scheduleButton;
+	private Button emailButton;
+	private Button publishButton;
+	private Button deletePendingBtn;
+	private Button factorsButton;
+	
 	public ScheduleControl(Schedule sched) {
 		schedule = sched;
 		initLayout();
+		initListeners();
 	}
 	
 	public void setScheduleSummary(List<BaseModelData> data) {
@@ -90,26 +100,89 @@ public class ScheduleControl extends FormPanel {
 	
 	private void initLayout() {
 		setHeading("Schedule Control");
-		setBorders(true);
-		setWidth("25%");
-		HBoxLayout thisLayout = new HBoxLayout();
-		thisLayout.setHBoxLayoutAlign(HBoxLayoutAlign.STRETCH);
-		this.setLayout(thisLayout);
+		setWidth("100%");
 		
-		LayoutContainer leftContainer = new LayoutContainer();
-		leftContainer.setBorders(false);
-		leftContainer.setWidth("50%");
-		leftContainer.setLayout(new FormLayout());
-		this.add(leftContainer);
-		LayoutContainer rightContainer = new LayoutContainer();
-		rightContainer.setBorders(false);
-		rightContainer.setLayout(new FormLayout());
-		this.add(rightContainer);
+		String col1Width = "200px";
+		String col2Width = "400px";
+		
+		TableLayout tb = new TableLayout(2);
+		tb.setWidth("100%");
+		tb.setBorder(0);
+		setLayout(tb);
+
+		final FormPanel left = new FormPanel();
+		left.setHeaderVisible(false);
+		left.setBorders(false);
 		
 		// Auto schedules the current calendar
-		Button scheduleButton = new Button("Schedule");
+		scheduleButton = new Button("Schedule");
 		schedulePressed = false;
 		scheduleButton.setToolTip("Generate a schedule for free periods over the specified calendar range");
+		left.add(scheduleButton);
+		
+		emailButton = new Button("Email");
+		emailButton.setToolTip("Emails a schedule to staff and observers starting now and covering the next two days");
+		left.add(emailButton);
+		
+		// publishes all periods currently displayed (state moved from pending to scheduled)
+		publishButton = new Button("Publish");
+		publishButton.setToolTip("Publishes all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
+		left.add(publishButton);
+		
+		// deletes all pending periods currently displayed (state moved from pending to deleted)
+		deletePendingBtn = new Button("Delete Pending");
+		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
+		left.add(deletePendingBtn);		
+		
+		// Factors
+		factorsButton = new Button("Factors");
+		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
+		factorsDlg = new FactorsDlg(schedule);
+		factorsDlg.hide();
+		left.add(factorsButton);
+
+		// add the left hand side w/ all the buttons
+		TableData tdLeft = new TableData();
+		tdLeft.setVerticalAlign(VerticalAlignment.TOP);
+		// TODO: why must I do this, just to get the two forms to share space?
+		tdLeft.setColspan(1);
+		tdLeft.setWidth(col1Width);
+		
+        add(left, tdLeft);
+
+        // now for the right hand side w/ all the status fields
+		final FormPanel right = new FormPanel();
+		right.setHeaderVisible(false);
+		right.setBorders(false);
+        
+		scheduleAverage = new LabelField();
+		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
+		scheduleAverage.setFieldLabel("Schedule Average Score");
+		right.add(scheduleAverage);
+		
+		currentAverage = new LabelField();
+		currentAverage.setToolTip("Current average score of displayed periods");
+		currentAverage.setFieldLabel("Current Average Score");
+		right.add(currentAverage);
+		
+		unscheduledTime = new LabelField();
+		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
+		unscheduledTime.setFieldLabel("Unscheduled Time");
+		right.add(unscheduledTime);
+		
+		// add the right hand side w/ all the status fields
+		TableData tdRight = new TableData();
+		tdRight.setVerticalAlign(VerticalAlignment.TOP);
+		// TODO: why must I do this, just to get the two forms to share space?
+		tdRight.setColspan(1);
+		tdRight.setWidth(col2Width);
+		
+        add(right, tdRight);
+		
+	}
+	
+	private void initListeners() {
+		
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
@@ -131,10 +204,7 @@ public class ScheduleControl extends FormPanel {
 						});
 			}
 		});
-		leftContainer.add(scheduleButton);
 		
-		Button emailButton = new Button("Email");
-		emailButton.setToolTip("Emails a schedule to staff and observers starting now and covering the next two days");
 		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
@@ -181,11 +251,7 @@ public class ScheduleControl extends FormPanel {
 						});
 			}
 		});
-		leftContainer.add(emailButton);
 		
-		// publishes all periods currently displayed (state moved from pending to scheduled)
-		Button publishButton = new Button("Publish");
-		publishButton.setToolTip("Publishes all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
 		publishButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
@@ -205,11 +271,8 @@ public class ScheduleControl extends FormPanel {
 						});
 			}
 		});
-		leftContainer.add(publishButton);
+
 		
-		// deletes all pending periods currently displayed (state moved from pending to deleted)
-		Button deletePendingBtn = new Button("Delete Pending");
-		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
 		deletePendingBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
@@ -229,34 +292,12 @@ public class ScheduleControl extends FormPanel {
 						});
 			}
 		});
-		leftContainer.add(deletePendingBtn);		
 		
-		// Factors
-		Button factorsButton = new Button("Factors");
-		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
-		factorsDlg = new FactorsDlg(schedule);
-		factorsDlg.hide();
 		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
 				factorsDlg.show();
 			}
-		});
-		leftContainer.add(factorsButton);
-		
-		scheduleAverage = new LabelField();
-		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
-		scheduleAverage.setFieldLabel("Schedule Average Score");
-		rightContainer.add(scheduleAverage);
-		
-		currentAverage = new LabelField();
-		currentAverage.setToolTip("Current average score of displayed periods");
-		currentAverage.setFieldLabel("Current Average Score");
-		rightContainer.add(currentAverage);
-		
-		unscheduledTime = new LabelField();
-		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
-		unscheduledTime.setFieldLabel("Unscheduled Time");
-		rightContainer.add(unscheduledTime);
+		});		
 	}
 }
