@@ -75,7 +75,7 @@ class JSONCallbackAdapter implements JSONCallback {
 			
 			if (json != null)
 			{
-				msg += "An unexpeted error has occurred.  You can help the DSS team solve this problem ";
+				msg += "An unexpected error has occurred.  You can help the DSS team solve this problem ";
 				msg += "by cutting and pasting this JSON object when reporting the error.\n\n";
 				msg += "JSON object:\n";
 				msg += json.toString();
@@ -115,19 +115,23 @@ class JSONRequest implements RequestCallback {
 			return;
 		}
 
-		//JSONObject json = JSONParser.parse(response.getText()).isObject();
-		//cb.onSuccess(json);
+		JSONObject json = null;
 		try {
-			JSONObject json = JSONParser.parse(response.getText()).isObject();
-			if (json == null) {
-				MessageBox.alert("Error", "Expected JSON response.", null);
-			} else if (json.containsKey("error")) {
-				cb.onError(getString(json, "error"), json);
-			} else {
-				cb.onSuccess(json);
-			}
+			json = JSONParser.parse(response.getText()).isObject();
 		} catch (Exception e) {
 			cb.onError("json parse failed", null);
+		}
+		
+		try {
+		    if (json == null) {
+			    MessageBox.alert("Error", "Expected JSON response.", null);
+		    } else if (json.containsKey("error")) {
+			    cb.onError(getString(json, "error"), json);
+		    } else {
+			    cb.onSuccess(json);
+		    }
+		} catch (Exception e) {
+			cb.onError("json callback (" + cb.toString() + ")", json);
 		}
 	}
 

@@ -18,7 +18,6 @@ public class Period {
     private static final DateTimeFormat TIME_FORMAT = DateTimeFormat.getFormat("HH:mm");
 
     public static Period parseJSON(JSONObject json) {
-    	
     	// interpret the fields that are part of the period
         int id = (int) json.get("id").isNumber().doubleValue();
         String handle = (String) json.get("handle").isString().stringValue();
