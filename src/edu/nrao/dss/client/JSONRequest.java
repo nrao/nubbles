@@ -21,10 +21,17 @@ import com.google.gwt.json.client.JSONParser;
 interface JSONCallback {
 	public void onSuccess(JSONObject json);
 	public void onError(String error, JSONObject json);
+	public void setUri(String uri);
 }
 
 class JSONCallbackAdapter implements JSONCallback {
+	private String uri;
+	
 	public void onSuccess(JSONObject json) {
+	}
+	
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 	// Default error response is to alert the user.
@@ -76,7 +83,7 @@ class JSONCallbackAdapter implements JSONCallback {
 			}
 			else
 			{
-				msg += "No response received from server.  This could indicate a network ";
+				msg += "No response received from server at " + this.uri + "  This could indicate a network ";
 				msg += "problem, or that the server is down.";
 			}
 
@@ -97,8 +104,9 @@ class JSONCallbackAdapter implements JSONCallback {
 }
 
 class JSONRequest implements RequestCallback {
-	public JSONRequest(JSONCallback cb) {
+	public JSONRequest(JSONCallback cb, String uri) {
 		this.cb = cb;
+		cb.setUri(uri);
 	}
 
 	public void onResponseReceived(Request request, Response response) {
@@ -127,7 +135,7 @@ class JSONRequest implements RequestCallback {
 	}
 
 	private final JSONCallback cb;
-
+	
 	public static void delete(String uri, JSONCallback cb) {
 		post(uri, new String[]{"_method"}, new String[]{"delete"}, cb);
 	}
@@ -138,7 +146,7 @@ class JSONRequest implements RequestCallback {
 		get.setHeader("Accept", "application/json");
 
 		try {
-			get.sendRequest(null, new JSONRequest(cb));
+			get.sendRequest(null, new JSONRequest(cb, uri));
 		} catch (RequestException e) {
 		}
 	}
@@ -164,7 +172,7 @@ class JSONRequest implements RequestCallback {
 		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, urlData.toString());
 		get.setHeader("Accept", "application/json");
 		try {
-			get.sendRequest(null, new JSONRequest(cb));
+			get.sendRequest(null, new JSONRequest(cb, uri));
 		} catch (RequestException e) {
 		}
 	}
@@ -187,7 +195,7 @@ class JSONRequest implements RequestCallback {
 		post.setHeader("Accept", "application/json");
 		post.setHeader("Content-Type", "application/x-www-form-encoded");
 		try {
-			post.sendRequest(kv2url(keys, values), new JSONRequest(cb));
+			post.sendRequest(kv2url(keys, values), new JSONRequest(cb, uri));
 		} catch (RequestException e) {
 		}
 	}
