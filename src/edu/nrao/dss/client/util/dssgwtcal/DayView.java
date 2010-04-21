@@ -170,7 +170,7 @@ public class DayView extends CalendarView {
         String desc;
         String color;
         int startHour;
-        int offset = 7;
+        int offset = 10;
     	
     	if ((dayIndex != 0) && (dayIndex != (numDays - 1))) {
     		return;  // no label needed unless its first day or last day
@@ -180,12 +180,14 @@ public class DayView extends CalendarView {
     			desc = "Start";
     			color = "green";
     			thisLeft = (100.0f/numDays) - offset;
-    			startHour = estHourToTimezone(8);
+    			// simply start at beginning of calendar, regardless of timezone
+    			startHour = 0; //estHourToTimezone(8);
     		} else {
     			// last day
     			desc = "End";
     			color = "red";
     			thisLeft = ((numDays*100.0f)/numDays) - offset;
+    			// this *does* depend on a certain time
     	        startHour = estHourToTimezone(8);
     		}
     	}
@@ -196,7 +198,6 @@ public class DayView extends CalendarView {
         Date start = date;
         Date end;
         int numQtrs = 24 * 4;  // each hour has 4 15-min quarters
-        int scoreOffset = dayIndex * numQtrs;
     	
         qTop = (startHour*4) * quarterHeight;
         start = new Date(start.getTime() + (1000 * 60 * 15 * startHour));
