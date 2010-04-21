@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
@@ -30,7 +31,7 @@ import com.google.gwt.json.client.JSONObject;
 class SessionColConfig extends ColumnConfig {
 
 	@SuppressWarnings("unchecked")
-	public SessionColConfig(String fName, String name, int width, Class clasz) {
+	public SessionColConfig(String fName, String name, int width, Boolean disabled, Class clasz) {
 		super(fName, name, width);
 		
 		this.clasz = clasz;
@@ -49,8 +50,8 @@ class SessionColConfig extends ColumnConfig {
 			degreeField();
 		} else if (clasz == GradeField.class) {
 			typeField(GradeField.values);
-		} else if (clasz == TimeField.class) {
-			timeField();
+		} else if (clasz == HourField.class) {
+			hourField();
 		} else if (clasz == ScienceField.class) {
 			typeField(ScienceField.values);
 		} else if (clasz == STypeField.class) {
@@ -58,7 +59,7 @@ class SessionColConfig extends ColumnConfig {
 		} else if (clasz == PCodeField.class) {
 			setPCodeOptions();
 		} else {
-			textField();
+			textField(disabled);
 		}
 	};
 
@@ -112,23 +113,25 @@ class SessionColConfig extends ColumnConfig {
 		NumberField field = createDoubleField();
 
 		setAlignment(HorizontalAlignment.RIGHT);
-		setEditor(new CellEditor(field) {
-			@Override
-			public Object preProcessValue(Object value) {
-				if (value == null) {
-					return null;
-				}
-				return Double.valueOf(value.toString());
-			}
-
-			@Override
-			public Object postProcessValue(Object value) {
-				if (value == null) {
-					return null;
-				}
-				return value.toString();
-			}
-		});
+		setEditor(new CellEditor(field));
+		// TBF Remove this code???
+//		{
+//			@Override
+//			public Object preProcessValue(Object value) {
+//				if (value == null) {
+//					return null;
+//				}
+//				return Double.valueOf(value.toString());
+//			}
+//
+//			@Override
+//			public Object postProcessValue(Object value) {
+//				if (value == null) {
+//					return null;
+//				}
+//				return value.toString();
+//			}
+//		});
 
 		setNumberFormat(NumberFormat.getFormat("0"));
 		setRenderer(new GridCellRenderer<BaseModelData>() {
@@ -224,11 +227,15 @@ class SessionColConfig extends ColumnConfig {
 	}
 
 	/** Construct an editable field supporting free-form text. */
-	private void textField() {
-		setEditor(new CellEditor(new TextField<String>()));
+	private void textField(Boolean disabled) {
+		CellEditor editor = new CellEditor(new TextField<String>());
+		if (disabled) {
+			editor.disable();
+		}
+		setEditor(editor);
 	}
 
-	private void timeField() {
+	private void hourField() {
 		TextField<String> positionField = new TextField<String>();
 		positionField.setRegex("[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?");
 
@@ -242,7 +249,8 @@ class SessionColConfig extends ColumnConfig {
 				if (val != null) {
 					return Conversions.radiansToTime(((Double) val).doubleValue());
 				} else {
-					return "00:00:00";
+					// display a blank string here in place of "00:00:00" so users no it is null
+					return ""; 
 				}
 			}
 		});
@@ -268,7 +276,7 @@ class SessionColConfig extends ColumnConfig {
 
 	private void degreeField() {
 		TextField<String> degreeField = new TextField<String>();
-		degreeField.setRegex("[0-2]\\d:\\d\\d:\\d\\d(\\.\\d+)?");
+		degreeField.setRegex("-?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
 
 		setAlignment(HorizontalAlignment.RIGHT);
 
@@ -280,7 +288,8 @@ class SessionColConfig extends ColumnConfig {
 				if (val != null) {
 					return Conversions.radiansToSexagesimal(((Double) val).doubleValue());
 				} else {
-					return "00:00:00";
+					// display a blank string here in place of "00:00:00" so users no it is null
+					return ""; 
 				}
 			}
 		});

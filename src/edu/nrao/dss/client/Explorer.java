@@ -1,6 +1,7 @@
 package edu.nrao.dss.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -30,6 +32,8 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -39,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
@@ -46,15 +51,26 @@ import com.google.gwt.user.client.Window;
 
 public class Explorer extends ContentPanel{
 	public Explorer(String url, ModelType mType) {
+		rootURL     = url;
+		modelType   = mType;
+		defaultDate = "";
+		pagingToolBar = null;
+	}
+	
+	public Explorer(String url, ModelType mType, PagingToolBar ptb)
+	{
 		rootURL = url;
 		modelType = mType;
+		defaultDate = "";
+		pagingToolBar = ptb;
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void initLayout(ColumnModel cm) {
+	protected void initLayout(ColumnModel cm, Boolean createToolBar) {
+		
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
-		commitState = false;
+		setCommitState(false);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
@@ -74,8 +90,11 @@ public class Explorer extends ContentPanel{
 		grid.setBorders(true);
 
 		initListeners();
-		initToolBar();
+		if (createToolBar) {
+		    initToolBar();
+		}
 		loadData();
+		
 	}
 	
 	private void addPlugins() {
@@ -85,7 +104,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	public void loadData() {
-		loader.load(0, pageSize);
+		loader.load(0, getPageSize());
 	}
 	
 	private void initListeners() {
@@ -107,7 +126,7 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void save(ModelData model) {
-		if (!commitState) {
+		if (!isCommitState()) {
 			return;
 		}
 		ArrayList<String> keys   = new ArrayList<String>();
@@ -129,8 +148,21 @@ public class Explorer extends ContentPanel{
 		         null);
 	}
 	
+	// to be implemented by children
+	public void viewObject() {
+		//return grid.getSelectionModel().getSelectedItem();
+	}
+	
+	// to be implemented by children
+	public void actionOnObject() {
+		//return grid.getSelectionModel().getSelectedItem();
+	}	
 	private void initToolBar() {
-		final PagingToolBar pagingToolBar = new PagingToolBar(50);
+		if (pagingToolBar == null)
+		{
+			pagingToolBar = new PagingToolBar(50);
+		}
+		
 		final TextField<String> pages = new TextField<String>();
 		pages.setWidth(30);
 		pages.setValue("50");
@@ -139,7 +171,7 @@ public class Explorer extends ContentPanel{
 				if (e.getKeyCode() == 13) {
 					int page_size = Integer.valueOf(pages.getValue()).intValue();
 					pagingToolBar.setPageSize(page_size);
-					pageSize = page_size;
+					setPageSize(page_size);
 					loadData();
 				}
 			}
@@ -149,16 +181,32 @@ public class Explorer extends ContentPanel{
 		setBottomComponent(pagingToolBar);
 		pagingToolBar.bind(loader);
 		
-		ToolBar toolBar = new ToolBar();
+		toolBar = new ToolBar();
 		setTopComponent(toolBar);
-
-		Button addItem = new Button("Add");
+		
+		viewItem = new Button("View");
+		toolBar.add(viewItem);
+		viewItem.setToolTip("view row.");
+		viewItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        @Override
+	        public void componentSelected(ButtonEvent ce) {
+	            viewObject();	
+	        }
+	    });
+		// hide this button by default
+		viewItem.setVisible(false);
+		
+		addItem = new Button("Add");
 		toolBar.add(addItem);
 		addItem.setToolTip("Add a new row.");
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
-	        	addRecord(new HashMap<String, Object>());
+	        	HashMap<String, Object> fields = new HashMap<String, Object>();
+	        	if (defaultDate != "") {
+	        		fields.put("date", defaultDate);
+	        	}
+	        	addRecord(fields);
 	        }
 	    });
 		
@@ -175,40 +223,50 @@ public class Explorer extends ContentPanel{
             }
         });
 		
-		Button removeItem = new Button("Delete");
+		removeDialog = new Dialog();
+		removeDialog.setHeading("Confirmation");
+		removeDialog.addText("Remove record?");
+		removeDialog.setButtons(Dialog.YESNO);
+		removeDialog.setHideOnButtonClick(true);
+		removeApproval = removeDialog.getButtonById(Dialog.YES);
+		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				Double id = grid.getSelectionModel().getSelectedItem().get("id");
+				JSONRequest.delete(rootURL + "/" + id.intValue(),
+						new JSONCallbackAdapter() {
+							public void onSuccess(JSONObject json) {
+								store.remove(grid.getSelectionModel()
+										.getSelectedItem());
+							}
+						});
+			}
+		});	
+		removeDialog.hide();
+
+	
+		removeItem = new Button("Delete");
 		toolBar.add(removeItem);
 		removeItem.setToolTip("Delete a row.");
-		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				Dialog d = new Dialog();
-				d.setHeading("Quick Question");
-				d.addText("Are you sure you want to delete this record?");
-				d.setButtons(Dialog.YESNO);
-				d.setHideOnButtonClick(true);
-
-				Button yesButton = d.getButtonById(Dialog.YES);
-				yesButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-					@Override
-					public void componentSelected(ButtonEvent ce) {
-						Double id = grid.getSelectionModel().getSelectedItem().get("id");
-						JSONRequest.delete(rootURL + "/" + id.intValue(),
-								new JSONCallbackAdapter() {
-									public void onSuccess(JSONObject json) {
-										store.remove(grid.getSelectionModel()
-												.getSelectedItem());
-									}
-								});
-					}
-				});
-				d.show();
-			}
-		});
-
+		// make it so that children can override this behavior
+		setRemoveItemListener();
+	
+		// add a generic button that can be changed for whatever purpose a child class may have for it
+		actionItem = new Button("Action");
+		toolBar.add(actionItem);
+		//actionItem.setToolTip("view row.");
+		actionItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        @Override
+	        public void componentSelected(ButtonEvent ce) {
+	            actionOnObject();	
+	        }
+	    });
+		// hide this button by default
+		actionItem.setVisible(false);
+		
 		toolBar.add(new SeparatorToolItem());
 
-		filter = new FilterItem(Explorer.this);
+		filter = new FilterItem(Explorer.this, false);
 		toolBar.add(filter.getTextField());
 
 		for (SimpleComboBox<String> f : advancedFilters) {
@@ -222,8 +280,8 @@ public class Explorer extends ContentPanel{
 			public void componentSelected(ButtonEvent ce) {
 				for (SimpleComboBox<String> f : advancedFilters) {
 					f.reset();
-					filter.getTextField().setValue("");
 				}
+				filter.getTextField().setValue("");
 			}
 		});
 		toolBar.add(reset);
@@ -235,16 +293,16 @@ public class Explorer extends ContentPanel{
 		toolBar.add(new FillToolItem());
 		toolBar.add(new SeparatorToolItem());
 
-		Button saveItem = new Button("Save");
+		saveItem = new Button("Save");
 		toolBar.add(saveItem);
 
 		// Commit outstanding changes to the server.
 		saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				commitState = true;
+				setCommitState(true);
 				store.commitChanges();
-				commitState = false;
+				setCommitState(false);
 				loadData();
 				grid.getView().refresh(true);
 			}
@@ -259,8 +317,18 @@ public class Explorer extends ContentPanel{
 					}
 				});
 	}
-	
-	private void addRecord(HashMap<String, Object> fields) {
+
+	protected void setRemoveItemListener() {
+		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				removeDialog.show();
+			}
+		});
+	}
+
+	protected void addRecord(HashMap<String, Object> fields) {
+		//GWT.log(fields.toString(), null);
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
@@ -280,14 +348,17 @@ public class Explorer extends ContentPanel{
 							model.set(fName, value.isBoolean().booleanValue());
 						} else if (value.isString() != null) {
 							model.set(fName, value.isString().stringValue());
+						} else if (value.isNull() != null) {
+							// TODO: should this really be a no-op
+							//Window.alert("null JSON value type");
 						} else {
 							Window.alert("unknown JSON value type");
 						}
 					}
 				}
-				//store.add(model);
+				grid.stopEditing();
 				store.insert(model, 0);
-				grid.getView().refresh(true);
+				//grid.getView().refresh(true);
 				grid.getSelectionModel().select(model, false);
 			}
 		});
@@ -295,12 +366,41 @@ public class Explorer extends ContentPanel{
 
 	protected SimpleComboBox<String> initCombo(String title, String[] options, int width) {
 		SimpleComboBox<String> filter = new SimpleComboBox<String>();
+		filter.setTriggerAction(TriggerAction.ALL);
 		filter.setWidth(width);
 		filter.setEmptyText(title);
 		for (String o : options) {
 			filter.add(o);
 		}
 		return filter;
+	}
+	
+	protected CellEditor initCombo(String[] options) {
+	    final SimpleComboBox<String> combo = new SimpleComboBox<String>();
+	    combo.setForceSelection(true);
+	    combo.setTriggerAction(TriggerAction.ALL);
+	    for (String o : options) {
+	    	combo.add(o);
+	    }
+
+	    CellEditor editor = new CellEditor(combo) {
+	      @Override
+	      public Object preProcessValue(Object value) {
+	        if (value == null) {
+	          return value;
+	        }
+	        return combo.findModel(value.toString());
+	      }
+
+	      @Override
+	      public Object postProcessValue(Object value) {
+	        if (value == null) {
+	          return value;
+	        }
+	        return ((ModelData) value).get("value");
+	      }
+	    };
+	    return editor;
 	}
 	
 	public DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> getProxy() {
@@ -311,11 +411,33 @@ public class Explorer extends ContentPanel{
 		return rootURL;
 	}
 	
+	public void setRootURL(String rurl) {
+		rootURL = rurl;
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
+		proxy.setBuilder(builder);
+	}
+	
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setCommitState(boolean commitState) {
+		this.commitState = commitState;
+	}
+
+	public boolean isCommitState() {
+		return commitState;
+	}
+
 	/** Provides basic spreadsheet-like functionality. */
-	private EditorGrid<BaseModelData> grid;
+	protected EditorGrid<BaseModelData> grid;
 
 	/** Use store.add() to remember dynamically created records. */
-	private ListStore<BaseModelData> store;
+	protected ListStore<BaseModelData> store;
 	
 	/** Flag for enforcing saves only on Save button press. **/
 	private boolean commitState;
@@ -336,15 +458,28 @@ public class Explorer extends ContentPanel{
 	protected List<SimpleComboBox<String>> advancedFilters = new ArrayList<SimpleComboBox<String>>();
 	
 	protected Button filterAction;
+	protected Button saveItem;
+	protected Button viewItem;
+	protected Button addItem;
+	protected Button removeItem;
+	protected Button removeApproval;
+	protected Dialog removeDialog;
+	protected Button actionItem;
+	protected ToolBar toolBar;
+	protected PagingToolBar pagingToolBar;
 	
 	protected FilterItem filter;
 	
 	protected String[] trimesters = new String[] {
-		    "09C", "09B", "09A"
+			// TBF - need to generate this list relative to the current date
+		      "10C", "10B", "10A"
+		    , "09C", "09B", "09A"
             , "08C", "08B", "08A"
             , "07C", "07B", "07A"
             , "06C", "06B", "06A"
             , "05C", "05B", "05A"
             , "04A"
             };
+	
+	protected String defaultDate;
 }

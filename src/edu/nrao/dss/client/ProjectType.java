@@ -17,10 +17,12 @@ public class ProjectType extends ModelType {
 		addField("total_time");
 		addField("PSC_time");
 		addField("sem_time");
+		addField("remaining");
 		addField("grade");
+		addField("notes");
+		addField("schd_notes");
 		addField("thesis");
 		addField("complete");
-		addField("ignore_grade");
 	}
 
 }

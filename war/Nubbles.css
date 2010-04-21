@@ -32,3 +32,47 @@ h1 {
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+.gwt-FactorGrid-other {
+  font-weight: bold;
+  background-color: #FFE4C4; # bisque;
+}
+
+.gwt-FactorGrid-position {
+  font-weight: bold;
+  background-color: #F0FFFF; # azure;
+}
+
+.gwt-FactorGrid-weather {
+  font-weight: bold;
+  background-color: #00FFFF; # aqua;
+}
+
+.gwt-FactorGrid-subfactor {
+  font-weight: bold;
+  background-color: #FFD700; # gold;
+}
+
+.gwt-FactorGrid-factor {
+  font-weight: bold;
+  background-color: #90EE90; # lightgreen;
+}
+
+.gwt-FactorGrid-zero {
+  color: #FF0000; # red;
+}
+
+.gwt-RcvrSchdGrid-header {
+  font-weight: bold;
+  background-color: #FFE4C4; # bisque;
+}
+
+.gwt-RcvrSchdGrid-on {
+  font-weight: bold;
+  background-color: #90EE90; # lightgreen;
+}
+
+.gwt-RcvrSchdGrid-off {
+  font-weight: bold;
+  background-color: #FF6666; # lightred;
+}

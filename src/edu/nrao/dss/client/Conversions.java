@@ -84,11 +84,17 @@ class Conversions {
 
     /** DD:MM:SS.S -> Degrees */
     public static double sexigesimalToDegrees(String sexigesimal) {
-        double degrees = Double.parseDouble(sexigesimal.substring(0, 2));
-        double minutes = Double.parseDouble(sexigesimal.substring(3, 5));
-        double seconds = Double.parseDouble(sexigesimal.substring(6));
+        int start = 0;
+        double factor = 1.0;
+        if (sexigesimal.charAt(0) == '-') {
+        	start = 1;
+        	factor = -1.0;
+        }
+        double degrees = Double.parseDouble(sexigesimal.substring(start, start + 2));
+        double minutes = Double.parseDouble(sexigesimal.substring(start + 3, start + 5));
+        double seconds = Double.parseDouble(sexigesimal.substring(start + 6));
         
-        return (degrees + (minutes + seconds / 60.0) / 60.0);
+        return factor*(degrees + (minutes + seconds / 60.0) / 60.0);
     }
     
     public static double radiansToDegrees(double radians) {

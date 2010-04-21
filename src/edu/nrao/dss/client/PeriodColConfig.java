@@ -41,8 +41,12 @@ class PeriodColConfig extends ColumnConfig {
 			setSessionOptions();
 		} else if (clasz == DateEditField.class) {
 			dateField();
+		} else if (clasz == DisplayField.class) {
+			displayField();
 		} else if (clasz == TimeField.class) {
 			timeField();
+		} else if (clasz == ScoreField.class) {
+			scoreField();
 		} else if (clasz == Boolean.class) {
 			checkboxField();
 		} else {
@@ -103,7 +107,6 @@ class PeriodColConfig extends ColumnConfig {
 		setEditor(new CellEditor(new DateField()){
 			@Override
 			public Object preProcessValue(Object value) {
-				GWT.log("preProcessValue", null);
 				if (value == null) {
 					return null;
 				}
@@ -115,7 +118,6 @@ class PeriodColConfig extends ColumnConfig {
 
 			@Override
 			public Object postProcessValue(Object value) {
-				GWT.log("postProcessValue", null);
 				if (value == null) {
 					return null;
 				}
@@ -126,6 +128,42 @@ class PeriodColConfig extends ColumnConfig {
 		});
 	}
 	
+	private void scoreField() {
+		setAlignment(HorizontalAlignment.RIGHT);
+
+		setNumberFormat(NumberFormat.getFormat("0"));
+		setRenderer(new GridCellRenderer<BaseModelData>() {
+			public Object render(BaseModelData model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<BaseModelData> store, Grid<BaseModelData> grid) {
+				if (model.get(property) != null) {
+					String retval = model.get(property).toString();
+					if (4 < retval.length()) {
+						retval = retval.substring(0,4);
+					}
+					return retval;
+				} else {
+					return "";
+				}
+			}
+		});
+	}
+	
+	private void displayField() {
+		setAlignment(HorizontalAlignment.RIGHT);
+
+		setRenderer(new GridCellRenderer<BaseModelData>() {
+			public Object render(BaseModelData model, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<BaseModelData> store, Grid<BaseModelData> grid) {
+				if (model.get(property) != null) {
+					return model.get(property).toString();
+				} else {
+					return "";
+				}
+			}
+		});
+	}
 	private void doubleField() {
 		NumberField field = createDoubleField();
 
