@@ -186,18 +186,25 @@ public class ScheduleControl extends FormPanel {
 		
 	}
 	
+	private HashMap<String, Object> getTimeRange() {
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
+
+		keys.put("start", startStr);
+		keys.put("duration", schedule.numCalendarDays);
+		keys.put("tz", schedule.timezone);
+		return keys;
+	}
+	
 	private void initListeners() {
 		
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
 				schedulePressed = true;
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
+				HashMap<String, Object> keys = getTimeRange();
+				String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
 	    		Integer numScheduleDays = schedule.numCalendarDays < 2 ? 1 : (schedule.numCalendarDays -1); 
-	    		keys.put("start", startStr);
-	    		keys.put("duration", schedule.numCalendarDays);
-	    		keys.put("tz", schedule.timezone);
 				String msg = "Scheduling from " + startStr + " (" + schedule.timezone + ")" + " until " + numScheduleDays.toString() + " days later at 8:00 (ET).";
 				final MessageBox box = MessageBox.wait("Calling Scheduling Algorithm", msg, "Be Patient ...");
 				JSONRequest.post("/runscheduler", keys,
@@ -213,16 +220,12 @@ public class ScheduleControl extends FormPanel {
 		emailButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
 				String msg = "Generating scheduling email for observations over the next two days";
 				final MessageBox box = MessageBox.wait("Getting Email Text", msg, "Be Patient ...");
 				
 				// Must set keys here somehow to transmit proper time range.  What is the time range?
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
-	    		keys.put("start", startStr);
-	    		keys.put("duration", schedule.numCalendarDays);
-	    		keys.put("tz", schedule.timezone);
-	    		
+				HashMap<String, Object> keys = getTimeRange();
+				
 				JSONRequest.get("/schedule/email", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
@@ -268,12 +271,8 @@ public class ScheduleControl extends FormPanel {
 			public void componentSelected(ButtonEvent be) {
 				// make the JSON request for the periods so we can make appointments
 				// we need the same url in a different format
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
-	    		keys.put("start", startStr);
-	    		keys.put("duration", schedule.numCalendarDays);
-	    		keys.put("tz", schedule.timezone);	    		
 				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
+				HashMap<String, Object> keys = getTimeRange();
 				JSONRequest.post("/periods/publish", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
@@ -289,11 +288,7 @@ public class ScheduleControl extends FormPanel {
 			public void componentSelected(ButtonEvent be) {
 				// make the JSON request for the periods so we can make appointments
 				// we need the same url in a different format
-	    		HashMap<String, Object> keys = new HashMap<String, Object>();
-	    		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startCalendarDay) + " 00:00:00";
-	    		keys.put("start", startStr);
-	    		keys.put("duration", schedule.numCalendarDays);
-	    		keys.put("tz", schedule.timezone);	    		
+				HashMap<String, Object> keys = getTimeRange();
 				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
 				JSONRequest.post("/periods/delete_pending", keys,
 						new JSONCallbackAdapter() {
