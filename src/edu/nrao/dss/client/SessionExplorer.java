@@ -35,7 +35,7 @@ public class SessionExplorer extends Explorer {
 		};
 		String[] receivers = new String[] {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
-		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol"	
+		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol", "KFPA"	
 		};
 		advancedFilters.add(initCombo("Proj Complete", new String[] {"True", "False"}, 100));
 		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}, 100));
