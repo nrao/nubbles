@@ -106,7 +106,11 @@ class JSONCallbackAdapter implements JSONCallback {
 class JSONRequest implements RequestCallback {
 	public JSONRequest(JSONCallback cb, String uri) {
 		this.cb = cb;
-		cb.setUri(uri);
+		
+		if (cb != null)
+		{
+			cb.setUri(uri);
+		}
 	}
 
 	public void onResponseReceived(Request request, Response response) {
