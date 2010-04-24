@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.ListViewSelectionModel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -27,6 +28,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.ui.HTML;
 
 public class NomineePanel extends ContentPanel {
 	
@@ -109,7 +111,13 @@ public class NomineePanel extends ContentPanel {
 		proxy.setBuilder(builder);
 	}
 	
-	public void loadData() {
+	public int loadData() {
 		loader.load();
+		int size = this.store.getCount();
+		if (size == 0){
+			MessageBox.alert("Attention", "No nominees returned!", null);
+			add(new HTML("<h2>No results!</h2>"));
+		}
+		return size;
 	}
 }

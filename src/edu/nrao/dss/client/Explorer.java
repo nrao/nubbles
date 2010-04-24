@@ -303,6 +303,8 @@ public class Explorer extends ContentPanel{
 				setCommitState(true);
 				store.commitChanges();
 				setCommitState(false);
+				//loadData();
+				//grid.getView().refresh(true);
 			}
 		});
 		

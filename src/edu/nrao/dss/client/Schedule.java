@@ -203,9 +203,8 @@ public class Schedule extends ContentPanel {
 		keys.put("completed", (Boolean) vacancyControl.nomineeOptions.get(4).getValue());   // include completed sessions?
 		keys.put("rfi", (Boolean) vacancyControl.nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
 		nomineePanel.updateKeys(keys);
-		nomineePanel.loadData();
-		
-		nomineePanel.setHeading("Nominee Periods for " + startStr + " " + timezone);
+		int num_nominees = nomineePanel.loadData();
+		nomineePanel.setHeading("Nominee Periods for " + startStr + " " + timezone + ".  " + num_nominees + " nominees found.");
 		nomineePanel.expand();
 	}
 	
