@@ -45,6 +45,7 @@ public class SessionExplorer extends Explorer {
 		advancedFilters.add(initCombo("Trimester", trimesters, 80));
 		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}, 80));
 		advancedFilters.add(initCombo("Enabled", new String[] {"True", "False"}, 80));
+		advancedFilters.add(initCombo("Authorized", new String[] {"True", "False"}, 80));
 		
 		initFilterAction();
 	}
@@ -70,7 +71,7 @@ public class SessionExplorer extends Explorer {
 				
 				String filtersURL = "?";
 				String filterVal;
-				String[] filterNames = new String[] {"filterProjClp", "filterType", "filterSci", "filterRcvr", "filterFreq", "filterSem", "filterClp", "filterEnb"};
+				String[] filterNames = new String[] {"filterProjClp", "filterType", "filterSci", "filterRcvr", "filterFreq", "filterSem", "filterClp", "filterEnb", "filterAuth"};
 				for (int i = 0; i < advancedFilters.size(); i++) {
 					SimpleComboValue<String> value = advancedFilters.get(i).getValue();
 					if (value != null) {
