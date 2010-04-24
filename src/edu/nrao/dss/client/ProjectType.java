@@ -19,8 +19,6 @@ public class ProjectType extends ModelType {
 		addField("sem_time");
 		addField("remaining");
 		addField("grade");
-		addField("notes");
-		addField("schd_notes");
 		addField("thesis");
 		addField("complete");
 	}
