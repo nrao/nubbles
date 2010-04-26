@@ -143,13 +143,13 @@ public class SessionExplorer extends Explorer {
         new ColumnType("source_v",         "Source Dec",      75, false, DegreeField.class),
         new ColumnType("between",          "Between",         60, false, Double.class),
         new ColumnType("xi_factor",        "Xi",              40, false, Double.class),
+        new ColumnType("lst_ex",           "LST Exclusion",   90, false, String.class),
+        new ColumnType("el_limit",         "EL",              40, false, Double.class),
        	new ColumnType("authorized",       "Authorized?",     70, false, Boolean.class),
        	new ColumnType("enabled",          "Enabled?",        60, false, Boolean.class),
        	new ColumnType("complete",         "Complete?",       65, false, Boolean.class),
        	new ColumnType("backup",           "Backup?",         55, false, Boolean.class),
         new ColumnType("transit",          "Transit?",        55, false, Boolean.class),
         new ColumnType("nighttime",        "Night-time?",     65, false, Boolean.class),
-        new ColumnType("lst_ex",           "LST Exclusion",   90, false, String.class),
-        
     	};
 }
