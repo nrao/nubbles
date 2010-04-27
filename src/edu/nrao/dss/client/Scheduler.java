@@ -7,8 +7,10 @@ import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -89,8 +91,7 @@ public class Scheduler extends Viewport implements EntryPoint {
 
         RootPanel rp = RootPanel.get();
         rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
-        rp.add(new Anchor("Helpdesk ", true, "mailto:helpdesk-dss@gb.nrao.edu"));
-        rp.add(new Anchor(" ICAL", "/projects/ical"));
+        rp.add(new Html("<br/><a href='http://www.gb.nrao.edu/~rmaddale/Weather/DssOverview.jpg'>Weather</a> | <a href='http://www.gb.nrao.edu/~rmaddale/Weather/CloudOverview.jpg'>Cloud Coverage</a> | <a href='mailto:helpdesk-dss@gb.nrao.edu'>Help Desk</a> | <a href='/projects/ical'>iCalendar</a>"));
         rp.add(tabPanel);
     }
     
