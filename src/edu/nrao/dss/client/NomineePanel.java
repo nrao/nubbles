@@ -113,7 +113,8 @@ public class NomineePanel extends ContentPanel {
 	
 	public int loadData() {
 		loader.load();
-		int size = this.store.getCount();
+		int size = this.nominees.getItemCount();
+		//int size = this.store.getCount();
 		if (size == 0){
 			MessageBox.alert("Attention", "No nominees returned!", null);
 			add(new HTML("<h2>No results!</h2>"));
