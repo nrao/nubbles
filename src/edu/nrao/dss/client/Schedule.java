@@ -11,8 +11,15 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -32,6 +39,9 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.LoadListener;
+import com.google.gwt.user.client.ui.Widget;
 
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
 import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
@@ -68,6 +78,7 @@ public class Schedule extends ContentPanel {
 	public Schedule() {
 			super();
 			initLayout();
+			initListeners();
 	}	
 	
 	public String getTimeZone() {
@@ -182,6 +193,28 @@ public class Schedule extends ContentPanel {
 		updateCalendar();
 	}
 	
+	@SuppressWarnings("deprecation")
+	public void initListeners() {
+		nomineePanel.getLoader().addListener(ListLoader.Load, new Listener<LoadEvent>() {
+
+			@Override
+			public void handleEvent(LoadEvent be) {
+				// TODO Auto-generated method stub
+				startVacancyDateTime = startVacancyDate;
+				startVacancyDateTime.setHours(startVacancyTime.getHour());
+				startVacancyDateTime.setMinutes(startVacancyTime.getMinutes());
+				startVacancyDateTime.setSeconds(0);
+				String startStr = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").format(startVacancyDateTime);
+				int num_nominees = nomineePanel.getNumNominees();
+				nomineePanel.setHeading("Nominee Periods for " + startStr + " " + timezone + ".  " + num_nominees + " nominees found.");
+				if (num_nominees == 0){
+					MessageBox.alert("Attention", "No nominees returned!", null);
+				}
+			}
+			
+		});
+	}
+	
 	public FactorsDlg getFactorsDlg() {
 		return scheduleControl.factorsDlg;
 	}
@@ -203,8 +236,7 @@ public class Schedule extends ContentPanel {
 		keys.put("completed", (Boolean) vacancyControl.nomineeOptions.get(4).getValue());   // include completed sessions?
 		keys.put("rfi", (Boolean) vacancyControl.nomineeOptions.get(5).getValue());         // ignore RFI exclusion flag?
 		nomineePanel.updateKeys(keys);
-		int num_nominees = nomineePanel.loadData();
-		nomineePanel.setHeading("Nominee Periods for " + startStr + " " + timezone + ".  " + num_nominees + " nominees found.");
+		nomineePanel.loadData();
 		nomineePanel.expand();
 	}
 	

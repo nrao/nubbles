@@ -53,7 +53,7 @@ public class NomineePanel extends ContentPanel {
 		proxy = new DynamicHttpProxy<BaseListLoadResult<NomineeType>>(builder);
 		loader = new BaseListLoader<BaseListLoadResult<NomineeModel>>(proxy, reader);
 
-		store = new ListStore<NomineeModel>(loader);
+		store = new ListStore<NomineeModel>(getLoader());
 		
 		nominees = new ListView<NomineeModel>();
 		nominees.setStore(store);
@@ -111,14 +111,18 @@ public class NomineePanel extends ContentPanel {
 		proxy.setBuilder(builder);
 	}
 	
-	public int loadData() {
+	public int getNumNominees() {
+		return this.store.getCount();
+	}
+	public void loadData() {
 		loader.load();
-		int size = this.nominees.getItemCount();
-		//int size = this.store.getCount();
-		if (size == 0){
-			MessageBox.alert("Attention", "No nominees returned!", null);
-			add(new HTML("<h2>No results!</h2>"));
-		}
-		return size;
+	}
+
+	public BaseListLoader<BaseListLoadResult<NomineeModel>> getLoader() {
+		return loader;
+	}
+	
+	public ListStore<NomineeModel> getStore() {
+		return store;
 	}
 }
