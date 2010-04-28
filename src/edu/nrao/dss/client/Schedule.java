@@ -129,7 +129,7 @@ public class Schedule extends ContentPanel {
 		scheduleExplorer.addButtonsListener(this);
 		scheduleExplorer.setDefaultDate(startCalendarDay);
 		scheduleExplorer.setCollapsible(true);
-		scheduleExplorer.setHeight(300);
+		scheduleExplorer.setHeight(500);
  		controlsContainer.add(scheduleExplorer);
 		
 		// in the middle, the calendar
