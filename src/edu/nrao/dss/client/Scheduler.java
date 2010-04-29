@@ -91,7 +91,7 @@ public class Scheduler extends Viewport implements EntryPoint {
 
         RootPanel rp = RootPanel.get();
         rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
-        rp.add(new Html("<br/><a href='http://www.gb.nrao.edu/~rmaddale/Weather/DssOverview.jpg'>Weather</a> | <a href='http://www.gb.nrao.edu/~rmaddale/Weather/CloudOverview.jpg'>Cloud Coverage</a> | <a href='mailto:helpdesk-dss@gb.nrao.edu'>Help Desk</a> | <a href='/projects/ical'>iCalendar</a>"));
+        rp.add(new Html("<br/><a href='http://www.gb.nrao.edu/~rmaddale/Weather/DSSOverview.html'>Weather</a> | <a href='http://www.gb.nrao.edu/~rmaddale/Weather/CloudCoverage.html'>Cloud Coverage</a> | <a href='mailto:helpdesk-dss@gb.nrao.edu'>Help Desk</a> | <a href='/projects/ical'>iCalendar</a>"));
         rp.add(tabPanel);
     }
     
