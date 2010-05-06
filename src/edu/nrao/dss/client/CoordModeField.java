@@ -10,6 +10,7 @@ class CoordModeField {
                                                        , "ApparentRaDec"
                                                        , "CableWrap"
                                                        , "Encoder"
+                                                       , "Ephemeris"
                                                        };
 
     public CoordModeField(String value) {
