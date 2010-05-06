@@ -29,6 +29,7 @@ public class SessionInfoPanel extends ContentPanel {
 
     private HashMap<String, Integer> sessIds = new HashMap<String, Integer>();
     private JSONObject sessJson;
+    private WindowInfoPanel wp;
     
 	public SessionInfoPanel() {
 		initLayout();
@@ -43,7 +44,7 @@ public class SessionInfoPanel extends ContentPanel {
 
 		setBorders(false);
 		setHeaderVisible(false);
-		
+		setCollapsible(true);
 
         sessForm.setHeaderVisible(false);
 
@@ -68,6 +69,10 @@ public class SessionInfoPanel extends ContentPanel {
 		});		
 	}		
 	
+	public void setWindowInfoPanel(WindowInfoPanel wp) {
+		this.wp = wp;
+	}
+	    
 	// retrieves the project's JSON
 	private void getSession(String sessionHandle) {
 		
@@ -89,18 +94,20 @@ public class SessionInfoPanel extends ContentPanel {
 				populateSessionPage(json);
 			}
 		});		
+
+//		// TODO: just a test!
+//		JSONRequest.get("/windows", keys, new JSONCallbackAdapter() {
+//			// this url returns all the time accounting for the whole proj., 
+//			// so use it to update the whole UI
+//			public void onSuccess(JSONObject json) {
+//			    //sessJson = json;
+//				GWT.log("Got windows", null);
+//			    GWT.log(json.toString(), null);
+//				//populateSessionPage(json);
+//			}
+//		});			
 		
-		// TODO: just a test!
-		JSONRequest.get("/windows", keys, new JSONCallbackAdapter() {
-			// this url returns all the time accounting for the whole proj., 
-			// so use it to update the whole UI
-			public void onSuccess(JSONObject json) {
-			    //sessJson = json;
-				GWT.log("Got windows", null);
-			    GWT.log(json.toString(), null);
-				//populateSessionPage(json);
-			}
-		});				
+		
 	}
 	
 	// gets all project codes form the server and populates the project combo
@@ -131,5 +138,9 @@ public class SessionInfoPanel extends ContentPanel {
 	private void populateSessionPage(JSONObject json) {
 		JSONObject s = json.get("session").isObject();
 		type.setValue(s.get("type").isString().stringValue());
+		
+		// window's panel
+		int sessionId = (int) s.get("id").isNumber().doubleValue();
+		this.wp.updateWindowOptions(sessionId);
 	}
 }

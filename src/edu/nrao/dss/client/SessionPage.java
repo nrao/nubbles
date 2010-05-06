@@ -12,7 +12,8 @@ public class SessionPage extends ContentPanel {
 	
     //private final WindowExplorer  we       = new WindowExplorer();
     private final SessionInfoPanel sp = new SessionInfoPanel();
-    private final ProjectExplorer we = new ProjectExplorer();
+    private final WindowInfoPanel  wp = new WindowInfoPanel();
+    
 	public SessionPage() {
 		initLayout();
 		initListeners();
@@ -25,8 +26,11 @@ public class SessionPage extends ContentPanel {
 		setBorders(false);
 		setHeaderVisible(false);
 
+		sp.setWindowInfoPanel(wp);
         add(sp);
-        add(we); //, new RowData(1, -1, new Margins(4)));		
+
+        add(wp);
+        
 	}
 	
 	private void initListeners() {
