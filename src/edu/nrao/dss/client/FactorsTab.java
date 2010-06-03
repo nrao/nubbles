@@ -36,7 +36,7 @@ public class FactorsTab implements FactorsDisplay {
 		ScrollPanel sp = new ScrollPanel(grid);
 		//sp.setAlwaysShowScrollBars(true);
 		panel.add(sp);
-		//panel.setAutoHeight(true);
+		panel.setAutoHeight(true);
 		
 		return panel;
 	}

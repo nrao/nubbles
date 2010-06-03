@@ -55,7 +55,8 @@ public class TimeAccountingPanel extends ContentPanel {
 		setHeaderVisible(true);
 		//setHeading("Time Accounting");
 		setBorders(true);
-		
+		//setAutoHeight(true);
+		//setHeight(920);
 		// first row - a 3 column table for times
 		LayoutContainer row1 = new LayoutContainer();
 		TableLayout row1table = new TableLayout(4);

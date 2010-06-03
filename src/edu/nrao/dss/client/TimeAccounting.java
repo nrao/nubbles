@@ -73,6 +73,8 @@ public class TimeAccounting extends ContentPanel {
 protected void initLayout() {
 	
 	setLayout( new FitLayout());
+	//setAutoHeight(true);
+	setHeight(920);
 	
 
 	setHeaderVisible(false);

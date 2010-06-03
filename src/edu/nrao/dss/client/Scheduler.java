@@ -8,11 +8,13 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -26,8 +28,7 @@ public class Scheduler extends Viewport implements EntryPoint {
     }
 
     private void initLayout() {
-        //setLayout(new FitLayout());
-
+        
         // project explorer tab
         tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
         pe.setParent(this);
@@ -81,10 +82,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         tabPanel.add(ppTab);
         
         tabPanel.add(addTab(rs, "Receiver Schedule", "Change the Receiver Schedule"));
-        
-        // TODO Why does not "tabPanel.setAutoHeight(true);? work?
-        tabPanel.setHeight(920);
-        //tabPanel.setAutoHeight(true);
+        tabPanel.setAutoHeight(true);
         
         // Factor access
         factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));
@@ -93,6 +91,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
         rp.add(new Html("<br/><a href=\"#\" onClick=\"window.open('http://www.gb.nrao.edu/~rmaddale/Weather/DSSOverview.html', 'Weather Overview', 'scrollbars=yes');return false;\">Weather</a> | <a href=\"#\" onClick=\"window.open('http://www.gb.nrao.edu/~rmaddale/Weather/CloudCoverage.html', 'Cloud Cover', 'scrollbars=yes');return false;\">Cloud Coverage</a> | <a href=\"mailto:helpdesk-dss@gb.nrao.edu\">Help Desk</a> | <a href=\"#\" onClick=\"window.open('/projects/ical', 'iCalendar', 'scrollbars=yes');return false;\">iCalendar</a>"));
         rp.add(tabPanel);
+        
     }
     
     private TabItem addTab(ContentPanel container, String title, String toolTip) {
@@ -101,6 +100,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         item.add(container);
         item.getHeader().setToolTip(toolTip);
         item.setLayout(new FitLayout());
+        //item.setAutoHeight(true);
         return item;
     }
 

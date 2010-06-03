@@ -51,6 +51,7 @@ public class ReceiverSchedule extends ContentPanel {
 		setScrollMode(Scroll.AUTO);
 		setBorders(false);
 		setHeaderVisible(false);
+		setAutoHeight(true);
 
         add(grid);
         add(change, new RowData(1, -1, new Margins(4)));

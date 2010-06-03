@@ -61,6 +61,7 @@ public class ProjectPage extends ContentPanel {
 
 		setBorders(false);
 		setHeaderVisible(false);
+		setAutoHeight(true);
 		
 		// so we can always see everything 
 		//setScrollMode(Scroll.ALWAYS); 

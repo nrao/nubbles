@@ -96,6 +96,7 @@ public class Schedule extends ContentPanel {
 		setFrame(false);
 		setHeaderVisible(false);
 		setBodyStyle("backgroundColor: white;");
+		setHeight(920);
 		getHeader().addTool(new ToolButton("x-tool-gear"));
 		getHeader().addTool(new ToolButton("x-tool-close"));
 

@@ -71,6 +71,7 @@ public class Explorer extends ContentPanel{
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
 		setCommitState(false);
+		setAutoHeight(true);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
@@ -82,6 +83,8 @@ public class Explorer extends ContentPanel{
 		store = new ListStore<BaseModelData>(loader);
 		
 	    grid  = new EditorGrid<BaseModelData>(store, cm);
+	    grid.setAutoHeight(true);
+	    
 		GridSelectionModel<BaseModelData> selectionModel = new GridSelectionModel<BaseModelData>();
 		selectionModel.setSelectionMode(SelectionMode.MULTI);
 		grid.setSelectionModel(selectionModel);

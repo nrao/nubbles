@@ -41,6 +41,7 @@ public class WindowCalendar extends ContentPanel {
 		setBorders(false);
 		setHeaderVisible(true);
 		setHeading("Window Calendar");
+		setAutoHeight(true);
 		
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
