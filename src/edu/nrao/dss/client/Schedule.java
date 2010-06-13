@@ -57,6 +57,7 @@ public class Schedule extends ContentPanel {
 	public CalendarControl calendarControl;
 	public ScheduleControl scheduleControl;
 	private NomineePanel nomineePanel;
+	private Reservations reservations;
 	private ContentPanel calendar;
 
 	private DayView dayView;
@@ -127,6 +128,11 @@ public class Schedule extends ContentPanel {
         scheduleControl.setCollapsible(true);
         controlsContainer.add(scheduleControl);
 		
+        reservations = new Reservations(startCalendarDay, numCalendarDays);
+        reservations.setCollapsible(true);
+        reservations.collapse();
+        controlsContainer.add(reservations);
+        
         vacancyControl = new VacancyControl(this);
         vacancyControl.setCollapsible(true);
         vacancyControl.collapse();
@@ -281,6 +287,8 @@ public class Schedule extends ContentPanel {
 	                loadAppointments(periods);
 	            }
 	    });
+	    reservations.update(DateTimeFormat.getFormat("MM/dd/yyyy").format(startCalendarDay)
+	    		          , Integer.toString(numCalendarDays));
 	}		
 	    
     // updates the gwt-cal widget w/ given periods
