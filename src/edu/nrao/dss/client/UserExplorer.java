@@ -142,6 +142,11 @@ public class UserExplorer extends Explorer {
 	    column.setEditor(initCombo(new String[]{"Administrator", "Observer", "Operator"}));
 	    configs.add(column);
 	    
+	    checkColumn = new CheckColumnConfig("staff", "Staff?", 65);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+	    
 	    column = new ColumnConfig("projects", "Projects", 800);
 	    editor = new CellEditor(new TextField<String>());
 	    editor.disable();

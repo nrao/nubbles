@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -37,12 +38,14 @@ public class ProjectPage extends ContentPanel {
 	private TextField<String> name = new TextField<String>();
 	private TextField<String> pi   = new TextField<String>();
 	private TextField<String> coi  = new TextField<String>();
+	private SimpleComboBox<String> friends = new SimpleComboBox<String>();
 	private TextArea schNotes      = new TextArea();
 	private TextArea obsNotes      = new TextArea();
 	private Button save = new Button();
 	private Button reset = new Button();
 	
-    private HashMap<String, Integer> project_ids = new HashMap<String, Integer>();
+	private HashMap<String, Integer> project_ids = new HashMap<String, Integer>();
+	private HashMap<String, Integer> friend_ids  = new HashMap<String, Integer>();
     private JSONObject projectJson;
     private FormData fd = new FormData(500, 25);
     
@@ -52,6 +55,7 @@ public class ProjectPage extends ContentPanel {
 		initLayout();
 		initListeners();
 		updatePCodeOptions();
+		updateFriendOptions();
 	}
 	
 	private void initLayout() {
@@ -91,6 +95,9 @@ public class ProjectPage extends ContentPanel {
 		coi.setReadOnly(true);
 		coi.setStyleAttribute("color", "grey");
 		projectForm.add(coi, fd);
+		
+		friends.setFieldLabel("Friend");
+		projectForm.add(friends, fd);
 		
 		obsNotes.setFieldLabel("Observer Notes");
 		projectForm.add(obsNotes, new FormData(500, 200));
@@ -219,6 +226,9 @@ public class ProjectPage extends ContentPanel {
 	    name.setValue(proj.get("name").isString().stringValue());
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
+	    GWT.log(proj.get("friend").isString().stringValue());
+	    friends.clear();
+	    friends.setSimpleValue(proj.get("friend").isString().stringValue());
 	    setObserversLink();
 	    
 	    // for writable fields, set them up again so that changes
@@ -276,6 +286,28 @@ public class ProjectPage extends ContentPanel {
 			}
 		});
 	}
+	
+	public void updateFriendOptions() {
+		JSONRequest.get("/sessions/options"
+			      , new HashMap<String, Object>() {{
+			    	  put("mode", "friends");
+			        }}
+			      , new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json) {
+				// get ready to populate the project codes list
+				friends.removeAll();
+				friend_ids.clear();
+				JSONArray fs   = json.get("friends").isArray();
+				JSONArray ids  = json.get("ids").isArray();
+				for (int i = 0; i < fs.size(); ++i){
+					String friend = fs.get(i).toString().replace('"', ' ').trim();
+					int id = (int) ids.get(i).isNumber().doubleValue();
+					friend_ids.put(friend, id);
+					friends.add(friend);
+				}
+			}
+		});
+	}
 
 	// take changes from widgets and send them over to the server to change
 	// this project
@@ -312,7 +344,12 @@ public class ProjectPage extends ContentPanel {
 		if (v == null) {
 			v = "";
 		}			
-		keys.put("schd_notes", v);			
+		keys.put("schd_notes", v);
+		v = friends.getSimpleValue();
+		if (v == null) {
+			v = "";
+		}
+		keys.put("friends", v);
 				
 		String url = "/projects/" + project_ids.get(pcode);
 		

@@ -238,6 +238,13 @@ public class ProjectExplorer extends Explorer {
 	    column.setSortable(false);
 	    configs.add(column);
 
+	    column = new ColumnConfig("friend", "Friend", 150);
+	    editor   = new CellEditor(new TextField<String>());
+	    editor.disable();
+	    column.setEditor(editor);
+	    column.setSortable(false);
+	    configs.add(column);
+	    
 	    column = new ColumnConfig("type", "Type", 80);
 	    column.setEditor(initCombo(new String[]{"science", "non-science"}));
 	    configs.add(column);
