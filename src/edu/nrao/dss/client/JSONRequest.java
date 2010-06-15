@@ -84,7 +84,7 @@ class JSONCallbackAdapter implements JSONCallback {
 			else
 			{
 				msg += "No response received from server at " + this.uri + "  This could indicate a network ";
-				msg += "problem, or that the server is down.";
+				msg += "problem, that the server is down, or an error saving data.";
 			}
 
 			MessageBox.alert("Error", error + msg, null);

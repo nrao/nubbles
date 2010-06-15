@@ -148,7 +148,7 @@ public class Explorer extends ContentPanel{
         JSONRequest.post(rootURL + "/" + ((Number) model.get("id")).intValue(),
 		         keys.toArray(new String[]{}),
 		         values.toArray(new String[]{}),
-		         null);
+		         new JSONCallbackAdapter());
 	}
 	
 	// to be implemented by children
