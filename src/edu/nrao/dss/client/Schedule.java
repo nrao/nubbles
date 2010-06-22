@@ -119,6 +119,7 @@ public class Schedule extends ContentPanel {
 		controlsContainer.setFrame(true);
 		controlsContainer.setBorders(true);
 		controlsContainer.setHeading("Controls");
+		controlsContainer.setScrollMode(Scroll.AUTO);
 
 		calendarControl = new CalendarControl(this);
 		calendarControl.setCollapsible(true);
