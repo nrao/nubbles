@@ -71,6 +71,7 @@ public class NomineePanel extends ContentPanel {
 			         
 			         // add the selected period to the Period Explorer
 		             schedule.scheduleExplorer.addRecord(nominee2Period(baseModelData));
+		             schedule.scheduleExplorer.loadData();
 		             
 			         // and show the Session's scores on the calendar
 			         String name = baseModelData.get("sess_name") + " (" + baseModelData.get("proj_name") + ")";
@@ -86,8 +87,10 @@ public class NomineePanel extends ContentPanel {
 		retval.put("date", DateTimeFormat.getFormat("yyyy-MM-dd").format(schedule.startVacancyDateTime));
 		retval.put("time", DateTimeFormat.getFormat("HH:mm").format(schedule.startVacancyDateTime));
 		retval.put("duration", (Double)fields.get("duration")/60.0);
-		retval.put("sscore", (Double)fields.get("score"));
-		retval.put("cscore", (Double)fields.get("score"));
+
+		Double score = (Double)fields.get("score");
+		retval.put("sscore", score);		
+		retval.put("cscore", score);
 		//retval.put("forecast", null);
 		retval.put("backup", false);
 		return retval;

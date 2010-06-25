@@ -45,5 +45,9 @@ public class ScheduleCalendar extends ContentPanel {
 	public void setDefaultDate(Date date) {
 		pe.setDefaultDate(date);
 	}
+	
+	public void loadData() {
+		pe.loadData();
+	}
 }	
 	
