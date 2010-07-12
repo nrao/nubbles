@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -30,15 +31,20 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -97,6 +103,8 @@ public class Explorer extends ContentPanel{
 		    initToolBar();
 		}
 		loadData();
+		
+		columnConfForm = new ColumnConfigForm(this);
 		
 	}
 	
@@ -186,6 +194,24 @@ public class Explorer extends ContentPanel{
 		
 		toolBar = new ToolBar();
 		setTopComponent(toolBar);
+		
+		columnsItem = new Button("Columns");
+		Menu menu = new Menu();
+		MenuItem saveConfig = new MenuItem("Save Column Combination");
+		menu.add(saveConfig);
+		menu.add(new SeparatorMenuItem());
+		initColumnsMenu(menu);
+		columnsItem.setMenu(menu);
+		toolBar.add(columnsItem);
+		saveConfig.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			public void componentSelected(MenuEvent ce) {
+				com.extjs.gxt.ui.client.widget.Window w = columnConfForm.getWindow();
+				columnConfForm.show();
+				w.show();
+			}
+			
+		});
 		
 		viewItem = new Button("View");
 		toolBar.add(viewItem);
@@ -320,6 +346,11 @@ public class Explorer extends ContentPanel{
 					}
 				});
 	}
+	
+	private void initColumnsMenu(Menu menu) {
+		menu.add(new MenuItem("Menu Item 2"));
+		menu.add(new MenuItem("Menu Item 3"));
+	}
 
 	protected void setRemoveItemListener() {
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -427,6 +458,10 @@ public class Explorer extends ContentPanel{
 	public int getPageSize() {
 		return pageSize;
 	}
+	
+	public Button getColumnsItem() {
+		return columnsItem;
+	}
 
 	public void setCommitState(boolean commitState) {
 		this.commitState = commitState;
@@ -444,10 +479,10 @@ public class Explorer extends ContentPanel{
 	
 	/** Flag for enforcing saves only on Save button press. **/
 	private boolean commitState;
-	
 	private int pageSize = 50;
-	
-	private ModelType modelType;
+	private ModelType modelType;	
+	private ColumnConfigForm columnConfForm;
+	private Button columnsItem;
 
 	protected List<CheckColumnConfig> checkBoxes = new ArrayList<CheckColumnConfig>();
 	
