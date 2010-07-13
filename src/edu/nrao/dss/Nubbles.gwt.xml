@@ -12,7 +12,7 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
-  <inherits name='com.extjs.gxt.ui.GXT'/>
+  <inherits name='com.extjs.gxt.ui.GXT'></inherits>
   <!-- swap the below stylesheet for the gwt.calendar inherits when we use theirs -->
   <!-- <inherits name='com.bradrydzewski.gwt.calendar.Calendar' /> --> 
   <!-- <inherits name='com.bradrydzewski.gwt.calendar.theme.google.Google' /> -->

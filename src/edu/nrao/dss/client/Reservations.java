@@ -20,7 +20,7 @@ public class Reservations extends ContentPanel {
 	}
 	
 	private void initLayout(Date start, int days){
-		setHeading("Reservatons");
+		setHeading("Reservations");
 		setBorders(true);
 		
 		// put the reservation grid inside
