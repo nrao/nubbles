@@ -107,7 +107,6 @@ public class InvestigatorForm extends LayoutContainer {
 				user_ids.clear();
 				JSONArray invests = json.get("users").isArray();
 				JSONArray ids     = json.get("ids").isArray();
-				GWT.log("got num of users: "+Integer.toString(invests.size()), null); 
 				for (int i = 0; i < invests.size(); ++i){
 					String invest = invests.get(i).toString().replace('"', ' ').trim();
 					int id = (int) ids.get(i).isNumber().doubleValue();

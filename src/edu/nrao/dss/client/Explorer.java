@@ -51,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
@@ -197,21 +198,10 @@ public class Explorer extends ContentPanel{
 		
 		columnsItem = new Button("Columns");
 		Menu menu = new Menu();
-		MenuItem saveConfig = new MenuItem("Save Column Combination");
-		menu.add(saveConfig);
-		menu.add(new SeparatorMenuItem());
+		
 		initColumnsMenu(menu);
 		columnsItem.setMenu(menu);
 		toolBar.add(columnsItem);
-		saveConfig.addSelectionListener(new SelectionListener<MenuEvent>() {
-
-			public void componentSelected(MenuEvent ce) {
-				com.extjs.gxt.ui.client.widget.Window w = columnConfForm.getWindow();
-				columnConfForm.show();
-				w.show();
-			}
-			
-		});
 		
 		viewItem = new Button("View");
 		toolBar.add(viewItem);
@@ -347,9 +337,37 @@ public class Explorer extends ContentPanel{
 				});
 	}
 	
-	private void initColumnsMenu(Menu menu) {
-		menu.add(new MenuItem("Menu Item 2"));
-		menu.add(new MenuItem("Menu Item 3"));
+	private void initColumnsMenu(final Menu menu) {
+		MenuItem saveConfig = new MenuItem("Save Column Combination");
+		saveConfig.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			public void componentSelected(MenuEvent ce) {
+				com.extjs.gxt.ui.client.widget.Window w = columnConfForm.getWindow();
+				columnConfForm.show();
+				w.show();
+			}
+			
+		});
+		
+		menu.add(saveConfig);
+		menu.add(new SeparatorMenuItem());
+		
+		// Get save configurations from the server and populate them as menu items
+		JSONRequest.get("/configurations/explorer" + rootURL, new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json){
+				JSONArray configs = json.get("configs").isArray();
+				for (int i = 0; i < configs.size(); ++i) {
+					JSONArray config = configs.get(i).isArray();
+					ColumnConfigMenuItem mi = 
+						new ColumnConfigMenuItem(grid
+							                   , config.get(0).isString().stringValue()
+							                   , config.get(1).isNumber().toString());
+					menu.add(mi);
+				}
+			}
+		});
+		//menu.add(new MenuItem("Menu Item 2"));
+		//menu.add(new MenuItem("Menu Item 3"));
 	}
 
 	protected void setRemoveItemListener() {

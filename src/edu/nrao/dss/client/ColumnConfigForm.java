@@ -63,7 +63,7 @@ public class ColumnConfigForm extends LayoutContainer{
 			// Get the hidden status on each column in the explorer.
 			final HashMap<String, Object> fields = new HashMap<String, Object>();				
 			for (ColumnConfig cc : explorer.grid.getColumnModel().getColumns()){
-				fields.put(cc.getHeader(), cc.isHidden());
+				fields.put(cc.getId(), cc.isHidden());
 			}
 			fields.put("name", name.getValue().toString());
 			// Used to identify the specific explorer on the server.
@@ -72,10 +72,12 @@ public class ColumnConfigForm extends LayoutContainer{
 			JSONRequest.post("/configurations/explorer", fields, new JSONCallbackAdapter() {
 				@Override
 				public void onSuccess(JSONObject json) {
+					String new_id = json.get("id").isNumber().toString();
 					// Update save column combo list
 					Button columns = explorer.getColumnsItem();
 					columns.getMenu().add(new ColumnConfigMenuItem(explorer.grid
-							               , fields.get("name").toString()));
+							               , fields.get("name").toString()
+							               , new_id));
 				}
 			});
 			getWindow().close();
