@@ -196,12 +196,13 @@ public class Explorer extends ContentPanel{
 		toolBar = new ToolBar();
 		setTopComponent(toolBar);
 		
-		columnsItem = new Button("Columns");
-		Menu menu = new Menu();
-		
-		initColumnsMenu(menu);
-		columnsItem.setMenu(menu);
-		toolBar.add(columnsItem);
+		if (showColumnsMenu) {
+			columnsItem = new Button("Columns");
+			Menu menu = new Menu();
+			initColumnsMenu(menu);
+			columnsItem.setMenu(menu);
+			toolBar.add(columnsItem);
+		}
 		
 		viewItem = new Button("View");
 		toolBar.add(viewItem);
@@ -503,6 +504,10 @@ public class Explorer extends ContentPanel{
 	public boolean isCommitState() {
 		return commitState;
 	}
+	
+	public void setShowColumnsMenu(boolean state) {
+		showColumnsMenu = state;
+	}
 
 	/** Provides basic spreadsheet-like functionality. */
 	protected EditorGrid<BaseModelData> grid;
@@ -516,6 +521,7 @@ public class Explorer extends ContentPanel{
 	private ModelType modelType;	
 	private ColumnConfigForm columnConfForm;
 	private Button columnsItem;
+	private boolean showColumnsMenu = true;
 
 	protected List<CheckColumnConfig> checkBoxes = new ArrayList<CheckColumnConfig>();
 	
