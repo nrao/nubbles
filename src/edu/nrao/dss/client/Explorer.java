@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -30,21 +31,27 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
@@ -97,6 +104,8 @@ public class Explorer extends ContentPanel{
 		    initToolBar();
 		}
 		loadData();
+		
+		columnConfForm = new ColumnConfigForm(this);
 		
 	}
 	
@@ -186,6 +195,13 @@ public class Explorer extends ContentPanel{
 		
 		toolBar = new ToolBar();
 		setTopComponent(toolBar);
+		
+		columnsItem = new Button("Columns");
+		Menu menu = new Menu();
+		
+		initColumnsMenu(menu);
+		columnsItem.setMenu(menu);
+		toolBar.add(columnsItem);
 		
 		viewItem = new Button("View");
 		toolBar.add(viewItem);
@@ -320,6 +336,54 @@ public class Explorer extends ContentPanel{
 					}
 				});
 	}
+	
+	private void initColumnsMenu(final Menu menu) {
+		MenuItem saveConfig = new MenuItem("Save Column Combination");
+		saveConfig.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			public void componentSelected(MenuEvent ce) {
+				com.extjs.gxt.ui.client.widget.Window w = columnConfForm.getWindow();
+				columnConfForm.show();
+				w.show();
+			}
+			
+		});
+		
+		menu.add(saveConfig);
+		menu.add(new SeparatorMenuItem());
+		
+		MenuItem all = new MenuItem("Restore All");
+		all.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				for (ColumnConfig cc : grid.getColumnModel().getColumns()){
+					cc.setHidden(false);
+				}
+				grid.getView().refresh(true);	
+			}
+			
+		});
+		menu.add(all);
+		menu.add(new SeparatorMenuItem());
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("explorer", rootURL);
+		// Get save configurations from the server and populate them as menu items
+		JSONRequest.get("/configurations/explorer", data, new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json){
+				JSONArray configs = json.get("configs").isArray();
+				for (int i = 0; i < configs.size(); ++i) {
+					JSONArray config = configs.get(i).isArray();
+					ColumnConfigMenuItem mi = 
+						new ColumnConfigMenuItem(grid
+							                   , config.get(0).isString().stringValue()
+							                   , config.get(1).isNumber().toString());
+					menu.add(mi);
+				}
+			}
+		});
+	}
 
 	protected void setRemoveItemListener() {
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -427,6 +491,10 @@ public class Explorer extends ContentPanel{
 	public int getPageSize() {
 		return pageSize;
 	}
+	
+	public Button getColumnsItem() {
+		return columnsItem;
+	}
 
 	public void setCommitState(boolean commitState) {
 		this.commitState = commitState;
@@ -444,10 +512,10 @@ public class Explorer extends ContentPanel{
 	
 	/** Flag for enforcing saves only on Save button press. **/
 	private boolean commitState;
-	
 	private int pageSize = 50;
-	
-	private ModelType modelType;
+	private ModelType modelType;	
+	private ColumnConfigForm columnConfForm;
+	private Button columnsItem;
 
 	protected List<CheckColumnConfig> checkBoxes = new ArrayList<CheckColumnConfig>();
 	

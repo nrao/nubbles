@@ -74,9 +74,9 @@ public class InvestigatorExplorer extends Explorer {
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
-	        	Window w = getAddInvest().getWindow();
-				getAddInvest().show();
-				w.add(getAddInvest());
+	        	Window w = addInvest.getWindow();
+				addInvest.show();
+				w.add(addInvest);
 				w.setSize(375, 175);
 				w.show();
 	        }
