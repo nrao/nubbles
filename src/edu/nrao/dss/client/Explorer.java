@@ -352,8 +352,25 @@ public class Explorer extends ContentPanel{
 		menu.add(saveConfig);
 		menu.add(new SeparatorMenuItem());
 		
+		MenuItem all = new MenuItem("Restore All");
+		all.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				for (ColumnConfig cc : grid.getColumnModel().getColumns()){
+					cc.setHidden(false);
+				}
+				grid.getView().refresh(true);	
+			}
+			
+		});
+		menu.add(all);
+		menu.add(new SeparatorMenuItem());
+		
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("explorer", rootURL);
 		// Get save configurations from the server and populate them as menu items
-		JSONRequest.get("/configurations/explorer" + rootURL, new JSONCallbackAdapter() {
+		JSONRequest.get("/configurations/explorer", data, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json){
 				JSONArray configs = json.get("configs").isArray();
 				for (int i = 0; i < configs.size(); ++i) {
@@ -366,8 +383,6 @@ public class Explorer extends ContentPanel{
 				}
 			}
 		});
-		//menu.add(new MenuItem("Menu Item 2"));
-		//menu.add(new MenuItem("Menu Item 3"));
 	}
 
 	protected void setRemoveItemListener() {
