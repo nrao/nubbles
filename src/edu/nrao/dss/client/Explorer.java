@@ -105,7 +105,8 @@ public class Explorer extends ContentPanel{
 		}
 		loadData();
 		
-		columnConfForm = new ColumnConfigForm(this);
+		columnConfForm  = new ColumnConfigForm(this);
+		filterComboForm = new FilterComboForm(this);
 		
 	}
 	
@@ -198,9 +199,7 @@ public class Explorer extends ContentPanel{
 		
 		if (showColumnsMenu) {
 			columnsItem = new Button("Columns");
-			Menu menu = new Menu();
-			initColumnsMenu(menu);
-			columnsItem.setMenu(menu);
+			columnsItem.setMenu(initColumnsMenu());
 			toolBar.add(columnsItem);
 		}
 		
@@ -338,7 +337,8 @@ public class Explorer extends ContentPanel{
 				});
 	}
 	
-	private void initColumnsMenu(final Menu menu) {
+	private Menu initColumnsMenu() {
+		final Menu menu = new Menu();
 		MenuItem saveConfig = new MenuItem("Save Column Combination");
 		saveConfig.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -371,7 +371,7 @@ public class Explorer extends ContentPanel{
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("explorer", rootURL);
 		// Get save configurations from the server and populate them as menu items
-		JSONRequest.get("/configurations/explorer", data, new JSONCallbackAdapter() {
+		JSONRequest.get("/configurations/explorer/columnConfigs", data, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json){
 				JSONArray configs = json.get("configs").isArray();
 				for (int i = 0; i < configs.size(); ++i) {
@@ -384,8 +384,46 @@ public class Explorer extends ContentPanel{
 				}
 			}
 		});
+		return menu;
 	}
 
+	protected Menu initFilterMenu() {
+		final Menu menu = new Menu();
+		MenuItem saveCombos = new MenuItem("Save Filter Combination");
+		saveCombos.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			public void componentSelected(MenuEvent ce) {
+				com.extjs.gxt.ui.client.widget.Window w = filterComboForm.getWindow();
+				filterComboForm.show();
+				w.show();
+			}
+			
+		});
+		
+		menu.add(saveCombos);
+		menu.add(new SeparatorMenuItem());
+		
+		//  TBF:  This is only used below to init the MenuItem outside the namespace
+		final Explorer e = this;
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		data.put("explorer", rootURL);
+		// Get save configurations from the server and populate them as menu items
+		JSONRequest.get("/configurations/explorer/filterCombos", data, new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json){
+				JSONArray configs = json.get("configs").isArray();
+				for (int i = 0; i < configs.size(); ++i) {
+					JSONArray config = configs.get(i).isArray();
+					FilterComboMenuItem mi = 
+						new FilterComboMenuItem(e
+							                   , config.get(0).isString().stringValue()
+							                   , config.get(1).isNumber().toString());
+					menu.add(mi);
+				}
+			}
+		});
+		return menu;
+	}
+	
 	protected void setRemoveItemListener() {
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
@@ -437,6 +475,7 @@ public class Explorer extends ContentPanel{
 		filter.setTriggerAction(TriggerAction.ALL);
 		filter.setWidth(width);
 		filter.setEmptyText(title);
+		filter.setTitle(title);
 		for (String o : options) {
 			filter.add(o);
 		}
@@ -496,7 +535,15 @@ public class Explorer extends ContentPanel{
 	public Button getColumnsItem() {
 		return columnsItem;
 	}
+	
+	public SplitButton getFilterAction() {
+		return filterAction;
+	}
 
+	public List<SimpleComboBox<String>> getAdvancedFilters() {
+		return advancedFilters;
+	}
+	
 	public void setCommitState(boolean commitState) {
 		this.commitState = commitState;
 	}
@@ -520,6 +567,7 @@ public class Explorer extends ContentPanel{
 	private int pageSize = 50;
 	private ModelType modelType;	
 	private ColumnConfigForm columnConfForm;
+	private FilterComboForm filterComboForm;
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
 
@@ -534,7 +582,7 @@ public class Explorer extends ContentPanel{
 	
 	protected List<SimpleComboBox<String>> advancedFilters = new ArrayList<SimpleComboBox<String>>();
 	
-	protected Button filterAction;
+	protected SplitButton filterAction;
 	protected Button saveItem;
 	protected Button viewItem;
 	protected Button addItem;

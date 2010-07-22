@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -35,7 +36,8 @@ public class UserExplorer extends Explorer {
 	}
 	
 	private void initFilters() {
-		filterAction = new Button("Filter");
+		filterAction = new SplitButton("Filter");
+		filterAction.setMenu(initFilterMenu());
 		filterAction.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be){

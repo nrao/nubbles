@@ -9,32 +9,31 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;
 
-public class ColumnConfigForm extends LayoutContainer{
+public class FilterComboForm extends LayoutContainer {
+	
 	private VerticalPanel vp;
     private Window window = new Window();  
     private FormData formData;
 	private Button submit = new Button("Submit");
 	private Explorer explorer;
 	
-    public ColumnConfigForm(Explorer e) {
+	public FilterComboForm(Explorer e) {
     	explorer = e;
     	window.add(this);
         window.setSize(375, 175);
     }
-    
+	
 	@Override  
     protected void onRender(Element parent, int index) {  
       super.onRender(parent, index);  
@@ -43,11 +42,11 @@ public class ColumnConfigForm extends LayoutContainer{
       vp.setSpacing(10);  
       createForm();
       add(vp);
-    }  
-   
-    private void createForm() {  
-    	FormPanel form = new FormPanel();  
-    	form.setHeading("Save Column Configuration");  
+    }
+	
+	private void createForm(){
+		FormPanel form = new FormPanel();  
+    	form.setHeading("Save Filter Combination");  
     	form.setFrame(true);  
     	form.setWidth(350);  
    
@@ -62,21 +61,26 @@ public class ColumnConfigForm extends LayoutContainer{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				// Get the hidden status on each column in the explorer.
-				final HashMap<String, Object> fields = new HashMap<String, Object>();				
-				for (ColumnConfig cc : explorer.grid.getColumnModel().getColumns()){
-					fields.put(cc.getId(), cc.isHidden());
+				final HashMap<String, Object> fields = new HashMap<String, Object>();
+				for (SimpleComboBox<String> af : explorer.getAdvancedFilters()){
+					SimpleComboValue<String> value = af.getValue();
+					if (value != null){
+						fields.put(af.getTitle(), value.getValue());
+					}
 				}
+				
 				fields.put("name", name.getValue().toString());
+				
 				// Used to identify the specific explorer on the server.
 				fields.put("explorer", explorer.rootURL);
 				
-				JSONRequest.post("/configurations/explorer/columnConfigs", fields, new JSONCallbackAdapter() {
+				JSONRequest.post("/configurations/explorer/filterCombos", fields, new JSONCallbackAdapter() {
 					@Override
 					public void onSuccess(JSONObject json) {
 						String new_id = json.get("id").isNumber().toString();
-						// Update save column combo list
-						Button columns = explorer.getColumnsItem();
-						columns.getMenu().add(new ColumnConfigMenuItem(explorer.grid
+						// Update saved filter combo list
+						SplitButton filterAction = explorer.getFilterAction();
+						filterAction.getMenu().add(new FilterComboMenuItem(explorer
 								               , fields.get("name").toString()
 								               , new_id));
 					}
@@ -105,14 +109,9 @@ public class ColumnConfigForm extends LayoutContainer{
     	binding.addButton(submit);  
     
     	vp.add(form);
-    }
-
-	public void setWindow(Window window) {
-		this.window = window;
 	}
-
+	
 	public Window getWindow() {
 		return window;
 	}
-	
 }

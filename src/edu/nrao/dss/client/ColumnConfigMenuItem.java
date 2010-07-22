@@ -28,8 +28,7 @@ public class ColumnConfigMenuItem extends MenuItem {
 			public void componentSelected(MenuEvent ce) {
 				// Get the configuration from the server.
 				// Set the visibility of the columns based on the configuration.
-				GWT.log("Getting config!");
-				JSONRequest.get("/configurations/explorer/" + config_id, new JSONCallbackAdapter() {
+				JSONRequest.get("/configurations/explorer/columnConfigs/" + config_id, new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json){
 						//  Start by showing all columns
 						for (ColumnConfig cc : grid.getColumnModel().getColumns()){
@@ -41,7 +40,6 @@ public class ColumnConfigMenuItem extends MenuItem {
 						JSONArray columns = json.get("columns").isArray();
 						for (int i = 0; i < columns.size(); ++i) {
 							String column_id = columns.get(i).isString().stringValue();
-							GWT.log("hiding " + column_id);
 							ColumnConfig column = grid.getColumnModel().getColumnById(column_id);
 							column.setHidden(true);
 						}
