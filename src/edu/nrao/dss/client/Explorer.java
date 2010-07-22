@@ -413,11 +413,13 @@ public class Explorer extends ContentPanel{
 				JSONArray configs = json.get("configs").isArray();
 				for (int i = 0; i < configs.size(); ++i) {
 					JSONArray config = configs.get(i).isArray();
+					String filter_id = config.get(1).isNumber().toString();
 					FilterComboMenuItem mi = 
 						new FilterComboMenuItem(e
 							                   , config.get(0).isString().stringValue()
-							                   , config.get(1).isNumber().toString());
+							                   , filter_id);
 					menu.add(mi);
+					filterComboIds.add(filter_id);
 				}
 			}
 		});
@@ -570,6 +572,7 @@ public class Explorer extends ContentPanel{
 	private FilterComboForm filterComboForm;
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
+	public List<String> filterComboIds = new ArrayList<String>();
 
 	protected List<CheckColumnConfig> checkBoxes = new ArrayList<CheckColumnConfig>();
 	

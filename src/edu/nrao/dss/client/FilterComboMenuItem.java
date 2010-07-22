@@ -41,6 +41,8 @@ public class FilterComboMenuItem extends MenuItem {
 								String value = filter.isString().stringValue();
 								GWT.log(af.getTitle() + " : " + value);
 								af.setSimpleValue(value);
+							} else {
+								af.reset();
 							}
 						}
 					}

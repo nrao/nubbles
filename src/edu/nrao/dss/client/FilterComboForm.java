@@ -78,11 +78,13 @@ public class FilterComboForm extends LayoutContainer {
 					@Override
 					public void onSuccess(JSONObject json) {
 						String new_id = json.get("id").isNumber().toString();
-						// Update saved filter combo list
-						SplitButton filterAction = explorer.getFilterAction();
-						filterAction.getMenu().add(new FilterComboMenuItem(explorer
-								               , fields.get("name").toString()
-								               , new_id));
+						// Update saved filter combo list if we created a new combo
+						if (! explorer.filterComboIds.contains(new_id)) {
+						    SplitButton filterAction = explorer.getFilterAction();
+							filterAction.getMenu().add(new FilterComboMenuItem(explorer
+													, fields.get("name").toString()
+								              		, new_id));
+						}
 					}
 				});
 				getWindow().close();
