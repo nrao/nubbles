@@ -75,10 +75,13 @@ public class ColumnConfigForm extends LayoutContainer{
 					public void onSuccess(JSONObject json) {
 						String new_id = json.get("id").isNumber().toString();
 						// Update save column combo list
-						Button columns = explorer.getColumnsItem();
-						columns.getMenu().add(new ColumnConfigMenuItem(explorer.grid
-								               , fields.get("name").toString()
-								               , new_id));
+						if (! explorer.columnConfigIds.contains(new_id)) {
+							Button columns = explorer.getColumnsItem();
+							columns.getMenu().add(new ColumnConfigMenuItem(explorer.grid
+									, fields.get("name").toString()
+									, new_id));
+							explorer.columnConfigIds.add(new_id);
+						}
 					}
 				});
 				getWindow().close();

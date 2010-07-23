@@ -407,11 +407,13 @@ public class Explorer extends ContentPanel{
 				JSONArray configs = json.get("configs").isArray();
 				for (int i = 0; i < configs.size(); ++i) {
 					JSONArray config = configs.get(i).isArray();
+					String config_id = config.get(1).isNumber().toString();
 					ColumnConfigMenuItem mi = 
 						new ColumnConfigMenuItem(grid
 							                   , config.get(0).isString().stringValue()
-							                   , config.get(1).isNumber().toString());
+							                   , config_id);
 					menu.add(mi);
+					columnConfigIds.add(config_id);
 				}
 			}
 		});
@@ -633,6 +635,7 @@ public class Explorer extends ContentPanel{
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
 	public List<String> filterComboIds = new ArrayList<String>();
+	public List<String> columnConfigIds = new ArrayList<String>();
 
 	protected List<CheckColumnConfig> checkBoxes = new ArrayList<CheckColumnConfig>();
 	
