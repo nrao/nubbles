@@ -84,6 +84,7 @@ public class FilterComboForm extends LayoutContainer {
 							filterAction.getMenu().add(new FilterComboMenuItem(explorer
 													, fields.get("name").toString()
 								              		, new_id));
+							explorer.filterComboIds.add(new_id);
 						}
 					}
 				});
