@@ -5,14 +5,15 @@ import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
-public class ColumnConfigMenuItem extends MenuItem {
+public class ColumnConfigMenuItem extends CheckMenuItem {
 	private EditorGrid<BaseModelData> grid;
-	private String config_id;
+	public String config_id;
 	
 	public ColumnConfigMenuItem(EditorGrid<BaseModelData> grid, String title, String config_id) {
 		super(title);

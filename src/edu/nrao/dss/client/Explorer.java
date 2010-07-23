@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -42,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
@@ -351,6 +353,35 @@ public class Explorer extends ContentPanel{
 		});
 		
 		menu.add(saveConfig);
+		MenuItem removeConfigs = new MenuItem("Remove Checked Items");
+		removeConfigs.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				for(Component mi : menu.getItems()){
+					//  Doing this the Python way. ;)
+					try {
+						final ColumnConfigMenuItem cmi = (ColumnConfigMenuItem) mi;
+						if (cmi.isChecked()){
+							HashMap<String, Object> data = new HashMap<String, Object>();
+							data.put("method_", "DELETE");
+							JSONRequest.post("/configurations/explorer/columnConfigs/" + cmi.config_id
+									       , data
+									       , new JSONCallbackAdapter() {
+								public void onSuccess(JSONObject json){
+									menu.remove(cmi);
+								}
+							});
+						}
+					} catch (ClassCastException e) {
+						
+					}
+					
+				}
+			}
+			
+		});
+		menu.add(removeConfigs);
 		menu.add(new SeparatorMenuItem());
 		
 		MenuItem all = new MenuItem("Restore All");
@@ -401,6 +432,35 @@ public class Explorer extends ContentPanel{
 		});
 		
 		menu.add(saveCombos);
+		MenuItem removeCombos = new MenuItem("Remove Checked Items");
+		removeCombos.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				for(Component mi : menu.getItems()){
+					//  Doing this the Python way. ;)
+					try {
+						final FilterComboMenuItem cmi = (FilterComboMenuItem) mi;
+						if (cmi.isChecked()){
+							HashMap<String, Object> data = new HashMap<String, Object>();
+							data.put("method_", "DELETE");
+							JSONRequest.post("/configurations/explorer/filterCombos/" + cmi.combo_id
+									       , data
+									       , new JSONCallbackAdapter() {
+								public void onSuccess(JSONObject json){
+									menu.remove(cmi);
+								}
+							});
+						}
+					} catch (ClassCastException e) {
+						
+					}
+					
+				}
+			}
+			
+		});
+		menu.add(removeCombos);
 		menu.add(new SeparatorMenuItem());
 		
 		//  TBF:  This is only used below to init the MenuItem outside the namespace

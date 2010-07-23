@@ -6,25 +6,26 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 
-public class FilterComboMenuItem extends MenuItem {
+public class FilterComboMenuItem extends CheckMenuItem {
 	
-	Explorer explorer;
-	String combo_id;
+	private Explorer explorer;
+	public String combo_id;
 	
 	public FilterComboMenuItem(Explorer explorer, String title, String combo_id){
 		super(title);
 		this.explorer = explorer;
 		this.combo_id = combo_id;
-		initListener();
+		initListeners();
 	}
 	
-	private void initListener() {
+	private void initListeners() {
 		this.addSelectionListener(new SelectionListener<MenuEvent>() {
 
 			@Override
@@ -39,7 +40,6 @@ public class FilterComboMenuItem extends MenuItem {
 							JSONValue filter = filters.get(af.getTitle());
 							if (filter != null) {
 								String value = filter.isString().stringValue();
-								GWT.log(af.getTitle() + " : " + value);
 								af.setSimpleValue(value);
 							} else {
 								af.reset();
@@ -48,7 +48,6 @@ public class FilterComboMenuItem extends MenuItem {
 					}
 				});
 			}
-			
 		});
 	}
 }
