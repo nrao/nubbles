@@ -43,12 +43,12 @@ public class ProjectExplorer extends Explorer {
 		
 		clearButton = new Button("Clear selections");
 		clearButton.setToolTip("Press to de-select grid items");
-		toolBar.insert(new SeparatorToolItem(), 17);
-		toolBar.insert(clearButton, 18);
+		toolBar.insert(new SeparatorToolItem(), 18);
+		toolBar.insert(clearButton, 19);
 		
 		emailButton = new Button("Email");
-		toolBar.insert(new SeparatorToolItem(), 19);
-		toolBar.insert(emailButton, 20);
+		toolBar.insert(new SeparatorToolItem(), 20);
+		toolBar.insert(emailButton, 21);
 		emailButton.setToolTip("Email investigators");
 		setEmailButtonListener();
 		setClearButtonListener();

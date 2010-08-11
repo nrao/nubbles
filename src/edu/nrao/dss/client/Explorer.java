@@ -420,8 +420,8 @@ public class Explorer extends ContentPanel{
 		return menu;
 	}
 
-	protected Menu initFilterMenu() {
-		final Menu menu = new Menu();
+	protected FilterMenu initFilterMenu() {
+		filterMenu = new FilterMenu();
 		MenuItem saveCombos = new MenuItem("Save Filter Combination");
 		saveCombos.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -433,13 +433,13 @@ public class Explorer extends ContentPanel{
 			
 		});
 		
-		menu.add(saveCombos);
+		filterMenu.add(saveCombos);
 		MenuItem removeCombos = new MenuItem("Remove Checked Items");
 		removeCombos.addSelectionListener(new SelectionListener<MenuEvent>() {
 
 			@Override
 			public void componentSelected(MenuEvent ce) {
-				for(Component mi : menu.getItems()){
+				for(Component mi : filterMenu.getItems()){
 					//  Doing this the Python way. ;)
 					try {
 						final FilterComboMenuItem cmi = (FilterComboMenuItem) mi;
@@ -450,7 +450,7 @@ public class Explorer extends ContentPanel{
 									       , data
 									       , new JSONCallbackAdapter() {
 								public void onSuccess(JSONObject json){
-									menu.remove(cmi);
+									filterMenu.remove(cmi);
 								}
 							});
 						}
@@ -462,8 +462,8 @@ public class Explorer extends ContentPanel{
 			}
 			
 		});
-		menu.add(removeCombos);
-		menu.add(new SeparatorMenuItem());
+		filterMenu.add(removeCombos);
+		filterMenu.add(new SeparatorMenuItem());
 		
 		//  TBF:  This is only used below to init the MenuItem outside the namespace
 		final Explorer e = this;
@@ -480,12 +480,12 @@ public class Explorer extends ContentPanel{
 						new FilterComboMenuItem(e
 							                   , config.get(0).isString().stringValue()
 							                   , filter_id);
-					menu.add(mi);
+					filterMenu.add(mi);
 					filterComboIds.add(filter_id);
 				}
 			}
 		});
-		return menu;
+		return filterMenu;
 	}
 	
 	protected void setRemoveItemListener() {
@@ -603,6 +603,10 @@ public class Explorer extends ContentPanel{
 	public SplitButton getFilterAction() {
 		return filterAction;
 	}
+	
+	public FilterMenu getFilterMenu() {
+		return filterMenu;
+	}
 
 	public List<SimpleComboBox<String>> getAdvancedFilters() {
 		return advancedFilters;
@@ -634,6 +638,7 @@ public class Explorer extends ContentPanel{
 	private FilterComboForm filterComboForm;
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
+	private FilterMenu filterMenu;
 	public List<String> filterComboIds = new ArrayList<String>();
 	public List<String> columnConfigIds = new ArrayList<String>();
 

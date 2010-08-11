@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
@@ -17,9 +18,11 @@ public class FilterComboMenuItem extends CheckMenuItem {
 	
 	private Explorer explorer;
 	public String combo_id;
+	public int title_len;
 	
 	public FilterComboMenuItem(Explorer explorer, String title, String combo_id){
 		super(title);
+		this.title_len = title.length();
 		this.explorer = explorer;
 		this.combo_id = combo_id;
 		initListeners();
@@ -45,6 +48,14 @@ public class FilterComboMenuItem extends CheckMenuItem {
 								af.reset();
 							}
 						}
+						JSONValue filterText = filters.get("filterText");
+						TextField<String> textField = explorer.filter.getTextField();
+						if (filterText != null) {
+							textField.setValue(filterText.isString().stringValue());
+						} else {
+							textField.setValue("");
+						}
+						
 					}
 				});
 			}

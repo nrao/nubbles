@@ -1,10 +1,13 @@
 package edu.nrao.dss.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -17,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;
 
@@ -69,6 +73,10 @@ public class FilterComboForm extends LayoutContainer {
 					}
 				}
 				
+				String filterText = explorer.filter.getTextField().getValue();
+				if (filterText != null) {
+				    fields.put("filterText", filterText);
+				}
 				fields.put("name", name.getValue().toString());
 				
 				// Used to identify the specific explorer on the server.
@@ -80,11 +88,22 @@ public class FilterComboForm extends LayoutContainer {
 						String new_id = json.get("id").isNumber().toString();
 						// Update saved filter combo list if we created a new combo
 						if (! explorer.filterComboIds.contains(new_id)) {
-						    SplitButton filterAction = explorer.getFilterAction();
-							filterAction.getMenu().add(new FilterComboMenuItem(explorer
+						    FilterMenu menu = explorer.getFilterMenu();
+							menu.add(new FilterComboMenuItem(explorer
 													, fields.get("name").toString()
 								              		, new_id));
 							explorer.filterComboIds.add(new_id);
+							int nilen = fields.get("name").toString().length();
+							List<Boolean> status = new ArrayList<Boolean>();
+							// TBF:  Need our own extend Menu class
+							for (FilterComboMenuItem item : menu.getFilterItems()) {
+								int ilen = item.title_len;
+								status.add(nilen > ilen);
+							}
+							if (!status.contains(false)) {
+								menu.setWidth(nilen * 10);
+							}
+							
 						}
 					}
 				});
