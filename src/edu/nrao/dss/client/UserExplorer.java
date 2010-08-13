@@ -24,14 +24,15 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.i18n.client.NumberFormat;
 
 public class UserExplorer extends Explorer {
 
 	public UserExplorer() {
 		super("/users", new UserType());
 		initFilters();
-		initLayout(initColumnModel(), false);
-		initUserToolBar();
+		initLayout(initColumnModel(), true);
+		//initUserToolBar();
 		
 	}
 	
@@ -68,62 +69,11 @@ public class UserExplorer extends Explorer {
 		});
 	}
 
-	private void initUserToolBar() {
-		final PagingToolBar pagingToolBar = new PagingToolBar(50);
-		final TextField<String> pages = new TextField<String>();
-		pages.setWidth(30);
-		pages.setValue("50");
-		pages.addKeyListener(new KeyListener() {
-			public void componentKeyPress(ComponentEvent e) {
-				if (e.getKeyCode() == 13) {
-					int page_size = Integer.valueOf(pages.getValue()).intValue();
-					pagingToolBar.setPageSize(page_size);
-					setPageSize(page_size);
-					loadData();
-				}
-			}
-		});
-		pages.setTitle("Page Size");
-		pagingToolBar.add(pages);
-		setBottomComponent(pagingToolBar);
-		pagingToolBar.bind(loader);
-		
-		ToolBar toolBar = new ToolBar();
-		setTopComponent(toolBar);
-		
-		filter = new FilterItem(UserExplorer.this, true);
-		toolBar.add(filter.getTextField());
-
-		for (SimpleComboBox<String> f : advancedFilters) {
-			toolBar.add(new SeparatorToolItem());
-		    toolBar.add(f);
-		}
-		
-		toolBar.add(new FillToolItem());
-		toolBar.add(new SeparatorToolItem());
-
-		saveItem = new Button("Save");
-		toolBar.add(saveItem);
-
-		// Commit outstanding changes to the server.
-		saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent be) {
-				setCommitState(true);
-				store.commitChanges();
-				setCommitState(false);
-				loadData();
-				grid.getView().refresh(true);
-			}
-		});
-	}
-
 	private ColumnModel initColumnModel() {
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		
 		ColumnConfig column = new ColumnConfig("username", "Username", 100);
 		CellEditor editor   = new CellEditor(new TextField<String>());
-	    editor.disable();
 	    column.setEditor(editor);
 	    configs.add(column);
 	    
@@ -135,7 +85,17 @@ public class UserExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 	    
-	    CheckColumnConfig checkColumn = new CheckColumnConfig("sanctioned", "Sanctioned?", 65);
+	    column = new ColumnConfig("pst_id", "PST ID", 100);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    column.setNumberFormat(NumberFormat.getFormat("#"));
+	    configs.add(column);
+	    
+	    column = new ColumnConfig("original_id", "Original ID", 100);
+	    column.setEditor(new CellEditor(new TextField<String>()));
+	    column.setNumberFormat(NumberFormat.getFormat("#"));
+	    configs.add(column);
+	    
+	    CheckColumnConfig checkColumn = new CheckColumnConfig("sanctioned", "Sanctioned?", 70);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);

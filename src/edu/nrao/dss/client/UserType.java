@@ -15,6 +15,8 @@ public class UserType extends ModelType {
 		addField("role");
 		addField("staff");
 		addField("username");
+		addField("pst_id");
+		addField("original_id");
 	}
 
 }
