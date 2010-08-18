@@ -229,7 +229,7 @@ public class DayView extends CalendarView {
         }
         float thisLeft = lefts[dayIndex]; 
         
-        float widths = 32.3f; // constant width 
+        float widths = 6f; // constant width 
         float quarterHeight = this.getSettings().getPixelsPerInterval(); //30.0f; // height of one quarter == (2 px/min)(15 min)
         float qTop = 0.0f;
         Date start = date;
@@ -264,7 +264,7 @@ public class DayView extends CalendarView {
         	
         	if (scoreValue == 0.0) {
         	    DOM.setStyleAttribute(score.getElement(), "color", "FF0000");
-        	}    
+        	}
         }        
     }
     public void scrollToHour(int hour) {
