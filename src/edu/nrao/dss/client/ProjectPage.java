@@ -97,6 +97,7 @@ public class ProjectPage extends ContentPanel {
 		projectForm.add(coi, fd);
 		
 		friends.setFieldLabel("Friend");
+		friends.setEditable(false);
 		projectForm.add(friends, fd);
 		
 		obsNotes.setFieldLabel("Observer Notes");
@@ -226,7 +227,6 @@ public class ProjectPage extends ContentPanel {
 	    name.setValue(proj.get("name").isString().stringValue());
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
-	    GWT.log(proj.get("friend").isString().stringValue());
 	    friends.clear();
 	    friends.setSimpleValue(proj.get("friend").isString().stringValue());
 	    setObserversLink();
