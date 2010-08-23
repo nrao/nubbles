@@ -227,7 +227,8 @@ public class ProjectPage extends ContentPanel {
 	    name.setValue(proj.get("name").isString().stringValue());
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
-	    friends.clear();
+	    friends.clearState();
+	    // friends.clear();
 	    friends.setSimpleValue(proj.get("friend").isString().stringValue());
 	    setObserversLink();
 	    
