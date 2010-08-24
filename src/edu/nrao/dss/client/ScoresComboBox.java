@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -34,6 +35,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		lastNumDays = 0;
 		lastTimeZone = "";
 		lastSessionId = 0;
+		setTriggerAction(TriggerAction.ALL);
 	}
 	
 	private void initLayout() {

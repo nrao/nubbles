@@ -61,12 +61,13 @@ public class ShiftPeriodBndDlg extends Dialog {
 		// the start date
 	    //final DateField changeDate = new DateField();
 	    //changeDate.setValue(period.getStartDay());
-	    changeDate.setFieldLabel("Boundary Date");
+		changeDate.setFieldLabel("Boundary Date");
 		changeDate.setToolTip("Set the new boundary date");
 	    fp.add(changeDate);
 	    
 	    // start time
 	    //final TimeField changeTime = new TimeField();
+	    changeTime.setTriggerAction(TriggerAction.ALL);
 	    changeTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
 	    //Time t = new Time(period.getStartHour(), period.getStartMinute(), period.getStartTime());
 	    //changeTime.setValue(t);

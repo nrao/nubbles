@@ -79,6 +79,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	    
 	    // start time
 	    final TimeField timeField = new TimeField();
+	    timeField.setTriggerAction(TriggerAction.ALL);
 	    timeField.setFormat(DateTimeFormat.getFormat("HH:mm"));
 	    timeField.setValue(new Time(0, 0)); // TODO fails
 	    timeField.setFieldLabel("Start Time");

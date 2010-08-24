@@ -138,6 +138,7 @@ public class VacancyControl extends FormPanel {
 	    
 	    // Nominee time
 	    vacancyTime = new TimeField();
+	    vacancyTime.setTriggerAction(TriggerAction.ALL);
 	    vacancyTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
 	    //vacancyTime.setValue(startVacancyTime);
 	    vacancyTime.setFieldLabel("Start Time");

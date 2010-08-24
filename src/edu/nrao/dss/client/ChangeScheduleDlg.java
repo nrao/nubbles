@@ -57,6 +57,7 @@ class ChangeScheduleDlg extends Dialog {
 	    
 	    // start time
 	    final TimeField changeTime = new TimeField();
+	    changeTime.setTriggerAction(TriggerAction.ALL);
 	    changeTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
 	    Time t = new Time(period.getStartHour(), period.getStartMinute(), period.getStartTime());
 	    changeTime.setValue(t);//Time(period.getStartTime()));

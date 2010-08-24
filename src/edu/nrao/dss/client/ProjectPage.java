@@ -96,6 +96,7 @@ public class ProjectPage extends ContentPanel {
 		coi.setStyleAttribute("color", "grey");
 		projectForm.add(coi, fd);
 		
+		friends.setTriggerAction(TriggerAction.ALL);
 		friends.setFieldLabel("Friend");
 		friends.setEditable(false);
 		projectForm.add(friends, fd);
@@ -227,8 +228,8 @@ public class ProjectPage extends ContentPanel {
 	    name.setValue(proj.get("name").isString().stringValue());
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
-	    friends.clearState();
-	    // friends.clear();
+	    //friends.clearState();
+	    friends.clear();
 	    friends.setSimpleValue(proj.get("friend").isString().stringValue());
 	    setObserversLink();
 	    
