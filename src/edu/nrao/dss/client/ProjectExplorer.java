@@ -290,6 +290,20 @@ public class ProjectExplorer extends Explorer {
 	    return new ColumnModel(configs);
 	}
 	
+	public void registerObservers(SessionColConfig sePcodeConfig
+			                    , TimeAccounting ta
+			                    , ProjectPage pp){
+		this.sePcodeConfig = sePcodeConfig;
+		timeAccounting     = ta;
+		projectPage        = pp;
+	}
+	
+	public void updateObservers() {
+		sePcodeConfig.updatePCodeOptions();
+		timeAccounting.updatePCodeOptions();
+		projectPage.updatePCodeOptions();
+	}
+	
 	// when the view button gets pressed, go to the Project Page tab.
 	public void viewObject() {
 		BaseModelData bd = grid.getSelectionModel().getSelectedItem();
@@ -307,4 +321,9 @@ public class ProjectExplorer extends Explorer {
 	private Button emailButton;
 	private Button clearButton;
 	private ProjectEmailPagingToolBar selectionPagingToolBar;
+	
+	// Observers
+	private SessionColConfig sePcodeConfig;
+	private TimeAccounting timeAccounting;
+	private ProjectPage projectPage;
 }

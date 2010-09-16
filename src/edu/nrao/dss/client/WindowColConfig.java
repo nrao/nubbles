@@ -74,7 +74,7 @@ public class WindowColConfig extends ColumnConfig {
 	public void updateSessionOptions() {
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
-			    	  put("mode", "session_handles");
+			    	  put("mode", "windowed_session_handles");
 			        }}
 			      , new JSONCallbackAdapter() {
 			@SuppressWarnings("unchecked")

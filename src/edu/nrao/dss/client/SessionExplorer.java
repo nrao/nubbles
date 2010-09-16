@@ -118,10 +118,6 @@ public class SessionExplorer extends Explorer {
 	    return new ColumnModel(configs);
 	}
 	
-	public ColumnConfig getPcodeConfig() {
-		return configs.get(0);
-	}
-	
 	private List<ColumnConfig> configs;
 
     private static final ColumnType[] columnTypes = {
@@ -155,4 +151,24 @@ public class SessionExplorer extends Explorer {
         new ColumnType("transit",          "Transit?",        55, false, Boolean.class),
         new ColumnType("nighttime",        "Night-time?",     65, false, Boolean.class),
     	};
+    
+    public ColumnConfig getPcodeConfig() {
+		return configs.get(0);
+	}
+	
+    public void registerObservers(PeriodColConfig peSessionConfig, WindowExplorer windowExplorer) {
+    	this.peSessionConfig = peSessionConfig;
+    	this.windowExplorer  = windowExplorer;
+    }
+    
+    public void updateObservers() {
+    	peSessionConfig.updateSessionOptions();
+    	windowExplorer.updateSessionOptions();
+    	WindowColConfig wcc = (WindowColConfig) windowExplorer.getSessionConfig();
+    	wcc.updateSessionOptions();
+    }
+    
+    // Observers
+    private PeriodColConfig peSessionConfig;
+    private WindowExplorer  windowExplorer;
 }

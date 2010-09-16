@@ -161,6 +161,17 @@ public class Explorer extends ContentPanel{
 		         keys.toArray(new String[]{}),
 		         values.toArray(new String[]{}),
 		         new JSONCallbackAdapter());
+        updateObservers();
+	}
+	
+	// to be implemented by children
+	public void registerObservers(){
+		
+	}
+	
+	// to be implemented by children
+	public void updateObservers(){
+		
 	}
 	
 	// to be implemented by children
@@ -261,6 +272,7 @@ public class Explorer extends ContentPanel{
 										.getSelectedItem());
 							}
 						});
+				updateObservers();
 			}
 		});	
 		removeDialog.hide();

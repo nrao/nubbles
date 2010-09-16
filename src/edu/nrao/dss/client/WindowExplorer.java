@@ -177,15 +177,14 @@ public class WindowExplorer extends Explorer {
 	}
 	
 	// gets all windowed session names form the server and populates the project combo
-	private void updateSessionOptions() {
+	public void updateSessionOptions() {
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "windowed_session_handles");
 			        }}
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-
-				//advancedFilters.get(0).clearSelections();
+				advancedFilters.get(0).removeAll();
 				
 				JSONArray sessHandles = json.get("session handles").isArray();
 				//GWT.log("got num of sessions: "+Integer.toString(sessHandles.size()), null); 
