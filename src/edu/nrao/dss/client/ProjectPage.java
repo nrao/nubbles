@@ -369,5 +369,9 @@ public class ProjectPage extends ContentPanel {
 		GWT.log("PP.setProject", null);
 		projects.setSimpleValue(pcode);
 	
-	}		
+	}
+	
+	public InvestigatorExplorer getInvestigatorExplorer() {
+		return investigatorExplorer;
+	}
 }

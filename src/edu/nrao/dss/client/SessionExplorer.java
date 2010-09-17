@@ -165,7 +165,7 @@ public class SessionExplorer extends Explorer {
     	peSessionConfig.updateSessionOptions();
     	windowExplorer.updateSessionOptions();
     	WindowColConfig wcc = (WindowColConfig) windowExplorer.getSessionConfig();
-    	wcc.updateSessionOptions();
+    	wcc.updateSessionOptions();	
     }
     
     // Observers

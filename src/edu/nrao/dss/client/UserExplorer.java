@@ -28,6 +28,9 @@ import com.google.gwt.i18n.client.NumberFormat;
 
 public class UserExplorer extends Explorer {
 
+	// Observers
+	private InvestigatorForm addInvest;
+	
 	public UserExplorer() {
 		super("/users", new UserType());
 		initFilters();
@@ -116,6 +119,14 @@ public class UserExplorer extends Explorer {
 	    configs.add(column);
 	    
 	    return new ColumnModel(configs);
+	}
+	
+	public void registerObservers(InvestigatorForm addInvest) {
+		this.addInvest = addInvest;
+	}
+	
+	public void updateObservers() {
+		addInvest.updateUserOptions();
 	}
 
 }
