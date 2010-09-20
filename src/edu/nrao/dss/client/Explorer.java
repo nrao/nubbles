@@ -123,7 +123,8 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void initListeners() {
-		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() {
+		/*
+		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() { 
 			public void handleEvent(GridEvent<BaseModelData> ge) {
 				Object value = ge.getRecord().get(ge.getProperty());
 				for (BaseModelData model : grid.getSelectionModel()
@@ -132,6 +133,7 @@ public class Explorer extends ContentPanel{
 				}
 			}
 		});
+		*/
 		store.addStoreListener(new StoreListener<BaseModelData>() {
 			@Override
 			public void storeUpdate(StoreEvent<BaseModelData> se) {

@@ -38,7 +38,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         tabPanel.add(addTab(we, "Window Explorer", "Define and edit windows."));
         tabPanel.add(addTab(wc, "Window Calendar", "Display Windows."));
         
-        // schedule tab - we need to update the peroid explorer when it
+        // schedule tab - we need to update the period explorer when it
         // comes into focus
         TabItem schTab = addTab(sch, "Schedule", "Manage the Schedule");
         schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
