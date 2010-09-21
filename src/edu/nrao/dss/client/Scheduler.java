@@ -1,5 +1,6 @@
 package edu.nrao.dss.client;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -57,7 +58,9 @@ public class Scheduler extends Viewport implements EntryPoint {
         se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig(), we);
         ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
 
-        tabPanel.setAutoHeight(true);
+        //tabPanel.setAutoHeight(true);
+        //tabPanel.setAutoWidth(true);
+        tabPanel.setHeight(800);
         
         // Factor access
         factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));

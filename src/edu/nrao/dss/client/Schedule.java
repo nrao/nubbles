@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
 import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
 import edu.nrao.dss.client.util.dssgwtcal.DayView;
+import edu.nrao.dss.client.util.dssgwtcal.DayViewLayoutStrategy;
 import edu.nrao.dss.client.util.dssgwtcal.Event;
 
 // This class is the new version of the Beta Test's Scheduling Page.
@@ -98,6 +99,7 @@ public class Schedule extends ContentPanel {
 		setHeaderVisible(false);
 		setBodyStyle("backgroundColor: white;");
 		setHeight(920);
+		//setAutoHeight(true);
 		getHeader().addTool(new ToolButton("x-tool-gear"));
 		getHeader().addTool(new ToolButton("x-tool-close"));
 
@@ -155,6 +157,7 @@ public class Schedule extends ContentPanel {
 		// ======================== Calendar ===================================
 		calendar = new ContentPanel(); // TODO extend to bottom of panel
   		calendar.setHeading("Calendar");
+  		//calendar.setAutoHeight(true);
 		calendar.setScrollMode(Scroll.AUTOX);
 		
 		// calendar
@@ -162,7 +165,7 @@ public class Schedule extends ContentPanel {
 		dayView.setDate(startCalendarDay); //calendar date, not required
 		dayView.setDays((int) numCalendarDays); //number of days displayed at a time, not required
 		dayView.setWidth("100%");
-		dayView.setHeight("100%");
+		dayView.setHeight("97%");
 		dayView.setTitle("Schedule Calendar");
 		CalendarSettings settings = new CalendarSettings();
 		// this fixes offset issue with time labels

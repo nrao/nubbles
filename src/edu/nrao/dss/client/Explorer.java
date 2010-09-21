@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -80,7 +81,8 @@ public class Explorer extends ContentPanel{
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
 		setCommitState(false);
-		setAutoHeight(true);
+		//setAutoHeight(true);
+		setScrollMode(Scroll.AUTO);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
