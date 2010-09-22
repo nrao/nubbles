@@ -30,8 +30,11 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.WidgetComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -49,6 +52,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -212,7 +216,16 @@ public class Explorer extends ContentPanel{
 		pagingToolBar.bind(loader);
 		
 		toolBar = new ToolBar();
-		setTopComponent(toolBar);
+		if (createFilterToolBar) {
+			LayoutContainer toolBars = new LayoutContainer();
+			setTopComponent(toolBars);
+			filterToolBar = new ToolBar();
+			toolBars.add(toolBar);
+			toolBars.add(filterToolBar);
+			initFilterToolBar();
+		} else {
+			setTopComponent(toolBar);
+		}
 		
 		if (showColumnsMenu) {
 			columnsItem = new Button("Columns");
@@ -303,30 +316,6 @@ public class Explorer extends ContentPanel{
 		
 		toolBar.add(new SeparatorToolItem());
 
-		filter = new FilterItem(Explorer.this, false);
-		toolBar.add(filter.getTextField());
-
-		for (SimpleComboBox<String> f : advancedFilters) {
-			toolBar.add(new SeparatorToolItem());
-		    toolBar.add(f);
-		}
-		toolBar.add(new SeparatorToolItem());
-		Button reset = new Button("Reset");
-		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				for (SimpleComboBox<String> f : advancedFilters) {
-					f.reset();
-				}
-				filter.getTextField().setValue("");
-			}
-		});
-		toolBar.add(reset);
-		toolBar.add(new SeparatorToolItem());
-		if (filterAction != null) {
-			toolBar.add(filterAction);
-		}
-		
 		toolBar.add(new FillToolItem());
 		toolBar.add(new SeparatorToolItem());
 
@@ -353,6 +342,33 @@ public class Explorer extends ContentPanel{
 						duplicateItem.setEnabled(!grid.getSelectionModel().getSelectedItems().isEmpty());
 					}
 				});
+	}
+	
+	private void initFilterToolBar() {
+		filter = new FilterItem(Explorer.this, false);
+		filterToolBar.add(filter.getTextField());
+
+		for (SimpleComboBox<String> f : advancedFilters) {
+			filterToolBar.add(new SeparatorToolItem());
+			filterToolBar.add(new LabelToolItem(f.getTitle()));
+		    filterToolBar.add(f);
+		}
+		filterToolBar.add(new SeparatorToolItem());
+		Button reset = new Button("Reset");
+		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				for (SimpleComboBox<String> f : advancedFilters) {
+					f.reset();
+				}
+				filter.getTextField().setValue("");
+			}
+		});
+		filterToolBar.add(reset);
+		filterToolBar.add(new SeparatorToolItem());
+		if (filterAction != null) {
+			filterToolBar.add(filterAction);
+		}
 	}
 	
 	private Menu initColumnsMenu() {
@@ -639,7 +655,11 @@ public class Explorer extends ContentPanel{
 	public void setShowColumnsMenu(boolean state) {
 		showColumnsMenu = state;
 	}
-
+	
+	public void setCreateFilterToolBar(boolean state) {
+		createFilterToolBar = state;
+	}
+	
 	/** Provides basic spreadsheet-like functionality. */
 	protected EditorGrid<BaseModelData> grid;
 
@@ -655,6 +675,7 @@ public class Explorer extends ContentPanel{
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
 	private FilterMenu filterMenu;
+	private boolean createFilterToolBar = true;
 	public List<String> filterComboIds = new ArrayList<String>();
 	public List<String> columnConfigIds = new ArrayList<String>();
 
@@ -678,6 +699,7 @@ public class Explorer extends ContentPanel{
 	protected Dialog removeDialog;
 	protected Button actionItem;
 	protected ToolBar toolBar;
+	protected ToolBar filterToolBar;
 	protected PagingToolBar pagingToolBar;
 	
 	protected FilterItem filter;

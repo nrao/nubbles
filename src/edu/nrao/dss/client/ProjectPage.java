@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -62,13 +63,11 @@ public class ProjectPage extends ContentPanel {
 
 		setLayout(new RowLayout(Orientation.VERTICAL));
 		
-
 		setBorders(false);
 		setHeaderVisible(false);
-		setAutoHeight(true);
 		
 		// so we can always see everything 
-		//setScrollMode(Scroll.ALWAYS); 
+		setScrollMode(Scroll.AUTO); 
 
 		//projectForm.setHeading("Project");
 		//projectForm.setBorders(true);

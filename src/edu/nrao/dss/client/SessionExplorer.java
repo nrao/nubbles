@@ -53,6 +53,7 @@ public class SessionExplorer extends Explorer {
 	
 	private void initFilterAction() {
 		filterAction = new SplitButton("Filter");
+		filterAction.setTitle("Filter");
 		filterAction.setMenu(initFilterMenu());
 		filterAction.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override

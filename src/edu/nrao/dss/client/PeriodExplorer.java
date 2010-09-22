@@ -25,6 +25,8 @@ public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
 		super("/periods/UTC", new PeriodType(columnTypes));
 		setShowColumnsMenu(false);
+		setAutoHeight(true);
+		setCreateFilterToolBar(false);
 		initLayout(initColumnModel(), true);
 		
 	}

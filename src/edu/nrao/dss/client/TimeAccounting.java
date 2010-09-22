@@ -120,7 +120,8 @@ protected void initLayout() {
 		  		getProjectTimeAccounting();
 	  		}
 	   	}
-	});	
+	});
+	updatePCodeOptions();
 	projectForm.add(projects);
     
 	

@@ -1,6 +1,7 @@
 package edu.nrao.dss.client;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -34,9 +35,8 @@ public class FactorsTab implements FactorsDisplay {
 		panel.setLayout(new FitLayout());
 		
 		ScrollPanel sp = new ScrollPanel(grid);
-		//sp.setAlwaysShowScrollBars(true);
 		panel.add(sp);
-		panel.setAutoHeight(true);
+		panel.setScrollMode(Scroll.AUTO);
 		
 		return panel;
 	}
