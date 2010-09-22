@@ -12,6 +12,7 @@ public class FilterItem extends MenuItem {
 	public FilterItem(final Explorer explorer, Boolean submitOnEnter) {
 		super("Filter");
 		textField = new TextField<String>();
+		textField.setToolTip("Enter text to filter the information below.");
 		setTitle("Display rows containing ...");
 		if (submitOnEnter) {
 			defineListener(explorer);

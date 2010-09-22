@@ -229,13 +229,14 @@ public class Explorer extends ContentPanel{
 		
 		if (showColumnsMenu) {
 			columnsItem = new Button("Columns");
+			columnsItem.setToolTip("Manage column configurations.");
 			columnsItem.setMenu(initColumnsMenu());
 			toolBar.add(columnsItem);
 		}
 		
 		viewItem = new Button("View");
 		toolBar.add(viewItem);
-		viewItem.setToolTip("view row.");
+		viewItem.setToolTip("View selected row.");
 		viewItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
@@ -320,6 +321,7 @@ public class Explorer extends ContentPanel{
 		toolBar.add(new SeparatorToolItem());
 
 		saveItem = new Button("Save");
+		saveItem.setToolTip("Save changes.  Note: modified fields are indicated with a red trangle in the upper left corn of the cell.");
 		toolBar.add(saveItem);
 
 		// Commit outstanding changes to the server.
@@ -355,6 +357,7 @@ public class Explorer extends ContentPanel{
 		}
 		filterToolBar.add(new SeparatorToolItem());
 		Button reset = new Button("Reset");
+		reset.setToolTip("Resets filter drop down menus.");
 		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
@@ -368,6 +371,7 @@ public class Explorer extends ContentPanel{
 		filterToolBar.add(new SeparatorToolItem());
 		if (filterAction != null) {
 			filterToolBar.add(filterAction);
+			filterAction.setToolTip("Execute filter combination.");
 		}
 	}
 	
