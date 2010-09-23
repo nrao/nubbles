@@ -302,6 +302,18 @@ public class ScheduleControl extends FormPanel {
 		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
+				BaseModelData selectedItem = schedule.scheduleExplorer.pe.grid
+				        .getSelectionModel().getSelectedItem();
+				if (selectedItem != null) {
+					HashMap<String, Object> periodValues =
+						new HashMap<String, Object>(selectedItem.getProperties());
+					factorsDlg.hide();
+					factorsDlg.show();
+					factorsDlg.initValues(periodValues);
+				} else {
+					factorsDlg.clearFormFields();
+				}
+				
 				factorsDlg.show();
 			}
 		});		
