@@ -308,8 +308,6 @@ public class ScheduleControl extends FormPanel {
 					HashMap<String, Object> periodValues =
 						new HashMap<String, Object>(selectedItem.getProperties());
 					factorsDlg.initValues(periodValues);
-				} else {
-					factorsDlg.clearFormFields();
 				}
 				
 				factorsDlg.show();
