@@ -70,6 +70,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 				}
 			}
     	});
+		
 		sessions.setToolTip("Select a session to factor.");
 		sessions.setFieldLabel("Sessions");
 		sessions.setSimpleValue("Maintenance (Maintenance)"); // TODO fails
@@ -78,22 +79,26 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		fp.add(sessions);
 		
 		// start date
-		startDateField.setValue(new Date());
+		long iTimeStamp = schedule.startCalendarDay.getTime() + (3600000 * 24);
+		Date tomorrow = new Date();
+		tomorrow.setTime(iTimeStamp);
+		startDateField.setValue(tomorrow);
 	    startDateField.setFieldLabel("Start Date");
 		startDateField.setToolTip("Set the start day for the vacancy to be filled");
 	    fp.add(startDateField);
 	    
 	    // start time
 	    timeField.setTriggerAction(TriggerAction.ALL);
-	    timeField.setFormat(DateTimeFormat.getFormat("HH:mm"));
-	    timeField.setValue(new Time(0, 0)); // TODO fails
+	    DateTimeFormat fmt = DateTimeFormat.getFormat("HH:mm");
+	    timeField.setFormat(fmt);
+	    timeField.setDateValue(fmt.parse("13:00"));
 	    timeField.setFieldLabel("Start Time");
 		timeField.setToolTip("Set the start time for the vacancy to be filled");
 	    fp.add(timeField);
 		
 		// start duration
 	    hours.setPropertyEditorType(Integer.class);
-	    hours.setValue(4);
+	    hours.setValue(24);
 		hours.setToolTip("Set the time range.");
 		hours.setFieldLabel("Range (Hrs)");
 		fp.add(hours);
@@ -160,8 +165,9 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		sessions.setSimpleValue(value);
 		DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
 		startDateField.setValue(fmt.parse(values.get("date").toString()));
-		timeField.setRawValue(values.get("time").toString());
-		hours.setRawValue(values.get("duration").toString());
+		fmt = DateTimeFormat.getFormat("HH:mm");
+		timeField.setDateValue(fmt.parse(values.get("time").toString()));
+		hours.setValue(new Float(values.get("duration").toString()));
 	}
 	
 	public void clearFormFields() {
@@ -169,13 +175,18 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 			sessions.clear();
 		}
 		if (startDateField.isDirty()) {
-			startDateField.clear();
+			long iTimeStamp = schedule.startCalendarDay.getTime() + (3600000 * 24);
+			Date tomorrow = new Date();
+			tomorrow.setTime(iTimeStamp);
+			startDateField.setValue(tomorrow);
 		}
 		if (timeField.isDirty()) {
-			timeField.clear();
+			DateTimeFormat fmt = DateTimeFormat.getFormat("HH:mm");
+		    timeField.setDateValue(fmt.parse("13:00"));
+		    
 		}
 		if (hours.isDirty()) {
-			hours.clear();
+			hours.setValue(24);
 		}
 	}
 
