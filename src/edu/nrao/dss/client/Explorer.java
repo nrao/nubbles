@@ -352,7 +352,9 @@ public class Explorer extends ContentPanel{
 
 		for (SimpleComboBox<String> f : advancedFilters) {
 			filterToolBar.add(new SeparatorToolItem());
-			filterToolBar.add(new LabelToolItem(f.getTitle()));
+			//  Karen wants to take out the labels on the advanced filters and
+			//  use the tool tips for now.
+			//filterToolBar.add(new LabelToolItem(f.getTitle()));
 		    filterToolBar.add(f);
 		}
 		filterToolBar.add(new SeparatorToolItem());
