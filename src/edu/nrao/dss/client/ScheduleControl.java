@@ -97,13 +97,18 @@ public class ScheduleControl extends FormPanel {
 			end = start + duration;
 		}
 		double currentAverageValue = total_score/total_scheduled;
-		currentAverage.setValue(scoreFormat.format(currentAverageValue));
+		String heading = "Schedule Control: (";
 		if (schedulePressed && dataSize != data.size()) {
-			scheduleAverage.setValue(scoreFormat.format(currentAverageValue));
+			//scheduleAverage.setValue("Schedule Average Score: " + scoreFormat.format(currentAverageValue));
+			heading += "Schedule Average Score: " + scoreFormat.format(currentAverageValue) + " ";
 			schedulePressed = false;
 			dataSize = data.size();
 		}
-		unscheduledTime.setValue(TimeUtils.min2sex((int)total_empty));
+		//currentAverage.setValue("Current Average Score: " + scoreFormat.format(currentAverageValue));
+		//unscheduledTime.setValue("Unscheduled Time: " + TimeUtils.min2sex((int)total_empty));
+		heading += "Current Average Score: " + scoreFormat.format(currentAverageValue);
+		heading += " Unscheduled Time: " + TimeUtils.min2sex((int)total_empty) + ")";
+		setHeading(heading);
 	}
 	
 	private void initLayout() {
@@ -120,80 +125,83 @@ public class ScheduleControl extends FormPanel {
 		tb.setBorder(0);
 		setLayout(tb);
 		
-		final FormPanel left = new FormPanel();
-        left.setHeaderVisible(false);
+        final FormPanel left = new FormPanel();
+		left.setHeaderVisible(false);
 		left.setBorders(false);
-		left.setLayout(new FillLayout(Orientation.HORIZONTAL));
-		
-		left.setSize(400, 50);
-		
-		scheduleAverage = new LabelField();
-		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
-		scheduleAverage.setFieldLabel("Schedule Average Score");
-		scheduleAverage.setLabelSeparator(":");
-		//scheduleAverage.setLabelStyle("font-size : " + labelFontSize);
-		scheduleAverage.setValue("N/A");
-		left.add(scheduleAverage, new FillData(new Margins(0, 10, 0, 10)));
-		
-		currentAverage = new LabelField();
-		currentAverage.setToolTip("Current average score of displayed periods");
-		currentAverage.setFieldLabel("Current Average Score");
-		currentAverage.setLabelStyle("font-size : " + labelFontSize);
-		left.add(currentAverage, new FillData(new Margins(0, 10, 0, 10)));
-		
-		unscheduledTime = new LabelField();
-		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
-		unscheduledTime.setFieldLabel("Unscheduled Time");
-		unscheduledTime.setLabelStyle("font-size : " + labelFontSize);
-		left.add(unscheduledTime, new FillData(new Margins(0, 10, 0, 10)));
-		
-		TableData tdLeft = new TableData();
-		tdLeft.setVerticalAlign(VerticalAlignment.TOP);
-		// TODO: why must I do this, just to get the two forms to share space?
-		//tdLeft.setColspan(1);
-		tdLeft.setWidth(col1Width);
-        
-        final FormPanel right = new FormPanel();
-		right.setHeaderVisible(false);
-		right.setBorders(false);
-		right.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		right.setSize(400, 50);
+		left.setLayout(new RowLayout(Orientation.HORIZONTAL));
+		left.setSize(350, 50);
 		
 		// Auto schedules the current calendar
 		scheduleButton = new Button("Schedule");
 		schedulePressed = false;
 		scheduleButton.setToolTip("Generate a schedule for free periods over the specified calendar range");
-		right.add(scheduleButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
+		left.add(scheduleButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 		
 		// deletes all pending periods currently displayed (state moved from pending to deleted)
 		deletePendingBtn = new Button("Delete Pending");
 		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
-		right.add(deletePendingBtn, new RowData(-1, -1, new Margins(0, 4, 0, 4)));		
+		left.add(deletePendingBtn, new RowData(-1, -1, new Margins(0, 4, 0, 4)));		
 		
 		// Factors
 		factorsButton = new Button("Factors");
 		factorsButton.setToolTip("Provides access to individual score factors for selected session and time range");
 		factorsDlg = new FactorsDlg(schedule);
 		factorsDlg.hide();
-		right.add(factorsButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
+		left.add(factorsButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 		
 		// publishes all periods currently displayed (state moved from pending to scheduled)
 		publishButton = new Button("Publish");
 		publishButton.setToolTip("Publishes all the currently visible Periods: state is moved from Pending (P) to Scheduled (S) and become visible to Observer.");
-		right.add(publishButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
+		left.add(publishButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 		
 		emailButton = new Button("Email");
 		emailButton.setToolTip("Emails a schedule to staff and observers starting now and covering the next two days");
-		right.add(emailButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
+		left.add(emailButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 		        
-		TableData tdRight = new TableData();
-		tdRight.setVerticalAlign(VerticalAlignment.TOP);
+		TableData tdLeft = new TableData();
+		tdLeft.setVerticalAlign(VerticalAlignment.TOP);
 		// TODO: why must I do this, just to get the two forms to share space?
-		//tdRight.setColspan(1);
-		tdRight.setWidth(col2Width);
+		//tdLeft.setColspan(1);
+		tdLeft.setWidth(col2Width);
 		
-        add(right, tdRight);
         add(left, tdLeft);
+        
+//        final FormPanel right = new FormPanel();
+//        right.setHeaderVisible(false);
+//		right.setBorders(false);
+//		right.setLayout(new FillLayout(Orientation.HORIZONTAL));
+//		
+//		right.setSize(400, 50);
+//		
+//		scheduleAverage = new LabelField();
+//		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
+//		scheduleAverage.setFieldLabel("Schedule Average Score");
+//		scheduleAverage.setLabelSeparator(":");
+//		//scheduleAverage.setLabelStyle("font-size : " + labelFontSize);
+//		scheduleAverage.setValue("Schedule Average Score: N/A");
+//		right.add(scheduleAverage, new FillData(new Margins(0, 10, 0, 10)));
+//		
+//		currentAverage = new LabelField();
+//		currentAverage.setToolTip("Current average score of displayed periods");
+//		currentAverage.setFieldLabel("Current Average Score");
+//		currentAverage.setValue("Current Average Score: ");
+//		currentAverage.setLabelStyle("font-size : " + labelFontSize);
+//		right.add(currentAverage, new FillData(new Margins(0, 10, 0, 10)));
+//		
+//		unscheduledTime = new LabelField();
+//		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
+//		unscheduledTime.setFieldLabel("Unscheduled Time");
+//		unscheduledTime.setValue("Unscheduled Time: ");
+//		unscheduledTime.setLabelStyle("font-size : " + labelFontSize);
+//		right.add(unscheduledTime, new FillData(new Margins(0, 10, 0, 10)));
+//		
+//		TableData tdRight = new TableData();
+//		tdRight.setVerticalAlign(VerticalAlignment.TOP);
+//		// TODO: why must I do this, just to get the two forms to share space?
+//		//tdRight.setColspan(1);
+//		tdRight.setWidth(col1Width);
+//        
+//        add(right, tdRight);
 		
 	}
 	
