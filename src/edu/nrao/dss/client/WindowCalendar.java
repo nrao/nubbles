@@ -158,12 +158,12 @@ public class WindowCalendar extends ContentPanel {
                 dstate = "";
 			}
 				
-			// when is the choosen period?
-			if (window.get("choosen_date").isNull() == null) {
-		        cstartStr = window.get("choosen_date").isString().stringValue();
+			// when is the chosen period?
+			if (window.get("chosen_date").isNull() == null) {
+		        cstartStr = window.get("chosen_date").isString().stringValue();
 			    cstart = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cstartStr);
-			    if (window.get("choosen_state").isNull() == null) {
-			    	cstate = window.get("choosen_state").isString().stringValue();
+			    if (window.get("chosen_state").isNull() == null) {
+			    	cstate = window.get("chosen_state").isString().stringValue();
 			    }
 			} else {
 				cstartStr = "";
@@ -179,7 +179,7 @@ public class WindowCalendar extends ContentPanel {
 		    	//cal[i][j+1] = partOfWindow ? "T" : "F";
 		    	// if part of the window, might be more info to add, like:
 		    	// * does this window extend off the calendar
-		    	// * what day does the default & choosen fall on?
+		    	// * what day does the default & chosen fall on?
 		    	if (partOfWindow) {
 		    		// first day in calendar?
 		    		if (j==0) {
@@ -201,10 +201,10 @@ public class WindowCalendar extends ContentPanel {
 			    			text += " default (" + dstate + ")";
 			    		}
 		    		}
-		    		// same day as choosen period?
+		    		// same day as chosen period?
 		    		if (cstart != null) {
 			    		if (cstart.equals(dates[j])) {
-			    			text += " choosen (" + cstate + ")";
+			    			text += " chosen (" + cstate + ")";
 			    		}
 		    		}
 		    		// insert a separator, if needed

@@ -427,7 +427,7 @@ protected void updateSessionPeriods() {
 	// it's time accounting panel
     populateSessTimeAccounting(timeAccountingJson, name);
     
-	// hide the period panel until a period is choosen
+	// hide the period panel until a period is chosen
 	periodContainer.setVisible(false);
 	periodSummary.setVisible(false);
 	
@@ -482,7 +482,7 @@ protected boolean updateProjectSessions() {
 	}
 	
 	updateSessionOptions(pcode);
-	// hide the session panel until a session is choosen
+	// hide the session panel until a session is chosen
 	session.setVisible(false);
 	
 	return true;
