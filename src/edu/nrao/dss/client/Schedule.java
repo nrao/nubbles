@@ -123,37 +123,37 @@ public class Schedule extends ContentPanel {
 		controlsContainer.setHeading("Controls");
 		controlsContainer.setScrollMode(Scroll.AUTO);
 
-		calendarControl = new CalendarControl(this);
-		calendarControl.setCollapsible(true);
-		controlsContainer.add(calendarControl);
-		
-        scheduleControl = new ScheduleControl(this);
+		scheduleControl = new ScheduleControl(this);
         scheduleControl.setCollapsible(true);
         controlsContainer.add(scheduleControl);
 		
-        reservations = new Reservations(startCalendarDay, numCalendarDays);
-        reservations.setCollapsible(true);
-        reservations.collapse();
-        controlsContainer.add(reservations);
-        
-        vacancyControl = new VacancyControl(this);
-        vacancyControl.setCollapsible(true);
-        vacancyControl.collapse();
-        controlsContainer.add(vacancyControl);
-
-		nomineePanel = new NomineePanel(this);
-		nomineePanel.setCollapsible(true);
-		nomineePanel.collapse();
-		controlsContainer.add(nomineePanel);
-		
-		scheduleExplorer = new ScheduleCalendar(startCalendarDay, numCalendarDays);
+        scheduleExplorer = new ScheduleCalendar(startCalendarDay, numCalendarDays);
 		scheduleExplorer.addButtonsListener(this);
 		scheduleExplorer.setDefaultDate(startCalendarDay);
 		scheduleExplorer.setCollapsible(true);
 		scheduleExplorer.setAutoHeight(true);
 		controlsContainer.add(scheduleExplorer);
 		
-		// in the middle, the calendar
+		calendarControl = new CalendarControl(this);
+		calendarControl.setCollapsible(true);
+		controlsContainer.add(calendarControl);
+		
+		vacancyControl = new VacancyControl(this);
+        vacancyControl.setCollapsible(true);
+        vacancyControl.collapse();
+        controlsContainer.add(vacancyControl);
+
+        nomineePanel = new NomineePanel(this);
+		nomineePanel.setCollapsible(true);
+		nomineePanel.collapse();
+		controlsContainer.add(nomineePanel);
+		
+		reservations = new Reservations(startCalendarDay, numCalendarDays);
+        reservations.setCollapsible(true);
+        reservations.collapse();
+        controlsContainer.add(reservations);
+        
+        // in the middle, the calendar
 		// ======================== Calendar ===================================
 		calendar = new ContentPanel(); // TODO extend to bottom of panel
   		calendar.setHeading("Calendar");
