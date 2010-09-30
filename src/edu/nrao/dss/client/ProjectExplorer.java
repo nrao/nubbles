@@ -280,6 +280,11 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
 	    
+	    checkColumn = new CheckColumnConfig("blackouts", "Blackouts?", 70);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+	    
 	    checkColumn = new CheckColumnConfig("complete", "Complete?", 65);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);

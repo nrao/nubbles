@@ -21,6 +21,7 @@ public class ProjectType extends ModelType {
 		addField("remaining");
 		addField("grade");
 		addField("thesis");
+		addField("blackouts");
 		addField("complete");
 	}
 
