@@ -303,13 +303,15 @@ public class Schedule extends ContentPanel {
                 // TODO: format title & description better			
 			    String title = ""; //Integer.toString(p.getId());
 			    String windowInfo = "";
+			    String session_type = p.getSessionType();
 			    String type = "not windowed!"; // TODO: need better way to indicate period attributes
 			    if (p.isWindowed()) {
 			    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
 			    	type = p.isDefaultPeriod() ? "default period" : "choosen period";
 			    }
 			    String desc = p.getSession() + windowInfo;
-			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getEnd(), type);
+			    GWT.log(p.getState());
+			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getEnd(), type, session_type, p.getState());
 		        dayView.addAppointments(event.getAppointments());
 		        
 		}

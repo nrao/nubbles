@@ -21,16 +21,21 @@ public class Event {
 	// Nov 1 - March 8, 2009
 	//private long msGmtOffset = 5 * 60 * 60 * 1000;
 	private String type;
+	private String session_type;
+	private String state;
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     
-	public Event(int id, String title, String description, Date start, Date end, String type) {
+	public Event(int id, String title, String description, Date start
+			   , Date end, String type, String session_type, String state) {
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.start = start;
 		this.end = getSafeEndDate(end); //don't end at midnight, but 1 min. before
 		this.type = type;
+		this.session_type = session_type;
+		this.state = state;
 		createAppointments();
 	}
 	
@@ -143,7 +148,15 @@ public class Event {
 			   }
 			   
 		   } else {
-			   appt.addStyleName("gwt-appointment-blue");
+			   if (session_type.contains("O")){
+				   appt.addStyleName("gwt-appointment-blue");
+			   } else {
+				   appt.addStyleName("gwt-appointment-red");
+			   }
+		   }
+		   
+		   if (state.contains("P")) {
+			   appt.addStyleName("gwt-appointment-orange");
 		   }
 		   
 		   appointments.add(appt);
