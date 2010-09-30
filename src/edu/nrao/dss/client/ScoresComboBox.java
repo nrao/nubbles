@@ -75,13 +75,6 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	    // get the options
 		setForceSelection(true);
 		getOptions();
-		addListener(Events.Valid, new Listener<BaseEvent>() {
-		    public void handleEvent(BaseEvent be) {
-		        String session = (String) getSimpleValue();
-		    	getSessionScores(session);
-			}
-		});
-		
 	}
 	
 	private void getOptions() {
@@ -116,17 +109,14 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		Date start = schedulePanel.getStartCalendarDay();
 		int numDays = schedulePanel.getNumCalendarDays();
 		String tz = schedulePanel.getTimeZone();
-		// TODO, WTF: for some reason we get the Valid event twice, so store the request parameters,
-		// and only actually send them if they have changed since the last
-		if ((start != lastStart) | (numDays != lastNumDays) | (tz != lastTimeZone) | (id != lastSessionId)) {
-			// save off these latest values
-			lastStart = start;
-			lastNumDays = numDays;
-			lastTimeZone = tz;
-			lastSessionId = id;
-			// go get the scores
-		    access.request(display, id, name, start, (numDays * 24 * 60), tz);
-		}
+		
+		lastStart = start;
+		lastNumDays = numDays;
+		lastTimeZone = tz;
+		lastSessionId = id;
+		// go get the scores
+	    access.request(display, id, name, start, (numDays * 24 * 60), tz);
+
 	}
 	
 	@Override
