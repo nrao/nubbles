@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -34,7 +35,6 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	private void initLayout() {
 		setHeading("Calendar Control");
 		setBorders(true);
-		setWidth("100%");
 		
 	    String leftWidth = "300px";
 	    String rightWidth = "300px";
@@ -109,8 +109,6 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		//add(days);
 	    right.add(days);
 	    
-	    add(right, tdRight);
-		
 		// Timezone - controls the reference for all the date/times in the tab
 		final SimpleComboBox<String> tz;
 		tz = new SimpleComboBox<String>();
@@ -133,10 +131,23 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	    	}
 	    });
 		//add(tz);
-	    left.add(tz);
+	    right.add(tz);
+	    
+	    add(right, tdRight);
+		
+		CheckBox complete = new CheckBox();
+		complete.setFieldLabel("Completed");
+		complete.setToolTip("Filters for completed sessions when checked.");
+		left.add(complete);
+		
+		CheckBox enabled = new CheckBox();
+		enabled.setFieldLabel("Enabled");
+		enabled.setToolTip("Filters for enabled sessions when checked.");
+		enabled.setValue(true);
+		left.add(enabled);
 		
 		// Scores
-		scoresComboBox = new ScoresComboBox(schedule);
+		scoresComboBox = new ScoresComboBox(schedule, complete, enabled);
 		scoresComboBox.setFieldLabel("Scores");
         //add(scoresComboBox);
         left.add(scoresComboBox);

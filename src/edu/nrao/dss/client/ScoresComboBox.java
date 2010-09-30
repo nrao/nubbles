@@ -5,10 +5,16 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.WidgetListener;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.gargoylesoftware.htmlunit.javascript.host.Event;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -18,6 +24,8 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	private ScoresDisplay display;
 	private ScoresAccess access;
     private Schedule schedulePanel;
+    private CheckBox complete;
+    private CheckBox enabled;
 	private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
     
     // TODO, WTF: used for seeing if this is a new request, to avoid bug where
@@ -27,10 +35,13 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
     private String lastTimeZone;
     private int lastSessionId;
     
-	public ScoresComboBox(Schedule schedulePanel) {
+	public ScoresComboBox(Schedule schedulePanel, CheckBox complete, CheckBox enabled) {
 		super();
 		this.schedulePanel = schedulePanel;
+		this.complete      = complete;
+		this.enabled       = enabled;
 		initLayout();
+		initListeners();
 		lastStart = new Date();
 		lastNumDays = 0;
 		lastTimeZone = "";
@@ -38,15 +49,51 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		setTriggerAction(TriggerAction.ALL);
 	}
 	
+	private void initListeners() {
+		
+		complete.addListener(Events.Change, new Listener<BaseEvent>(){
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				getOptions();
+			}
+
+		});
+		enabled.addListener(Events.Change, new Listener<BaseEvent>(){
+
+			@Override
+			public void handleEvent(BaseEvent be) {
+				getOptions();
+			}
+
+		});
+		
+	}
+	
 	private void initLayout() {
 		
 	    // get the options
 		setForceSelection(true);
+		getOptions();
+		addListener(Events.Valid, new Listener<BaseEvent>() {
+		    public void handleEvent(BaseEvent be) {
+		        String session = (String) getSimpleValue();
+		    	getSessionScores(session);
+			}
+		});
+		
+	}
+	
+	private void getOptions() {
+		this.removeAll();
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
+			    	  put("complete", complete.getValue().toString());
+			    	  put("enabled",   enabled.getValue().toString());
 			        }}
 			      , new JSONCallbackAdapter() {
+			@SuppressWarnings("unchecked")
 			public void onSuccess(JSONObject json) {
 				JSONArray results = json.get("session handles").isArray();
 				JSONArray ids = json.get("ids").isArray();
@@ -56,13 +103,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 					add(key);
 				}
 			}
-    	});		
-		addListener(Events.Valid, new Listener<BaseEvent>() {
-		    public void handleEvent(BaseEvent be) {
-		        String session = (String) getSimpleValue();
-		    	getSessionScores(session);
-			}
-		});
+  	});		
 		
 	}
 

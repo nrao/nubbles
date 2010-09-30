@@ -113,7 +113,6 @@ public class ScheduleControl extends FormPanel {
 	
 	private void initLayout() {
 		setHeading("Schedule Control");
-		setWidth("100%");
 		setBorders(true);
 		
 		String col1Width = "50px";
