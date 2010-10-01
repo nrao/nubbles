@@ -310,7 +310,6 @@ public class Schedule extends ContentPanel {
 			    	type = p.isDefaultPeriod() ? "default period" : "choosen period";
 			    }
 			    String desc = p.getSession() + windowInfo;
-			    GWT.log(p.getState());
 			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getEnd(), type, session_type, p.getState());
 		        dayView.addAppointments(event.getAppointments());
 		        
