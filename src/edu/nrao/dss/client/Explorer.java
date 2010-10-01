@@ -86,7 +86,7 @@ public class Explorer extends ContentPanel{
 		setLayout(new FitLayout());
 		setCommitState(false);
 		//setAutoHeight(true);
-		setScrollMode(Scroll.AUTO);
+		setScrollMode(Scroll.AUTOY);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
