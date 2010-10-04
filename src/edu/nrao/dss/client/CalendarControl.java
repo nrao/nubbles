@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.LayoutData;
+import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -46,7 +47,7 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		setHeading("Calendar Control");
 		setBorders(true);
 		
-	    String leftWidth = "300px";
+	    String leftWidth = "400px";
 	    String rightWidth = "300px";
 	    String bottomWidth = "100%";
 
@@ -145,10 +146,11 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	    
 	    add(right, tdRight);
 		
-		CheckBox complete = new CheckBox();
-		complete.setFieldLabel("Completed");
-		complete.setToolTip("Filters for completed sessions when checked.");
-		left.add(complete);
+		CheckBox notcomplete = new CheckBox();
+		notcomplete.setFieldLabel("Not Complete");
+		notcomplete.setToolTip("Filters for sessions that are not complete when checked.");
+		notcomplete.setValue(true);
+		left.add(notcomplete);
 		
 		CheckBox enabled = new CheckBox();
 		enabled.setFieldLabel("Enabled");
@@ -157,9 +159,8 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		left.add(enabled);
 		
 		// Scores
-		scoresComboBox = new ScoresComboBox(schedule, complete, enabled);
+		scoresComboBox = new ScoresComboBox(schedule, notcomplete, enabled);
 		scoresComboBox.setFieldLabel("Scores");
-        //add(scoresComboBox);
 		
 		left.add(scoresComboBox);
         add(left, tdLeft);

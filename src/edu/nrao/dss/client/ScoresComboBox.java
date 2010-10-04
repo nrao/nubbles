@@ -24,7 +24,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	private ScoresDisplay display;
 	private ScoresAccess access;
     private Schedule schedulePanel;
-    private CheckBox complete;
+    private CheckBox notcomplete;
     private CheckBox enabled;
 	private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
     
@@ -35,10 +35,10 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
     private String lastTimeZone;
     private int lastSessionId;
     
-	public ScoresComboBox(Schedule schedulePanel, CheckBox complete, CheckBox enabled) {
+	public ScoresComboBox(Schedule schedulePanel, CheckBox notcomplete, CheckBox enabled) {
 		super();
 		this.schedulePanel = schedulePanel;
-		this.complete      = complete;
+		this.notcomplete   = notcomplete;
 		this.enabled       = enabled;
 		initLayout();
 		initListeners();
@@ -51,7 +51,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	
 	private void initListeners() {
 		
-		complete.addListener(Events.Change, new Listener<BaseEvent>(){
+		notcomplete.addListener(Events.Change, new Listener<BaseEvent>(){
 
 			@Override
 			public void handleEvent(BaseEvent be) {
@@ -82,7 +82,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
-			    	  put("complete", complete.getValue().toString());
+			    	  put("notcomplete", notcomplete.getValue().toString());
 			    	  put("enabled",   enabled.getValue().toString());
 			        }}
 			      , new JSONCallbackAdapter() {
