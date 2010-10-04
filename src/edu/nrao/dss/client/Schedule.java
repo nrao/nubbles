@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -18,9 +19,13 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.RequestBuilder;
@@ -143,6 +148,44 @@ public class Schedule extends ContentPanel {
   		calendar.setHeading("Calendar");
   		//calendar.setAutoHeight(true);
 		calendar.setScrollMode(Scroll.AUTOX);
+		calendar.setStyleAttribute("bgcolor", "black");
+		
+		FormPanel fp = new FormPanel();
+		fp.setHeaderVisible(false);
+		fp.setBorders(false);
+		fp.setLayout(new RowLayout(Orientation.HORIZONTAL));
+		fp.setHeight(40);
+		fp.setWidth("100%");
+		fp.setStyleAttribute("background", "#E9EEF6");
+		
+		LabelField pending = new LabelField("Legend");
+		pending.setStyleAttribute("color", "#F2A640");
+		pending.setValue("Pending");
+		fp.add(pending, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
+		
+		LabelField fixed = new LabelField("Legend");
+		fixed.setStyleAttribute("color", "#D96666");
+		fixed.setValue("Fixed");
+		fp.add(fixed, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
+		
+		LabelField open = new LabelField("Legend");
+		open.setStyleAttribute("color", "#668CD9");
+		open.setValue("Open");
+		fp.add(open, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
+		
+		LabelField dwindow = new LabelField("Legend");
+		dwindow.setStyleAttribute("color", "#4CB052");
+		dwindow.setValue("Default Windowed");
+		dwindow.setWidth(120);
+		fp.add(dwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
+		
+		LabelField ndwindow = new LabelField("Legend");
+		ndwindow.setStyleAttribute("color", "#BFBF4D");
+		ndwindow.setValue("Non-Default Windowed");
+		ndwindow.setWidth(150);
+		fp.add(ndwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
+		
+		calendar.add(fp);
 		
 		// calendar
 		dayView = new DayView();
