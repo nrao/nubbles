@@ -107,6 +107,10 @@ public class Schedule extends ContentPanel {
 		controlsContainer.setHeading("Controls");
 		controlsContainer.setScrollMode(Scroll.AUTO);
 
+		calendarControl = new CalendarControl(this);
+		calendarControl.setCollapsible(true);
+		controlsContainer.add(calendarControl);
+		
 		scheduleControl = new ScheduleControl(this);
         scheduleControl.setCollapsible(true);
         controlsContainer.add(scheduleControl);
@@ -117,10 +121,6 @@ public class Schedule extends ContentPanel {
 		scheduleExplorer.setCollapsible(true);
 		scheduleExplorer.setAutoHeight(true);
 		controlsContainer.add(scheduleExplorer);
-		
-		calendarControl = new CalendarControl(this);
-		calendarControl.setCollapsible(true);
-		controlsContainer.add(calendarControl);
 		
 		vacancyControl = new VacancyControl(this);
         vacancyControl.setCollapsible(true);
