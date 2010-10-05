@@ -9,6 +9,7 @@ class ScienceField {
                                                        , "maintenance"
                                                        , "calibration"
                                                        , "testing"
+                                                       , "commissioning"
                                                        };
 
     public ScienceField(String value) {
