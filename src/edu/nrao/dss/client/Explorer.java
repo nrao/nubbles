@@ -29,14 +29,18 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.WidgetComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -47,6 +51,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
@@ -64,6 +69,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
 public class Explorer extends ContentPanel{
+	
 	public Explorer(String url, ModelType mType) {
 		rootURL     = url;
 		modelType   = mType;
@@ -86,7 +92,7 @@ public class Explorer extends ContentPanel{
 		setLayout(new FitLayout());
 		setCommitState(false);
 		//setAutoHeight(true);
-		setScrollMode(Scroll.AUTO);
+		setScrollMode(Scroll.AUTOY);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
@@ -129,17 +135,18 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void initListeners() {
-		/*
 		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() { 
 			public void handleEvent(GridEvent<BaseModelData> ge) {
-				Object value = ge.getRecord().get(ge.getProperty());
-				for (BaseModelData model : grid.getSelectionModel()
-						.getSelectedItems()) {
-					store.getRecord(model).set(ge.getProperty(), value);
+				if (columnEditItem.isPressed()) {
+					Object value = ge.getRecord().get(ge.getProperty());
+					for (BaseModelData model : grid.getSelectionModel()
+							.getSelectedItems()) {
+						store.getRecord(model).set(ge.getProperty(), value);
+					}
 				}
 			}
 		});
-		*/
+		
 		store.addStoreListener(new StoreListener<BaseModelData>() {
 			@Override
 			public void storeUpdate(StoreEvent<BaseModelData> se) {
@@ -301,7 +308,11 @@ public class Explorer extends ContentPanel{
 		removeItem.setToolTip("Delete a row.");
 		// make it so that children can override this behavior
 		setRemoveItemListener();
-	
+		
+		columnEditItem = new ToggleButton("Column Edit");
+		columnEditItem.setToolTip("Click to enable column edit mode which will repeat the last edit for all the selected rows.");
+		toolBar.add(columnEditItem);
+		
 		// add a generic button that can be changed for whatever purpose a child class may have for it
 		actionItem = new Button("Action");
 		toolBar.add(actionItem);
@@ -682,6 +693,7 @@ public class Explorer extends ContentPanel{
 	private boolean showColumnsMenu = true;
 	private FilterMenu filterMenu;
 	private boolean createFilterToolBar = true;
+	private ToggleButton columnEditItem;
 	public List<String> filterComboIds = new ArrayList<String>();
 	public List<String> columnConfigIds = new ArrayList<String>();
 

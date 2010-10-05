@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -59,7 +60,6 @@ public class Scheduler extends Viewport implements EntryPoint {
         ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
 
         //tabPanel.setAutoHeight(true);
-        //tabPanel.setAutoWidth(true);
         tabPanel.setHeight(800);
         
         // Factor access

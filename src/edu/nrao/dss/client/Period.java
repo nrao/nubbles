@@ -35,6 +35,7 @@ public class Period {
         period.setHScore(json.get("sscore").isNumber().doubleValue());
         period.setCScore(json.get("cscore").isNumber().doubleValue());
         period.setState(json.get("state").isString().stringValue());
+        period.setSessionType(json.get("stype").isString().stringValue());
         
         // now set the fields associated with time accounting
         period.setDescription(json.get("description").isString().stringValue());
@@ -349,6 +350,14 @@ public class Period {
 		return state;
 	}
 	
+	public void setSessionType(String stringValue) {
+		session_type = stringValue;
+	}
+	
+	public String getSessionType() {
+		return session_type;
+	}
+
 	public boolean isScheduled() {
 		return state.compareTo("S") == 0;
 	}
@@ -406,6 +415,7 @@ public class Period {
     private double   cscore;
     private boolean  backup;
     private String   state;
+    private String   session_type;
     
     // time accounting (all in Hours)
     private String   description;
