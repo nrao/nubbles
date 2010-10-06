@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -28,11 +29,18 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.Container;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.WidgetComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -43,11 +51,13 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -59,6 +69,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
 public class Explorer extends ContentPanel{
+	
 	public Explorer(String url, ModelType mType) {
 		rootURL     = url;
 		modelType   = mType;
@@ -80,7 +91,8 @@ public class Explorer extends ContentPanel{
 		setHeaderVisible(false);
 		setLayout(new FitLayout());
 		setCommitState(false);
-		setAutoHeight(true);
+		//setAutoHeight(true);
+		setScrollMode(Scroll.AUTOY);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 
@@ -123,15 +135,18 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void initListeners() {
-		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() {
+		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() { 
 			public void handleEvent(GridEvent<BaseModelData> ge) {
-				Object value = ge.getRecord().get(ge.getProperty());
-				for (BaseModelData model : grid.getSelectionModel()
-						.getSelectedItems()) {
-					store.getRecord(model).set(ge.getProperty(), value);
+				if (columnEditItem.isPressed()) {
+					Object value = ge.getRecord().get(ge.getProperty());
+					for (BaseModelData model : grid.getSelectionModel()
+							.getSelectedItems()) {
+						store.getRecord(model).set(ge.getProperty(), value);
+					}
 				}
 			}
 		});
+		
 		store.addStoreListener(new StoreListener<BaseModelData>() {
 			@Override
 			public void storeUpdate(StoreEvent<BaseModelData> se) {
@@ -161,6 +176,17 @@ public class Explorer extends ContentPanel{
 		         keys.toArray(new String[]{}),
 		         values.toArray(new String[]{}),
 		         new JSONCallbackAdapter());
+        updateObservers();
+	}
+	
+	// to be implemented by children
+	public void registerObservers(){
+		
+	}
+	
+	// to be implemented by children
+	public void updateObservers(){
+		
 	}
 	
 	// to be implemented by children
@@ -197,17 +223,27 @@ public class Explorer extends ContentPanel{
 		pagingToolBar.bind(loader);
 		
 		toolBar = new ToolBar();
-		setTopComponent(toolBar);
+		if (createFilterToolBar) {
+			LayoutContainer toolBars = new LayoutContainer();
+			setTopComponent(toolBars);
+			filterToolBar = new ToolBar();
+			toolBars.add(toolBar);
+			toolBars.add(filterToolBar);
+			initFilterToolBar();
+		} else {
+			setTopComponent(toolBar);
+		}
 		
 		if (showColumnsMenu) {
 			columnsItem = new Button("Columns");
+			columnsItem.setToolTip("Manage column configurations.");
 			columnsItem.setMenu(initColumnsMenu());
 			toolBar.add(columnsItem);
 		}
 		
 		viewItem = new Button("View");
 		toolBar.add(viewItem);
-		viewItem.setToolTip("view row.");
+		viewItem.setToolTip("View selected row.");
 		viewItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
@@ -261,6 +297,7 @@ public class Explorer extends ContentPanel{
 										.getSelectedItem());
 							}
 						});
+				updateObservers();
 			}
 		});	
 		removeDialog.hide();
@@ -271,7 +308,11 @@ public class Explorer extends ContentPanel{
 		removeItem.setToolTip("Delete a row.");
 		// make it so that children can override this behavior
 		setRemoveItemListener();
-	
+		
+		columnEditItem = new ToggleButton("Column Edit");
+		columnEditItem.setToolTip("Click to enable column edit mode which will repeat the last edit for all the selected rows.");
+		toolBar.add(columnEditItem);
+		
 		// add a generic button that can be changed for whatever purpose a child class may have for it
 		actionItem = new Button("Action");
 		toolBar.add(actionItem);
@@ -287,34 +328,11 @@ public class Explorer extends ContentPanel{
 		
 		toolBar.add(new SeparatorToolItem());
 
-		filter = new FilterItem(Explorer.this, false);
-		toolBar.add(filter.getTextField());
-
-		for (SimpleComboBox<String> f : advancedFilters) {
-			toolBar.add(new SeparatorToolItem());
-		    toolBar.add(f);
-		}
-		toolBar.add(new SeparatorToolItem());
-		Button reset = new Button("Reset");
-		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				for (SimpleComboBox<String> f : advancedFilters) {
-					f.reset();
-				}
-				filter.getTextField().setValue("");
-			}
-		});
-		toolBar.add(reset);
-		toolBar.add(new SeparatorToolItem());
-		if (filterAction != null) {
-			toolBar.add(filterAction);
-		}
-		
 		toolBar.add(new FillToolItem());
 		toolBar.add(new SeparatorToolItem());
 
 		saveItem = new Button("Save");
+		saveItem.setToolTip("Save changes.  Note: modified fields are indicated with a red trangle in the upper left corn of the cell.");
 		toolBar.add(saveItem);
 
 		// Commit outstanding changes to the server.
@@ -337,6 +355,37 @@ public class Explorer extends ContentPanel{
 						duplicateItem.setEnabled(!grid.getSelectionModel().getSelectedItems().isEmpty());
 					}
 				});
+	}
+	
+	private void initFilterToolBar() {
+		filter = new FilterItem(Explorer.this, false);
+		filterToolBar.add(filter.getTextField());
+
+		for (SimpleComboBox<String> f : advancedFilters) {
+			filterToolBar.add(new SeparatorToolItem());
+			//  Karen wants to take out the labels on the advanced filters and
+			//  use the tool tips for now.
+			//filterToolBar.add(new LabelToolItem(f.getTitle()));
+		    filterToolBar.add(f);
+		}
+		filterToolBar.add(new SeparatorToolItem());
+		Button reset = new Button("Reset");
+		reset.setToolTip("Resets filter drop down menus.");
+		reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				for (SimpleComboBox<String> f : advancedFilters) {
+					f.reset();
+				}
+				filter.getTextField().setValue("");
+			}
+		});
+		filterToolBar.add(reset);
+		filterToolBar.add(new SeparatorToolItem());
+		if (filterAction != null) {
+			filterToolBar.add(filterAction);
+			filterAction.setToolTip("Execute filter combination.");
+		}
 	}
 	
 	private Menu initColumnsMenu() {
@@ -623,7 +672,11 @@ public class Explorer extends ContentPanel{
 	public void setShowColumnsMenu(boolean state) {
 		showColumnsMenu = state;
 	}
-
+	
+	public void setCreateFilterToolBar(boolean state) {
+		createFilterToolBar = state;
+	}
+	
 	/** Provides basic spreadsheet-like functionality. */
 	protected EditorGrid<BaseModelData> grid;
 
@@ -639,6 +692,8 @@ public class Explorer extends ContentPanel{
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
 	private FilterMenu filterMenu;
+	private boolean createFilterToolBar = true;
+	private ToggleButton columnEditItem;
 	public List<String> filterComboIds = new ArrayList<String>();
 	public List<String> columnConfigIds = new ArrayList<String>();
 
@@ -662,6 +717,7 @@ public class Explorer extends ContentPanel{
 	protected Dialog removeDialog;
 	protected Button actionItem;
 	protected ToolBar toolBar;
+	protected ToolBar filterToolBar;
 	protected PagingToolBar pagingToolBar;
 	
 	protected FilterItem filter;

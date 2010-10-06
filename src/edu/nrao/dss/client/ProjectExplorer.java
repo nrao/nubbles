@@ -43,12 +43,10 @@ public class ProjectExplorer extends Explorer {
 		
 		clearButton = new Button("Clear selections");
 		clearButton.setToolTip("Press to de-select grid items");
-		toolBar.insert(new SeparatorToolItem(), 18);
-		toolBar.insert(clearButton, 19);
+		toolBar.insert(clearButton, 6);
 		
 		emailButton = new Button("Email");
-		toolBar.insert(new SeparatorToolItem(), 20);
-		toolBar.insert(emailButton, 21);
+		toolBar.insert(emailButton, 7);
 		emailButton.setToolTip("Email investigators");
 		setEmailButtonListener();
 		setClearButtonListener();
@@ -282,12 +280,31 @@ public class ProjectExplorer extends Explorer {
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
 	    
+	    checkColumn = new CheckColumnConfig("blackouts", "Blackouts?", 70);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+	    
 	    checkColumn = new CheckColumnConfig("complete", "Complete?", 65);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
 	    
 	    return new ColumnModel(configs);
+	}
+	
+	public void registerObservers(SessionColConfig sePcodeConfig
+			                    , TimeAccounting ta
+			                    , ProjectPage pp){
+		this.sePcodeConfig = sePcodeConfig;
+		timeAccounting     = ta;
+		projectPage        = pp;
+	}
+	
+	public void updateObservers() {
+		sePcodeConfig.updatePCodeOptions();
+		timeAccounting.updatePCodeOptions();
+		projectPage.updatePCodeOptions();
 	}
 	
 	// when the view button gets pressed, go to the Project Page tab.
@@ -307,4 +324,9 @@ public class ProjectExplorer extends Explorer {
 	private Button emailButton;
 	private Button clearButton;
 	private ProjectEmailPagingToolBar selectionPagingToolBar;
+	
+	// Observers
+	private SessionColConfig sePcodeConfig;
+	private TimeAccounting timeAccounting;
+	private ProjectPage projectPage;
 }

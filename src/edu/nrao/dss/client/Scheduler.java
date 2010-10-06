@@ -1,5 +1,6 @@
 package edu.nrao.dss.client;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -18,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -32,57 +34,33 @@ public class Scheduler extends Viewport implements EntryPoint {
         // project explorer tab
         tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
         pe.setParent(this);
-
-        tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
         
-        // session explorer tab - we need to update the project info when it
-        // comes into focus
-        TabItem seTab = addTab(se, "Session Explorer", "Define and edit sessions.");
-        seTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
-        	@Override
-        	public void componentSelected(TabPanelEvent tpe){
-        		SessionColConfig pcodeConfig = (SessionColConfig) se.getPcodeConfig();
-        		pcodeConfig.updatePCodeOptions();
-        	}
-        });
-        tabPanel.add(seTab);
-
+        tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
+        tabPanel.add(addTab(se, "Session Explorer", "Define and edit sessions."));
         tabPanel.add(addTab(we, "Window Explorer", "Define and edit windows."));
         tabPanel.add(addTab(wc, "Window Calendar", "Display Windows."));
         
-        // schedule tab - we need to update the session/project info when it
+        // schedule tab - we need to update the period explorer when it
         // comes into focus
         TabItem schTab = addTab(sch, "Schedule", "Manage the Schedule");
         schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
         	@Override
         	public void componentSelected(TabPanelEvent tpe){
-        		PeriodColConfig sessionConfig = (PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig();
-        		sessionConfig.updateSessionOptions();
         		sch.scheduleExplorer.pe.loadData();
         	}
         });
         tabPanel.add(schTab);
-        
-        TabItem taTab = addTab(ta, "Time Accounting", "Manage Time Accounting");
-        taTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
-	    	@Override
-	    	public void componentSelected(TabPanelEvent tpe){
-	    		ta.updatePCodeOptions();
-	    	}
-        });        
-        tabPanel.add(taTab);
-        
-        TabItem ppTab = addTab(pp, "Project Page", "Per Project");
-        ppTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
-        	@Override
-        	public void componentSelected(TabPanelEvent tpe){
-        		pp.updatePCodeOptions();
-        	}
-        });	
-        tabPanel.add(ppTab);
-        
+        tabPanel.add(addTab(ta, "Time Accounting", "Manage Time Accounting"));
+        tabPanel.add(addTab(pp, "Project Page", "Per Project"));
         tabPanel.add(addTab(rs, "Receiver Schedule", "Change the Receiver Schedule"));
-        tabPanel.setAutoHeight(true);
+        
+        //  Register Observers
+        pe.registerObservers((SessionColConfig) se.getPcodeConfig(), ta, pp);
+        se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig(), we);
+        ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
+
+        //tabPanel.setAutoHeight(true);
+        tabPanel.setHeight(800);
         
         // Factor access
         factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));

@@ -1,14 +1,26 @@
 package edu.nrao.dss.client;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
+
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.layout.LayoutData;
+import com.extjs.gxt.ui.client.widget.layout.MarginData;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
@@ -34,14 +46,13 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	private void initLayout() {
 		setHeading("Calendar Control");
 		setBorders(true);
-		setWidth("100%");
 		
-	    String leftWidth = "300px";
+	    String leftWidth = "400px";
 	    String rightWidth = "300px";
 	    String bottomWidth = "100%";
 
 	    /* Table layout for making this a 2x2 format, instead of a single column */
-		TableLayout tb = new TableLayout(2);
+		TableLayout tb = new TableLayout(3);
 		//tb.setWidth("50%");
 		tb.setBorder(0);
 		setLayout(tb);
@@ -109,8 +120,6 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		//add(days);
 	    right.add(days);
 	    
-	    add(right, tdRight);
-		
 		// Timezone - controls the reference for all the date/times in the tab
 		final SimpleComboBox<String> tz;
 		tz = new SimpleComboBox<String>();
@@ -133,14 +142,48 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	    	}
 	    });
 		//add(tz);
-	    left.add(tz);
+	    right.add(tz);
+	    
+	    add(right, tdRight);
+		
+		CheckBox notcomplete = new CheckBox();
+		notcomplete.setFieldLabel("Not Complete");
+		notcomplete.setToolTip("Filters for sessions that are not complete when checked.");
+		notcomplete.setValue(true);
+		left.add(notcomplete);
+		
+		CheckBox enabled = new CheckBox();
+		enabled.setFieldLabel("Enabled");
+		enabled.setToolTip("Filters for enabled sessions when checked.");
+		enabled.setValue(true);
+		left.add(enabled);
 		
 		// Scores
-		scoresComboBox = new ScoresComboBox(schedule);
+		scoresComboBox = new ScoresComboBox(schedule, notcomplete, enabled);
 		scoresComboBox.setFieldLabel("Scores");
-        //add(scoresComboBox);
-        left.add(scoresComboBox);
+		
+		left.add(scoresComboBox);
         add(left, tdLeft);
+        
+        FormPanel far = new FormPanel();
+		far.setHeaderVisible(false);
+		far.setBodyBorder(false);
+		
+		Button calcScores = new Button("Get Scores");
+		calcScores.setToolTip("Get the scores for the select session.");
+		calcScores.addSelectionListener(new SelectionListener<ButtonEvent> (){
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				String session = (String) scoresComboBox.getSimpleValue();
+		    	scoresComboBox.getSessionScores(session);
+			}
+			
+		});
+        far.add(calcScores);
+        
+		tdLeft.setVerticalAlign(VerticalAlignment.MIDDLE);
+		add(far, tdLeft);
         
         schedule.scores = new Scores(scoresComboBox, new ScoresForCalendar(schedule));
         

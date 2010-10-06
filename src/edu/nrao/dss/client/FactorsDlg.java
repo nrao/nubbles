@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -29,6 +30,13 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	private Integer duration = 4; // hours
 	private FactorsDisplay display;
 	private FactorsAccess access;
+	
+	// FormPanel fields for the Factors Dlg
+	private final FormPanel fp = new FormPanel();
+	private final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
+	private final DateField startDateField = new DateField();
+    private final TimeField timeField = new TimeField();
+    private final NumberField hours = new NumberField();
 
 	@SuppressWarnings("serial")
 	public FactorsDlg(Schedule sched) {
@@ -41,11 +49,10 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		setButtons(Dialog.OKCANCEL);
 		
 		// now set up the form w/ all it's fields
-		final FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
 		
 		// session
-		final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
+		//final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
 		sessions.setForceSelection(true);
 		JSONRequest.get("/sessions/options"
@@ -63,6 +70,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 				}
 			}
     	});
+		
 		sessions.setToolTip("Select a session to factor.");
 		sessions.setFieldLabel("Sessions");
 		sessions.setSimpleValue("Maintenance (Maintenance)"); // TODO fails
@@ -71,25 +79,26 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		fp.add(sessions);
 		
 		// start date
-		final DateField startDateField = new DateField();
-	    startDateField.setValue(new Date());
+		long iTimeStamp = schedule.startCalendarDay.getTime() + (3600000 * 24);
+		Date tomorrow = new Date();
+		tomorrow.setTime(iTimeStamp);
+		startDateField.setValue(tomorrow);
 	    startDateField.setFieldLabel("Start Date");
 		startDateField.setToolTip("Set the start day for the vacancy to be filled");
 	    fp.add(startDateField);
 	    
 	    // start time
-	    final TimeField timeField = new TimeField();
 	    timeField.setTriggerAction(TriggerAction.ALL);
-	    timeField.setFormat(DateTimeFormat.getFormat("HH:mm"));
-	    timeField.setValue(new Time(0, 0)); // TODO fails
+	    DateTimeFormat fmt = DateTimeFormat.getFormat("HH:mm");
+	    timeField.setFormat(fmt);
+	    timeField.setDateValue(fmt.parse("13:00"));
 	    timeField.setFieldLabel("Start Time");
 		timeField.setToolTip("Set the start time for the vacancy to be filled");
 	    fp.add(timeField);
 		
 		// start duration
-	    final NumberField hours = new NumberField();
 	    hours.setPropertyEditorType(Integer.class);
-	    hours.setValue(4);
+	    hours.setValue(24);
 		hours.setToolTip("Set the time range.");
 		hours.setFieldLabel("Range (Hrs)");
 		fp.add(hours);
@@ -147,6 +156,38 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	@Override
 	public void setAccess(FactorsAccess a) {
 		access = a;
+	}
+	
+	public void initValues(HashMap<String, Object> values){
+		String value = values.get("handle").toString();
+		int cutOff = value.lastIndexOf(" ");
+		value = value.substring(0, cutOff);
+		sessions.setSimpleValue(value);
+		DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
+		startDateField.setValue(fmt.parse(values.get("date").toString()));
+		fmt = DateTimeFormat.getFormat("HH:mm");
+		timeField.setDateValue(fmt.parse(values.get("time").toString()));
+		hours.setValue(new Float(values.get("duration").toString()));
+	}
+	
+	public void clearFormFields() {
+		if (sessions.isDirty()) {
+			sessions.clear();
+		}
+		if (startDateField.isDirty()) {
+			long iTimeStamp = schedule.startCalendarDay.getTime() + (3600000 * 24);
+			Date tomorrow = new Date();
+			tomorrow.setTime(iTimeStamp);
+			startDateField.setValue(tomorrow);
+		}
+		if (timeField.isDirty()) {
+			DateTimeFormat fmt = DateTimeFormat.getFormat("HH:mm");
+		    timeField.setDateValue(fmt.parse("13:00"));
+		    
+		}
+		if (hours.isDirty()) {
+			hours.setValue(24);
+		}
 	}
 
 }

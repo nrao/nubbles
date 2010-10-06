@@ -50,10 +50,10 @@ public class AssignWindowPeriodDlg extends Dialog {
 		
 		fp.add(periods, new FormData(300, 300));
 
-		// are we assigning the default or choosen period?
+		// are we assigning the default or chosen period?
 		defaultPeriod.setValue(true);
 		defaultPeriod.setFieldLabel("Default Period?");
-		defaultPeriod.setToolTip("Is the period assigned for this window's default or choosen period?");
+		defaultPeriod.setToolTip("Is the period assigned for this window's default or chosen period?");
 		
 		fp.add(defaultPeriod);
 		
@@ -121,7 +121,7 @@ public class AssignWindowPeriodDlg extends Dialog {
 	
 	public void assignPeriod() {
 		
-		// what period was choosen?
+		// what period was chosen?
 		String periodName = periods.getSimpleValue();
 		if (periodName == null) {
 			return; // error

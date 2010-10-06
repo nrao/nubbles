@@ -41,6 +41,7 @@ public class FactorGrid extends Grid {
 		display.put("lstExcepted",                gValue("LST Flag",      "factor"));
 		display.put("enoughTimeBetween",          gValue("TimeBet Flag",  "factor"));
 		display.put("observerAvailable",          gValue("ObsAvail Flag", "factor"));
+		display.put("projectBlackout",            gValue("Proj Blck",     "factor"));
 		display.put("atmosphericOpacity",         gValue("AtmEff",        "factor"));
 		display.put("surfaceObservingEfficiency", gValue("SurfEff",       "factor"));
 		display.put("trackingEfficiency",         gValue("TrackEff",      "factor"));
