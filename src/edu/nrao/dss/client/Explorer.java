@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -18,6 +20,7 @@ import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -26,6 +29,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
@@ -109,7 +113,7 @@ public class Explorer extends ContentPanel{
 		GridSelectionModel<BaseModelData> selectionModel = new GridSelectionModel<BaseModelData>();
 		selectionModel.setSelectionMode(SelectionMode.MULTI);
 		grid.setSelectionModel(selectionModel);
-		addPlugins();
+		//addPlugins();
 		add(grid);
 		grid.setBorders(true);
 
@@ -135,13 +139,54 @@ public class Explorer extends ContentPanel{
 	}
 	
 	private void initListeners() {
+		
+		grid.addListener(Events.BeforeEdit, new Listener<GridEvent<BaseModelData>>() {
+
+			@Override
+			public void handleEvent(GridEvent<BaseModelData> ge) {
+				Record record = ge.getRecord();
+				Object value = record.get(ge.getProperty());
+				
+				ArrayList<Object> data = new ArrayList<Object>();
+				data.add(ge.getProperty());
+				data.add(value);
+
+				// Update undo stacks
+				undoStackRecords.push(record);
+				undoStackData.push(data);
+				
+				if(!undoItem.isEnabled()) {
+					undoItem.enable();
+				}
+			}
+			
+		});
 		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() { 
 			public void handleEvent(GridEvent<BaseModelData> ge) {
+				//  Check to see if the value has actually changed
+				Object value = ge.getRecord().get(ge.getProperty());
+				Record record = undoStackRecords.pop();
+				ArrayList<Object> data = undoStackData.pop();
+				if (data.get(1) != value) {
+					undoStackRecords.push(record);
+					undoStackData.push(data);
+				} else if (undoStackRecords.isEmpty() & undoStackData.isEmpty()) {
+					undoItem.disable();
+				}
+				
 				if (columnEditItem.isPressed()) {
-					Object value = ge.getRecord().get(ge.getProperty());
 					for (BaseModelData model : grid.getSelectionModel()
 							.getSelectedItems()) {
-						store.getRecord(model).set(ge.getProperty(), value);
+						record = store.getRecord(model);
+						Object old_value = record.get(ge.getProperty());
+						record.set(ge.getProperty(), value);
+						
+						//  Place the old values on the undo stack
+						undoStackRecords.push(record);
+						data = new ArrayList<Object>();
+						data.add(ge.getProperty());
+						data.add(old_value);
+						undoStackData.push(data);
 					}
 				}
 			}
@@ -330,7 +375,103 @@ public class Explorer extends ContentPanel{
 
 		toolBar.add(new FillToolItem());
 		toolBar.add(new SeparatorToolItem());
+		
+		undoItem = new Button();
+		undoItem.setToolTip("Undo the last edit.");
+		undoItem.disable();
+		undoItem.setIcon(GXT.IMAGES.paging_toolbar_prev());
+		toolBar.add(undoItem);
+		
+		undoItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				//  If the undo stacks are not empty pop the top and update the record.
+				if (!undoStackRecords.isEmpty() & !undoStackData.isEmpty()) {
+					Record record = undoStackRecords.pop();
+					ArrayList<Object> undoData = undoStackData.pop();
+					Object value = record.get(undoData.get(0).toString());
+					
+					ArrayList<Object> data = new ArrayList<Object>();
+					data.add(undoData.get(0));
+					data.add(value);
+					redoStackRecords.push(record);
+					redoStackData.push(data);
+					
+					record.set(undoData.get(0).toString(), undoData.get(1));
+					
+					// Disable the undo button if there are no more undos.
+					if (undoStackRecords.isEmpty()) {
+						undoItem.disable();
+					}
+					
+					if (!redoItem.isEnabled()) {
+						redoItem.enable();
+					}
+				}
+			}
+			
+		});
+		
+		redoItem = new Button();
+		redoItem.setToolTip("Redo the last undo.");
+		redoItem.disable();
+		redoItem.setIcon(GXT.IMAGES.paging_toolbar_next());
+		toolBar.add(redoItem);
+		
+		redoItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				//  If the undo stacks are not empty pop the top and update the record.
+				if (!redoStackRecords.isEmpty() & !redoStackData.isEmpty()) {
+					Record record = redoStackRecords.pop();
+					ArrayList<Object> redoData = redoStackData.pop();
+					Object value = record.get(redoData.get(0).toString());
+					
+					ArrayList<Object> data = new ArrayList<Object>();
+					data.add(redoData.get(0));
+					data.add(value);
+					undoStackRecords.push(record);
+					undoStackData.push(data);
+					
+					record.set(redoData.get(0).toString(), redoData.get(1));
+					
+					// Disable the undo button if there are no more undos.
+					if (redoStackRecords.isEmpty()) {
+						redoItem.disable();
+					}
+					
+					if (!undoItem.isEnabled()) {
+						undoItem.enable();
+					}
+				}
+			}
+			
+		});
+
+		toolBar.add(new SeparatorToolItem());
+		
+		cancelItem = new Button("Cancel");
+		cancelItem.setToolTip("Cancel changes.  Note: modified fields are indicated with a red trangle in the upper left corn of the cell.");
+		toolBar.add(cancelItem);
+		
+		//  Reject outstanding changes
+		cancelItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				store.rejectChanges();
+				undoStackRecords.clear();
+				undoStackData.clear();
+				undoItem.disable();
+				redoStackRecords.clear();
+				redoStackData.clear();
+				redoItem.disable();
+			}
+			
+		});
+		
 		saveItem = new Button("Save");
 		saveItem.setToolTip("Save changes.  Note: modified fields are indicated with a red trangle in the upper left corn of the cell.");
 		toolBar.add(saveItem);
@@ -344,6 +485,10 @@ public class Explorer extends ContentPanel{
 				setCommitState(false);
 				//loadData();
 				//grid.getView().refresh(true);
+				
+				undoStackRecords.clear();
+				undoStackData.clear();
+				undoItem.disable();
 			}
 		});
 		
@@ -694,6 +839,11 @@ public class Explorer extends ContentPanel{
 	private FilterMenu filterMenu;
 	private boolean createFilterToolBar = true;
 	private ToggleButton columnEditItem;
+	private Stack<Record> undoStackRecords = new Stack<Record>();
+	private Stack<ArrayList<Object>> undoStackData = new Stack<ArrayList<Object>>();
+	private Stack<Record> redoStackRecords = new Stack<Record>();
+	private Stack<ArrayList<Object>> redoStackData = new Stack<ArrayList<Object>>();
+	
 	public List<String> filterComboIds = new ArrayList<String>();
 	public List<String> columnConfigIds = new ArrayList<String>();
 
@@ -710,6 +860,9 @@ public class Explorer extends ContentPanel{
 	
 	protected SplitButton filterAction;
 	protected Button saveItem;
+	protected Button cancelItem;
+	protected Button undoItem;
+	protected Button redoItem;
 	protected Button viewItem;
 	protected Button addItem;
 	protected Button removeItem;
