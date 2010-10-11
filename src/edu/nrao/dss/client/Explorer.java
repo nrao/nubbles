@@ -164,10 +164,10 @@ public class Explorer extends ContentPanel{
 		grid.addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() { 
 			public void handleEvent(GridEvent<BaseModelData> ge) {
 				//  Check to see if the value has actually changed
-				String value = ge.getRecord().get(ge.getProperty()).toString();
+				Object value = ge.getRecord().get(ge.getProperty());
 				Record record = undoStackRecords.pop();
 				ArrayList<Object> data = undoStackData.pop();
-				if (data.get(1).toString() != value) {
+				if (data.get(1) != value) {
 					undoStackRecords.push(record);
 					undoStackData.push(data);
 				} else if (undoStackRecords.isEmpty() & undoStackData.isEmpty()) {
@@ -178,7 +178,7 @@ public class Explorer extends ContentPanel{
 					for (BaseModelData model : grid.getSelectionModel()
 							.getSelectedItems()) {
 						record = store.getRecord(model);
-						String old_value = record.get(ge.getProperty()).toString();
+						Object old_value = record.get(ge.getProperty());
 						record.set(ge.getProperty(), value);
 						
 						//  Place the old values on the undo stack
