@@ -379,7 +379,7 @@ public class Explorer extends ContentPanel{
 		undoItem = new Button();
 		undoItem.setToolTip("Undo the last edit.");
 		undoItem.disable();
-		undoItem.setIcon(GXT.IMAGES.grid_filter_lessThan());
+		undoItem.setIcon(GXT.IMAGES.paging_toolbar_prev());
 		toolBar.add(undoItem);
 		
 		undoItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -416,7 +416,7 @@ public class Explorer extends ContentPanel{
 		redoItem = new Button();
 		redoItem.setToolTip("Redo the last undo.");
 		redoItem.disable();
-		redoItem.setIcon(GXT.IMAGES.grid_filter_greaterThan());
+		redoItem.setIcon(GXT.IMAGES.paging_toolbar_next());
 		toolBar.add(redoItem);
 		
 		redoItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
