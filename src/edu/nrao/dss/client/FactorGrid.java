@@ -16,6 +16,7 @@ public class FactorGrid extends Grid {
 		
 		display.put("wind_mph",                   gValue("Vcleo [mph]",   "weather"));
 		display.put("wind_ms",                    gValue("Vcorr [m/s]",   "weather"));
+		display.put("irradiance",                 gValue("Irr [W/m^2]",   "weather"));
 		display.put("opacity",                    gValue("Opacity",       "weather"));
 		display.put("tsys",                       gValue("Tatm [K]",      "weather"));
 
@@ -42,7 +43,7 @@ public class FactorGrid extends Grid {
 		display.put("enoughTimeBetween",          gValue("TimeBet Flag",  "factor"));
 		display.put("observerAvailable",          gValue("ObsAvail Flag", "factor"));
 		display.put("projectBlackout",            gValue("Proj Blck",     "factor"));
-		display.put("atmosphericOpacity",         gValue("AtmEff",        "factor"));
+		display.put("atmosphericEfficiency",      gValue("AtmEff",        "factor"));
 		display.put("surfaceObservingEfficiency", gValue("SurfEff",       "factor"));
 		display.put("trackingEfficiency",         gValue("TrackEff",      "factor"));
 		display.put("inWindows",                  gValue("Window Flag",   "factor"));
