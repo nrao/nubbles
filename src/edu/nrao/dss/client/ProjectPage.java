@@ -350,7 +350,7 @@ public class ProjectPage extends ContentPanel {
 		if (v == null) {
 			v = "";
 		}
-		keys.put("friends", v);
+		keys.put("friend", v);
 				
 		String url = "/projects/" + project_ids.get(pcode);
 		
