@@ -65,6 +65,9 @@ public class ReservationsGrid extends ContentPanel{
 	    column = new ColumnConfig("end", "Check-out", 70);
 	    configs.add(column);
 	    
+	    column = new ColumnConfig("pcodes", "Projects", 300);
+	    configs.add(column);	   
+	    
 	    return new ColumnModel(configs);
 	}
 	
