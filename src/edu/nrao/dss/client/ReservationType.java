@@ -10,6 +10,7 @@ public class ReservationType extends ModelType {
 		addField("name");
 		addField("start");
 		addField("end");
+		addField("pcodes");
 	}
 
 }
