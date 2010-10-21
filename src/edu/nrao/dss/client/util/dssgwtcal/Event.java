@@ -6,6 +6,7 @@ import java.util.Date;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
+
 // an event represents an 'appointment' in the real world, and can map to one or more appointments.
 // appointments map to blocks of time on our calendar.
 
@@ -26,6 +27,25 @@ public class Event {
 	
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     
+    public class DateRange {
+        public Date start;
+        public Date end;
+        
+        public DateRange(Date start, Date end) {
+        	this.start = start;
+        	this.end   = end;
+        }
+        
+        public DateRange(String start, String end) {
+    		this.start  = DATE_FORMAT.parse(start);
+    		this.end = DATE_FORMAT.parse(end);        	
+        }
+        
+        public boolean dateInRange(Date dt) {
+            return ((dt.before(this.end)) && (dt.after(this.start)) );        	
+        }
+    }
+    
 	public Event(int id, String title, String description, Date start
 			   , Date end, String type, String session_type, String state) {
 		this.id = id;
@@ -40,16 +60,32 @@ public class Event {
 	}
 	
 	private long getGmtOffsetMs(Date dt) {
-		long offset;
+		long offset = 4;
 		// TODO: how to get this to work forever?
 	    // 5 hours between Nov 1 2009, March 14, 2010, otherwise, 4 hours
-		Date nov1_2009  = DATE_FORMAT.parse("2009-11-01 00:00:00");
-		Date mar14_2010 = DATE_FORMAT.parse("2010-03-14 00:00:00");
-		if ((dt.before(nov1_2009)) || (dt.after(mar14_2010))) {
-			offset = 4;
-		} else {
-			offset = 5;
+		//Date nov1_2009  = DATE_FORMAT.parse("2009-11-01 00:00:00");
+		//Date mar14_2010 = DATE_FORMAT.parse("2010-03-14 00:00:00");
+		// Specify the date ranges where the offset between ET & UT is 5 hours, not 4.
+		// Dates according to: http://www.usno.navy.mil/USNO/astronomical-applications/astronomical-information-center/daylight-time
+        //		2010 	March 14 	November 7
+		//		2011 	March 13 	November 6
+		//		2012 	March 11 	November 4
+		//		2013 	March 10 	November 3
+		//		2014 	March 9 	November 2
+		//		2015 	March 8 	November 1
+		DateRange fiveHourOffsets[] = {new DateRange("2009-11-01 00:00:00","2010-03-14 00:00:00")
+		                             , new DateRange("2010-11-07 00:00:00","2011-03-13 00:00:00")
+                                     , new DateRange("2011-11-06 00:00:00","2012-03-11 00:00:00")
+                                     , new DateRange("2012-11-04 00:00:00","2013-03-10 00:00:00")
+                                     , new DateRange("2013-11-03 00:00:00","2014-03-09 00:00:00")
+        							 , new DateRange("2014-11-02 00:00:00","2015-03-08 00:00:00")
+		};
+		for (int i = 0; i < fiveHourOffsets.length; i++) {
+			if (fiveHourOffsets[i].dateInRange(dt)) {
+				offset = 5;
+			}
 		}
+
 	    return offset * 60 * 60 * 1000; // milliseconds
 	}
 	
