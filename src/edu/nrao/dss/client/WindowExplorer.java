@@ -120,11 +120,6 @@ public class WindowExplorer extends Explorer {
 		});
 	}
 	
-//	public void setDefaultDate(Date date) {
-//		DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
-//		defaultDate = fmt.format(date);
-//	}
-	
 	public ColumnConfig getSessionConfig() {
 		return configs.get(0);
 	}
@@ -136,18 +131,11 @@ public class WindowExplorer extends Explorer {
         new ColumnType("start",            "Start",                70,  false, DateEditField.class),
         new ColumnType("duration",         "Duration",             55,  false, Integer.class),
         new ColumnType("end",              "Last",                 70,  false, DateEditField.class),
-        new ColumnType("default_date",     "D. Date",              70,  false, DateEditField.class),
-        new ColumnType("default_time",     "D. Time",              50, false, TimeField.class),
-        new ColumnType("default_duration", "D. Dur.",              55,  false, Integer.class),
-        new ColumnType("default_state",    "D.S.",                 30,  false, DisplayField.class),
-        
-        new ColumnType("chosen_date",     "C. Date",              70,  false, DateEditField.class),
-        new ColumnType("chosen_time",     "C. Time",              50, false, TimeField.class),
-        new ColumnType("chosen_duration", "C. Dur.",              55,  false, Integer.class),
-        new ColumnType("chosen_state",    "C.S.",                 30,  false, DisplayField.class)
-        
-		
-
+        new ColumnType("total_time",       "Time (Hrs)",           90,  false, Float.class),
+        new ColumnType("time_billed",      "Billed (Hrs)",         90,  false, DisplayField.class),
+        new ColumnType("time_remaining",   "Remaining (Hrs)",     100,  false, DisplayField.class),
+       	new ColumnType("complete",         "Completed?",           70,  false, Boolean.class),       
+        new ColumnType("num_periods",      "Periods",              55,  false, Integer.class),
 	};
 	
 	// creates list of dates that are the first of each month 
