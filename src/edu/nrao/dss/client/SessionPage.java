@@ -12,7 +12,7 @@ public class SessionPage extends ContentPanel {
 	
     //private final WindowExplorer  we       = new WindowExplorer();
     private final SessionInfoPanel sp = new SessionInfoPanel();
-    private final WindowInfoPanel  wp = new WindowInfoPanel();
+    private final WindowsInfoPanel  wp = new WindowsInfoPanel();
     
 	public SessionPage() {
 		initLayout();
@@ -26,7 +26,7 @@ public class SessionPage extends ContentPanel {
 		setBorders(false);
 		setHeaderVisible(false);
 
-		sp.setWindowInfoPanel(wp);
+		sp.setWindowsInfoPanel(wp);
         add(sp);
 
         add(wp);

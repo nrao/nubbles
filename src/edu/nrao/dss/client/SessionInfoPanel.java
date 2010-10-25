@@ -29,7 +29,7 @@ public class SessionInfoPanel extends ContentPanel {
 
     private HashMap<String, Integer> sessIds = new HashMap<String, Integer>();
     private JSONObject sessJson;
-    private WindowInfoPanel wp;
+    private WindowsInfoPanel wp;
     
 	public SessionInfoPanel() {
 		initLayout();
@@ -69,7 +69,7 @@ public class SessionInfoPanel extends ContentPanel {
 		});		
 	}		
 	
-	public void setWindowInfoPanel(WindowInfoPanel wp) {
+	public void setWindowsInfoPanel(WindowsInfoPanel wp) {
 		this.wp = wp;
 	}
 	    
@@ -107,7 +107,7 @@ public class SessionInfoPanel extends ContentPanel {
 //			}
 //		});			
 		
-		
+	
 	}
 	
 	// gets all project codes form the server and populates the project combo
