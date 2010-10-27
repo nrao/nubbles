@@ -30,6 +30,7 @@ public class SessionInfoPanel extends ContentPanel {
     private HashMap<String, Integer> sessIds = new HashMap<String, Integer>();
     private JSONObject sessJson;
     private WindowsInfoPanel wp;
+    //private TestAccordionPanel ap;
     
 	public SessionInfoPanel() {
 		initLayout();
@@ -136,11 +137,20 @@ public class SessionInfoPanel extends ContentPanel {
 	}
 	
 	private void populateSessionPage(JSONObject json) {
+		GWT.log("session json: " + json, null);
 		JSONObject s = json.get("session").isObject();
 		type.setValue(s.get("type").isString().stringValue());
 		
 		// window's panel
+		// TODO: standardize all this session handle crap.
 		int sessionId = (int) s.get("id").isNumber().doubleValue();
-		this.wp.updateWindowOptions(sessionId);
+		String name = s.get("name").isString().stringValue();
+		String pcode = s.get("pcode").isString().stringValue();
+		String handle = name + " (" + pcode + ")";
+		GWT.log("handle: "+ handle, null);
+		
+		this.wp.getWindows(sessionId, handle);
+		
+		//this.ap.update();
 	}
 }

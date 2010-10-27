@@ -4,9 +4,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -49,12 +52,18 @@ public class WindowInfoPanel extends ContentPanel {
 	private NumberField billed;
 	private NumberField remaining;
 	private CheckBox cmp; 
+	private Button save;
+	private Button cancel;
+	private Button delete;
+	private WindowedPeriodExplorer wpe;
 	
-	public WindowInfoPanel(JSONObject winJson) {
+	protected Dialog removeDialog;
+	protected Button removeApproval;
+	
+	public WindowInfoPanel(JSONObject winJson) { 
 		translateJson(winJson);
 		initLayout();
 		initListeners();
-		//updateWindowOptions();
 	}
 	
 	private void translateJson(JSONObject winJson) {
@@ -77,15 +86,31 @@ public class WindowInfoPanel extends ContentPanel {
 		
 		complete = winJson.get("complete").isBoolean().booleanValue();
 		
-		header = "Window (" + Integer.toString(id) + "): " + startStr + " - " + endStr;
+		String cmpStr = (complete == true) ? "Complete" : "Not Complete";
+		
+		// the header is a summary: [date range] time, complete (id)
+		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): ";
+	}
+	
+	private void updateHeading() {
+		setHeading(header);
+		String color = (complete == true) ? "green" : "red";
+		getHeader().setStyleAttribute("color", color);
+		if (complete == false) {
+			getHeader().setStyleAttribute("font-weight", "bold");
+		}
 	}
 	
 	public void initLayout() {
 		setLayout(new FitLayout());
 		
-		setHeaderVisible(true);
-		setHeading(header);
+		setCollapsible(true);
+		collapse();
 		
+		// header
+		setHeaderVisible(true);
+        updateHeading();
+        
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
 		
@@ -100,7 +125,7 @@ public class WindowInfoPanel extends ContentPanel {
 	    fp.add(days);
 	    
 	    end_dt = new DateField();
-	    end_dt.setValue(start);
+	    end_dt.setValue(end);
 	    end_dt.setFieldLabel("End Date");
 	    end_dt.setReadOnly(true);
 	    fp.add(end_dt);
@@ -127,70 +152,77 @@ public class WindowInfoPanel extends ContentPanel {
 	    cmp.setValue(complete);
 	    fp.add(cmp);
 	    
-	    final Button save = new Button();
+	    save = new Button();
 	    save.setText("Save");
-	    save.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		saveWindow();
-	    	}
-	    });
 	    fp.add(save);
 	    
-	    final Button cancel = new Button();
+	    cancel = new Button();
 	    cancel.setText("Cancel");
-	    cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		loadWindow();
-	    	}
-	    });
 	    fp.add(cancel);
 	    
-	    final Button delete = new Button();
+        delete = new Button();
 	    delete.setText("Delete");
-	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		deleteWindow();
-	    	}
-	    });
 	    fp.add(delete);
 	    
-	    
-	    WindowedPeriodExplorer wpe = new WindowedPeriodExplorer(id);
+		removeDialog = new Dialog();
+		removeDialog.setHeading("Confirmation");
+		removeDialog.addText("Remove Window?");
+		removeDialog.setButtons(Dialog.YESNO);
+		removeDialog.setHideOnButtonClick(true);
+		removeApproval = removeDialog.getButtonById(Dialog.YES);
+		removeDialog.hide();
+		
+	    wpe = new WindowedPeriodExplorer(id, handle);
+	    wpe.registerObservers(this);
 	    fp.add(wpe);
 	    
 	    add(fp);
 	    
-	    //setHeight(200);
 	    layout();
 	}
 	
 	
 	public void initListeners() {
-		
+	    save.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		saveWindow();
+	    	}
+	    });	
+	    cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		loadWindow();
+	    	}
+	    });	
+	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		removeDialog.show();
+	    	}
+	    });	
+		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		    @Override
+		    public void componentSelected(ButtonEvent ce) {
+			    deleteWindow();
+		    }
+	    });	    
 	}
 	
 	private void deleteWindow() {
-		// TODO: confirmation dialog
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("_method", "delete");
 	    JSONRequest.post("/windows/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
-	            	GWT.log("deleteWindow success!", null);
-	            	//getWindow();
-	            	// TODO: get rid of this panel!
-	            	hide();
-	            	
+	            	// reload all the windows again!
+	        		((WindowsInfoPanel) getParent()).getWindows();
 	            }
 	    });			    	
 	}
 	
 	// class attributes -> widgets
 	private void loadWindow() {
-		
 	    dt.setValue(start);
 	    days.setValue(numDays);
 	    end_dt.setValue(end);
@@ -198,19 +230,19 @@ public class WindowInfoPanel extends ContentPanel {
 	    billed.setValue(time_billed);
 	    remaining.setValue(time_remaining);
 	    cmp.setValue(complete);
+	    updateHeading();
 	}
 	
 	// get window from server -> class attributes -> displayed in widgets
-	private void getWindow() {
+	protected void getWindow() {
 	    JSONRequest.get("/windows/" + Integer.toString(id), new JSONCallbackAdapter() {
             @Override
             public void onSuccess(JSONObject json) {
-            	GWT.log("getWindow success!", null);
             	JSONObject winJson = json.get("window").isObject();
             	translateJson(winJson);
             	loadWindow();
-            	
-            	
+            	// update the windowed periods
+            	wpe.loadData();
             }
         });			    	
 	}
@@ -229,9 +261,8 @@ public class WindowInfoPanel extends ContentPanel {
 	    JSONRequest.post("/windows/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
-	            	GWT.log("saveWindow success!", null);
+	            	// get back from the server this window & display it again
 	            	getWindow();
-	            	
 	            }
 	    });		
 	}
