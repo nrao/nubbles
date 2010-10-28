@@ -63,11 +63,13 @@ h1 {
 }
 
 .gwt-RcvrSchdGrid-header {
+  font-size: 12;
   font-weight: bold;
   background-color: #FFE4C4; # bisque;
 }
 
 .gwt-RcvrSchdGrid-on {
+  font-size: 10;
   font-weight: bold;
   background-color: #90EE90; # lightgreen;
 }
