@@ -118,10 +118,13 @@ public class WindowCalendar extends ContentPanel {
 		Date[] dates = new Date[numDays];
 
 		// construct the column headers for the calendar
-		headers[0] = "Session";
+		headers[0] = "Session (total/billed) Complete?";
+		// TODO: believe it or fucking not, DST causes a one hour offset when we do this!!! WTF!!!!
 		String day;
+		long startSecs = start.getTime();
 		for (i = 0; i < numDays; i++) {
-			long dateSecs = start.getTime() + (i * 1000 * 60 * 60 * 24);
+			long offset = ((long) i) * 1000 * 60 * 60 * 24;
+			long dateSecs = startSecs + offset;
 			Date dt = new Date(dateSecs);
 			String dayStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(dt);
 			headers[i+1] = dayStr;
@@ -134,43 +137,48 @@ public class WindowCalendar extends ContentPanel {
 		int numWindows = windows.size();		
 		String [][] cal = new String[numWindows][numDays + 1];
 		for (i = 0; i < numWindows; i++) {
+			
 		    JSONObject window = windows.get(i).isObject();
-		    // the first column is the session name (handle)
+		    
+		    // the first column is window info
 		    String handle = window.get("handle").isString().stringValue();
-		    cal[i][0] = handle;
+		    Double total  = window.get("total_time").isNumber().doubleValue();
+		    Double billed = window.get("time_billed").isNumber().doubleValue();
+		    Boolean cmp   = window.get("complete").isBoolean().booleanValue();
+		    String cmpStr = cmp ? "Cmp." : "Not Cmp.";
+		    // Ex: GBT08A-001-01 (GBT08A-001) (8.0/8.0) Cmp."
+		    cal[i][0] = handle + " (" + total.toString() + "/" + billed.toString() + ") " + cmpStr;
 		    
 		    // when does the window start and stop?
 		    String wstartStr = window.get("start").isString().stringValue();
 		    String wstopStr  = window.get("end").isString().stringValue();
 			Date wstart = DateTimeFormat.getFormat("yyyy-MM-dd").parse(wstartStr);
 			Date wstop  = DateTimeFormat.getFormat("yyyy-MM-dd").parse(wstopStr);
+
+			// where are the periods?
+			JSONArray periods = window.get("periods").isArray();
+			int numPeriods = periods.size();
+			String [][] calPeriods = new String[numPeriods][4];
+			Date [] calPeriodDates = new Date[numPeriods];
 			
-			// when is the default period?
-			if (window.get("default_date").isNull() == null) {
-		        dstartStr = window.get("default_date").isString().stringValue();
-			    dstart = DateTimeFormat.getFormat("yyyy-MM-dd").parse(dstartStr);
-			    if (window.get("default_state").isNull() == null) {
-			    	dstate = window.get("default_state").isString().stringValue();
-			    }
-			} else {
-				dstartStr = "";
-                dstart = null;
-                dstate = "";
-			}
+			for (int j = 0; j < numPeriods; j++) {
 				
-			// when is the chosen period?
-			if (window.get("chosen_date").isNull() == null) {
-		        cstartStr = window.get("chosen_date").isString().stringValue();
-			    cstart = DateTimeFormat.getFormat("yyyy-MM-dd").parse(cstartStr);
-			    if (window.get("chosen_state").isNull() == null) {
-			    	cstate = window.get("chosen_state").isString().stringValue();
-			    }
-			} else {
-				cstartStr = "";
-				cstart = null;
-				cstate = "";
+				// parse the JSON
+				JSONObject period = periods.get(j).isObject();
+			    String pstartStr  = period.get("date").isString().stringValue();
+			    String pstate     = period.get("state").isString().stringValue();
+			    Boolean pdefault  = period.get("wdefault").isBoolean().booleanValue();
+                Double pbilled    = period.get("time_billed").isNumber().doubleValue();
+                
+                // populate our table
+				calPeriods[j][0] = pstartStr;
+				calPeriods[j][1] = pstate;
+				calPeriods[j][2] = pdefault ? "T" : "F";
+				calPeriods[j][3] = pbilled.toString();
+				calPeriodDates[j] = DateTimeFormat.getFormat("yyyy-MM-dd").parse(pstartStr);
+				
 			}
-		    
+			
 		    // the rest are the days - each showing whehter it's part of the window 
 		    for (int j = 0; j < numDays; j++) {
 	    		text = "";
@@ -195,17 +203,11 @@ public class WindowCalendar extends ContentPanel {
 		    				text += wstopStr;
 		    			}
 		    		}
-		    		// same day as default period?
-		    		if (dstart != null) {
-			    		if (dstart.equals(dates[j])) {
-			    			text += " default (" + dstate + ")";
-			    		}
-		    		}
-		    		// same day as chosen period?
-		    		if (cstart != null) {
-			    		if (cstart.equals(dates[j])) {
-			    			text += " chosen (" + cstate + ")";
-			    		}
+		    		// any periods on this day?
+		    		for (int k = 0; k < numPeriods; k++) {
+		    			if (calPeriodDates[k].equals(dates[j])) {
+		    				text += calPeriodToText(calPeriods[k]);
+		    			}
 		    		}
 		    		// insert a separator, if needed
 		    		if (text.compareTo("") != 0) {
@@ -223,6 +225,16 @@ public class WindowCalendar extends ContentPanel {
 		calendar.loadCalendar(numWindows, numDays + 1, headers, cal);
 	}
 
+	private String calPeriodToText(String[] period) {
+		String text;
+		String state = "(" + period[1] + ")";
+		String billed = "(" + period[3] + ")";
+		String def = period[2] == "T" ? "Default" : "Chosen";
+		// Ex: Default (P) (8.0)
+		text = def + " " + state + " " + billed;
+		return text;
+	}
+	
 	private boolean isDateInWindow(Date dt, Date start, Date stop) {
 		return ((dt.getTime() >= start.getTime()) && (dt.getTime() <= stop.getTime()));
 	}
