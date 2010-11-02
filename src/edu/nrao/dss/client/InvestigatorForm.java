@@ -33,8 +33,11 @@ public class InvestigatorForm extends LayoutContainer {
 	private InvestigatorExplorer investigatorExplorer;
 	private Button submit = new Button("Submit");
 	
+	
     public InvestigatorForm(Window w, InvestigatorExplorer investExp) {
     	setWindow(w);
+    	w.add(this);
+    	w.setSize(375, 175);
     	investigatorExplorer = investExp;
     }
     
@@ -58,17 +61,17 @@ public class InvestigatorForm extends LayoutContainer {
       users.setFieldLabel("User");
       users.setTriggerAction(TriggerAction.ALL);
       form.add(users);
-    
+      
       getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-		@SuppressWarnings("deprecation")
 		@Override
 		public void componentSelected(ButtonEvent ce) {
 			HashMap<String, Object> fields = new HashMap<String, Object>();
         	fields.put("project_id", investigatorExplorer.getProject_id());
         	fields.put("user_id", user_ids.get(users.getSimpleValue()));
         	investigatorExplorer.addRecord(fields);
-        	getWindow().close();
+        	getWindow().hide();
+        	
 			
 		}
     	  
@@ -78,10 +81,9 @@ public class InvestigatorForm extends LayoutContainer {
       Button c = new Button("Cancel");
       c.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-		@SuppressWarnings("deprecation")
 		@Override
 		public void componentSelected(ButtonEvent ce) {
-			getWindow().close();
+			getWindow().hide();
 		} 
       });
       form.addButton(c); 
