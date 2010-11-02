@@ -128,7 +128,7 @@ public class Explorer extends ContentPanel{
 		
 	}
 	
-	private void addPlugins() {
+	protected void addPlugins() {
 		for (CheckColumnConfig cb : checkBoxes) {
 			grid.addPlugin(cb);
 		}
