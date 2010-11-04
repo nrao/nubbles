@@ -25,8 +25,6 @@ import com.google.gwt.user.client.ui.HTML;
 
 public class SessionPage extends ContentPanel {
 	
-    //private final WindowExplorer  we       = new WindowExplorer();
-    //private final SessionInfoPanel sp = new SessionInfoPanel();
     private final WindowsInfoPanel  wp = new WindowsInfoPanel();
 	private FormPanel sessionForm = new FormPanel();
 	private SimpleComboBox<String> sessions = new SimpleComboBox<String>();
@@ -136,13 +134,13 @@ public class SessionPage extends ContentPanel {
 		String sessionType = s.get("type").isString().stringValue();
 		type.setValue(sessionType);
 		
-        // TODO: if type is windowed, populate this panel
+		// TODO: straigten out all this handle crap!
+		String name = s.get("name").isString().stringValue();
+		String pcode = s.get("pcode").isString().stringValue(); 
+        String sessionHandle = name + " (" + pcode + ")";
+		int sessionId = (int) s.get("id").isNumber().doubleValue();
+		
 		if (sessionType.equals("windowed") == true) {
-			int sessionId = (int) s.get("id").isNumber().doubleValue();
-			// TODO: straigten out all this handle crap!
-			String name = s.get("name").isString().stringValue();
-			String pcode = s.get("pcode").isString().stringValue(); 
-            String sessionHandle = name + " (" + pcode + ")";
 			wp.setVisible(true);
 			wp.getWindows(sessionId, sessionHandle);
 		} else {

@@ -157,19 +157,14 @@ public class SessionExplorer extends Explorer {
 		return configs.get(0);
 	}
 	
-    public void registerObservers(PeriodColConfig peSessionConfig, WindowExplorer windowExplorer) {
+    public void registerObservers(PeriodColConfig peSessionConfig) {
     	this.peSessionConfig = peSessionConfig;
-    	this.windowExplorer  = windowExplorer;
     }
     
     public void updateObservers() {
     	peSessionConfig.updateSessionOptions();
-    	windowExplorer.updateSessionOptions();
-    	WindowColConfig wcc = (WindowColConfig) windowExplorer.getSessionConfig();
-    	wcc.updateSessionOptions();	
     }
     
     // Observers
     private PeriodColConfig peSessionConfig;
-    private WindowExplorer  windowExplorer;
 }

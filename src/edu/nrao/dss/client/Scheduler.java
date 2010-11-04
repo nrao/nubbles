@@ -37,8 +37,8 @@ public class Scheduler extends Viewport implements EntryPoint {
         
         tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
         tabPanel.add(addTab(se, "Session Explorer", "Define and edit sessions."));
-        tabPanel.add(addTab(we, "Window Explorer", "Define and edit windows."));
         tabPanel.add(addTab(wc, "Window Calendar", "Display Windows."));
+        tabPanel.add(addTab(sp, "Session Page", "Reboot Grail."));
         
         // schedule tab - we need to update the period explorer when it
         // comes into focus
@@ -56,7 +56,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         
         //  Register Observers
         pe.registerObservers((SessionColConfig) se.getPcodeConfig(), ta, pp);
-        se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig(), we);
+        se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig());
         ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
 
         //tabPanel.setAutoHeight(true);
@@ -87,15 +87,16 @@ public class Scheduler extends Viewport implements EntryPoint {
     public void showProject(String pcode) {
         TabItem ppTab =	tabPanel.findItem("Project Page", false);
     	tabPanel.setSelection(ppTab);
-    	pp.setProject(pcode);
+    	//pp.setProject(pcode);
     }
     
     private final TabPanel         tabPanel = new TabPanel();
     private final ProjectExplorer  pe       = new ProjectExplorer();
     private final SessionExplorer  se       = new SessionExplorer();
     private final UserExplorer     ue       = new UserExplorer();
-    private final WindowExplorer   we       = new WindowExplorer();
     private final WindowCalendar   wc       = new WindowCalendar();
+    private final SessionPage      sp       = new SessionPage();
+    
     private final Schedule         sch      = new Schedule();
     private final TimeAccounting   ta       = new TimeAccounting();
     private Factors                factors;
