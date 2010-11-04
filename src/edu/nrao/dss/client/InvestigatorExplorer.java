@@ -36,6 +36,7 @@ public class InvestigatorExplorer extends Explorer {
 	public InvestigatorExplorer() {
 		super("/investigators", new InvestigatorType());
 		initLayout(initColumnModel(), false);
+		addPlugins();
 		setAddInvest(new InvestigatorForm(
 				new Window(), InvestigatorExplorer.this));
 		initInvestigatorToolBar();
@@ -74,11 +75,8 @@ public class InvestigatorExplorer extends Explorer {
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
-	        	Window w = addInvest.getWindow();
+	        	addInvest.getWindow().show();
 				addInvest.show();
-				w.add(addInvest);
-				w.setSize(375, 175);
-				w.show();
 	        }
 	    });
 		
