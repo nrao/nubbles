@@ -39,7 +39,7 @@ public class SessionExplorer extends Explorer {
 		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol", "KFPA"	
 		};
 		advancedFilters.add(initCombo("Proj Complete", new String[] {"True", "False"}, 100));
-		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed"}, 100));
+		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed", "Elective"}, 100));
 		advancedFilters.add(initCombo("Science Type", ScienceField.values, 100));
 		advancedFilters.add(initCombo("Receiver", receivers, 80));
 		advancedFilters.add(initCombo("Frequency", frequencies, 80));

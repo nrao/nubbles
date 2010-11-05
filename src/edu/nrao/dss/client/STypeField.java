@@ -4,6 +4,7 @@ class STypeField {
     public static final String[] values = new String[] { "open"
                                                        , "windowed"
                                                        , "fixed"
+                                                       , "elective"
                                                        };
 
     public STypeField(String value) {

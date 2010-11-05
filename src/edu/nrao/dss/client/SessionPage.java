@@ -26,16 +26,19 @@ import com.google.gwt.user.client.ui.HTML;
 public class SessionPage extends ContentPanel {
 	
     private final WindowsInfoPanel  wp = new WindowsInfoPanel();
+    private final ElectivesInfoPanel  ep = new ElectivesInfoPanel();
+    
 	private FormPanel sessionForm = new FormPanel();
 	private SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 	private TextField<String> type = new TextField<String>();
 	private Button save = new Button();
 	private Button reset = new Button();
+    private FormData fd = new FormData(200, 25);    
 	
 	private HashMap<String, Integer> session_ids = new HashMap<String, Integer>();
 	private JSONObject sessionJson;
 	private String sessionHandle;
-    private FormData fd = new FormData(200, 25);    
+    
 	public SessionPage() {
 		initLayout();
 		initListeners();
@@ -65,6 +68,8 @@ public class SessionPage extends ContentPanel {
 		add(sessionForm);
 		
 		add(wp);
+		add(ep);
+		
 	}
 	
 	private void initListeners() {
@@ -143,8 +148,15 @@ public class SessionPage extends ContentPanel {
 		if (sessionType.equals("windowed") == true) {
 			wp.setVisible(true);
 			wp.getWindows(sessionId, sessionHandle);
+			ep.setVisible(false);
+		} else if (sessionType.equals("elective") == true) {
+			ep.setVisible(true);
+			ep.getElectives(sessionId, sessionHandle);
+			wp.setVisible(false);
+			
 		} else {
 			wp.setVisible(false);
+			ep.setVisible(false);
 		}
 			
 		
