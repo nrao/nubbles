@@ -185,6 +185,12 @@ public class Schedule extends ContentPanel {
 		ndwindow.setWidth(150);
 		fp.add(ndwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
 		
+		LabelField elwindow = new LabelField("Legend");
+		elwindow.setStyleAttribute("color", "#E67399");
+		elwindow.setValue("Elective");
+		//elwindow.setWidth(150);
+		fp.add(elwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
+		
 		calendar.add(fp);
 		
 		// calendar

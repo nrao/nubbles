@@ -185,8 +185,13 @@ public class Event {
 			   
 		   } else {
 			   if (session_type.contains("O")){
+				   // Open Session
 				   appt.addStyleName("gwt-appointment-blue");
+			   } else if (session_type.contains("E")) {
+				   // Elective Session
+				   appt.addStyleName("gwt-appointment-pink");
 			   } else {
+				   // Fixed Session
 				   appt.addStyleName("gwt-appointment-red");
 			   }
 		   }
