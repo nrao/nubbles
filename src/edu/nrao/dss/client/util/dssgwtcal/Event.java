@@ -189,7 +189,7 @@ public class Event {
 				   appt.addStyleName("gwt-appointment-blue");
 			   } else if (session_type.contains("E")) {
 				   // Elective Session
-				   appt.addStyleName("gwt-appointment-pink");
+				   appt.addStyleName("gwt-appointment-darkpurple");
 			   } else {
 				   // Fixed Session
 				   appt.addStyleName("gwt-appointment-red");

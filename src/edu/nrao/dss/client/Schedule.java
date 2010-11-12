@@ -186,7 +186,7 @@ public class Schedule extends ContentPanel {
 		fp.add(ndwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
 		
 		LabelField elwindow = new LabelField("Legend");
-		elwindow.setStyleAttribute("color", "#E67399");
+		elwindow.setStyleAttribute("color", "#8C66D9");
 		elwindow.setValue("Elective");
 		//elwindow.setWidth(150);
 		fp.add(elwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
