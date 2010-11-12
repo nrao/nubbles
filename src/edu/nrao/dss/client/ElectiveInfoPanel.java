@@ -3,11 +3,13 @@ package edu.nrao.dss.client;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -16,11 +18,14 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 // comment
+import com.google.gwt.json.client.JSONString;
 
 // This class maps directly to a single elective object on the server side.  It replaces 
 // what a single row in the elective explorer used to cover, before multiple periods and date 
@@ -67,30 +72,36 @@ public class ElectiveInfoPanel extends ContentPanel {
 	}
 	
 	private void translateJson(JSONObject winJson) {
+		String startDate, endDate;
 		
 		handle = winJson.get("handle").isString().stringValue();
 		
 		id = (int) winJson.get("id").isNumber().doubleValue();
 		
-//		String startStr = winJson.get("start").isString().stringValue();
-//		start = DateTimeFormat.getFormat("yyyy-MM-dd").parse(startStr);
-//		
-//		String endStr = winJson.get("end").isString().stringValue();
-//		end = DateTimeFormat.getFormat("yyyy-MM-dd").parse(endStr);
-//		
-//		numDays = (int) winJson.get("duration").isNumber().doubleValue(); 
-//		
-//		total_time = winJson.get("total_time").isNumber().doubleValue();
-//		time_billed = winJson.get("time_billed").isNumber().doubleValue();
-//		time_remaining = winJson.get("time_remaining").isNumber().doubleValue();
-		
 		complete = winJson.get("complete").isBoolean().booleanValue();
 		
-		String cmpStr = (complete == true) ? "Complete" : "Not Complete";
+		// what are the dates that this elective spans?
+		JSONString firstPeriod = winJson.get("firstPeriod").isString();
+		if (firstPeriod != null) {
+    		String startStr = firstPeriod.stringValue(); 
+	    	Date start = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").parse(startStr);
+		    startDate = DateTimeFormat.getFormat("yyyy-MM-dd").format(start);
+		} else {
+			startDate = "None";
+		}
+		
+		JSONString lastPeriod = winJson.get("lastPeriod").isString();
+		if (lastPeriod != null) {
+    		String endStr = lastPeriod.stringValue(); 
+    		Date end = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss").parse(endStr);
+	    	endDate = DateTimeFormat.getFormat("yyyy-MM-dd").format(end);
+		} else {
+			endDate = "None";
+		}
 		
 		// the header is a summary: [date range] time, complete (id)
 		//header = "Elective [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): ";
-		header = "Elective (" + Integer.toString(id) + "): ";
+		header = "Elective [" + startDate + " - " + endDate + "] (" + Integer.toString(id) + "): ";
 
 	}
 	
@@ -115,56 +126,32 @@ public class ElectiveInfoPanel extends ContentPanel {
         
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
-		
-//	    dt = new DateField();
-//	    dt.setValue(start);
-//	    dt.setFieldLabel("Start Date");
-//	    fp.add(dt);
-//	    
-//	    days = new NumberField();
-//	    days.setFieldLabel("Days");
-//	    days.setValue(numDays);
-//	    fp.add(days);
-//	    
-//	    end_dt = new DateField();
-//	    end_dt.setValue(end);
-//	    end_dt.setFieldLabel("End Date");
-//	    end_dt.setReadOnly(true);
-//	    fp.add(end_dt);
-//	    
-//	    total = new NumberField();
-//	    total.setValue(total_time);
-//	    total.setFieldLabel("Total Time (Hrs)");
-//	    fp.add(total);
-//	    
-//	    billed = new NumberField();
-//	    billed.setValue(time_billed);
-//	    billed.setFieldLabel("Billed Time (Hrs)");
-//	    billed.setReadOnly(true);
-//	    fp.add(billed);
-//	    
-//	    remaining = new NumberField();
-//	    remaining.setValue(time_remaining);
-//	    remaining.setFieldLabel("Time Remaining (Hrs)");
-//	    remaining.setReadOnly(true);
-//	    fp.add(remaining);
 	    
 	    cmp = new CheckBox();
 	    cmp.setFieldLabel("Complete");
 	    cmp.setValue(complete);
 	    fp.add(cmp);
-	    
+	
+	    // save, delete, cancel buttons all in a horizontal row
+	    FormPanel buttonFp = new FormPanel();
+		buttonFp.setLayout(new RowLayout(Orientation.HORIZONTAL));
+		buttonFp.setSize(350, 50);
+		buttonFp.setHeaderVisible(false);
+		buttonFp.setBodyBorder(false);
+
 	    save = new Button();
 	    save.setText("Save");
-	    fp.add(save);
+	    buttonFp.add(save, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
 	    
 	    cancel = new Button();
 	    cancel.setText("Cancel");
-	    fp.add(cancel);
+	    buttonFp.add(cancel, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
 	    
         delete = new Button();
 	    delete.setText("Delete");
-	    fp.add(delete);
+	    buttonFp.add(delete, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
+	    
+	    fp.add(buttonFp);
 	    
 		removeDialog = new Dialog();
 		removeDialog.setHeading("Confirmation");
