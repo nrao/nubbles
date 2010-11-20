@@ -34,7 +34,7 @@ public class FactorGrid extends Grid {
 		display.put("observingEfficiencyLimit",   gValue("ObsEff Lim",    "factor"));
 		display.put("hourAngleLimit",             gValue("HA Lim",        "factor"));
 		display.put("zenithAngleLimit",           gValue("ZA Lim",        "factor"));
-		display.put("trackingErrorLimit",         gValue("TrackEff Lim",  "factor"));
+		display.put("trackingErrorLimit",         gValue("TrackErr Lim",  "factor"));
 		display.put("atmosphericStabilityLimit",  gValue("AtmStab Lim",   "factor"));
 		display.put("receiver",                   gValue("Rx Flag",       "factor"));
 		display.put("observerOnSite",             gValue("OnSite Fact",   "factor"));
