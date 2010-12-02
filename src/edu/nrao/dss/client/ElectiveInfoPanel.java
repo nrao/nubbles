@@ -34,44 +34,20 @@ import com.google.gwt.json.client.JSONString;
 // TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
 // TODO: pretty it up.
 
-public class ElectiveInfoPanel extends ContentPanel {
+public class ElectiveInfoPanel extends PeriodGroupInfoPanel {
 	
 	
-	// elective attributes
-	private String header;
-	private String handle;
-	private int id;
-//	private Date start;
-//	private int numDays;
-//	private Date end;
-//	private Double total_time;
-//	private Double time_billed;
-//	private Double time_remaining;
-	private Boolean complete;
+	public ElectiveInfoPanel(JSONObject json, String url, String groupPeriodType) {
+		super(json, url, groupPeriodType);
+	}
+
+	// elective attributes not common to windows
+	private CheckBox cmp;
 	
-	// elective UI widgets
-//	private DateField dt;
-//	private DateField end_dt;
-//	private NumberField days;
-//	private NumberField total;
-//	private NumberField billed;
-//	private NumberField remaining;
-	private CheckBox cmp; 
-	private Button save;
-	private Button cancel;
-	private Button delete;
 	private ElectivePeriodExplorer epe;
 	
-	protected Dialog removeDialog;
-	protected Button removeApproval;
-	
-	public ElectiveInfoPanel(JSONObject winJson) { 
-		translateJson(winJson);
-		initLayout();
-		initListeners();
-	}
-	
-	private void translateJson(JSONObject winJson) {
+	// translate the json for an elective to the class attributes
+	protected void translateJson(JSONObject winJson) {
 		String startDate, endDate;
 		
 		handle = winJson.get("handle").isString().stringValue();
@@ -100,11 +76,11 @@ public class ElectiveInfoPanel extends ContentPanel {
 		}
 		
 		// the header is a summary: [date range] time, complete (id)
-		//header = "Elective [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): ";
 		header = "Elective [" + startDate + " - " + endDate + "] (" + Integer.toString(id) + "): ";
 
 	}
 	
+	// The heading of this panel should reflect the state of the Elective
 	private void updateHeading() {
 		setHeading(header);
 		String color = (complete == true) ? "green" : "red";
@@ -114,147 +90,55 @@ public class ElectiveInfoPanel extends ContentPanel {
 		}
 	}
 	
-	public void initLayout() {
-		setLayout(new FitLayout());
-		
-		setCollapsible(true);
-		collapse();
-		
-		// header
-		setHeaderVisible(true);
-        updateHeading();
-        
-		FormPanel fp = new FormPanel();
-		fp.setHeaderVisible(false);
-	    
-	    cmp = new CheckBox();
-	    cmp.setFieldLabel("Complete");
+	// class attributes -> widget attributes
+	@Override
+	protected void loadPeriodGroup() {
 	    cmp.setValue(complete);
-	    fp.add(cmp);
-	
-	    // save, delete, cancel buttons all in a horizontal row
-	    FormPanel buttonFp = new FormPanel();
-		buttonFp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		buttonFp.setSize(350, 50);
-		buttonFp.setHeaderVisible(false);
-		buttonFp.setBodyBorder(false);
+	    updateHeading();		
+	}
 
-	    save = new Button();
-	    save.setText("Save");
-	    buttonFp.add(save, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
-	    
-	    cancel = new Button();
-	    cancel.setText("Cancel");
-	    buttonFp.add(cancel, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
-	    
-        delete = new Button();
-	    delete.setText("Delete");
-	    buttonFp.add(delete, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
-	    
-	    fp.add(buttonFp);
-	    
-		removeDialog = new Dialog();
-		removeDialog.setHeading("Confirmation");
-		removeDialog.addText("Remove Elective?");
-		removeDialog.setButtons(Dialog.YESNO);
-		removeDialog.setHideOnButtonClick(true);
-		removeApproval = removeDialog.getButtonById(Dialog.YES);
-		removeDialog.hide();
-		
-	    epe = new ElectivePeriodExplorer(id, handle);
-	    epe.registerObservers(this);
-	    fp.add(epe);
-	    
-	    add(fp);
-	    
-	    layout();
+	@Override
+	protected void updateGroupPeriod(JSONObject json) {
+    	JSONObject winJson = json.get("elective").isObject();
+    	translateJson(winJson);
+    	loadPeriodGroup();
+    	// update the elective periods
+    	epe.loadData();		
 	}
-	
-	
-	public void initListeners() {
-	    save.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		saveElective();
-	    	}
-	    });	
-	    cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		loadElective();
-	    	}
-	    });	
-	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		removeDialog.show();
-	    	}
-	    });	
-		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
-		    @Override
-		    public void componentSelected(ButtonEvent ce) {
-			    deleteElective();
-		    }
-	    });	    
-	}
-	
-	private void deleteElective() {
+
+	@Override
+	protected void savePeriodGroup() {
+		// put the widget values into the hash to pass down in the POST
 		HashMap<String, Object> keys = new HashMap<String, Object>();
-		keys.put("_method", "delete");
-	    JSONRequest.post("/electives/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
-	            @Override
-	            public void onSuccess(JSONObject json) {
-	            	// reload all the electives again!
-	        		((ElectivesInfoPanel) getParent()).getElectives();
-	            }
-	    });			    	
-	}
-	
-	// class attributes -> widgets
-	private void loadElective() {
-//	    dt.setValue(start);
-//	    days.setValue(numDays);
-//	    end_dt.setValue(end);
-//	    total.setValue(total_time);
-//	    billed.setValue(time_billed);
-//	    remaining.setValue(time_remaining);
-	    cmp.setValue(complete);
-	    updateHeading();
-	}
-	
-	// get elective from server -> class attributes -> displayed in widgets
-	protected void getElective() {
-		GWT.log("getElective");
-	    JSONRequest.get("/electives/" + Integer.toString(id), new JSONCallbackAdapter() {
-            @Override
-            public void onSuccess(JSONObject json) {
-            	JSONObject winJson = json.get("elective").isObject();
-            	translateJson(winJson);
-            	loadElective();
-            	// update the electiveed periods
-            	epe.loadData();
-            }
-        });			    	
-	}
-	
-	// send off the current state of the elective to the server
-	// then reload the results
-	private void saveElective() {
-		HashMap<String, Object> keys = new HashMap<String, Object>();
-//		String startStr =  DateTimeFormat.getFormat("yyyy-MM-dd").format(dt.getValue());
 		keys.put("_method", "put");
-//		keys.put("start", startStr);
-//		keys.put("duration", days.getValue().intValue()); //Integer.toString(days.getValue().intValue()));
-//		keys.put("total_time", total.getValue().doubleValue());
 		keys.put("complete", cmp.getValue());
 		keys.put("handle", handle);
 	    JSONRequest.post("/electives/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
 	            	// get back from the server this elective & display it again
-	            	getElective();
+	            	getPeriodGroup();
 	            }
-	    });		
+	    });			
+	}
+
+	// Sets up the fields exclusive to Electives
+	// This is called from the parents initLayout()
+	@Override
+	protected void initFormFields(FormPanel fp) {
+	    cmp = new CheckBox();
+	    cmp.setFieldLabel("Complete");
+	    cmp.setValue(complete);
+	    fp.add(cmp);		
+	}
+
+	// Elective Panels need to use the ElectivePeriodExplorers
+	// This is called from the parents initLayout()
+	@Override
+	protected void initGroupPeriodExplorer(FormPanel fp) {
+	    epe = new ElectivePeriodExplorer(id, handle);
+	    epe.registerObservers(this);
+	    fp.add(epe);		
 	}
 	
 }

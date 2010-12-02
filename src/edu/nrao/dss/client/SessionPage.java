@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.HTML;
 
 public class SessionPage extends ContentPanel {
 	
-    private final WindowsInfoPanel  wp = new WindowsInfoPanel();
-    private final ElectivesInfoPanel  ep = new ElectivesInfoPanel();
+    private final WindowsInfoPanel  wp = new WindowsInfoPanel("windows", "Window");
+    private final ElectivesInfoPanel  ep = new ElectivesInfoPanel("electives", "Elective");
     
 	private FormPanel sessionForm = new FormPanel();
 	private SimpleComboBox<String> sessions = new SimpleComboBox<String>();
