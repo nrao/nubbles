@@ -32,38 +32,38 @@ public class Scheduler extends Viewport implements EntryPoint {
     private void initLayout() {
         
         // project explorer tab
-//        tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
-//        pe.setParent(this);
-//        
-//        tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
-//        tabPanel.add(addTab(se, "Session Explorer", "Define and edit sessions."));
-//        tabPanel.add(addTab(wc, "Window Calendar", "Display Windows."));
+        tabPanel.add(addTab(pe, "Project Explorer", "Define and edit projects."));
+        pe.setParent(this);
+        
+        tabPanel.add(addTab(ue, "User Explorer", "Define and edit users."));
+        tabPanel.add(addTab(se, "Session Explorer", "Define and edit sessions."));
+        tabPanel.add(addTab(wc, "Window Calendar", "Display Windows."));
         tabPanel.add(addTab(sp, "Session Page", "Reboot Grail."));
         
         // schedule tab - we need to update the period explorer when it
         // comes into focus
-//        TabItem schTab = addTab(sch, "Schedule", "Manage the Schedule");
-//        schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
-//        	@Override
-//        	public void componentSelected(TabPanelEvent tpe){
-//        		sch.scheduleExplorer.pe.loadData();
-//        	}
-//        });
-//        tabPanel.add(schTab);
-//        tabPanel.add(addTab(ta, "Time Accounting", "Manage Time Accounting"));
-//        tabPanel.add(addTab(pp, "Project Page", "Per Project"));
-//        tabPanel.add(addTab(rs, "Receiver Schedule", "Change the Receiver Schedule"));
+        TabItem schTab = addTab(sch, "Schedule", "Manage the Schedule");
+        schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
+        	@Override
+        	public void componentSelected(TabPanelEvent tpe){
+        		sch.scheduleExplorer.pe.loadData();
+        	}
+        });
+        tabPanel.add(schTab);
+        tabPanel.add(addTab(ta, "Time Accounting", "Manage Time Accounting"));
+        tabPanel.add(addTab(pp, "Project Page", "Per Project"));
+        tabPanel.add(addTab(rs, "Receiver Schedule", "Change the Receiver Schedule"));
         
         //  Register Observers
-//        pe.registerObservers((SessionColConfig) se.getPcodeConfig(), ta, pp);
-//        se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig());
-//        ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
+        pe.registerObservers((SessionColConfig) se.getPcodeConfig(), ta, pp);
+        se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig());
+        ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
 
         //tabPanel.setAutoHeight(true);
         tabPanel.setHeight(800);
         
         // Factor access
-//        factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));
+        factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));
 
         RootPanel rp = RootPanel.get();
         rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
@@ -91,15 +91,15 @@ public class Scheduler extends Viewport implements EntryPoint {
     }
     
     private final TabPanel         tabPanel = new TabPanel();
-//    private final ProjectExplorer  pe       = new ProjectExplorer();
-//    private final SessionExplorer  se       = new SessionExplorer();
-//    private final UserExplorer     ue       = new UserExplorer();
-//    private final WindowCalendar   wc       = new WindowCalendar();
+    private final ProjectExplorer  pe       = new ProjectExplorer();
+    private final SessionExplorer  se       = new SessionExplorer();
+    private final UserExplorer     ue       = new UserExplorer();
+    private final WindowCalendar   wc       = new WindowCalendar();
     private final SessionPage      sp       = new SessionPage();
     
-//    private final Schedule         sch      = new Schedule();
-//    private final TimeAccounting   ta       = new TimeAccounting();
-//    private Factors                factors;
-//    private final ProjectPage      pp       = new ProjectPage();
-//    private final ReceiverSchedule rs       = new ReceiverSchedule();
+    private final Schedule         sch      = new Schedule();
+    private final TimeAccounting   ta       = new TimeAccounting();
+    private Factors                factors;
+    private final ProjectPage      pp       = new ProjectPage();
+    private final ReceiverSchedule rs       = new ReceiverSchedule();
 }
