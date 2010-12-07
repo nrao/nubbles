@@ -149,12 +149,36 @@ public class WindowCalendar extends ContentPanel {
 		    // Ex: GBT08A-001-01 (GBT08A-001) (8.0/8.0) Cmp."
 		    cal[i][0] = handle + " (" + total.toString() + "/" + billed.toString() + ") " + cmpStr;
 		    
-		    // when does the window start and stop?
+		    // when does the window start and stop (not taking into account gaps)?
 		    String wstartStr = window.get("start").isString().stringValue();
 		    String wstopStr  = window.get("end").isString().stringValue();
 			Date wstart = DateTimeFormat.getFormat("yyyy-MM-dd").parse(wstartStr);
 			Date wstop  = DateTimeFormat.getFormat("yyyy-MM-dd").parse(wstopStr);
 
+			// are there any gaps in the window (is this window non-contigious?)
+			Boolean contigious = window.get("contigious").isBoolean().booleanValue();
+
+			// ranges will be needed if the window is non-contigious.
+			JSONArray ranges = window.get("ranges").isArray();
+			int numRanges = ranges.size();
+			String [][] calRanges = new String[numRanges][2];
+			Date [][] calRangeDates = new Date[numRanges][2];
+			
+			for (int j = 0; j < numRanges; j++) {
+				// parse the JSON
+				JSONObject range = ranges.get(j).isObject();
+			    String rStartStr = range.get("start").isString().stringValue();
+			    String rEndStr   = range.get("end").isString().stringValue();
+				
+				// populate our table
+				calRanges[j][0] = rStartStr;
+				calRanges[j][1] = rEndStr;
+				calRangeDates[j][0] = DateTimeFormat.getFormat("yyyy-MM-dd").parse(rStartStr);
+				calRangeDates[j][1]  = DateTimeFormat.getFormat("yyyy-MM-dd").parse(rEndStr);
+				
+			}
+
+			
 			// where are the periods?
 			JSONArray periods = window.get("periods").isArray();
 			int numPeriods = periods.size();
@@ -179,10 +203,21 @@ public class WindowCalendar extends ContentPanel {
 				
 			}
 			
-		    // the rest are the days - each showing whehter it's part of the window 
+		    // the rest are the days - each showing whether it's part of the window 
 		    for (int j = 0; j < numDays; j++) {
 	    		text = "";
 		    	boolean partOfWindow = isDateInWindow(dates[j], wstart, wstop);
+		    	// but if this window is not contigious, make sure we aren't in a gap
+		    	if (contigious == false && partOfWindow == true) {
+		    		// we aren't in a gap if we fall into just ONE of the ranges
+ 
+		    		partOfWindow = false;
+		    		for (int k = 0; k < numRanges; k++) {
+		    			if (isDateInWindow(dates[j], calRangeDates[k][0], calRangeDates[k][1]) == true) {
+		    				partOfWindow = true;
+		    			}
+		    		}
+		    	}
 		    	// for each day, does this window cover it?
 		    	//cal[i][j+1] = partOfWindow ? "T" : "F";
 		    	// if part of the window, might be more info to add, like:
