@@ -54,6 +54,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	private NumberField remaining;
 	private CheckBox cmp; 
 
+	private WindowRangeExplorer wre;
 	private WindowedPeriodExplorer wpe;
 	
 	protected void translateJson(JSONObject winJson) {
@@ -79,6 +80,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		String cmpStr = (complete == true) ? "Complete" : "Not Complete";
 		
 		// the header is a summary: [date range] time, complete (id)
+		// TODO: tell if it's non-contigious!
 		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): ";
 	}
 	
@@ -110,7 +112,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
     	JSONObject winJson = json.get("window").isObject();
     	translateJson(winJson);
     	loadPeriodGroup();
-    	// update the elective periods
+        wre.loadData();
     	wpe.loadData();		
 	}
 	
@@ -142,11 +144,13 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	    dt = new DateField();
 	    dt.setValue(start);
 	    dt.setFieldLabel("Start Date");
+	    dt.setReadOnly(true);
 	    fp.add(dt);
 	    
 	    days = new NumberField();
 	    days.setFieldLabel("Days");
 	    days.setValue(numDays);
+	    days.setReadOnly(true);
 	    fp.add(days);
 	    
 	    end_dt = new DateField();
@@ -183,9 +187,14 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// This is called from the parents initLayout()
 	@Override
 	protected void initGroupPeriodExplorer(FormPanel fp) {
+	    //TODO: add the window range explorer here
+        wre = new WindowRangeExplorer(id, handle);
+        wre.registerObservers(this);
+        fp.add(wre);
 	    wpe = new WindowedPeriodExplorer(id, handle);
 	    wpe.registerObservers(this);
-	    fp.add(wpe);		
+	    fp.add(wpe);	
+	    
 	}
 		
 }
