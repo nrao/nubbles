@@ -67,7 +67,8 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 		initListeners();
 	}
 	
-	private void updateHeading() {
+	
+	protected void updateHeading() {
 		setHeading(header);
 		String color = (complete == true) ? "green" : "red";
 		getHeader().setStyleAttribute("color", color);

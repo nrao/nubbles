@@ -14,11 +14,14 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 // comment
 
@@ -38,6 +41,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	}
 
 	// attributes exclusive to windows
+	private String errorMsgs;
 	private Date start;
 	private int numDays;
 	private Date end;
@@ -46,6 +50,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	private Double time_remaining;
 	
 	// window UI widgets
+	private LabelField errors;
 	private DateField dt;
 	private DateField end_dt;
 	private NumberField days;
@@ -63,6 +68,16 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		
 		id = (int) winJson.get("id").isNumber().doubleValue();
 		
+		// concat the multiple warnings (if any) into a single string
+		errorMsgs = "";
+		JSONArray errJson = winJson.get("errors").isArray();
+		for (int i = 0; i < errJson.size(); i++) {
+			if (errorMsgs.length() > 0) {
+				errorMsgs += ";";
+			}
+		    errorMsgs += errJson.get(i).isString().stringValue();	
+		}
+		
 		String startStr = winJson.get("start").isString().stringValue();
 		start = DateTimeFormat.getFormat("yyyy-MM-dd").parse(startStr);
 		
@@ -79,24 +94,35 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		
 		String cmpStr = (complete == true) ? "Complete" : "Not Complete";
 		
-		// the header is a summary: [date range] time, complete (id)
+		String warnings = (errorMsgs.length() == 0) ? "" : "WARNINGS";
+		
+		// the header is a summary: [date range] time, complete (id) [Warning]
 		// TODO: tell if it's non-contigious!
-		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): ";
+		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): " + warnings;
 	}
 	
-	private void updateHeading() {
+	// if the window is incomplete, or there are warnings, make it red and bold.
+	protected void updateHeading() {
+		String color = "green";
 		setHeading(header);
-		String color = (complete == true) ? "green" : "red";
-		getHeader().setStyleAttribute("color", color);
-		if (complete == false) {
+		if (complete == false || errorMsgs.length() > 0) {
 			getHeader().setStyleAttribute("font-weight", "bold");
+			color = "red";
 		}
+		getHeader().setStyleAttribute("color", color);
 	}
 	
 
 	
 	// class attributes -> widgets
 	protected void loadPeriodGroup() {
+		errors.setValue(errorMsgs);
+		// hide this field if there are no warning about this window
+		if (errorMsgs.length() == 0) {
+			errors.setVisible(false);
+		} else {
+			errors.setVisible(true);
+		}
 	    dt.setValue(start);
 	    days.setValue(numDays);
 	    end_dt.setValue(end);
@@ -140,6 +166,20 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// This is called from the parents initLayout()
 	@Override
 	protected void initFormFields(FormPanel fp) {
+
+		// hide this field if there are no problems with the window
+		errors = new LabelField();
+		errors.setValue(errorMsgs);
+		errors.setReadOnly(true);
+		errors.setFieldLabel("Warnings");
+        errors.setStyleAttribute("color", "red");		
+		if (errorMsgs.length() == 0) {
+			errors.setVisible(false);
+			
+		} else {
+			errors.setVisible(true);
+		}
+		fp.add(errors);
 		
 	    dt = new DateField();
 	    dt.setValue(start);
