@@ -105,6 +105,8 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		days.add(5);
 		days.add(6);
 		days.add(7);
+		days.add(14);
+		days.add(31);
 		days.setToolTip("Set the schedule and display duration");
 
 		days.setFieldLabel("Days");
