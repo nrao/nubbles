@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -31,6 +32,7 @@ public class SessionPage extends ContentPanel {
 	private FormPanel sessionForm = new FormPanel();
 	private SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 	private TextField<String> type = new TextField<String>();
+	private CheckBox guaranteed = new CheckBox();
 	private Button save = new Button();
 	private Button reset = new Button();
     private FormData fd = new FormData(200, 25);    
@@ -64,6 +66,13 @@ public class SessionPage extends ContentPanel {
 		type.setReadOnly(true);
 		type.setStyleAttribute("color", "grey");
 		sessionForm.add(type, fd);
+		
+		guaranteed = new CheckBox();
+		guaranteed.setFieldLabel("Guaranteed?");
+		guaranteed.setReadOnly(true);
+		guaranteed.setStyleAttribute("color", "grey");
+		guaranteed.setVisible(false);
+		sessionForm.add(guaranteed);
 		
 		add(sessionForm);
 		
@@ -136,8 +145,12 @@ public class SessionPage extends ContentPanel {
 	// populates this page's widgets with the project's JSON values
 	protected void populateSessionPage(JSONObject json) {
 		JSONObject s = json.get("session").isObject();
+		
 		String sessionType = s.get("type").isString().stringValue();
 		type.setValue(sessionType);
+		
+		Boolean g = s.get("gaurenteed").isBoolean().booleanValue();
+		guaranteed.setValue(g);
 		
 		// TODO: straigten out all this handle crap!
 		String name = s.get("name").isString().stringValue();
@@ -149,14 +162,16 @@ public class SessionPage extends ContentPanel {
 			wp.setVisible(true);
 			wp.getWindows(sessionId, sessionHandle);
 			ep.setVisible(false);
+			guaranteed.setVisible(true);
 		} else if (sessionType.equals("elective") == true) {
 			ep.setVisible(true);
 			ep.getElectives(sessionId, sessionHandle);
 			wp.setVisible(false);
-			
+			guaranteed.setVisible(true);
 		} else {
 			wp.setVisible(false);
 			ep.setVisible(false);
+			guaranteed.setVisible(false);
 		}
 			
 		
