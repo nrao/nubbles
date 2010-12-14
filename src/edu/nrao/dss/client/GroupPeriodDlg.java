@@ -1,4 +1,3 @@
-
 package edu.nrao.dss.client;
 
 import java.util.HashMap;
@@ -16,17 +15,21 @@ import com.google.gwt.json.client.JSONObject;
 
 // TODO: refactor this class to share code with PeriodSummaryDlg
 
-public class ElectivePeriodDlg extends Dialog {
+public class GroupPeriodDlg extends Dialog {
 	
-	private Period period;
-	private ElectiveInfoPanel parent;
+	protected Period period;
 	
-	private Button publish;
-	private Button cancel;
-	private PeriodSummaryPanel periodPanel;
-	private Listener<MessageBoxEvent> cancelListener;
+	// TODO: here's what needs to get generalized, and add a refresh method.
+	//private ElectiveInfoPanel parent;
+	protected PeriodGroupInfoPanel parent;
 	
-	public ElectivePeriodDlg(Period period, ElectiveInfoPanel parent) {
+	protected Button publish;
+	protected Button cancel;
+	protected PeriodSummaryPanel periodPanel;
+	protected Listener<MessageBoxEvent> cancelListener;
+	
+	
+	public GroupPeriodDlg(Period period, PeriodGroupInfoPanel parent) {
 		this.period = period;
 		this.parent = parent;
 		initLayout();
@@ -70,7 +73,7 @@ public class ElectivePeriodDlg extends Dialog {
 	        		// they really want to exit w/ out saving changes
 	        		close();
 	        		// refresh window
-	        		parent.getElective();
+	        		parent.getPeriodGroup();
 	        	}
 	        }
 	    };
@@ -96,7 +99,7 @@ public class ElectivePeriodDlg extends Dialog {
 				} else {
 					close();
 					// refresh window
-					parent.getElective();
+					parent.getPeriodGroup();
 				}
 			}
 		});		    
@@ -114,7 +117,7 @@ public class ElectivePeriodDlg extends Dialog {
 					// for that refactoring right now.
 					close();
 					// refresh window
-					parent.getElective();
+					parent.getPeriodGroup();
 				}
 			});		
 	}

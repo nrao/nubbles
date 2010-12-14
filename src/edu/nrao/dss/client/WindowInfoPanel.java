@@ -29,20 +29,21 @@ import com.google.gwt.json.client.JSONObject;
 // TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
 // TODO: pretty it up.
 
-public class WindowInfoPanel extends ContentPanel {
+public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	
 	
-	// window attributes
-	private String header;
-	private String handle;
-	private int id;
+	public WindowInfoPanel(JSONObject winJson, String url,
+			String groupPeriodType) {
+		super(winJson, url, groupPeriodType);
+	}
+
+	// attributes exclusive to windows
 	private Date start;
 	private int numDays;
 	private Date end;
 	private Double total_time;
 	private Double time_billed;
 	private Double time_remaining;
-	private Boolean complete;
 	
 	// window UI widgets
 	private DateField dt;
@@ -52,21 +53,10 @@ public class WindowInfoPanel extends ContentPanel {
 	private NumberField billed;
 	private NumberField remaining;
 	private CheckBox cmp; 
-	private Button save;
-	private Button cancel;
-	private Button delete;
+
 	private WindowedPeriodExplorer wpe;
 	
-	protected Dialog removeDialog;
-	protected Button removeApproval;
-	
-	public WindowInfoPanel(JSONObject winJson) { 
-		translateJson(winJson);
-		initLayout();
-		initListeners();
-	}
-	
-	private void translateJson(JSONObject winJson) {
+	protected void translateJson(JSONObject winJson) {
 		
 		handle = winJson.get("handle").isString().stringValue();
 		
@@ -101,18 +91,53 @@ public class WindowInfoPanel extends ContentPanel {
 		}
 	}
 	
-	public void initLayout() {
-		setLayout(new FitLayout());
-		
-		setCollapsible(true);
-		collapse();
-		
-		// header
-		setHeaderVisible(true);
-        updateHeading();
-        
-		FormPanel fp = new FormPanel();
-		fp.setHeaderVisible(false);
+
+	
+	// class attributes -> widgets
+	protected void loadPeriodGroup() {
+	    dt.setValue(start);
+	    days.setValue(numDays);
+	    end_dt.setValue(end);
+	    total.setValue(total_time);
+	    billed.setValue(time_billed);
+	    remaining.setValue(time_remaining);
+	    cmp.setValue(complete);
+	    updateHeading();
+	}
+	
+	@Override
+	protected void updateGroupPeriod(JSONObject json) {
+    	JSONObject winJson = json.get("window").isObject();
+    	translateJson(winJson);
+    	loadPeriodGroup();
+    	// update the elective periods
+    	wpe.loadData();		
+	}
+	
+	// send off the current state of the window to the server
+	// then reload the results
+	protected void savePeriodGroup() {
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		String startStr =  DateTimeFormat.getFormat("yyyy-MM-dd").format(dt.getValue());
+		keys.put("_method", "put");
+		keys.put("start", startStr);
+		keys.put("duration", days.getValue().intValue()); //Integer.toString(days.getValue().intValue()));
+		keys.put("total_time", total.getValue().doubleValue());
+		keys.put("complete", cmp.getValue());
+		keys.put("handle", handle);
+	    JSONRequest.post("/" + url + "/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
+	            @Override
+	            public void onSuccess(JSONObject json) {
+	            	// get back from the server this window & display it again
+	            	getPeriodGroup();
+	            }
+	    });		
+	}
+	
+	// Sets up the fields exclusive to Windows
+	// This is called from the parents initLayout()
+	@Override
+	protected void initFormFields(FormPanel fp) {
 		
 	    dt = new DateField();
 	    dt.setValue(start);
@@ -150,121 +175,17 @@ public class WindowInfoPanel extends ContentPanel {
 	    cmp = new CheckBox();
 	    cmp.setFieldLabel("Complete");
 	    cmp.setValue(complete);
-	    fp.add(cmp);
-	    
-	    save = new Button();
-	    save.setText("Save");
-	    fp.add(save);
-	    
-	    cancel = new Button();
-	    cancel.setText("Cancel");
-	    fp.add(cancel);
-	    
-        delete = new Button();
-	    delete.setText("Delete");
-	    fp.add(delete);
-	    
-		removeDialog = new Dialog();
-		removeDialog.setHeading("Confirmation");
-		removeDialog.addText("Remove Window?");
-		removeDialog.setButtons(Dialog.YESNO);
-		removeDialog.setHideOnButtonClick(true);
-		removeApproval = removeDialog.getButtonById(Dialog.YES);
-		removeDialog.hide();
+	    fp.add(cmp);		
 		
+	}
+
+	// Window Panels need to use the WindowedPeriodExplorers
+	// This is called from the parents initLayout()
+	@Override
+	protected void initGroupPeriodExplorer(FormPanel fp) {
 	    wpe = new WindowedPeriodExplorer(id, handle);
 	    wpe.registerObservers(this);
-	    fp.add(wpe);
-	    
-	    add(fp);
-	    
-	    layout();
+	    fp.add(wpe);		
 	}
-	
-	
-	public void initListeners() {
-	    save.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		saveWindow();
-	    	}
-	    });	
-	    cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		loadWindow();
-	    	}
-	    });	
-	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		removeDialog.show();
-	    	}
-	    });	
-		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
-		    @Override
-		    public void componentSelected(ButtonEvent ce) {
-			    deleteWindow();
-		    }
-	    });	    
-	}
-	
-	private void deleteWindow() {
-		HashMap<String, Object> keys = new HashMap<String, Object>();
-		keys.put("_method", "delete");
-	    JSONRequest.post("/windows/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
-	            @Override
-	            public void onSuccess(JSONObject json) {
-	            	// reload all the windows again!
-	        		((WindowsInfoPanel) getParent()).getWindows();
-	            }
-	    });			    	
-	}
-	
-	// class attributes -> widgets
-	private void loadWindow() {
-	    dt.setValue(start);
-	    days.setValue(numDays);
-	    end_dt.setValue(end);
-	    total.setValue(total_time);
-	    billed.setValue(time_billed);
-	    remaining.setValue(time_remaining);
-	    cmp.setValue(complete);
-	    updateHeading();
-	}
-	
-	// get window from server -> class attributes -> displayed in widgets
-	protected void getWindow() {
-	    JSONRequest.get("/windows/" + Integer.toString(id), new JSONCallbackAdapter() {
-            @Override
-            public void onSuccess(JSONObject json) {
-            	JSONObject winJson = json.get("window").isObject();
-            	translateJson(winJson);
-            	loadWindow();
-            	// update the windowed periods
-            	wpe.loadData();
-            }
-        });			    	
-	}
-	
-	// send off the current state of the window to the server
-	// then reload the results
-	private void saveWindow() {
-		HashMap<String, Object> keys = new HashMap<String, Object>();
-		String startStr =  DateTimeFormat.getFormat("yyyy-MM-dd").format(dt.getValue());
-		keys.put("_method", "put");
-		keys.put("start", startStr);
-		keys.put("duration", days.getValue().intValue()); //Integer.toString(days.getValue().intValue()));
-		keys.put("total_time", total.getValue().doubleValue());
-		keys.put("complete", cmp.getValue());
-		keys.put("handle", handle);
-	    JSONRequest.post("/windows/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
-	            @Override
-	            public void onSuccess(JSONObject json) {
-	            	// get back from the server this window & display it again
-	            	getWindow();
-	            }
-	    });		
-	}
-	
+		
 }
