@@ -29,6 +29,8 @@ public class WindowedPeriodExplorer extends GroupPeriodExplorer {
 	
 public WindowedPeriodExplorer(int periodGroupId, String sessionHandle) {
 		super(periodGroupId, sessionHandle, getColumnTypes());
+		setHeaderVisible(true);
+		setHeading("Window Periods");
 	}
 
     // TODO: should we make this a static variable rather then a method?

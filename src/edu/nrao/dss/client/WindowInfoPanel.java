@@ -14,13 +14,17 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 // comment
+import com.google.gwt.json.client.JSONString;
 
 // This class maps directly to a single window object on the server side.  It replaces 
 // what a single row in the window explorer used to cover, before multiple periods and date 
@@ -38,22 +42,28 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	}
 
 	// attributes exclusive to windows
+	private String errorMsgs;
 	private Date start;
+	private String startStr;
 	private int numDays;
 	private Date end;
+	private String endStr;
 	private Double total_time;
 	private Double time_billed;
 	private Double time_remaining;
 	
 	// window UI widgets
-	private DateField dt;
-	private DateField end_dt;
-	private NumberField days;
+	private LabelField errors;
+	private LabelField dt;
+	private LabelField end_dt;
+	private LabelField days;
 	private NumberField total;
+	// TODO: maybe these read-only fields should just be labels too?
 	private NumberField billed;
 	private NumberField remaining;
 	private CheckBox cmp; 
 
+	private WindowRangeExplorer wre;
 	private WindowedPeriodExplorer wpe;
 	
 	protected void translateJson(JSONObject winJson) {
@@ -62,13 +72,39 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		
 		id = (int) winJson.get("id").isNumber().doubleValue();
 		
-		String startStr = winJson.get("start").isString().stringValue();
-		start = DateTimeFormat.getFormat("yyyy-MM-dd").parse(startStr);
+		// concat the multiple warnings (if any) into a single string
+		errorMsgs = "";
+		JSONArray errJson = winJson.get("errors").isArray();
+		for (int i = 0; i < errJson.size(); i++) {
+			if (errorMsgs.length() > 0) {
+				errorMsgs += ";";
+			}
+		    errorMsgs += errJson.get(i).isString().stringValue();	
+		}
 		
-		String endStr = winJson.get("end").isString().stringValue();
-		end = DateTimeFormat.getFormat("yyyy-MM-dd").parse(endStr);
-		
-		numDays = (int) winJson.get("duration").isNumber().doubleValue(); 
+		// newly created windows have no ranges, so these date fields will be null
+        if (winJson.get("start").isString() == null) {
+        	startStr = "?";
+        	start = null;
+        } else {
+    		startStr = winJson.get("start").isString().stringValue();
+    		start = DateTimeFormat.getFormat("yyyy-MM-dd").parse(startStr);   
+    		startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start);
+        }
+        if (winJson.get("end").isString() == null) {
+        	endStr = "?";
+        	end = null;
+        } else {
+    		endStr = winJson.get("end").isString().stringValue();
+    		end = DateTimeFormat.getFormat("yyyy-MM-dd").parse(endStr); 
+    		endStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(end);   		
+        }
+        
+        if (winJson.get("duration").isNumber() != null) {
+		    numDays = (int) winJson.get("duration").isNumber().doubleValue();
+        } else {
+        	numDays = 0;
+        }
 		
 		total_time = winJson.get("total_time").isNumber().doubleValue();
 		time_billed = winJson.get("time_billed").isNumber().doubleValue();
@@ -78,26 +114,47 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		
 		String cmpStr = (complete == true) ? "Complete" : "Not Complete";
 		
-		// the header is a summary: [date range] time, complete (id)
-		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): ";
+		String warnings = (errorMsgs.length() == 0) ? "" : "WARNINGS";
+		
+		// the header is a summary: [date range] time, complete (id) [Warning]
+		// TODO: tell if it's non-contigious!
+		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): " + warnings;
 	}
 	
-	private void updateHeading() {
-		setHeading(header);
-		String color = (complete == true) ? "green" : "red";
-		getHeader().setStyleAttribute("color", color);
-		if (complete == false) {
-			getHeader().setStyleAttribute("font-weight", "bold");
+	private Date jsonToDate(JSONObject json, String key) {
+		JSONString jsonDt = json.get(key).isString();
+		if (jsonDt != null) {
+			return  DateTimeFormat.getFormat("yyyy-MM-dd").parse(jsonDt.stringValue());
+		} else {
+			return null;
 		}
+	}
+	
+	// if the window is incomplete, or there are warnings, make it red and bold.
+	protected void updateHeading() {
+		String color = "green";
+		setHeading(header);
+		if (complete == false || errorMsgs.length() > 0) {
+			getHeader().setStyleAttribute("font-weight", "bold");
+			color = "red";
+		}
+		getHeader().setStyleAttribute("color", color);
 	}
 	
 
 	
 	// class attributes -> widgets
 	protected void loadPeriodGroup() {
-	    dt.setValue(start);
+		errors.setValue(errorMsgs);
+		// hide this field if there are no warning about this window
+		if (errorMsgs.length() == 0) {
+			errors.setVisible(false);
+		} else {
+			errors.setVisible(true);
+		}
+	    dt.setValue(startStr);
 	    days.setValue(numDays);
-	    end_dt.setValue(end);
+	    end_dt.setValue(endStr);
 	    total.setValue(total_time);
 	    billed.setValue(time_billed);
 	    remaining.setValue(time_remaining);
@@ -110,7 +167,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
     	JSONObject winJson = json.get("window").isObject();
     	translateJson(winJson);
     	loadPeriodGroup();
-    	// update the elective periods
+        wre.loadData();
     	wpe.loadData();		
 	}
 	
@@ -118,10 +175,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// then reload the results
 	protected void savePeriodGroup() {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
-		String startStr =  DateTimeFormat.getFormat("yyyy-MM-dd").format(dt.getValue());
 		keys.put("_method", "put");
-		keys.put("start", startStr);
-		keys.put("duration", days.getValue().intValue()); //Integer.toString(days.getValue().intValue()));
 		keys.put("total_time", total.getValue().doubleValue());
 		keys.put("complete", cmp.getValue());
 		keys.put("handle", handle);
@@ -138,21 +192,34 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// This is called from the parents initLayout()
 	@Override
 	protected void initFormFields(FormPanel fp) {
+
+		// hide this field if there are no problems with the window
+		errors = new LabelField();
+		errors.setValue(errorMsgs);
+		errors.setReadOnly(true);
+		errors.setFieldLabel("Warnings");
+        errors.setStyleAttribute("color", "red");		
+		if (errorMsgs.length() == 0) {
+			errors.setVisible(false);
+			
+		} else {
+			errors.setVisible(true);
+		}
+		fp.add(errors);
 		
-	    dt = new DateField();
-	    dt.setValue(start);
+	    dt = new LabelField();
+	    dt.setValue(startStr);
 	    dt.setFieldLabel("Start Date");
 	    fp.add(dt);
 	    
-	    days = new NumberField();
+	    days = new LabelField(); 
 	    days.setFieldLabel("Days");
 	    days.setValue(numDays);
 	    fp.add(days);
 	    
-	    end_dt = new DateField();
-	    end_dt.setValue(end);
+	    end_dt = new LabelField(); 
+	    end_dt.setValue(endStr);
 	    end_dt.setFieldLabel("End Date");
-	    end_dt.setReadOnly(true);
 	    fp.add(end_dt);
 	    
 	    total = new NumberField();
@@ -183,9 +250,14 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// This is called from the parents initLayout()
 	@Override
 	protected void initGroupPeriodExplorer(FormPanel fp) {
+	    //TODO: add the window range explorer here
+        wre = new WindowRangeExplorer(id, handle);
+        wre.registerObservers(this);
+        fp.add(wre);
 	    wpe = new WindowedPeriodExplorer(id, handle);
 	    wpe.registerObservers(this);
-	    fp.add(wpe);		
+	    fp.add(wpe);	
+	    
 	}
 		
 }

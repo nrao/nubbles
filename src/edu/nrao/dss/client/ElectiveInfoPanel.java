@@ -80,16 +80,6 @@ public class ElectiveInfoPanel extends PeriodGroupInfoPanel {
 
 	}
 	
-	// The heading of this panel should reflect the state of the Elective
-	private void updateHeading() {
-		setHeading(header);
-		String color = (complete == true) ? "green" : "red";
-		getHeader().setStyleAttribute("color", color);
-		if (complete == false) {
-			getHeader().setStyleAttribute("font-weight", "bold");
-		}
-	}
-	
 	// class attributes -> widget attributes
 	@Override
 	protected void loadPeriodGroup() {
