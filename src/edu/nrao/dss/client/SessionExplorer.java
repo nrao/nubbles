@@ -151,7 +151,7 @@ public class SessionExplorer extends Explorer {
        	new ColumnType("backup",           "Backup?",         55, false, Boolean.class),
         new ColumnType("transit",          "Transit?",        55, false, Boolean.class),
         new ColumnType("nighttime",        "Night-time?",     65, false, Boolean.class),
-        new ColumnType("gaurenteed",       "Guaranteed?",     65, false, Boolean.class),
+        new ColumnType("guaranteed",       "Guaranteed?",     65, false, Boolean.class),
     	};
     
     public ColumnConfig getPcodeConfig() {
