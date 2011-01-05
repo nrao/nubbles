@@ -149,7 +149,7 @@ public class SessionPage extends ContentPanel {
 		String sessionType = s.get("type").isString().stringValue();
 		type.setValue(sessionType);
 		
-		Boolean g = s.get("gaurenteed").isBoolean().booleanValue();
+		Boolean g = s.get("guaranteed").isBoolean().booleanValue();
 		guaranteed.setValue(g);
 		
 		// TODO: straigten out all this handle crap!
