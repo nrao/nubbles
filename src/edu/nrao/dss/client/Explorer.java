@@ -877,7 +877,9 @@ public class Explorer extends ContentPanel{
 	
 	protected String[] trimesters = new String[] {
 			// TBF - need to generate this list relative to the current date
-		      "10C", "10B", "10A"
+			  "12B", "12A"
+			, "11B", "11A"
+		    , "10C", "10B", "10A"
 		    , "09C", "09B", "09A"
             , "08C", "08B", "08A"
             , "07C", "07B", "07A"
