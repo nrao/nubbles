@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -13,6 +14,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.Listener;
 
@@ -40,13 +43,23 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		setHeaderVisible(true);
 		setHeading("Receiver Schedule");
 		
-		FormPanel fp = new FormPanel();
-		fp.setHeaderVisible(false);
-		//fp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-
-		// when to start the schedule
+		FormPanel fp = newFormPanel();
+		fp.setLayout(new TableLayout(2));
+		
+		// button
+		FormPanel leftFp = newFormPanel();
+		update.setText("Update");
+		leftFp.add(update);		
+		TableData leftTd = newTableData("100px");
+		leftTd.setVerticalAlign(VerticalAlignment.MIDDLE);
+		fp.add(leftFp, leftTd);
+		
+		// dates & such
+		FormPanel rightFp = newFormPanel();
+		
+		// when to start?
 		start.setFieldLabel("Start Date");
-		fp.add(start);
+		rightFp.add(start);
 		
 		// for how long?
 		numMonths.setTriggerAction(TriggerAction.ALL);
@@ -57,21 +70,35 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		numMonths.add("4");
 		numMonths.add("5");
 		numMonths.add("6");		
-		fp.add(numMonths);
+		rightFp.add(numMonths);
 		
 		// include maintenance days?
-		showMnt.setFieldLabel("Show Maintenance Dates");
-		fp.add(showMnt);
-	
-		update.setText("Update");
-		fp.add(update);
+		showMnt.setFieldLabel("Maint. Days");
+		rightFp.add(showMnt);
 		
+		fp.add(rightFp, newTableData("500px"));
 		add(fp);
 		
 	    add(grid);
     
 	}
+	// helper func for setting up panels
+	private FormPanel newFormPanel() {
+		FormPanel fp = new FormPanel();
+		fp.setHeaderVisible(false);
+		fp.setBodyBorder(false);
+		return fp;
+	}
 	
+	// helper func for setting up panels
+	private TableData newTableData(String px) {
+		TableData td = new TableData();
+		td.setVerticalAlign(VerticalAlignment.TOP);
+		// TODO: why must I do this, just to get the two forms to share space?
+		td.setColspan(1);
+		td.setWidth(px);		
+		return td;
+	}	
 	private void initListeners() {
 		
 //	    day.addListener(Events.Valid, new Listener<BaseEvent>() {
@@ -118,8 +145,8 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		parent.getRcvrSchedule(start.getValue(), numDays, showMnt.getValue());
 	}
 	
-	public void loadSchedule(int rows, int cols, String[] headers, String[][] schedule) {
-		grid.loadSchedule(rows, cols, headers, schedule);
+	public void loadSchedule(String[] headers, int rows, int cols, String[][] schedule, String[][] diffSchd) {
+		grid.loadSchedule(headers, rows, cols, schedule, diffSchd);
 	}
 	
 	public void setParent(ReceiverSchedule rs) {

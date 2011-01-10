@@ -33,7 +33,7 @@ public class ReceiverSchedule extends ContentPanel {
     //private RcvrScheduleGrid grid = new RcvrScheduleGrid();
     private RcvrSchdGridPanel grid = new RcvrSchdGridPanel();
     private RcvrChangePanel change = new RcvrChangePanel();
-    private RcvrSchdEditPanel edit = new RcvrSchdEditPanel();
+//    private RcvrSchdEditPanel edit = new RcvrSchdEditPanel();
     
 	public ReceiverSchedule() {
 		initLayout();
@@ -54,11 +54,11 @@ public class ReceiverSchedule extends ContentPanel {
 		
         add(grid);
         add(change, new RowData(1, -1, new Margins(4)));
-        add(edit, new RowData(1, -1, new Margins(4)));
+//        add(edit, new RowData(1, -1, new Margins(4)));
         
         //TODO: better way to bind?
         grid.setParent(this);
-        edit.setParent(this);
+//        edit.setParent(this);
         change.setParent(this);
         
 	}	
@@ -83,25 +83,32 @@ public class ReceiverSchedule extends ContentPanel {
 	}
 	
 	private void jsonToRcvrSchedule(JSONObject json) {
+		
 		// construct the header for the rcvr schedule calendar
 		JSONArray rcvrs = json.get("receivers").isArray();
 		int numRcvrs = rcvrs.size();
-		// headers start w/ the date, then the list of the rcvrs
-		String[] headers = new String[numRcvrs + 1];
+		// headers start w/ the date, up rx, down rx, then the list of the rcvrs
+		int offset = 3;
+		String[] headers = new String[numRcvrs + offset];
 		headers[0] = "Date";
+		headers[1] = "Up";
+		headers[2] = "Down";
 		String rcvr;
+		String [] rx = new String[numRcvrs];
 		for (int i = 0; i < numRcvrs; i++) {
 			rcvr = rcvrs.get(i).isString().stringValue();
-			headers[i+1] = rcvr;
+			headers[i+offset] = rcvr;
+			rx[i] = rcvr;
 		}
+		change.loadRcvrs(rx);
 	
 		// now, get the rest of the schedule
 		JSONObject schedule = json.get("schedule").isObject();
 		int numDays = schedule.keySet().size();
-		String[][] calendar = getRcvrCalendar(schedule, headers, numDays);
+		String[][] calendar = getRcvrCalStrs(schedule, rx, numDays);
 		
 		// use that to create the grid
-		grid.loadSchedule(numDays, headers.length, headers, calendar);
+		//grid.loadSchedule(numDays, headers.length, headers, calendar);
 		
 		// get the diff schedule
 		JSONArray diff = json.get("diff").isArray();
@@ -125,50 +132,57 @@ public class ReceiverSchedule extends ContentPanel {
 			// for this same day, use the earlier rcvr calendar to determine the 
 			// longer list of rcvrs that will be available at the end of this day
 			available = "";
-			for (int j=0; j<calendar.length; j++) {
-				String calDay = calendar[j][0];
-				//if (calendar[j][0] == day) {
-				if (calDay.compareTo(day) == 0) {
-					// grab the rcvrs that are on ("T")
-					for (int k=0; k<calendar[j].length; k++) {
-						on = calendar[j][k];
-						if (on.compareTo("T") == 0) {
-							available += headers[k] + " ";
-						}
-						
-					}
-				}
-			}
+//			for (int j=0; j<calendar.length; j++) {
+//				String calDay = calendar[j][0];
+//				//if (calendar[j][0] == day) {
+//				if (calDay.compareTo(day) == 0) {
+//					// grab the rcvrs that are on ("T")
+//					for (int k=0; k<calendar[j].length; k++) {
+//						on = calendar[j][k];
+//						if (on.compareTo("T") == 0) {
+//							available += headers[k] + " ";
+//						}
+//						
+//					}
+//				}
+//			}
 			diffCalendar[i][0] = day;
 			diffCalendar[i][1] = up;
 			diffCalendar[i][2] = down;
 			diffCalendar[i][3] = available;
 		}
-		change.loadSchedule(diffCalendar);
-		edit.loadSchedule(diffCalendar);
+
 		
 		// get the maintenance days
 		JSONArray maintJson = json.get("maintenance").isArray();		
 		String[] maintenanceDays = new String[maintJson.size()];
 		String mDay;
 		for (int i = 0; i < maintJson.size(); i++) {
-			JSONObject mObj = maintJson.get(i).isObject();
-			mDay = mObj.get("date").isString().stringValue();
+			//JSONObject mObj = maintJson.get(i).isObject();
+			//mDay = mObj.get("date").isString().stringValue();
+			mDay = maintJson.get(i).isString().stringValue();
 			maintenanceDays[i] = mDay;
 		}
-		edit.setMaintenanceDays(maintenanceDays);
+//		edit.setMaintenanceDays(maintenanceDays);
 		grid.setMaintenanceDays(maintenanceDays);
+		
+		change.loadSchedule(calendar);
+		
+		// use these to create the grid
+		grid.loadSchedule(headers, numDays, rx.length + 1, calendar, diffCalendar);
+		
+		
 	}
 
 	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
 	// and converts it to a 2-D string representation of what we're supposed to display in the 
 	// Receiver Schedule calendar.
-	private String [][] getRcvrCalendar(JSONObject schedule, String[] headers, int numDays) {
+	private String [][] getRcvrCalStrs(JSONObject schedule, String[] rcvrs, int numDays) {
 		String rcvr;
 		
-		// headers is each rcvr + the Date (first column)
-		int numRcvrs = headers.length - 1;
-		String[][] calendar = new String[numDays][headers.length];
+		int numRcvrs = rcvrs.length;
+		// the calendar is as wide as the number of rx, plus the date column
+		String[][] calendar = new String[numDays][numRcvrs + 1];
 		
 		// the entries in this dictionary are date strings: we need to turn them into
 		// Date objects so we can sort them, then use them as keys to get the
@@ -193,9 +207,9 @@ public class ReceiverSchedule extends ContentPanel {
             for (int i = 0; i < onRcvrs.size(); i++) {
             	onRcvrList.add(onRcvrs.get(i).isString().stringValue());
             }
-		    // go through the header's list of rcvrs
+		    // go through the list of rcvrs
 			for (int i = 0; i < numRcvrs; i++) {
-				rcvr = headers[i+1];
+				rcvr = rcvrs[i];
 				// if this rcvr is in the list of the available rcvrs
 				// indicate that somehow
 				if (onRcvrList.contains(rcvr)) {

@@ -30,48 +30,82 @@ public class RcvrScheduleGrid extends FlexTable {
 	    
 	}
 	
-	public void loadSchedule(int rows, int cols, String[] headers, String[][] schedule) {
+	public void loadSchedule(String[] headers, int numSchdRows, int numSchdCols, String[][] schedule, String[][] diffSchedule) {
 
 		// start fresh
 		clearAll();
 
 		// first the header
-		for (int col = 0; col < cols; col++) {
+		int tableRow = 0;
+		for (int tableCol = 0; tableCol < headers.length; tableCol++) {
 			// TODO: how to set the width of these columns?
 			//getColumnFormatter().setWidth(col, "200px");
-			setHTML(0, col, headers[col]);
-			getCellFormatter().setHorizontalAlignment(0, col, HasHorizontalAlignment.ALIGN_CENTER);
-			getCellFormatter().setStyleName(0, col, styleBase + "header");
+			setHTML(0, tableCol, headers[tableCol]);
+			getCellFormatter().setHorizontalAlignment(tableRow, tableCol, HasHorizontalAlignment.ALIGN_CENTER);
+			getCellFormatter().setStyleName(tableRow, tableCol, styleBase + "header");
 			
-			getCellFormatter().setWidth(0, col, "200");
+			getCellFormatter().setWidth(tableRow, tableCol, "200");
 			
 		}
 		
 //		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
 		
 		// now the data
-		if (showMaintenance) {
-		    loadAllDates(rows, cols, schedule);
-		} else {
-			loadOnlyRcvrDates(rows, cols, schedule);
-		}
+		//if (showMaintenance) {
+		//loadAllDates(numSchdRows, numSchdCols, schedule); //, diffSchedule);
+		//} else {
+		loadOnlyRcvrDates(numSchdRows, numSchdCols, schedule, diffSchedule);
+		//}
 
 	}
 	
-    private void loadOnlyRcvrDates(int rows, int cols, String[][] schedule) {
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
+    private void loadOnlyRcvrDates(int numSchdRows, int numSchdCols, String[][] schedule, String[][] diffSchedule) {
+
+    	String scheduleValue, start, end;
+        int row;
+        int col;
+        int gridCol;
+        String [] daysBetween;
+        
+        int gridRow = 1; // row 0 is the header
+		for (row = 0; row < numSchdRows; row++) {
+	    	// first the diff schedule: first three cols of every row
+			for (col = 0; col < 3; col++) {
+				// don't display the first diff schedule values: they're redundant 
+				scheduleValue = (row == 0 && col > 0) ? "" : diffSchedule[row][col];
+				gridCol = col;
+				getCellFormatter().setStyleName(gridRow, gridCol, styleBase + "header");
+				setHTML(gridRow, gridCol, scheduleValue);
+			}
+	        // then each rcvr		
+			for (col = 1; col < numSchdCols; col++) {
 				//GWT.log("["+Integer.toString(row) + "][" + Integer.toString(col)+"]: "+schedule[row][col], null);
-				String scheduleValue = schedule[row][col];
+				scheduleValue = schedule[row][col];
 				boolean on = (scheduleValue.compareTo("T") == 0) ? true : false;
-				String styleName = on ? "on" : "off"; 
-    			if (col != 0) {
-	    			getCellFormatter().setStyleName(row + 1, col, styleBase + styleName);
+				String styleName = on ? "on" : "off";
+				gridCol = col + 2; // first three cols were date, up, down
+	    		getCellFormatter().setStyleName(gridRow, gridCol, styleBase + styleName);
+			    setHTML(gridRow, gridCol, "");
+			}
+			// we've inserted one row of rcvr changes
+			gridRow++;
+			// now, do we need to insert any maintenace days?
+			if (showMaintenance) {
+				// if this isn't the last row, how many maintenance days to insert?
+				if (row < numSchdRows - 1) {
+					start = schedule[row][0];
+					end   = schedule[row+1][0];
+					daysBetween = getMaintenanceDaysBetween(start, end);
 				} else {
-					getCellFormatter().setStyleName(row + 1, col, styleBase + "header");
+					daysBetween = null;
 				}
-				String value = (col == 0) ? scheduleValue : "";
-			    setHTML(row + 1, col, value);
+				// insert the maintenance days
+				if (daysBetween != null) {
+				    for (int mRow = 0; mRow < daysBetween.length; mRow++) {
+				    	setHTML(gridRow, 0, daysBetween[mRow]);
+				    	gridRow++;
+				    }
+				}			
 			}
 		}
 	}
