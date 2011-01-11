@@ -9,6 +9,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
+// This class if responsible for using a FlexTable to display the rx schedule
+
 public class RcvrScheduleGrid extends FlexTable {
 	
 	private String[] maintenanceDays;
@@ -47,19 +49,13 @@ public class RcvrScheduleGrid extends FlexTable {
 			getCellFormatter().setWidth(tableRow, tableCol, "200");
 			
 		}
-		
-//		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
-		
-		// now the data
-		//if (showMaintenance) {
-		//loadAllDates(numSchdRows, numSchdCols, schedule); //, diffSchedule);
-		//} else {
-		loadOnlyRcvrDates(numSchdRows, numSchdCols, schedule, diffSchedule);
-		//}
+
+		// now everything else!
+		loadRcvrSchedule(numSchdRows, numSchdCols, schedule, diffSchedule);
 
 	}
 	
-    private void loadOnlyRcvrDates(int numSchdRows, int numSchdCols, String[][] schedule, String[][] diffSchedule) {
+    private void loadRcvrSchedule(int numSchdRows, int numSchdCols, String[][] schedule, String[][] diffSchedule) {
 
     	String scheduleValue, start, end;
         int row;
@@ -110,56 +106,16 @@ public class RcvrScheduleGrid extends FlexTable {
 		}
 	}
 
-    private void loadAllDates(int rows, int cols, String[][] schedule) {
-    	String start, end;
-    	String [] daysBetween;
-    	int gridRow = 1;
-		for (int row = 0; row < rows; row++) {
-			// insert the recevier changes
-			for (int col = 0; col < cols; col++) {
-				//GWT.log("["+Integer.toString(row) + "][" + Integer.toString(col)+"]: "+schedule[row][col], null);
-				String scheduleValue = schedule[row][col];
-				boolean on = (scheduleValue.compareTo("T") == 0) ? true : false;
-				String styleName = on ? "on" : "off"; 
-    			if (col != 0) {
-	    			getCellFormatter().setStyleName(gridRow, col, styleBase + styleName);
-				} else {
-					getCellFormatter().setStyleName(gridRow, col, styleBase + "header");
-				}
-				String value = (col == 0) ? scheduleValue : "";
-			    setHTML(gridRow, col, value);
-			}
-			// we've inserted one row of rcvr changes
-			gridRow++;
-			// if this isn't the last row, how many maintenance days to insert?
-			if (row < rows - 1) {
-				start = schedule[row][0];
-				end   = schedule[row+1][0];
-				daysBetween = getMaintenanceDaysBetween(start, end);
-			} else {
-				daysBetween = null;
-			}
-			// insert the maintenance days
-			if (daysBetween != null) {
-			    for (int mRow = 0; mRow < daysBetween.length; mRow++) {
-			    	setHTML(gridRow, 0, daysBetween[mRow]);
-			    	gridRow++;
-			    }
-			}
-			
-		}
-    }
     
+    // given a time range, what are the maintenance dates between them, if any?
     private String[] getMaintenanceDaysBetween(String startStr, String endStr) {
     	
     	Date start = DATE_FORMAT.parse(startStr);
     	Date end   = DATE_FORMAT.parse(endStr);
     	ArrayList<Date> mdays = new ArrayList<Date>();
     	
-//    	GWT.log("start: "+startStr, null);
     	for (int i = 0; i < maintenanceDays.length; i++) {
     		// is this day in our range?
-//    		GWT.log(maintenanceDays[i], null);
     		Date mday = DATE_FORMAT_MAINT.parse(maintenanceDays[i]);
     		if (mday.after(start) && mday.before(end)) {
     		    mdays.add(mday);	

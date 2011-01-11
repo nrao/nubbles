@@ -19,9 +19,15 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.Listener;
 
+// class is responsible for the panel that specifies what part of the rx schedule
+// to request, and uses RcvrScheduleGrid for displaying that schedule
+
 public class RcvrSchdGridPanel extends ContentPanel {
-	
+
+	// displays rx schedule
     private RcvrScheduleGrid grid = new RcvrScheduleGrid();
+    
+    // widgets for sending request for rx schedule
     private DateField start = new DateField();
     private SimpleComboBox<String> numMonths = new SimpleComboBox<String>();
     private CheckBox showMnt = new CheckBox();
@@ -98,17 +104,9 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		td.setColspan(1);
 		td.setWidth(px);		
 		return td;
-	}	
+	}
+	
 	private void initListeners() {
-		
-//	    day.addListener(Events.Valid, new Listener<BaseEvent>() {
-//	    	public void handleEvent(BaseEvent be) {
-//	            //startCalendarDay = dt.getValue();
-//	    		Date dt = day.getValue();
-//	    		setDay(DATE_FORMAT.format(dt));
-//;	    	}
-//	    });
-	    
 	    update.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
 	    		// update the calendar using the controls
@@ -119,8 +117,6 @@ public class RcvrSchdGridPanel extends ContentPanel {
 	    
 	    showMnt.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		// update the calendar using the controls
-	    		//getRcvrSchedule();
 	    		grid.setShowMaintenance(showMnt.getValue());
 	    		;
 	    		

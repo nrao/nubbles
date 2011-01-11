@@ -29,17 +29,17 @@ public class ReceiverSchedule extends ContentPanel {
 	//04/11/2009
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("MM/dd/yyyy");
     private int count = 0;
-    
-    //private RcvrScheduleGrid grid = new RcvrScheduleGrid();
+
+    // displays the rx calendar, along with the controls for it
     private RcvrSchdGridPanel grid = new RcvrSchdGridPanel();
+    
+    // widgets for editing the rx calendar
     private RcvrChangePanel change = new RcvrChangePanel();
-//    private RcvrSchdEditPanel edit = new RcvrSchdEditPanel();
     
 	public ReceiverSchedule() {
 		initLayout();
-		
-		// populate the table w/ the rcvr schedule
-		//getRcvrSchedule();
+
+		// make the first call to the server to get the rx calendar
 		grid.setupCalendar();
 
 	}
@@ -54,20 +54,19 @@ public class ReceiverSchedule extends ContentPanel {
 		
         add(grid);
         add(change, new RowData(1, -1, new Margins(4)));
-//        add(edit, new RowData(1, -1, new Margins(4)));
         
         //TODO: better way to bind?
         grid.setParent(this);
-//        edit.setParent(this);
         change.setParent(this);
         
 	}	
 
+	// make the call to the server to retrieve the rx calendar
 	public void getRcvrSchedule(Date start, int numDays, boolean showMaintenanceDays) {
+
+		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start) + " 00:00:00";
 		
 		HashMap<String, Object> keys = new HashMap<String, Object>();
-		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
-		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start) + " 00:00:00";
 		keys.put("startdate", startStr);
 		keys.put("duration", numDays);
 		JSONRequest.get("/receivers/schedule", keys  
@@ -82,6 +81,8 @@ public class ReceiverSchedule extends ContentPanel {
 	    grid.getRcvrSchedule();	
 	}
 	
+	// converts the JSON representation of the rx calendar (and related info) into a Java representation
+	// and passes this on to widgets for display
 	private void jsonToRcvrSchedule(JSONObject json) {
 		
 		// construct the header for the rcvr schedule calendar
@@ -100,15 +101,12 @@ public class ReceiverSchedule extends ContentPanel {
 			headers[i+offset] = rcvr;
 			rx[i] = rcvr;
 		}
-		change.loadRcvrs(rx);
 	
 		// now, get the rest of the schedule
 		JSONObject schedule = json.get("schedule").isObject();
 		int numDays = schedule.keySet().size();
 		String[][] calendar = getRcvrCalStrs(schedule, rx, numDays);
-		
-		// use that to create the grid
-		//grid.loadSchedule(numDays, headers.length, headers, calendar);
+
 		
 		// get the diff schedule
 		JSONArray diff = json.get("diff").isArray();
@@ -131,21 +129,9 @@ public class ReceiverSchedule extends ContentPanel {
 			}
 			// for this same day, use the earlier rcvr calendar to determine the 
 			// longer list of rcvrs that will be available at the end of this day
+			// TODO: deprecated
 			available = "";
-//			for (int j=0; j<calendar.length; j++) {
-//				String calDay = calendar[j][0];
-//				//if (calendar[j][0] == day) {
-//				if (calDay.compareTo(day) == 0) {
-//					// grab the rcvrs that are on ("T")
-//					for (int k=0; k<calendar[j].length; k++) {
-//						on = calendar[j][k];
-//						if (on.compareTo("T") == 0) {
-//							available += headers[k] + " ";
-//						}
-//						
-//					}
-//				}
-//			}
+
 			diffCalendar[i][0] = day;
 			diffCalendar[i][1] = up;
 			diffCalendar[i][2] = down;
@@ -163,15 +149,15 @@ public class ReceiverSchedule extends ContentPanel {
 			mDay = maintJson.get(i).isString().stringValue();
 			maintenanceDays[i] = mDay;
 		}
-//		edit.setMaintenanceDays(maintenanceDays);
-		grid.setMaintenanceDays(maintenanceDays);
-		
+
+		// send this info down to the widgets for display
+		// populate drop-down widget for rx, and dates for the other drop-downs
+		change.loadRcvrs(rx);
 		change.loadSchedule(calendar);
 		
 		// use these to create the grid
 		grid.loadSchedule(headers, numDays, rx.length + 1, calendar, diffCalendar);
-		
-		
+		grid.setMaintenanceDays(maintenanceDays);
 	}
 
 	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)

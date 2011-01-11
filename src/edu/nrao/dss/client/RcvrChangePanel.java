@@ -28,6 +28,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 
+// This class holds widgets for changing the rx schedule (displayed in another panel).
+
 public class RcvrChangePanel extends ContentPanel {
 	
 	// shift
@@ -183,6 +185,7 @@ public class RcvrChangePanel extends ContentPanel {
 			}
 		});	
 		
+		// when startDate is set, default endDate to the same value
 		startDate.addListener(Events.Valid, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
 			    endDate.setValue(startDate.getValue());
@@ -221,6 +224,7 @@ public class RcvrChangePanel extends ContentPanel {
 	    }
 	}
 	
+	// utility for formatting the drop down date values before sending via JSON
 	private String getDropDownDate(SimpleComboBox<String> dropDown) {
 		// make sure we have valid inputs
 		String from_date = dropDown.getSimpleValue();
@@ -232,6 +236,7 @@ public class RcvrChangePanel extends ContentPanel {
         return from_date;
 	}
 	
+	// utilitly for formatting the date picker values before sending via JSON
 	private String getCalendarDate(DateField dt) {
 		if (dt.getValue() == null) {
 			return null;
