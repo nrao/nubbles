@@ -142,6 +142,7 @@ public class RcvrChangePanel extends ContentPanel {
 		FormPanel fp = new FormPanel();
 		fp.setHeaderVisible(false);
 		fp.setBodyBorder(false);
+		fp.setPadding(3);
 		return fp;
 	}
 	
