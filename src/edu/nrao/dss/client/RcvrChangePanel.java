@@ -189,7 +189,9 @@ public class RcvrChangePanel extends ContentPanel {
 		// when startDate is set, default endDate to the same value
 		startDate.addListener(Events.Valid, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-			    endDate.setValue(startDate.getValue());
+				// TODO: don't do this until you can figure out how to allow the user to select from options
+				// even after a this call to setValue
+			    //endDate.setValue(startDate.getValue());
 			}
 		});			
 	}
