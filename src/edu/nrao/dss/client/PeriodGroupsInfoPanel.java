@@ -9,6 +9,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -29,6 +31,8 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
     
     private Button add;
     private Button refresh;
+    private SimpleComboBox<String> cmpFilter;
+	String [] cmpOptions = new String[] {"Not Complete", "Complete", "Cmp. & Not Cmp."};
     
 	protected abstract void displayPeriodGroups(JSONObject json);
     
@@ -63,6 +67,17 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 		refresh.setToolTip("Not trusting what you see?  Reload it all ...");
 		toolBar.add(refresh);
 		
+		cmpFilter = new SimpleComboBox<String>();
+		cmpFilter.setTriggerAction(TriggerAction.ALL);
+		//filter.setWidth(width);
+		cmpFilter.setEmptyText("Completion");
+		cmpFilter.setTitle("Completion");
+		for (String o : cmpOptions) {
+			cmpFilter.add(o);
+		}
+		cmpFilter.setSimpleValue(cmpOptions[0]);
+		toolBar.add(cmpFilter);
+		
 	}
 
 	private void initListeners() {
@@ -85,6 +100,11 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 	}
 	
 	private void addPeriodGroup() {
+
+		// New Windows & Electives are incomplete by default, so make sure we can still see these
+		// by ignoring this filter
+		cmpFilter.setSimpleValue(cmpOptions[2]);
+		
 		JSONRequest.post("/" + url //.i.e: "/electives"
 			      , new HashMap<String, Object>() {{
 			    	  put("handle", sessionHandle);
@@ -112,11 +132,21 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 		
 		this.sessionId = sessionId;
 		this.sessionHandle = sessionHandle;
-		JSONRequest.get("/" + url
 		
-			      , new HashMap<String, Object>() {{
-			    	  put("filterSessionId", sessionId);
-			        }}
+		HashMap<String, Object> keys = new HashMap<String, Object>() {{
+	    	  put("filterSessionId", sessionId);
+        }};
+		
+	    // how to filter by complete, if at all?
+		String cmpStr = cmpFilter.getSimpleValue();
+		if (cmpStr.compareTo(cmpOptions[0]) == 0) {
+			keys.put("filterComplete", false);
+		} else if (cmpStr.compareTo(cmpOptions[1]) == 0) {
+			keys.put("filterComplete", true);
+		}
+		
+		JSONRequest.get("/" + url
+			      , keys 
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				displayPeriodGroups(json);
