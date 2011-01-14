@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -103,6 +104,12 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 	
 	// gets all 'groups' info from the server for the selected session
 	public void getPeriodGroups(final int sessionId, String sessionHandle) {
+		// remove anything displayed now to make it clear that we're reloading
+		removeAll();
+		String msg = "Loading " + type + "s ...";
+		setHeading(msg);
+		final MessageBox box = MessageBox.wait(msg, msg, "Be Patient ...");
+		
 		this.sessionId = sessionId;
 		this.sessionHandle = sessionHandle;
 		JSONRequest.get("/" + url
@@ -113,6 +120,7 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				displayPeriodGroups(json);
+				box.close();
 			}
 		});
 	}
