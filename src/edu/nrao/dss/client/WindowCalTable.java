@@ -21,10 +21,13 @@ public class WindowCalTable extends FlexTable {
 	
 	public void loadCalendar(int rows, int cols, String[] headers, String[][] schedule) {
 
+		int row;
+		
 		// start fresh
 		clearAll();
 
 		// first the header
+		row = 0;
 		for (int col = 0; col < cols; col++) {
 			// TODO: how to set the width of these columns?
 			//getColumnFormatter().setWidth(col, "200px");
@@ -32,7 +35,7 @@ public class WindowCalTable extends FlexTable {
 			getCellFormatter().setHorizontalAlignment(0, col, HasHorizontalAlignment.ALIGN_CENTER);
 			getCellFormatter().setStyleName(0, col, styleBase + "header");
 			
-			getCellFormatter().setWidth(0, col, "200");
+			getCellFormatter().setWidth(row, col, "200");
 			
 		}
 		
@@ -47,7 +50,7 @@ public class WindowCalTable extends FlexTable {
     	
     	// schedule format:
     	// rows - windows
-    	// columns - first = session name, all others are dates
+    	// columns - first = session name, second = 'start', all others are dates but last (= 'end')
     	// go through the windows first
 		for (int row = 0; row < rows; row++) {
 			// go through the session name, then each day
