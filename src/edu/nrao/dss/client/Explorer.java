@@ -74,17 +74,19 @@ import com.google.gwt.user.client.Window;
 
 public class Explorer extends ContentPanel{
 	
-	public Explorer(String url, ModelType mType) {
+	public Explorer(String url, String defaultArgs, ModelType mType) {
 		rootURL     = url;
+		initialArgs = defaultArgs;
 		modelType   = mType;
 		defaultDate = "";
 		pagingToolBar = null;
 	}
 	
-	public Explorer(String url, ModelType mType, PagingToolBar ptb)
+	public Explorer(String url, String defaultArgs, ModelType mType, PagingToolBar ptb)
 	{
-		rootURL = url;
-		modelType = mType;
+		rootURL     = url;
+		initialArgs = defaultArgs;
+		modelType   = mType;
 		defaultDate = "";
 		pagingToolBar = ptb;
 	}
@@ -98,7 +100,7 @@ public class Explorer extends ContentPanel{
 		//setAutoHeight(true);
 		setScrollMode(Scroll.AUTOY);
 				
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL + initialArgs);
 
 		DataReader reader = new PagingJsonReader<BasePagingLoadResult>(modelType);
 		proxy  = new DynamicHttpProxy<BasePagingLoadResult<BaseModelData>>(builder);
@@ -692,7 +694,6 @@ public class Explorer extends ContentPanel{
 	}
 
 	protected void addRecord(HashMap<String, Object> fields) {
-		//GWT.log(fields.toString(), null);
 		JSONRequest.post(rootURL, fields, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
@@ -855,6 +856,7 @@ public class Explorer extends ContentPanel{
 	protected DynamicHttpProxy<BasePagingLoadResult<BaseModelData>> proxy;
 	
 	protected String rootURL;
+	protected String initialArgs;
 	
 	protected List<SimpleComboBox<String>> advancedFilters = new ArrayList<SimpleComboBox<String>>();
 	

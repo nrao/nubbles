@@ -22,7 +22,7 @@ public class WindowRangeExplorer extends Explorer {
 	protected PeriodGroupInfoPanel pg;
 	
 	public WindowRangeExplorer(int windowId, String sessionHandle) {
-		super("/windowRanges", new WindowRangeType(columnTypes));
+		super("/windowRanges", "", new WindowRangeType(columnTypes));
 	    this.windowId = windowId;
 	    this.sessionHandle = sessionHandle;    
 		setShowColumnsMenu(false);

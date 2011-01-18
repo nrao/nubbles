@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.event.WidgetListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -24,7 +25,7 @@ import com.google.gwt.http.client.RequestBuilder;
 
 public class SessionExplorer extends Explorer {
 	public SessionExplorer() {
-		super("/sessions", new SessionType(columnTypes));
+		super("/sessions", "?filterClp=False", new SessionType(columnTypes));
 		initFilters();
 		initLayout(initColumnModel(), true);
 	}
@@ -38,15 +39,19 @@ public class SessionExplorer extends Explorer {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
 		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol", "KFPA"	
 		};
-		advancedFilters.add(initCombo("Proj Complete", new String[] {"True", "False"}, 100));
+		SimpleComboBox<String> project_complete = initCombo("Proj Status", new String[] {pcomplete, pincomplete, pall}, 110);
+		project_complete.setSimpleValue(pall);
+		advancedFilters.add(project_complete);
 		advancedFilters.add(initCombo("Session Type", new String[] {"Open", "Fixed", "Windowed", "Elective"}, 100));
 		advancedFilters.add(initCombo("Science Type", ScienceField.values, 100));
 		advancedFilters.add(initCombo("Receiver", receivers, 80));
-		advancedFilters.add(initCombo("Frequency", frequencies, 80));
+		advancedFilters.add(initCombo("Frequency", frequencies, 85));
 		advancedFilters.add(initCombo("Trimester", trimesters, 80));
-		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}, 80));
+		SimpleComboBox<String> session_complete = initCombo("Sess Status", new String[] {scomplete, sincomplete, sall}, 115);
+		session_complete.setSimpleValue(sincomplete);
+		advancedFilters.add(session_complete);
 		advancedFilters.add(initCombo("Enabled", new String[] {"True", "False"}, 80));
-		advancedFilters.add(initCombo("Authorized", new String[] {"True", "False"}, 80));
+		advancedFilters.add(initCombo("Authorized", new String[] {"True", "False"}, 85));
 		
 		initFilterAction();
 	}
@@ -80,10 +85,30 @@ public class SessionExplorer extends Explorer {
 					if (value != null) {
 						if (filterNames[i] == "filterFreq") {
 							filterVal = freqMap.get(value.getValue());
+						} else if (filterNames[i] == "filterProjClp") {
+							filterVal = value.getValue();
+							if (filterVal == pcomplete) {
+								filterVal = "True";
+							} else if (filterVal == pincomplete) {
+								filterVal = "False";
+							} else {
+								filterVal = null;
+							}
+						} else if (filterNames[i] == "filterClp") {
+							filterVal = value.getValue();
+							if (filterVal == scomplete) {
+								filterVal = "True";
+							} else if (filterVal == sincomplete) {
+								filterVal = "False";
+							} else {
+								filterVal = null;
+							}
 						} else {
 							filterVal = value.getValue();
 						}
-						filtersURL += (filtersURL.equals("?") ? filterNames[i] + "=" : "&" + filterNames[i] + "=") + filterVal;
+						if (filterVal != null) {
+							filtersURL += (filtersURL.equals("?") ? filterNames[i] + "=" : "&" + filterNames[i] + "=") + filterVal;
+						}
 					}
 				}
 
@@ -168,4 +193,11 @@ public class SessionExplorer extends Explorer {
     
     // Observers
     private PeriodColConfig peSessionConfig;
+    
+    private static String pcomplete   = "Proj Complete";
+    private static String pincomplete = "Proj Incomplete";
+    private static String pall        = "Proj All";
+    private static String scomplete   = "Sess Complete";
+    private static String sincomplete = "Sess Incomplete";
+    private static String sall        = "Sess All";
 }
