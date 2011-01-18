@@ -20,7 +20,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
-		super("/periods/UTC", new PeriodType(columnTypes));
+		super("/periods/UTC", "", new PeriodType(columnTypes));
 		setShowColumnsMenu(false);
 		setAutoHeight(true);
 		setCreateFilterToolBar(false);

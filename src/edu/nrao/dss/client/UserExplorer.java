@@ -32,7 +32,7 @@ public class UserExplorer extends Explorer {
 	private InvestigatorForm addInvest;
 	
 	public UserExplorer() {
-		super("/users", new UserType());
+		super("/users", "", new UserType());
 		initFilters();
 		initLayout(initColumnModel(), true);
 		//initUserToolBar();

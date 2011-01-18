@@ -39,7 +39,7 @@ public abstract class GroupPeriodExplorer extends Explorer {
 
 	// NOTE: we are getting the column definitions passed in from the child class
 	public GroupPeriodExplorer(int periodGroupId, String sessionHandle, ColumnType[] columnTypes) {
-		super("/periods/UTC", new PeriodType(columnTypes));
+		super("/periods/UTC", "", new PeriodType(columnTypes));
 	    this.periodGroupId = periodGroupId;
 	    this.sessionHandle = sessionHandle;    
 		setShowColumnsMenu(false);
