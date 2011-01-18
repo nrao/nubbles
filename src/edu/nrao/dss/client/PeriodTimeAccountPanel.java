@@ -53,6 +53,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 			setValue(ltw, p.getLost_time_weather());
 			setValue(ltr, p.getLost_time_rfi());
 			setValue(lto, p.getLost_time_other());
+			setValue(lp, p.getLost_time_bill_project());
 			setValue(os, p.getOther_session());
 			setValue(osw, p.getOther_session_weather());
 			setValue(osr, p.getOther_session_rfi());
@@ -93,9 +94,11 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		period.setLost_time_weather(ltw.getValue().doubleValue());
 		period.setLost_time_rfi(ltr.getValue().doubleValue());
 		period.setLost_time_other(lto.getValue().doubleValue());
+		period.setLost_time_bill_project(lp.getValue().doubleValue());
 		period.setOther_session_weather(osw.getValue().doubleValue());
 		period.setOther_session_rfi(osr.getValue().doubleValue());
 		period.setOther_session_other(oso.getValue().doubleValue());
+		
 		
 		// 2. convert this info to JSON like stuff
 		HashMap <String, Object> keys = period.toHashMap();
@@ -154,6 +157,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		setEditable(osw);
 		setEditable(osr);
 		setEditable(oso);
+		setEditable(lp);
 		
 	}
 	
@@ -169,6 +173,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 			hasChanged(osw) ||
 			hasChanged(osr) ||
 			hasChanged(oso) ||
+			hasChanged(lp)  ||
 			hasChanged(desc)
 			) {
 			return true;

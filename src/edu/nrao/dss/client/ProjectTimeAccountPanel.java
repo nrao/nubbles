@@ -12,6 +12,7 @@ public class ProjectTimeAccountPanel extends TimeAccountingPanel {
 	    shortNotice.setValue(json.get("short_notice").isNumber().doubleValue());	
 	    observed.setValue(json.get("observed").isNumber().doubleValue());	
 	    timeBilled.setValue(json.get("time_billed").isNumber().doubleValue());	
+	    lp.setValue(json.get("lost_time_bill_project").isNumber().doubleValue());
 	    unaccounted.setValue(json.get("unaccounted_time").isNumber().doubleValue());		    
 	    
 	    lt.setValue(json.get("lost_time").isNumber().doubleValue());	

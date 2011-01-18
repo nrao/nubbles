@@ -104,7 +104,8 @@ protected void initLayout() {
 	// left side of project table lets you pick what project & session you want
 	final FormPanel projectForm = new FormPanel();
 	projectForm.setHeading("Project");
-	projectForm.setBorders(true);
+	projectForm.setBorders(false);
+	projectForm.setBodyBorder(false);
 
 	
 	// the project picker goes in this left-most form panel
@@ -153,7 +154,7 @@ protected void initLayout() {
 	// a FieldSet for each grade allotment - the first always gets shown, not the second
 	FormPanel projectForm2 = new FormPanel();
 	projectForm2.setHeading("Allotments");
-	projectForm2.setBorders(true);	
+	projectForm2.setBorders(false);	
 	projectForm2.add(projGrade1);
 	projGrade2.setVisible(false);
 	projectForm2.add(projGrade2);
@@ -168,14 +169,14 @@ protected void initLayout() {
     
     // now add the session panel
 	session.setLayout(new RowLayout(Orientation.VERTICAL)); //FitLayout());
-	session.setBorders(true);
+	session.setBorders(false);
 	session.setVisible(false);
 
 	// TODO: a table is used to place two forms side by side
 	LayoutContainer sessionTable = new LayoutContainer();
 	TableLayout tbSess = new TableLayout(2);
 	tbSess.setWidth("100%");
-	tbSess.setBorder(1);
+	tbSess.setBorder(0);
 	sessionTable.setLayout(tbSess);
 	sessionTable.setBorders(true);
 
@@ -188,7 +189,8 @@ protected void initLayout() {
 	
 	final FormPanel sessionForm = new FormPanel();
 	sessionForm.setHeading("Session");
-	sessionForm.setBorders(true);
+	sessionForm.setBorders(false);
+	sessionForm.setBodyBorder(false);
 
 	// what's the current session?
 	sessionName.setValue("");
@@ -214,7 +216,7 @@ protected void initLayout() {
 	
 	final FormPanel sessionForm2 = new FormPanel();
 	sessionForm2.setHeading("Allotment");
-	sessionForm2.setBorders(true);
+	sessionForm2.setBorders(false);
 	
 	sessionGrade.setReadOnly(true);
 	// TODO: read only using background color?

@@ -58,6 +58,8 @@ public class PeriodSummaryPanel extends ContentPanel {
     	FormPanel periodForm = new FormPanel();
     	periodForm.setHeading("Period Form");
         periodForm.setHeaderVisible(false);
+        periodForm.setBorders(false);
+        periodForm.setBodyBorder(false);
         
     	// field per attribute, roughly:
         setReadOnly("Name", label);
@@ -88,6 +90,8 @@ public class PeriodSummaryPanel extends ContentPanel {
     	FormPanel periodForm2 = new FormPanel();
     	periodForm2.setHeading("Period Form2");
     	periodForm2.setHeaderVisible(false);
+    	periodForm2.setBorders(false);
+    	periodForm2.setBodyBorder(false);
     	
     	// score
     	hscore.setFieldLabel("Historical Score");

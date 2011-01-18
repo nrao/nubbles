@@ -11,7 +11,8 @@ public class SessionTimeAccountPanel extends TimeAccountingPanel {
 	    observed.setValue(json.get("observed").isNumber().doubleValue());	
 	    timeBilled.setValue(json.get("time_billed").isNumber().doubleValue());	
 	    unaccounted.setValue(json.get("unaccounted_time").isNumber().doubleValue());	
-	    notBillable.setValue(json.get("not_billable").isNumber().doubleValue());	
+	    notBillable.setValue(json.get("not_billable").isNumber().doubleValue());
+	    lp.setValue(json.get("lost_time_bill_project").isNumber().doubleValue());
 	    shortNotice.setValue(json.get("short_notice").isNumber().doubleValue());
 	    
 	    lt.setValue(json.get("lost_time").isNumber().doubleValue());	

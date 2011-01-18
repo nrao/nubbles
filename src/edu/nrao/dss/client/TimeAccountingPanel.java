@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -33,6 +34,7 @@ public class TimeAccountingPanel extends ContentPanel {
     protected NumberField ltw = new NumberField();
     protected NumberField ltr = new NumberField();
     protected NumberField lto = new NumberField();
+    protected NumberField lp = new NumberField();
     protected NumberField os = new NumberField();
     protected NumberField osw = new NumberField();
     protected NumberField osr = new NumberField();
@@ -72,12 +74,14 @@ public class TimeAccountingPanel extends ContentPanel {
 		FormPanel miscTimes = new FormPanel();
 		miscTimes.setHeaderVisible(true);
 		miscTimes.setHeading("Times (Hrs)");
+		miscTimes.setBodyBorder(false);
 		
 		// start adding the misc. times
 		miscTimes.add(scheduled, fd);
 		miscTimes.add(observed, fd);
 		miscTimes.add(timeBilled, fd);
 		miscTimes.add(notBillable, fd);
+		miscTimes.add(lp, fd);
 		miscTimes.add(shortNotice, fd);
 		miscTimes.add(unaccounted, fd);
 		
@@ -87,6 +91,7 @@ public class TimeAccountingPanel extends ContentPanel {
         FormPanel lostTimePanel = new FormPanel();
         lostTimePanel.setHeading("Lost Time (Hrs)");
         lostTimePanel.setHeaderVisible(true);
+        lostTimePanel.setBodyBorder(false);
         
 		lostTimePanel.add(lt, fd);
 		lostTimePanel.add(ltw, fd);
@@ -99,6 +104,7 @@ public class TimeAccountingPanel extends ContentPanel {
         FormPanel otherTimePanel = new FormPanel();
         otherTimePanel.setHeading("Time to Other Session (Hrs)");
         otherTimePanel.setHeaderVisible(true);
+        otherTimePanel.setBodyBorder(false);
         
 		otherTimePanel.add(os, fd);
 		otherTimePanel.add(osw, fd);
@@ -137,8 +143,11 @@ public class TimeAccountingPanel extends ContentPanel {
 		setDefaultField("Not Billable", notBillable);
 		setDefaultField("Short Notice", shortNotice);
 		setDefaultField("Time Billed", timeBilled);
+		setDefaultField("LT Bill Proj", lp);
 		setDefaultField("Unaccounted", unaccounted);
 		setDefaultField("Observed", observed);
+		
+
 		
 		setDefaultField("Lost Time", lt);
 		setDefaultField("LT Weather", ltw);
@@ -173,9 +182,9 @@ public class TimeAccountingPanel extends ContentPanel {
 		nf.setReadOnly(true);
 		// TODO: read only fields should just have their background color darkened!
 		//nf.setEnabled(false);
-		//nf.setStyleAttribute("border" , "5px solid line");
-		//nf.setStyleAttribute("background-color", "#FFFFFF");
-		nf.setStyleAttribute("color", "grey");
+//		nf.setStyleAttribute("border" , "5px solid line");
+//		nf.setStyleAttribute("background-color", "#FFFFFF");
+//		nf.setStyleAttribute("color", "grey");
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
 		nf.setValidator(new DSSTimeValidator()); 
         // remind the user that they've changed a value		
