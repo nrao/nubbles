@@ -39,8 +39,6 @@ public class WindowCalTable extends FlexTable {
 			
 		}
 		
-//		GWT.log("rows, cols: "+Integer.toString(rows) + " " + Integer.toString(cols), null);
-		
 		// now the data
         loadAllDates(rows, cols, schedule);
 	}
@@ -55,7 +53,6 @@ public class WindowCalTable extends FlexTable {
 		for (int row = 0; row < rows; row++) {
 			// go through the session name, then each day
 			for (int col = 0; col < cols; col++) {
-				//GWT.log("["+Integer.toString(row) + "][" + Integer.toString(col)+"]: "+schedule[row][col], null);
 				// has the format, either "F", or "T;informative_text", where F or T is the boolean for whether the 
 				// day falls in this particular window
 				String scheduleValue = schedule[row][col];

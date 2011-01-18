@@ -114,10 +114,6 @@ public class WindowCalendar extends ContentPanel {
 	private void jsonToCalendar(JSONObject json, Date start, int numDays) {
 		int i;
 		String text;
-//		String text, dstartStr, cstartStr;
-//		String dstate = "";
-//		String cstate = "";
-//		Date dstart, cstart;
 		int numExCols = 3; // | Session (total/billed) Complete? | Start | [dates] | End |
 		int colOffset = 2; // because first two columns are: | Session (total/billed) Complete? | Start
 		int startColIndex = 1;
@@ -133,6 +129,7 @@ public class WindowCalendar extends ContentPanel {
 		headers[0] = "Session (total/billed) Complete?";
 		headers[startColIndex] = "Start";
 		headers[endColIndex] = "End";
+		
 		// TODO: believe it or fucking not, DST causes a one hour offset when we do this!!! WTF!!!!
 		String day;
 		long startSecs = start.getTime();
@@ -146,7 +143,6 @@ public class WindowCalendar extends ContentPanel {
 			dateStrs[i] = dayStr;
 			dates[i] = dt;
 		}
-		//headers[i + numExCols - 1] = "End";
 
 		// what are the endpoints of our calendar
 		calStartDate = start;
@@ -201,7 +197,6 @@ public class WindowCalendar extends ContentPanel {
 				calRanges[j][1] = rEndStr;
 				calRangeDates[j][0] = DateTimeFormat.getFormat("yyyy-MM-dd").parse(rStartStr);
 				calRangeDates[j][1]  = DateTimeFormat.getFormat("yyyy-MM-dd").parse(rEndStr);
-				
 			}
 
 			// where are the periods?
@@ -232,10 +227,11 @@ public class WindowCalendar extends ContentPanel {
 			// actually decide on what to display in each cell of the calendar
 			
 			// First, the second & last columns, which contains info on what happens to this window
-			// outside of the calendar's range
+			// outside of the calendar's range.  Second Column:
 			String value, sep;
 			if (calStartDate.after(wstart)) {
 				value = "T;";
+				// window ranges?
 				for (int k = 0; k < numRanges; k++) {
 					sep = value.compareTo("T;") == 0 ? " " : ", ";
 					if (calStartDate.after(calRangeDates[k][0])) {
@@ -246,7 +242,7 @@ public class WindowCalendar extends ContentPanel {
 						}
 					}
 				}
-	    		// any periods on this day?
+	    		// periods?
 	    		for (int k = 0; k < numPeriods; k++) {
 	    			if (calPeriodDates[k].before(calStartDate)) {
 	    				value += ", " + calPeriodToText(calPeriods[k]) + " on "  + calPeriods[k][0];
@@ -257,10 +253,12 @@ public class WindowCalendar extends ContentPanel {
 			}
 			cal[i][startColIndex] = value;
 				
+			// Last Column:
 			if (calEndDate.before(wstop)) {
 				value = "T;";
-				sep = value.compareTo("T;") == 0 ? " " : ", ";
+				// window ranges?
 				for (int k = 0; k < numRanges; k++) {
+					sep = value.compareTo("T;") == 0 ? " " : ", ";
 					if (calEndDate.before(calRangeDates[k][1])) {
 						if (calEndDate.before(calRangeDates[k][0])) {
 							value += sep + calRanges[k][0] + " - " + calRanges[k][1];
@@ -269,7 +267,7 @@ public class WindowCalendar extends ContentPanel {
 						}
 					}
 				}
-	    		// any periods on this day?
+	    		// periods?
 	    		for (int k = 0; k < numPeriods; k++) {
 	    			if (calPeriodDates[k].after(calEndDate)) {
 	    				value += ", " + calPeriodToText(calPeriods[k]) + " on "  + calPeriods[k][0];
@@ -279,8 +277,6 @@ public class WindowCalendar extends ContentPanel {
 				value = "F";
 			}
 			cal[i][endColIndex] = value;			
-			//cal[i][startColIndex] = calStartDate.after(wstart) ? "T" : "F";
-			//cal[i][endColIndex]   = calEndDate.before(wstop) ? "T" : "F";
 			
 		    // the rest are the days - each showing whether it's part of the window 
 		    for (int j = 0; j < numDays; j++) {
@@ -299,23 +295,8 @@ public class WindowCalendar extends ContentPanel {
 		    	// for each day, does this window cover it?
 		    	//cal[i][j+1] = partOfWindow ? "T" : "F";
 		    	// if part of the window, might be more info to add, like:
-		    	// * does this window extend off the calendar
 		    	// * what day does the default & chosen fall on?
 		    	if (partOfWindow) {
-//		    		// first day in calendar?
-//		    		if (j==0) {
-//		    		    // if window starts before calendar, tell user when
-//		    			if (dates[j].getTime() > wstart.getTime()) {
-//		    				text += wstartStr;
-//		    			}
-//		    		}
-//		    		// last day in calendar?
-//		    		if (j == numDays - 1) {
-//		    		    // if window ends after calendar, tell user when
-//		    			if (dates[j].getTime() < wstop.getTime()) {
-//		    				text += wstopStr;
-//		    			}
-//		    		}
 		    		// any periods on this day?
 		    		for (int k = 0; k < numPeriods; k++) {
 		    			if (calPeriodDates[k].equals(dates[j])) {
@@ -333,8 +314,6 @@ public class WindowCalendar extends ContentPanel {
 		}
 	
 		// now display it!
-		//calendar = new WindowCalTable();
-		//add(calendar);
 		calendar.loadCalendar(calRows, calCols, headers, cal);
 	}
 
@@ -353,9 +332,6 @@ public class WindowCalendar extends ContentPanel {
 	}
 	
 	public void loadCalendar(int rows, int cols, String[] headers, String[][] cal) {
-		// TODO
-		//String[] headers = new String[] {"h0", "h1"};
-		//String[][] cal = new String[][] {{"r0c0", "r0c1"},{"r1c0", "r1c1"}};
 		calendar.loadCalendar(rows, cols, headers, cal);
 	}
 	
