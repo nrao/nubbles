@@ -33,7 +33,7 @@ public class WindowExplorer extends Explorer {
     private AssignWindowPeriodDlg assignDlg;
 	
 	public WindowExplorer() {
-		super("/windows", new WindowType(columnTypes));
+		super("/windows", "", new WindowType(columnTypes));
 		initFilters();
 		initLayout(initColumnModel(), true);
 		updateSessionOptions();

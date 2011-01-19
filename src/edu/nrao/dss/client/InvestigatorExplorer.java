@@ -34,7 +34,7 @@ public class InvestigatorExplorer extends Explorer {
 	private InvestigatorForm addInvest;
 
 	public InvestigatorExplorer() {
-		super("/investigators", new InvestigatorType());
+		super("/investigators", "", new InvestigatorType());
 		initLayout(initColumnModel(), false);
 		addPlugins();
 		setAddInvest(new InvestigatorForm(

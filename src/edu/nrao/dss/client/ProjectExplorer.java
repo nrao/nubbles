@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -38,7 +39,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public class ProjectExplorer extends Explorer {
 	public ProjectExplorer() {
-		super("/projects", new ProjectType(), new ProjectEmailPagingToolBar(50));
+		super("/projects", "?filterClp=False", new ProjectType(), new ProjectEmailPagingToolBar(50));
 		// downcast, but we know that we have a ProjectEmailPagingToolBar now
 		selectionPagingToolBar = (ProjectEmailPagingToolBar)pagingToolBar;
 		initFilters();
@@ -177,7 +178,9 @@ public class ProjectExplorer extends Explorer {
 	private void initFilters() {
 		advancedFilters.add(initCombo("Project Type", new String[] {"science", "non-science"}, 100));
 		advancedFilters.add(initCombo("Trimester", trimesters, 80));
-		advancedFilters.add(initCombo("Complete", new String[] {"True", "False"}, 80));
+		SimpleComboBox<String> project_complete = initCombo("Proj Status", new String[] {pcomplete, pincomplete, pall}, 110);
+		project_complete.setSimpleValue(pincomplete);
+		advancedFilters.add(project_complete);
 		initFilterAction();
 	}
 	
@@ -189,14 +192,27 @@ public class ProjectExplorer extends Explorer {
 			public void componentSelected(ButtonEvent be){
 				selectionPagingToolBar.clearSelections(); // filtering should clear old selections.
 				filtersURL = "?";
-				
-				SimpleComboValue<String> value;
+				String filterVal;
 				filterNames = new String[] {"filterType", "filterSem", "filterClp"};
-				
 				for (int i = 0; i < advancedFilters.size(); i++) {
-					value = advancedFilters.get(i).getValue();
+					SimpleComboValue<String> value = advancedFilters.get(i).getValue();
 					if (value != null) {
-						filtersURL += (filtersURL.equals("?") ? filterNames[i] + "=" : "&" + filterNames[i] + "=") + value.getValue();
+						GWT.log(filterNames[i]);
+						if (filterNames[i] == "filterClp") {
+							filterVal = value.getValue();
+							if (filterVal == pcomplete) {
+								filterVal = "True";
+							} else if (filterVal == pincomplete) {
+								filterVal = "False";
+							} else {
+								filterVal = null;
+							}
+						} else {
+							filterVal = value.getValue();
+						}
+						if (filterVal != null) {
+							filtersURL += (filtersURL.equals("?") ? filterNames[i] + "=" : "&" + filterNames[i] + "=") + filterVal;
+						}
 					}
 				}
 
@@ -337,4 +353,8 @@ public class ProjectExplorer extends Explorer {
 	private SessionColConfig sePcodeConfig;
 	private TimeAccounting timeAccounting;
 	private ProjectPage projectPage;
+	
+    private static String pcomplete   = "Proj Complete";
+    private static String pincomplete = "Proj Incomplete";
+    private static String pall        = "Proj All";
 }
