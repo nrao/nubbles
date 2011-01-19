@@ -71,7 +71,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	    nf.setValue(value);
 	    nf.setOriginalValue(value);
 	    if (!nf.isReadOnly()) {
-	    	nf.setStyleAttribute("color", "black");
+	    	nf.el().firstChild().setStyleAttribute("color", "black");
 	    }	
 	}
 	

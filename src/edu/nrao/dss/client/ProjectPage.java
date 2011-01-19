@@ -79,20 +79,16 @@ public class ProjectPage extends ContentPanel {
 		projects.setFieldLabel("Project");
 		projectForm.add(projects);
 		
-		
 		name.setFieldLabel("Title");
 		name.setReadOnly(true);
-		name.setStyleAttribute("color", "grey");
 		projectForm.add(name, fd);
 
 		pi.setFieldLabel("PI");
 		pi.setReadOnly(true);
-		pi.setStyleAttribute("color", "grey");
 		projectForm.add(pi, fd);
 		
 		coi.setFieldLabel("COI");
 		coi.setReadOnly(true);
-		coi.setStyleAttribute("color", "grey");
 		projectForm.add(coi, fd);
 		
 		friends.setTriggerAction(TriggerAction.ALL);
@@ -185,11 +181,8 @@ public class ProjectPage extends ContentPanel {
 	private void markTextAreaChange(BaseEvent be) {
         String value = ((TextArea) be.getSource()).getValue();
         String orgvl = ((TextArea) be.getSource()).getOriginalValue();
-        if (orgvl.compareTo(value) == 0) {
-        	((TextArea) be.getSource()).setStyleAttribute("color", "black");
-        } else {
-        	((TextArea) be.getSource()).setStyleAttribute("color", "red");
-        }
+        String color = (orgvl.compareTo(value) == 0) ? "black" : "red";
+        ((TextArea) be.getSource()).el().firstChild().setStyleAttribute("color", color);
 	}
 
 	// retrieves the project's JSON
@@ -237,12 +230,12 @@ public class ProjectPage extends ContentPanel {
 	    String notes = proj.get("schd_notes").isString().stringValue();
 	    schNotes.setValue(notes); 
 	    schNotes.setOriginalValue(notes);
-	    schNotes.setStyleAttribute("color", "black");
+	    schNotes.el().firstChild().setStyleAttribute("color", "black");
 
 	    notes = proj.get("notes").isString().stringValue();
 	    obsNotes.setValue(notes);
 	    obsNotes.setOriginalValue(notes);
-	    obsNotes.setStyleAttribute("color", "black");
+	    obsNotes.el().firstChild().setStyleAttribute("color", "black");
 		
 	}
 

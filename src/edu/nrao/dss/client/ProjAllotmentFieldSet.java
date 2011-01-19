@@ -46,7 +46,7 @@ public class ProjAllotmentFieldSet extends FieldSet {
 	    double t = time.get("total_time").isNumber().doubleValue();
 	    proj_alloted.setValue(t);
 	    proj_alloted.setOriginalValue(t);
-	    proj_alloted.setStyleAttribute("color", "black");
+	    proj_alloted.el().firstChild().setStyleAttribute("color", "black");
 	}
 	
 	private void setReadOnlyField(String label, NumberField nf) {
@@ -64,14 +64,15 @@ public class ProjAllotmentFieldSet extends FieldSet {
 		nf.addListener(Events.Blur, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-	            GWT.log("Blur!", null);
 	            double value = ((NumberField) be.getSource()).getValue().doubleValue();
 	            double orgvl = ((NumberField) be.getSource()).getOriginalValue().doubleValue();
-	            if (orgvl == value) {
-	            	((NumberField) be.getSource()).setStyleAttribute("color", "black");
-	            } else {
-	            	((NumberField) be.getSource()).setStyleAttribute("color", "red");
-	            }
+	            String color = (orgvl == value) ? "black" : "red";
+	            ((NumberField) be.getSource()).el().firstChild().setStyleAttribute("color", color);
+//	            if (orgvl == value) {
+//	            	((NumberField) be.getSource()).setStyleAttribute("color", "black");
+//	            } else {
+//	            	((NumberField) be.getSource()).setStyleAttribute("color", "red");
+//	            }
 			}			
     	});		
 	}

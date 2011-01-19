@@ -230,15 +230,8 @@ protected void initLayout() {
 	sessionTime.addListener(Events.Blur, new Listener<BaseEvent>() {
 		@Override
 		public void handleEvent(BaseEvent be) {
-            //GWT.log("Blur!", null);	
-            //GWT.log("original value: " + sessionTime.getOriginalValue().toString(), null);
-            //GWT.log("value: " + sessionTime.getValue().toString(), null);
-            if (sessionTime.getValue().doubleValue() != sessionTime.getOriginalValue().doubleValue()) {
-		        //GWT.log("Value changed!", null);
-		        sessionTime.setStyleAttribute("color", "red");
-	        } else {
-		        sessionTime.setStyleAttribute("color", "black");
-	        }
+			String color = (sessionTime.getValue().doubleValue() == sessionTime.getOriginalValue().doubleValue()) ? "black" : "red";
+			sessionTime.el().firstChild().setStyleAttribute("color", color);
 		}
 	});	
 	
@@ -395,7 +388,7 @@ private void populateSessTimeAccounting(JSONObject json, String sessName) {
     		double time = session.get("total_time").isNumber().doubleValue();
     		sessionTime.setValue(time); 
     		sessionTime.setOriginalValue(time);
-    		sessionTime.setStyleAttribute("color", "black");
+    		sessionTime.el().firstChild().setStyleAttribute("color", "black");
     		sessionTimeAccounting.setValues(session);
     		
     	}	

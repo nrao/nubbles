@@ -164,15 +164,10 @@ public class TimeAccountingPanel extends ContentPanel {
 		desc.addListener(Events.Blur, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-	            GWT.log("Blur!", null);
 	            String value = ((TextArea) be.getSource()).getValue();
 	            String orgvl = ((TextArea) be.getSource()).getOriginalValue();
-	            GWT.log("comparing: " + value + " vs " + orgvl, null);
-	            if (orgvl.compareTo(value) == 0) {
-	            	((TextArea) be.getSource()).setStyleAttribute("color", "black");
-	            } else {
-	            	((TextArea) be.getSource()).setStyleAttribute("color", "red");
-	            }
+	            String color = (orgvl.compareTo(value) == 0) ? "black" : "red";
+            	((TextArea) be.getSource()).el().firstChild().setStyleAttribute("color", color);
 			}			
     	});		
 	}
@@ -181,31 +176,23 @@ public class TimeAccountingPanel extends ContentPanel {
 		nf.setFieldLabel(label);
 		nf.setReadOnly(true);
 		// TODO: read only fields should just have their background color darkened!
-		//nf.setEnabled(false);
-//		nf.setStyleAttribute("border" , "5px solid line");
-//		nf.setStyleAttribute("background-color", "#FFFFFF");
-//		nf.setStyleAttribute("color", "grey");
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
 		nf.setValidator(new DSSTimeValidator()); 
         // remind the user that they've changed a value		
 		nf.addListener(Events.Blur, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-	            GWT.log("Blur!", null);
 	            double value = ((NumberField) be.getSource()).getValue().doubleValue();
 	            double orgvl = ((NumberField) be.getSource()).getOriginalValue().doubleValue();
-	            if (orgvl == value) {
-	            	((NumberField) be.getSource()).setStyleAttribute("color", "black");
-	            } else {
-	            	((NumberField) be.getSource()).setStyleAttribute("color", "red");
-	            }
+	            String color = (orgvl == value) ? "black" : "red";
+            	((NumberField) be.getSource()).el().firstChild().setStyleAttribute("color", color);
 			}			
     	});
 	}
 	
 	protected void setEditable(NumberField nf) {
+		//TODO: set background color to grey?
 		nf.setReadOnly(false);
-		nf.setStyleAttribute("color", "black");
 	}
 	
 	public void setDescription(String value) {
@@ -215,7 +202,7 @@ public class TimeAccountingPanel extends ContentPanel {
 	    // we will reset the state as well
 		desc.setValue(value);
 		desc.setOriginalValue(value);
-		desc.setStyleAttribute("color", "black");
+		desc.el().firstChild().setStyleAttribute("color", "black");
 	}
 	
 	public String getDescription() {
