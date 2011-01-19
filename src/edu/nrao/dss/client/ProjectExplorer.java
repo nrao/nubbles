@@ -107,7 +107,7 @@ public class ProjectExplorer extends Explorer {
 	}
 	
 	
-	private void getEmailAddresses(String pcodes)
+	private void getEmailAddresses(final String pcodes)
 	{
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		String msg = "Generating email addresses for selected projects";
@@ -163,7 +163,7 @@ public class ProjectExplorer extends Explorer {
 						ob_addr = unpackJSONArray(ob_emails);
 						
 						box.close();
-						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pi_addr, pc_addr, ci_addr, ob_addr);
+						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pcodes, pi_addr, pc_addr, ci_addr, ob_addr);
 						dlg.show();
 					}
 					

@@ -25,11 +25,11 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 
 public class ProjectsEmailDialogBox extends Dialog {
-	public ProjectsEmailDialogBox(String pi, String pc, String ci, String ob)
+	public ProjectsEmailDialogBox(String pcodes, String pi, String pc, String ci, String ob)
 	{
 		super();
 
-		setHeading("Projects Email");
+		setHeading("Email to Projects: " + pcodes);
 		setButtons(Dialog.OKCANCEL);
 		principal_investigators = pi;
 		principal_contacts = pc;
