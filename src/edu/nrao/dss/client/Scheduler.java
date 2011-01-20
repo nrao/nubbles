@@ -1,32 +1,31 @@
 package edu.nrao.dss.client;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class Scheduler extends Viewport implements EntryPoint {
+	
     public void onModuleLoad() {
+    	final MessageBox box = MessageBox.wait("Loading Scheduler Page", "Pre-loading all information for all tabs", "About half a minute ...");
         initLayout();
+        Timer t = new Timer() {
+            @Override
+            public void run() {
+              box.close();
+            }
+        };
+        t.schedule(25000);
     }
 
     private void initLayout() {
@@ -69,7 +68,6 @@ public class Scheduler extends Viewport implements EntryPoint {
         //rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
         rp.add(new Html("<br/><a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/DSSOverview.html\" target=\"_blank\">Weather</a> | <a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/CloudCoverage.html\" target=\"_blank\">Cloud Coverage</a> | <a href=\"mailto:helpdesk-dss@gb.nrao.edu\">Help Desk</a> | <a href=\"#\" onClick=\"window.open('/projects/ical', 'iCalendar', 'scrollbars=yes');return false;\">iCalendar</a>"));
         rp.add(tabPanel);
-        
     }
     
     private TabItem addTab(ContentPanel container, String title, String toolTip) {
