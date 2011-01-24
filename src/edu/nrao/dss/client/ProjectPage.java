@@ -39,7 +39,9 @@ public class ProjectPage extends ContentPanel {
 	private TextField<String> name = new TextField<String>();
 	private TextField<String> pi   = new TextField<String>();
 	private TextField<String> coi  = new TextField<String>();
-	private SimpleComboBox<String> friends = new SimpleComboBox<String>();
+	private TextField<String> friends  = new TextField<String>();
+	
+	//private SimpleComboBox<String> friends = new SimpleComboBox<String>();
 	private TextArea schNotes      = new TextArea();
 	private TextArea obsNotes      = new TextArea();
 	private Button save = new Button();
@@ -51,12 +53,13 @@ public class ProjectPage extends ContentPanel {
     private FormData fd = new FormData(500, 25);
     
     private InvestigatorExplorer investigatorExplorer = new InvestigatorExplorer();
+    private FriendExplorer friendExplorer = new FriendExplorer();
 	
 	public ProjectPage() {
 		initLayout();
 		initListeners();
 		updatePCodeOptions();
-		updateFriendOptions();
+		//updateFriendOptions();
 	}
 	
 	private void initLayout() {
@@ -91,9 +94,9 @@ public class ProjectPage extends ContentPanel {
 		coi.setReadOnly(true);
 		projectForm.add(coi, fd);
 		
-		friends.setTriggerAction(TriggerAction.ALL);
-		friends.setFieldLabel("Friend");
-		friends.setEditable(false);
+		//friends.setTriggerAction(TriggerAction.ALL);
+		friends.setFieldLabel("Friends");
+		friends.setReadOnly(true);
 		projectForm.add(friends, fd);
 		
 		obsNotes.setFieldLabel("Observer Notes");
@@ -115,6 +118,8 @@ public class ProjectPage extends ContentPanel {
     	add(projectForm);
 		add(new HTML("<h2>Project Team</h2>"));
 		add(investigatorExplorer);
+		add(new HTML("<h2>Project Friends</h2>"));
+		add(friendExplorer);
 		
 	}
 
@@ -174,7 +179,26 @@ public class ProjectPage extends ContentPanel {
 				updateProject(projects.getSimpleValue());
 			}
     	});
-		
+    	friendExplorer.saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				updateProject(projects.getSimpleValue());
+			}
+    	});
+    	
+    	friendExplorer.removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+    		    updateProject(projects.getSimpleValue());
+			}
+    	});
+    	
+    	friendExplorer.getAddUser().getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				updateProject(projects.getSimpleValue());
+			}
+    	});		
 	}
 	
 	// if the textarea changes value, mark it in red
@@ -207,6 +231,8 @@ public class ProjectPage extends ContentPanel {
 		});
 		
 		investigatorExplorer.loadProject(project_ids.get(pcode));
+		friendExplorer.loadProject(project_ids.get(pcode));
+		
 		
 	}
 	
@@ -221,8 +247,8 @@ public class ProjectPage extends ContentPanel {
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
 	    //friends.clearState();
-	    friends.clear();
-	    friends.setSimpleValue(proj.get("friend").isString().stringValue());
+//	    friends.clear();
+	    friends.setValue(proj.get("friends").isString().stringValue());
 	    setObserversLink();
 	    
 	    // for writable fields, set them up again so that changes
@@ -281,27 +307,27 @@ public class ProjectPage extends ContentPanel {
 		});
 	}
 	
-	public void updateFriendOptions() {
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
-			    	  put("mode", "friends");
-			        }}
-			      , new JSONCallbackAdapter() {
-			public void onSuccess(JSONObject json) {
-				// get ready to populate the project codes list
-				friends.removeAll();
-				friend_ids.clear();
-				JSONArray fs   = json.get("friends").isArray();
-				JSONArray ids  = json.get("ids").isArray();
-				for (int i = 0; i < fs.size(); ++i){
-					String friend = fs.get(i).toString().replace('"', ' ').trim();
-					int id = (int) ids.get(i).isNumber().doubleValue();
-					friend_ids.put(friend, id);
-					friends.add(friend);
-				}
-			}
-		});
-	}
+//	public void updateFriendOptions() {
+//		JSONRequest.get("/sessions/options"
+//			      , new HashMap<String, Object>() {{
+//			    	  put("mode", "friends");
+//			        }}
+//			      , new JSONCallbackAdapter() {
+//			public void onSuccess(JSONObject json) {
+//				// get ready to populate the project codes list
+//				friends.removeAll();
+//				friend_ids.clear();
+//				JSONArray fs   = json.get("friends").isArray();
+//				JSONArray ids  = json.get("ids").isArray();
+//				for (int i = 0; i < fs.size(); ++i){
+//					String friend = fs.get(i).toString().replace('"', ' ').trim();
+//					int id = (int) ids.get(i).isNumber().doubleValue();
+//					friend_ids.put(friend, id);
+//					friends.add(friend);
+//				}
+//			}
+//		});
+//	}
 
 	// take changes from widgets and send them over to the server to change
 	// this project
@@ -339,11 +365,11 @@ public class ProjectPage extends ContentPanel {
 			v = "";
 		}			
 		keys.put("schd_notes", v);
-		v = friends.getSimpleValue();
+		v = friends.getValue();
 		if (v == null) {
 			v = "";
 		}
-		keys.put("friend", v);
+		keys.put("friends", v);
 				
 		String url = "/projects/" + project_ids.get(pcode);
 		
@@ -363,7 +389,7 @@ public class ProjectPage extends ContentPanel {
 	
 	}
 	
-	public InvestigatorExplorer getInvestigatorExplorer() {
-		return investigatorExplorer;
-	}
+//	public InvestigatorExplorer getInvestigatorExplorer() {
+//		return investigatorExplorer;
+//	}
 }
