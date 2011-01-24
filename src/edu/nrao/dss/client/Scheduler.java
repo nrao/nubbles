@@ -56,7 +56,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         //  Register Observers
         pe.registerObservers((SessionColConfig) se.getPcodeConfig(), ta, pp);
         se.registerObservers((PeriodColConfig) sch.scheduleExplorer.pe.getSessionConfig());
-        ue.registerObservers(pp.getInvestigatorExplorer().getAddInvest());
+        ue.registerObservers(pp.getInvestigatorExplorer().getAddUser());
 
         //tabPanel.setAutoHeight(true);
         tabPanel.setHeight(875);

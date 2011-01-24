@@ -28,16 +28,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 
-public class InvestigatorExplorer extends UserProjectExplorer {
+public class FriendExplorer extends UserProjectExplorer {
 
 //	private Integer project_id;
-//	private InvestigatorForm addInvest;
+//	private UserForm addUser;
 	
-	public InvestigatorExplorer() {
-		super("investigators", "/investigators", getColumnTypes(), getFields());
-		// setup the widget used for adding a new investigator to the project
-		setAddUser(new UserForm("Investigator", "users",
-				new Window(), InvestigatorExplorer.this));
+	public FriendExplorer() {
+		super("friends", "/friends", getColumnTypes(), getFields());
+		// setup the widget used for adding a new friend
+		setAddUser(new UserForm("Friend", "friends",
+				new Window(), FriendExplorer.this));
 		setHeight(250);
 		setWidth(600);
 	}
@@ -46,24 +46,16 @@ public class InvestigatorExplorer extends UserProjectExplorer {
 	protected static List<String> getFields() {
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("name");
-		fields.add("pi");
-		fields.add("contact");
-		fields.add("remote");
-		fields.add("observer");
 		fields.add("project_id");
 		fields.add("user_id");
 		return fields;
 	}
 	
-	// Columns in the Explorer - first params have to match list in getFields
+	// columns in the Explorer
 	protected static ColumnType[] getColumnTypes() {
 		ColumnType[] columnTypes = {
-	    	new ColumnType("name",              "Name",            250,false, DisplayField.class),
-	    	new ColumnType("pi",                "PI",               65,false, Boolean.class),
-	    	new ColumnType("contact",           "Contact",          65,false, Boolean.class),
-	    	new ColumnType("remote",            "Remote",           65,false, Boolean.class),
-	    	new ColumnType("observer",          "Observer(s)",      65,false, Boolean.class)
+	    	new ColumnType("name",                "Name",               250,false, DisplayField.class),
 	    };
 		return columnTypes;
-	}	
+	}
 }

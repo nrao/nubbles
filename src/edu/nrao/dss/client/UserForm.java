@@ -23,22 +23,30 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;  
 
-public class InvestigatorForm extends LayoutContainer {  
+// This is a mutlipurpose widget for choosing different types of users from a drop down
+// selection.  Currently it is used for add Investigators and Friends to their respective
+// Explorers.
+
+public class UserForm extends LayoutContainer {  
 
     private VerticalPanel vp;
     private SimpleComboBox<String> users      = new SimpleComboBox<String>();
     private HashMap<String, Integer> user_ids = new HashMap<String, Integer>();
     private Window window;  
     private FormData formData;
-	private InvestigatorExplorer investigatorExplorer;
+	private UserProjectExplorer userProjectExplorer;
 	private Button submit = new Button("Submit");
-	
-	
-    public InvestigatorForm(Window w, InvestigatorExplorer investExp) {
+	private String type;
+	private String urlType;
+
+	// UserProjectExplorer is the abstract class extended by widgets like the InvestigatorExplorer.
+    public UserForm(String type, String urlType, Window w, UserProjectExplorer userProjExp) {
+    	this.type = type;
+    	this.urlType = urlType;
     	setWindow(w);
     	w.add(this);
     	w.setSize(375, 175);
-    	investigatorExplorer = investExp;
+    	userProjectExplorer = userProjExp;
     }
     
 	@Override  
@@ -54,7 +62,7 @@ public class InvestigatorForm extends LayoutContainer {
    
     private void createForm() {  
       FormPanel form = new FormPanel();  
-      form.setHeading("Add Investigator");  
+      form.setHeading("Add " + type);  
       form.setFrame(true);  
       form.setWidth(350);  
    
@@ -67,9 +75,9 @@ public class InvestigatorForm extends LayoutContainer {
 		@Override
 		public void componentSelected(ButtonEvent ce) {
 			HashMap<String, Object> fields = new HashMap<String, Object>();
-        	fields.put("project_id", investigatorExplorer.getProject_id());
+        	fields.put("project_id", userProjectExplorer.getProject_id());
         	fields.put("user_id", user_ids.get(users.getSimpleValue()));
-        	investigatorExplorer.addRecord(fields);
+        	userProjectExplorer.addRecord(fields);
         	getWindow().hide();
         	
 			
@@ -96,18 +104,19 @@ public class InvestigatorForm extends LayoutContainer {
       vp.add(form);  
     }
     
- // gets all project codes form the server and populates the project combo
+    // gets all the appropriate types of users from the server 
+    // and populates the drop down.
 	public void updateUserOptions() {
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
-			    	  put("mode", "users");
+			    	  put("mode", urlType);
 			        }}
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				// get ready to populate the project codes list
+				// get ready to populate the user list
 				users.removeAll();
 				user_ids.clear();
-				JSONArray invests = json.get("users").isArray();
+				JSONArray invests = json.get(urlType).isArray();
 				JSONArray ids     = json.get("ids").isArray();
 				for (int i = 0; i < invests.size(); ++i){
 					String invest = invests.get(i).toString().replace('"', ' ').trim();
