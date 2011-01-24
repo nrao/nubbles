@@ -37,8 +37,8 @@ public abstract class UserProjectExplorer extends Explorer {
 	private UserForm addUser;
 
 	// NOTE: we are getting the column definitions passed in from the child class
-	public UserProjectExplorer(String rootType, String baseURL, ColumnType[] columnTypes) {
-		super(baseURL, "", new GenericType(rootType, columnTypes));
+	public UserProjectExplorer(String rootType, String baseURL, ColumnType[] columnTypes, List<String> fields) {
+		super(baseURL, "", new GenericType(rootType, fields));
 		setShowColumnsMenu(false);
 		setAutoHeight(true);
 		setCreateFilterToolBar(false);
@@ -63,8 +63,6 @@ public abstract class UserProjectExplorer extends Explorer {
 		}
 	    return new ColumnModel(configs);
 	}	
-
-	protected abstract void showAddWindow();
 	
 	protected void initToolBar() {
 		final PagingToolBar pagingToolBar = new PagingToolBar(50);
@@ -97,7 +95,6 @@ public abstract class UserProjectExplorer extends Explorer {
 		addItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 	        @Override
 	        public void componentSelected(ButtonEvent ce) {
-	        	showAddWindow();
 	        	addUser.getWindow().show();
 				addUser.show();
 	        }

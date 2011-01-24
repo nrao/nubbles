@@ -41,14 +41,12 @@ public class ProjectPage extends ContentPanel {
 	private TextField<String> coi  = new TextField<String>();
 	private TextField<String> friends  = new TextField<String>();
 	
-	//private SimpleComboBox<String> friends = new SimpleComboBox<String>();
 	private TextArea schNotes      = new TextArea();
 	private TextArea obsNotes      = new TextArea();
 	private Button save = new Button();
 	private Button reset = new Button();
 	
 	private HashMap<String, Integer> project_ids = new HashMap<String, Integer>();
-	private HashMap<String, Integer> friend_ids  = new HashMap<String, Integer>();
     private JSONObject projectJson;
     private FormData fd = new FormData(500, 25);
     
@@ -59,7 +57,10 @@ public class ProjectPage extends ContentPanel {
 		initLayout();
 		initListeners();
 		updatePCodeOptions();
-		//updateFriendOptions();
+	}
+	
+	public InvestigatorExplorer getInvestigatorExplorer() {
+		return investigatorExplorer;
 	}
 	
 	private void initLayout() {
@@ -94,7 +95,6 @@ public class ProjectPage extends ContentPanel {
 		coi.setReadOnly(true);
 		projectForm.add(coi, fd);
 		
-		//friends.setTriggerAction(TriggerAction.ALL);
 		friends.setFieldLabel("Friends");
 		friends.setReadOnly(true);
 		projectForm.add(friends, fd);
@@ -173,8 +173,7 @@ public class ProjectPage extends ContentPanel {
 			}
     	});
     	
-    	investigatorExplorer.getAddInvest().getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
+    	investigatorExplorer.getAddUser().getSubmit().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent ce) {
 				updateProject(projects.getSimpleValue());
 			}
@@ -222,8 +221,6 @@ public class ProjectPage extends ContentPanel {
 		HashMap <String, Object> keys = new HashMap<String, Object>();
 		
 		JSONRequest.get(url, keys, new JSONCallbackAdapter() {
-			// this url returns all the time accounting for the whole proj., 
-			// so use it to update the whole UI
 			public void onSuccess(JSONObject json) {
 				projectJson = json;
 				populateProjectPage(json);
@@ -240,14 +237,11 @@ public class ProjectPage extends ContentPanel {
 	protected void populateProjectPage(JSONObject json) {
 		
 		JSONObject proj = json.get("project").isObject();
-		//GWT.log("name: " + proj.get("name").toString(), null);
 		
 		// read-only fields
 	    name.setValue(proj.get("name").isString().stringValue());
 	    pi.setValue(proj.get("pi").isString().stringValue());
 	    coi.setValue(proj.get("co_i").isString().stringValue());
-	    //friends.clearState();
-//	    friends.clear();
 	    friends.setValue(proj.get("friends").isString().stringValue());
 	    setObserversLink();
 	    
@@ -307,28 +301,6 @@ public class ProjectPage extends ContentPanel {
 		});
 	}
 	
-//	public void updateFriendOptions() {
-//		JSONRequest.get("/sessions/options"
-//			      , new HashMap<String, Object>() {{
-//			    	  put("mode", "friends");
-//			        }}
-//			      , new JSONCallbackAdapter() {
-//			public void onSuccess(JSONObject json) {
-//				// get ready to populate the project codes list
-//				friends.removeAll();
-//				friend_ids.clear();
-//				JSONArray fs   = json.get("friends").isArray();
-//				JSONArray ids  = json.get("ids").isArray();
-//				for (int i = 0; i < fs.size(); ++i){
-//					String friend = fs.get(i).toString().replace('"', ' ').trim();
-//					int id = (int) ids.get(i).isNumber().doubleValue();
-//					friend_ids.put(friend, id);
-//					friends.add(friend);
-//				}
-//			}
-//		});
-//	}
-
 	// take changes from widgets and send them over to the server to change
 	// this project
 	private void updateProject(String pcode) {

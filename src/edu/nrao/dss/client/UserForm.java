@@ -23,6 +23,10 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Element;  
 
+// This is a mutlipurpose widget for choosing different types of users from a drop down
+// selection.  Currently it is used for add Investigators and Friends to their respective
+// Explorers.
+
 public class UserForm extends LayoutContainer {  
 
     private VerticalPanel vp;
@@ -33,18 +37,16 @@ public class UserForm extends LayoutContainer {
 	private UserProjectExplorer userProjectExplorer;
 	private Button submit = new Button("Submit");
 	private String type;
-	
-    public UserForm(String type, Window w, UserProjectExplorer userProjExp) {
+	private String urlType;
+
+	// UserProjectExplorer is the abstract class extended by widgets like the InvestigatorExplorer.
+    public UserForm(String type, String urlType, Window w, UserProjectExplorer userProjExp) {
     	this.type = type;
+    	this.urlType = urlType;
     	setWindow(w);
     	w.add(this);
     	w.setSize(375, 175);
     	userProjectExplorer = userProjExp;
-    }
-    
-    // Example: Investigator -> investigators
-    private String getOptionsType() {
-    	return type.toLowerCase() + "s"; 
     }
     
 	@Override  
@@ -102,18 +104,19 @@ public class UserForm extends LayoutContainer {
       vp.add(form);  
     }
     
- // gets all project codes form the server and populates the project combo
+    // gets all the appropriate types of users from the server 
+    // and populates the drop down.
 	public void updateUserOptions() {
 		JSONRequest.get("/sessions/options"
 			      , new HashMap<String, Object>() {{
-			    	  put("mode", getOptionsType());
+			    	  put("mode", urlType);
 			        }}
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				// get ready to populate the project codes list
+				// get ready to populate the user list
 				users.removeAll();
 				user_ids.clear();
-				JSONArray invests = json.get(getOptionsType()).isArray();
+				JSONArray invests = json.get(urlType).isArray();
 				JSONArray ids     = json.get("ids").isArray();
 				for (int i = 0; i < invests.size(); ++i){
 					String invest = invests.get(i).toString().replace('"', ' ').trim();

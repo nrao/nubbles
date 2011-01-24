@@ -30,28 +30,32 @@ import com.google.gwt.json.client.JSONObject;
 
 public class FriendExplorer extends UserProjectExplorer {
 
-	private Integer project_id;
-	private UserForm addUser;
+//	private Integer project_id;
+//	private UserForm addUser;
 	
 	public FriendExplorer() {
-		super("friends", "/friends", getColumnTypes());
-		setAddUser(new UserForm("Friend",
+		super("friends", "/friends", getColumnTypes(), getFields());
+		// setup the widget used for adding a new friend
+		setAddUser(new UserForm("Friend", "friends",
 				new Window(), FriendExplorer.this));
 		setHeight(250);
 		setWidth(600);
 	}
 	
+	// JSON-fields
+	protected static List<String> getFields() {
+		ArrayList<String> fields = new ArrayList<String>();
+		fields.add("name");
+		fields.add("project_id");
+		fields.add("user_id");
+		return fields;
+	}
+	
+	// columns in the Explorer
 	protected static ColumnType[] getColumnTypes() {
 		ColumnType[] columnTypes = {
 	    	new ColumnType("name",                "Name",               250,false, DisplayField.class),
 	    };
 		return columnTypes;
 	}
-
-	@Override
-	protected void showAddWindow() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
