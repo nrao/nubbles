@@ -35,8 +35,11 @@ public class FactorsTab implements FactorsDisplay {
 		panel.setLayout(new FitLayout());
 		
 		ScrollPanel sp = new ScrollPanel(grid);
+		sp.setAlwaysShowScrollBars(true);  //  Use this instead, since Google's shit's all broke (Chrome).
 		panel.add(sp);
-		panel.setScrollMode(Scroll.AUTO);
+		//  No worky in Chrome :(
+		//panel.setScrollMode(Scroll.AUTO);
+		
 		
 		return panel;
 	}
