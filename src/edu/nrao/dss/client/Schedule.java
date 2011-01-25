@@ -192,13 +192,14 @@ public class Schedule extends ContentPanel {
 		fp.add(elwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
 		
 		calendar.add(fp);
+		calendar.setScrollMode(Scroll.NONE);
 		
 		// calendar
 		dayView = new DayView();
 		dayView.setDate(startCalendarDay); //calendar date, not required
 		dayView.setDays((int) numCalendarDays); //number of days displayed at a time, not required
 		dayView.setWidth("100%");
-		dayView.setHeight("97%");
+		dayView.setHeight("96%");
 		dayView.setTitle("Schedule Calendar");
 		CalendarSettings settings = new CalendarSettings();
 		// this fixes offset issue with time labels
