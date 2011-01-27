@@ -177,7 +177,7 @@ public class ProjectExplorer extends Explorer {
 
 	private void initFilters() {
 		advancedFilters.add(initCombo("Project Type", new String[] {"science", "non-science"}, 100));
-		advancedFilters.add(initCombo("Trimester", trimesters, 80));
+		advancedFilters.add(initCombo("Semester", semesters, 80));
 		SimpleComboBox<String> project_complete = initCombo("Proj Status", new String[] {pcomplete, pincomplete, pall}, 110);
 		project_complete.setSimpleValue(pincomplete);
 		advancedFilters.add(project_complete);
@@ -246,7 +246,7 @@ public class ProjectExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
-	    column = new ColumnConfig("semester", "Trimester", 80);
+	    column = new ColumnConfig("semester", "Semester", 80);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 	    
@@ -285,7 +285,7 @@ public class ProjectExplorer extends Explorer {
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);
 
-	    column = new ColumnConfig("sem_time", "Max. Trimester Time(s)", 130);
+	    column = new ColumnConfig("sem_time", "Max. Semester Time(s)", 130);
 	    column.setSortable(false);
 	    column.setEditor(new CellEditor(new TextField<String>()));
 	    configs.add(column);

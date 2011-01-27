@@ -46,7 +46,7 @@ public class SessionExplorer extends Explorer {
 		advancedFilters.add(initCombo("Science Type", ScienceField.values, 100));
 		advancedFilters.add(initCombo("Receiver", receivers, 80));
 		advancedFilters.add(initCombo("Frequency", frequencies, 85));
-		advancedFilters.add(initCombo("Trimester", trimesters, 80));
+		advancedFilters.add(initCombo("Semester", semesters, 80));
 		SimpleComboBox<String> session_complete = initCombo("Sess Status", new String[] {scomplete, sincomplete, sall}, 115);
 		session_complete.setSimpleValue(sincomplete);
 		advancedFilters.add(session_complete);
@@ -156,7 +156,7 @@ public class SessionExplorer extends Explorer {
         new ColumnType("science",          "Science",         75, false, ScienceField.class),
         new ColumnType("PSC_time",         "PSC Time",        60, false, Double.class),
         new ColumnType("total_time",       "Total Time",      60, false, Double.class),
-        new ColumnType("sem_time",         "Trimester Time", 100, false, Double.class),
+        new ColumnType("sem_time",         "Semester Time",  100, false, Double.class),
         new ColumnType("remaining",        "Remaining Time", 100, false, Double.class),
         new ColumnType("grade",            "Grade",           50, false, Double.class),
         new ColumnType("freq",             "Freq",            50, false, Double.class),
