@@ -264,7 +264,7 @@ public class ProjectExplorer extends Explorer {
 	    column.setSortable(false);
 	    configs.add(column);
 
-	    column = new ColumnConfig("friend", "Friend", 150);
+	    column = new ColumnConfig("friends", "Friends", 150);
 	    editor   = new CellEditor(new TextField<String>());
 	    editor.disable();
 	    column.setEditor(editor);
