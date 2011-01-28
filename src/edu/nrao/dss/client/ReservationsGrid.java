@@ -50,7 +50,6 @@ public class ReservationsGrid extends ContentPanel{
 	    
 		add(grid);
 		grid.setBorders(true);
-		load();
 	}
 	
 	private ColumnModel initColumnModel() {

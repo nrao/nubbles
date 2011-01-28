@@ -123,7 +123,10 @@ public class Explorer extends ContentPanel{
 		if (createToolBar) {
 		    initToolBar();
 		}
-		loadData();
+		
+		if (this.loadDataInitially) {
+			loadData();
+		}
 		
 		columnConfForm  = new ColumnConfigForm(this);
 		filterComboForm = new FilterComboForm(this);
@@ -773,6 +776,14 @@ public class Explorer extends ContentPanel{
 		return proxy;
 	}
 	
+	public boolean getLoadDataInitially() {
+		return loadDataInitially;
+	}
+	
+	public void setLoadDataInitially(boolean state) {
+		loadDataInitially = state;
+	}
+	
 	public String getRootURL() {
 		return rootURL;
 	}
@@ -857,6 +868,7 @@ public class Explorer extends ContentPanel{
 	
 	protected String rootURL;
 	protected String initialArgs;
+	protected boolean loadDataInitially = true;
 	
 	protected List<SimpleComboBox<String>> advancedFilters = new ArrayList<SimpleComboBox<String>>();
 	

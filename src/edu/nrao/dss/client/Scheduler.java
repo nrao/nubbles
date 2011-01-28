@@ -45,8 +45,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
         	@Override
         	public void componentSelected(TabPanelEvent tpe){
-        		//sch.scheduleExplorer.pe.loadData();
-        		//sch.updateCalendar();
+        		sch.updateCalendar();
         	}
         });
         tabPanel.add(schTab);

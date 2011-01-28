@@ -3,6 +3,7 @@ package edu.nrao.dss.client;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,7 @@ public class Schedule extends ContentPanel {
 
 	private DayView dayView;
 	
-	Date startCalendarDay = new Date();
+	Date startCalendarDay;
 	Integer numCalendarDays = 3;
 	String timezone = "UTC";
 	String baseUrl = "/periods/" + timezone;
@@ -67,8 +68,12 @@ public class Schedule extends ContentPanel {
 	
 	private ArrayList<String> sess_handles = new ArrayList<String>();
 	
+	@SuppressWarnings("deprecation")
 	public Schedule() {
 			super();
+			Date d = new Date();
+			startCalendarDay = new Date(d.getYear(), d.getMonth(), d.getDate());
+			
 			initLayout();
 			initListeners();
 	}	
@@ -236,7 +241,7 @@ public class Schedule extends ContentPanel {
 		add(controlsContainer, westData);
 		add(calendar, centerData);
 
-		updateCalendar();
+		//updateCalendar();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -287,7 +292,6 @@ public class Schedule extends ContentPanel {
 	}
 	
     public void updateCalendar() {
-    	GWT.log("update calendar");
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
 		String url = baseUrl + "?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
