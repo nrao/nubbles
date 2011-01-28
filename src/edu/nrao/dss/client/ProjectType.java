@@ -13,7 +13,7 @@ public class ProjectType extends ModelType {
 		addField("semester");
 		addField("pi");
 		addField("co_i");
-		addField("friend");
+		addField("friends");
 		addField("name");
 		addField("total_time");
 		addField("PSC_time");

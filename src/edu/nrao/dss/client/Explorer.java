@@ -877,7 +877,7 @@ public class Explorer extends ContentPanel{
 	
 	protected FilterItem filter;
 	
-	protected String[] trimesters = new String[] {
+	protected String[] semesters = new String[] {
 			// TBF - need to generate this list relative to the current date
 			  "12B", "12A"
 			, "11B", "11A"
