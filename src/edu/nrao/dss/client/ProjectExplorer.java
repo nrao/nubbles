@@ -149,6 +149,7 @@ public class ProjectExplorer extends Explorer {
 						String pc_addr;
 						String ci_addr;
 						String ob_addr;
+						String fs_addr;
 
 						JSONArray pi_emails = json.get("PI-Addresses").isArray();
 						pi_addr = unpackJSONArray(pi_emails);
@@ -162,8 +163,12 @@ public class ProjectExplorer extends Explorer {
 						JSONArray ob_emails = json.get("OBS-Addresses").isArray();
 						ob_addr = unpackJSONArray(ob_emails);
 						
+						JSONArray fs_emails = json.get("Friend-Addresses").isArray();
+						fs_addr = unpackJSONArray(fs_emails);
+						
+						
 						box.close();
-						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pcodes, pi_addr, pc_addr, ci_addr, ob_addr);
+						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pcodes, pi_addr, pc_addr, ci_addr, ob_addr, fs_addr);
 						dlg.show();
 					}
 					
