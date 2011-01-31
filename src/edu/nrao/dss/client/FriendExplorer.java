@@ -46,6 +46,7 @@ public class FriendExplorer extends UserProjectExplorer {
 	protected static List<String> getFields() {
 		ArrayList<String> fields = new ArrayList<String>();
 		fields.add("name");
+		fields.add("required");
 		fields.add("project_id");
 		fields.add("user_id");
 		return fields;
@@ -55,6 +56,7 @@ public class FriendExplorer extends UserProjectExplorer {
 	protected static ColumnType[] getColumnTypes() {
 		ColumnType[] columnTypes = {
 	    	new ColumnType("name",                "Name",               250,false, DisplayField.class),
+	    	new ColumnType("required",            "Required",            65,false, Boolean.class)
 	    };
 		return columnTypes;
 	}
