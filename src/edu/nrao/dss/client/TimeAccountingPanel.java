@@ -167,7 +167,7 @@ public class TimeAccountingPanel extends ContentPanel {
 	            String value = ((TextArea) be.getSource()).getValue();
 	            String orgvl = ((TextArea) be.getSource()).getOriginalValue();
 	            String color = (orgvl.compareTo(value) == 0) ? "black" : "red";
-            	((TextArea) be.getSource()).el().firstChild().setStyleAttribute("color", color);
+            	//((TextArea) be.getSource()).el().firstChild().setStyleAttribute("color", color);
 			}			
     	});		
 	}
@@ -202,7 +202,7 @@ public class TimeAccountingPanel extends ContentPanel {
 	    // we will reset the state as well
 		desc.setValue(value);
 		desc.setOriginalValue(value);
-		desc.el().firstChild().setStyleAttribute("color", "black");
+		//desc.el().firstChild().setStyleAttribute("color", "black");
 	}
 	
 	public String getDescription() {

@@ -70,9 +70,9 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		// in the fields state
 	    nf.setValue(value);
 	    nf.setOriginalValue(value);
-	    if (!nf.isReadOnly()) {
-	    	nf.el().firstChild().setStyleAttribute("color", "black");
-	    }	
+//	    if (!nf.isReadOnly()) {
+//	    	nf.el().firstChild().setStyleAttribute("color", "black");
+//	    }	
 	}
 	
 	public void sendUpdates() {
