@@ -85,10 +85,12 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		dt.setToolTip("Set the schedule and display start day");
 	    dt.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	            schedule.startCalendarDay = dt.getValue();
-	            schedule.startVacancyDate = schedule.startCalendarDay;
-	            schedule.vacancyControl.vacancyDate.setValue(schedule.startVacancyDate);
-	            schedule.updateCalendar();
+	    		if ( !schedule.startCalendarDay.equals(dt.getValue())) {
+	    			schedule.startCalendarDay = dt.getValue();
+		            schedule.startVacancyDate = schedule.startCalendarDay;
+		            schedule.vacancyControl.vacancyDate.setValue(schedule.startVacancyDate);
+		            schedule.updateCalendar();
+	    		}
 	    	}
 	    });
 	    right.add(dt);
@@ -115,8 +117,10 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		days.setTriggerAction(TriggerAction.ALL);
 	    days.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		schedule.numCalendarDays = days.getSimpleValue(); 
-	            schedule.updateCalendar();
+	    		if (!schedule.numCalendarDays.equals(days.getSimpleValue())) {
+		    		schedule.numCalendarDays = days.getSimpleValue(); 
+		            schedule.updateCalendar();
+	    		}
 	    	}
 	    });
 		//add(days);
@@ -136,11 +140,13 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		tz.setSimpleValue(schedule.timezone);
 	    tz.addListener(Events.Valid, new Listener<BaseEvent>() {
 	    	public void handleEvent(BaseEvent be) {
-	    		//schedule.timezone = tz.getSimpleValue();
-	    		schedule.setTimezone(tz.getSimpleValue());
-	    		schedule.baseUrl = "/periods/" + schedule.timezone;
-	        	schedule.scheduleExplorer.pe.setRootURL(schedule.baseUrl);
-	            schedule.updateCalendar();
+	    		if (!schedule.timezone.equals(tz.getSimpleValue())) {
+		    		//schedule.timezone = tz.getSimpleValue();
+		    		schedule.setTimezone(tz.getSimpleValue());
+		    		schedule.baseUrl = "/periods/" + schedule.timezone;
+		        	schedule.scheduleExplorer.pe.setRootURL(schedule.baseUrl);
+		            schedule.updateCalendar();
+	    		}
 	    	}
 	    });
 		//add(tz);

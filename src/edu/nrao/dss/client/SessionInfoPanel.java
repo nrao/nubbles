@@ -113,11 +113,11 @@ public class SessionInfoPanel extends ContentPanel {
 	
 	// gets all project codes form the server and populates the project combo
 	public void updateSessionOptions() {
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
-			      , new JSONCallbackAdapter() {
+				, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// get ready to populate the project codes list
 				sessions.removeAll();

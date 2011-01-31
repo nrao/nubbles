@@ -24,6 +24,7 @@ public class PeriodExplorer extends Explorer {
 		setShowColumnsMenu(false);
 		setAutoHeight(true);
 		setCreateFilterToolBar(false);
+		setLoadDataInitially(false);
 		initLayout(initColumnModel(), true);
 		
 	}

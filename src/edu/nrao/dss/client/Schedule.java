@@ -3,6 +3,7 @@ package edu.nrao.dss.client;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.RequestBuilder;
@@ -52,7 +54,7 @@ public class Schedule extends ContentPanel {
 
 	private DayView dayView;
 	
-	Date startCalendarDay = new Date();
+	Date startCalendarDay;
 	Integer numCalendarDays = 3;
 	String timezone = "UTC";
 	String baseUrl = "/periods/" + timezone;
@@ -66,8 +68,12 @@ public class Schedule extends ContentPanel {
 	
 	private ArrayList<String> sess_handles = new ArrayList<String>();
 	
+	@SuppressWarnings("deprecation")
 	public Schedule() {
 			super();
+			Date d = new Date();
+			startCalendarDay = new Date(d.getYear(), d.getMonth(), d.getDate());
+			
 			initLayout();
 			initListeners();
 	}	
@@ -235,7 +241,7 @@ public class Schedule extends ContentPanel {
 		add(controlsContainer, westData);
 		add(calendar, centerData);
 
-		updateCalendar();
+		//updateCalendar();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -285,7 +291,7 @@ public class Schedule extends ContentPanel {
 		nomineePanel.expand();
 	}
 	
-    public void updateCalendar() {	
+    public void updateCalendar() {
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
 		String url = baseUrl + "?startPeriods=" + startStr + "&daysPeriods=" + Integer.toString(numCalendarDays);
@@ -366,11 +372,11 @@ public class Schedule extends ContentPanel {
     // gets all the session handles (sess name (proj name)) and holds on to them
     // for use in lists (e.g. PeriodDialog)
     private void getSessionOptions() {
-        JSONRequest.get("/sessions/options"
-        		     , new HashMap<String, Object>() {{
-        		    	    put("mode", "session_handles");
-        		     }}
-        		   , new JSONCallbackAdapter() {
+    	JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
+			    	  put("mode", "session_handles");
+			        }}
+				, new JSONCallbackAdapter() {
         			   public void onSuccess(JSONObject json) {
     					JSONArray sessions = json.get("session handles").isArray();
     					for (int i = 0; i < sessions.size(); ++i){

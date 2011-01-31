@@ -55,11 +55,11 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		//final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
 		sessions.setForceSelection(true);
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
-			      , new JSONCallbackAdapter() {
+				, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				JSONArray results = json.get("session handles").isArray();
 				JSONArray ids = json.get("ids").isArray();

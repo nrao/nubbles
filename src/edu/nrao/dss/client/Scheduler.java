@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class Scheduler extends Viewport implements EntryPoint {
 	
     public void onModuleLoad() {
-    	final MessageBox box = MessageBox.wait("Loading Scheduler Page", "Pre-loading all information for all tabs", "About half a minute ...");
+    	final MessageBox box = MessageBox.wait("Loading Scheduler Page", "Pre-loading all information for all tabs", "About a quarter of a minute ...");
         initLayout();
         Timer t = new Timer() {
             @Override
@@ -25,7 +25,7 @@ public class Scheduler extends Viewport implements EntryPoint {
               box.close();
             }
         };
-        t.schedule(25000);
+        t.schedule(15000);
     }
 
     private void initLayout() {
@@ -45,7 +45,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         schTab.addListener(Events.Select, new SelectionListener<TabPanelEvent>(){
         	@Override
         	public void componentSelected(TabPanelEvent tpe){
-        		sch.scheduleExplorer.pe.loadData();
+        		sch.updateCalendar();
         	}
         });
         tabPanel.add(schTab);
@@ -65,7 +65,6 @@ public class Scheduler extends Viewport implements EntryPoint {
         factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));
 
         RootPanel rp = RootPanel.get();
-        //rp.add(new Image("http://www.gb.nrao.edu/~dss/images/banner.jpg"));
         rp.add(new Html("<br/><a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/DSSOverview.html\" target=\"_blank\">Weather</a> | <a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/CloudCoverage.html\" target=\"_blank\">Cloud Coverage</a> | <a href=\"mailto:helpdesk-dss@gb.nrao.edu\">Help Desk</a> | <a href=\"#\" onClick=\"window.open('/projects/ical', 'iCalendar', 'scrollbars=yes');return false;\">iCalendar</a>"));
         rp.add(tabPanel);
     }
