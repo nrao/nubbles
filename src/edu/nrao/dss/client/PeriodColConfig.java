@@ -56,11 +56,11 @@ class PeriodColConfig extends ColumnConfig {
 
 	@SuppressWarnings("serial")
 	public void setSessionOptions() {
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
-			      , new JSONCallbackAdapter() {
+				, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
 				ArrayList<String> sess_handles = new ArrayList<String>();
@@ -75,11 +75,11 @@ class PeriodColConfig extends ColumnConfig {
 	
 	@SuppressWarnings("serial")
 	public void updateSessionOptions() {
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
-			      , new JSONCallbackAdapter() {
+				, new JSONCallbackAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(JSONObject json) {

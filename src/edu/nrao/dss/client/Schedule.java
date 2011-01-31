@@ -372,11 +372,11 @@ public class Schedule extends ContentPanel {
     // gets all the session handles (sess name (proj name)) and holds on to them
     // for use in lists (e.g. PeriodDialog)
     private void getSessionOptions() {
-        JSONRequest.get("/sessions/options"
-        		     , new HashMap<String, Object>() {{
-        		    	    put("mode", "session_handles");
-        		     }}
-        		   , new JSONCallbackAdapter() {
+    	JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
+			    	  put("mode", "session_handles");
+			        }}
+				, new JSONCallbackAdapter() {
         			   public void onSuccess(JSONObject json) {
     					JSONArray sessions = json.get("session handles").isArray();
     					for (int i = 0; i < sessions.size(); ++i){

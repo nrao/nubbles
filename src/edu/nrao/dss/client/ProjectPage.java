@@ -278,11 +278,11 @@ public class ProjectPage extends ContentPanel {
 	
 	// gets all project codes form the server and populates the project combo
 	public void updatePCodeOptions() {
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
-			    	  put("mode", "project_codes");
-			        }}
-			      , new JSONCallbackAdapter() {
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
+	    	  put("mode", "project_codes");
+          }}
+		, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// get ready to populate the project codes list
 				projects.removeAll();

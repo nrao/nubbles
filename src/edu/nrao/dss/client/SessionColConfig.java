@@ -65,11 +65,11 @@ class SessionColConfig extends ColumnConfig {
 
 	@SuppressWarnings("serial")
 	public void setPCodeOptions() {
-		JSONRequest.get("/sessions/options"
-				      , new HashMap<String, Object>() {{
-				    	  put("mode", "project_codes");
-				        }}
-				      , new JSONCallbackAdapter() {
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
+	    	  put("mode", "project_codes");
+        }}
+		, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
 				ArrayList<String> proj_codes = new ArrayList<String>();
@@ -82,13 +82,12 @@ class SessionColConfig extends ColumnConfig {
     	});
 	}
 	
-	@SuppressWarnings("serial")
 	public void updatePCodeOptions() {
-		JSONRequest.get("/sessions/options"
-			      , new HashMap<String, Object>() {{
+		JSONRequestCache.get("/sessions/options"
+				, new HashMap<String, Object>() {{
 			    	  put("mode", "project_codes");
 			        }}
-			      , new JSONCallbackAdapter() {
+				, new JSONCallbackAdapter() {
 		//JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override

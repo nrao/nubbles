@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class Scheduler extends Viewport implements EntryPoint {
 	
     public void onModuleLoad() {
-    	final MessageBox box = MessageBox.wait("Loading Scheduler Page", "Pre-loading all information for all tabs", "About half a minute ...");
+    	final MessageBox box = MessageBox.wait("Loading Scheduler Page", "Pre-loading all information for all tabs", "About a quarter of a minute ...");
         initLayout();
         Timer t = new Timer() {
             @Override
@@ -25,7 +25,7 @@ public class Scheduler extends Viewport implements EntryPoint {
               box.close();
             }
         };
-        t.schedule(25000);
+        t.schedule(15000);
     }
 
     private void initLayout() {
