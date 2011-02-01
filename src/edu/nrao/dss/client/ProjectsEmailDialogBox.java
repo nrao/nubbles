@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 
 public class ProjectsEmailDialogBox extends Dialog {
-	public ProjectsEmailDialogBox(String pcodes, String pi, String pc, String ci, String ob, String fs)
+	public ProjectsEmailDialogBox(String pcodes, String pi, String pc, String ci, String ob, String fs, String gb)
 	{
 		super();
 
@@ -36,10 +36,12 @@ public class ProjectsEmailDialogBox extends Dialog {
 		co_investigators = ci;
 		observers = ob;
 		friends = fs;
+		gbtime = gb;
 		pi_selected = true;
 		pc_selected = false;
 		ci_selected = false;
 		fs_selected = false;
+		gb_selected = true;
 	}
 
 	@Override
@@ -120,12 +122,14 @@ public class ProjectsEmailDialogBox extends Dialog {
 		CheckBox ci_cb = new CheckBox("Co-Investigators");
 		CheckBox ob_cb = new CheckBox("Observers");
 		CheckBox fs_cb = new CheckBox("Friends");
+		CheckBox gb_cb = new CheckBox("gbtime");
 		
 	    pi_cb.setValue(pi_selected);
 	    pc_cb.setValue(pc_selected);
 	    ci_cb.setValue(ci_selected);
 	    ob_cb.setValue(ob_selected);
 	    fs_cb.setValue(fs_selected);
+	    gb_cb.setValue(gb_selected);
 
 	    pi_cb.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event)
@@ -170,7 +174,16 @@ public class ProjectsEmailDialogBox extends Dialog {
 	        	fs_selected = cb.getValue();
 	        	update_recipients();
 	        }
-	     });	  
+	     });	 
+	    
+	    gb_cb.addClickHandler(new ClickHandler() {
+	        public void onClick(ClickEvent event)
+	        {
+	        	CheckBox cb = (CheckBox)event.getSource();
+	        	gb_selected = cb.getValue();
+	        	update_recipients();
+	        }
+	     });	    
 	    
 	    field_label.setText(label);
 	    hp.setSpacing(10);
@@ -180,6 +193,7 @@ public class ProjectsEmailDialogBox extends Dialog {
 	    hp.add(ci_cb);
 	    hp.add(ob_cb);
 	    hp.add(fs_cb);
+	    hp.add(gb_cb);
 	    
 		return hp;
 	}
@@ -228,7 +242,8 @@ public class ProjectsEmailDialogBox extends Dialog {
 		add_addresses_to_set(principal_contacts, recipients, pc_selected);
 		add_addresses_to_set(co_investigators, recipients, ci_selected);
 		add_addresses_to_set(observers, recipients, ob_selected);
-		add_addresses_to_set(friends, recipients, fs_selected);		
+		add_addresses_to_set(friends, recipients, fs_selected);	
+		add_addresses_to_set(gbtime, recipients, gb_selected);
 		
 		to = join(recipients, ", ");
 		ta = tareas.get("to:");
@@ -258,12 +273,14 @@ public class ProjectsEmailDialogBox extends Dialog {
 	private boolean ci_selected;
 	private boolean ob_selected;
 	private boolean fs_selected;
+	private boolean gb_selected;
 	
 	private String principal_investigators;
 	private String principal_contacts;
 	private String co_investigators;
 	private String observers;
 	private String friends;
+	private String gbtime;
 	
 	Map<String,TextArea> tareas = new HashMap<String, TextArea>();
 
