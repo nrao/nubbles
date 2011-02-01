@@ -164,10 +164,13 @@ public class TimeAccountingPanel extends ContentPanel {
 		desc.addListener(Events.Blur, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-	            String value = ((TextArea) be.getSource()).getValue();
-	            String orgvl = ((TextArea) be.getSource()).getOriginalValue();
+				TextArea ta = ((TextArea) be.getSource());
+	            String value = ta.getValue();
+	            String orgvl = ta.getOriginalValue();
 	            String color = (orgvl.compareTo(value) == 0) ? "black" : "red";
-            	//((TextArea) be.getSource()).el().firstChild().setStyleAttribute("color", color);
+	            if (ta.isRendered()) {
+            	    ta.el().firstChild().setStyleAttribute("color", color);
+	            }
 			}			
     	});		
 	}
@@ -182,10 +185,13 @@ public class TimeAccountingPanel extends ContentPanel {
 		nf.addListener(Events.Blur, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-	            double value = ((NumberField) be.getSource()).getValue().doubleValue();
-	            double orgvl = ((NumberField) be.getSource()).getOriginalValue().doubleValue();
+				NumberField nf = ((NumberField) be.getSource());
+	            double value = nf.getValue().doubleValue();
+	            double orgvl = nf.getOriginalValue().doubleValue();
 	            String color = (orgvl == value) ? "black" : "red";
-            	((NumberField) be.getSource()).el().firstChild().setStyleAttribute("color", color);
+	            if (nf.isRendered()) {
+	            	nf.el().firstChild().setStyleAttribute("color", color);
+	            }
 			}			
     	});
 	}
@@ -202,7 +208,9 @@ public class TimeAccountingPanel extends ContentPanel {
 	    // we will reset the state as well
 		desc.setValue(value);
 		desc.setOriginalValue(value);
-		//desc.el().firstChild().setStyleAttribute("color", "black");
+		if (desc.isRendered()) {
+		    desc.el().firstChild().setStyleAttribute("color", "black");
+		}
 	}
 	
 	public String getDescription() {
