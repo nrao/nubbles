@@ -16,6 +16,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,7 +27,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 
 public class ProjectsEmailDialogBox extends Dialog {
-	public ProjectsEmailDialogBox(String pcodes, String pi, String pc, String ci, String ob, String fs, String gb)
+	public ProjectsEmailDialogBox(String pcodes, String pi, String pc, String ci, String ob, String fs, String gb, String [][] temps)
 	{
 		super();
 
@@ -42,6 +44,13 @@ public class ProjectsEmailDialogBox extends Dialog {
 		ci_selected = false;
 		fs_selected = false;
 		gb_selected = true;
+
+		// populate the template maps
+		for (int i=0; i < temps.length; i++) {
+			subjects.put(temps[i][0], temps[i][1]);
+			bodies.put(temps[i][0], temps[i][2]);
+		}
+		
 	}
 
 	@Override
@@ -54,10 +63,14 @@ public class ProjectsEmailDialogBox extends Dialog {
 		vp.setSpacing(10);
 		vp.setScrollMode(Style.Scroll.NONE);
 		vp.add(recipient_selector("Recipients:", 850, 40));
+		vp.add(template_selector("Template:", 250, 25));
 		vp.add(email_field("to:", addr, 850, 120));
 		vp.add(email_field("subject:", subj, 850, 30));
 		vp.add(email_field("body:", body, 850, 390));
 		update_recipients();
+		
+
+		
 		
 		add(vp);
 		
@@ -113,6 +126,48 @@ public class ProjectsEmailDialogBox extends Dialog {
 		});
 	}
 
+	private HorizontalPanel template_selector(String label, int width, int height) 
+	{
+		HorizontalPanel hp = new HorizontalPanel();
+		
+		// label
+		Text field_label = new Text();		
+	    field_label.setText(label);
+	    hp.setSpacing(10);
+	    hp.add(field_label);
+	    
+	    // picker
+        final SimpleComboBox<String> templatePicker = new SimpleComboBox<String>();		
+	    templatePicker.setForceSelection(true);
+	    templatePicker.setTriggerAction(TriggerAction.ALL);       
+	    templatePicker.setSize(width, height);
+		for (String  name : subjects.keySet()) {
+			templatePicker.add(name);
+		}
+		templatePicker.setSimpleValue("Blank");  
+		
+	    templatePicker.addListener(Events.Valid, new Listener<BaseEvent>() {
+	    	public void handleEvent(BaseEvent be) {
+	    		// what was picked?
+	    		String name = (String) templatePicker.getSimpleValue();
+	    		
+	    		// set the subject
+	    		TextArea subjectText = tareas.get("subject:");
+	    		subjectText.setValue(subjects.get(name));
+	    		
+	    		// set the body
+	    		TextArea bodyText = tareas.get("body:");
+	    		bodyText.setValue(bodies.get(name));
+	    		
+	    		GWT.log("Set subj & body w/ template: " + name);
+	    	}
+	    });		
+	    
+		hp.add(templatePicker);
+		
+		return hp;
+	}
+	
 	private HorizontalPanel recipient_selector(String label, int width, int height)
 	{
 		HorizontalPanel hp = new HorizontalPanel();
@@ -131,6 +186,7 @@ public class ProjectsEmailDialogBox extends Dialog {
 	    fs_cb.setValue(fs_selected);
 	    gb_cb.setValue(gb_selected);
 
+	    // TODO: we should be able to write a method for the next couple callbacks
 	    pi_cb.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event)
 	        {
@@ -281,6 +337,9 @@ public class ProjectsEmailDialogBox extends Dialog {
 	private String observers;
 	private String friends;
 	private String gbtime;
+	
+	private Map<String, String> subjects = new HashMap<String, String>();
+	private Map<String, String> bodies   = new HashMap<String, String>();
 	
 	Map<String,TextArea> tareas = new HashMap<String, TextArea>();
 

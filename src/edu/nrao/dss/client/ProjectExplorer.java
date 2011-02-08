@@ -151,6 +151,7 @@ public class ProjectExplorer extends Explorer {
 						String ob_addr;
 						String fs_addr;
 						String gb_addr;
+						//String[][] templates = new String[][] {{"First", "First", "first one"}, {"Blank", "", ""}};
 
 						JSONArray pi_emails = json.get("PI-Addresses").isArray();
 						pi_addr = unpackJSONArray(pi_emails);
@@ -169,8 +170,22 @@ public class ProjectExplorer extends Explorer {
 						
 						gb_addr = "gbtime@nrao.edu";
 						
+						// get the templates
+						JSONArray temps = json.get("Templates").isArray();
+						String [][] templates = new String[temps.size()][3];
+						for (int i = 0; i < temps.size(); i++) {
+							JSONObject template = temps.get(i).isObject();
+							String name = template.get("name").isString().stringValue();
+							String subj = template.get("subject").isString().stringValue();
+							String body = template.get("body").isString().stringValue();
+							GWT.log(name + " : " + subj + " : " + body);
+							templates[i][0] = name;
+							templates[i][1] = subj;
+							templates[i][2] = body;
+						}
+						
 						box.close();
-						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pcodes, pi_addr, pc_addr, ci_addr, ob_addr, fs_addr, gb_addr);
+						ProjectsEmailDialogBox dlg = new ProjectsEmailDialogBox(pcodes, pi_addr, pc_addr, ci_addr, ob_addr, fs_addr, gb_addr, templates);
 						dlg.show();
 					}
 					
