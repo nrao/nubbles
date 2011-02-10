@@ -113,7 +113,7 @@ class SessionColConfig extends ColumnConfig {
 
 		setAlignment(HorizontalAlignment.RIGHT);
 		setEditor(new CellEditor(field));
-		// TBF Remove this code???
+		// TODO Remove this code???
 //		{
 //			@Override
 //			public Object preProcessValue(Object value) {
@@ -312,7 +312,7 @@ class SessionColConfig extends ColumnConfig {
 		});
 	}
 
-	// TBF allows entries outside list of options
+	// TODO allows entries outside list of options
 	private SimpleComboBox<String> createSimpleComboBox(String[] options) {
 		SimpleComboBox<String> typeCombo = new SimpleComboBox<String>();
 		typeCombo.setTriggerAction(TriggerAction.ALL);

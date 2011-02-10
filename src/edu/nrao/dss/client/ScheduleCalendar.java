@@ -18,7 +18,7 @@ public class ScheduleCalendar extends ContentPanel {
 	
 	public ScheduleCalendar(Date start, int days) {
 		super();
-		// TBF: use this date range to filter the explorer
+		// TODO: use this date range to filter the explorer
 		initLayout(start, days);
 	}	
 	
