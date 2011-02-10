@@ -58,7 +58,7 @@ public WindowedPeriodExplorer(int periodGroupId, String sessionHandle) {
 	
 	@Override
 	protected String getFilterUrl(int id) {
-		return getRootURL() + "?filterWnd=" + Integer.toString(id);
+		return getRootURL() + "?filterWnd=" + Integer.toString(id) + "&scores=false";
 	}
 	
 	@Override

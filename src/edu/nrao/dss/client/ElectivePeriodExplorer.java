@@ -53,7 +53,7 @@ public class ElectivePeriodExplorer extends GroupPeriodExplorer {
 	
 	@Override
 	protected String getFilterUrl(int id) {
-		return getRootURL() + "?filterElc=" + Integer.toString(id);
+		return getRootURL() + "?filterElc=" + Integer.toString(id) + "&scores=false";
 	}
 	
 	@Override
