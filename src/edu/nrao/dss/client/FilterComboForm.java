@@ -95,7 +95,7 @@ public class FilterComboForm extends LayoutContainer {
 							explorer.filterComboIds.add(new_id);
 							int nilen = fields.get("name").toString().length();
 							List<Boolean> status = new ArrayList<Boolean>();
-							// TBF:  Need our own extend Menu class
+							// TODO:  Need our own extend Menu class
 							for (FilterComboMenuItem item : menu.getFilterItems()) {
 								int ilen = item.title_len;
 								status.add(nilen > ilen);

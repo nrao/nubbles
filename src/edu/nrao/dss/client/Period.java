@@ -175,7 +175,7 @@ public class Period {
 	}
 
 	public String getStartString() {
-		return start.toString(); // TBF
+		return start.toString(); // TODO
 	}
 
 	public int getDuration() {

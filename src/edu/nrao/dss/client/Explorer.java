@@ -664,7 +664,7 @@ public class Explorer extends ContentPanel{
 		filterMenu.add(removeCombos);
 		filterMenu.add(new SeparatorMenuItem());
 		
-		//  TBF:  This is only used below to init the MenuItem outside the namespace
+		//  TODO:  This is only used below to init the MenuItem outside the namespace
 		final Explorer e = this;
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("explorer", rootURL);
@@ -890,7 +890,7 @@ public class Explorer extends ContentPanel{
 	protected FilterItem filter;
 	
 	protected String[] semesters = new String[] {
-			// TBF - need to generate this list relative to the current date
+			// TODO - need to generate this list relative to the current date
 			  "12B", "12A"
 			, "11B", "11A"
 		    , "10C", "10B", "10A"
