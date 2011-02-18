@@ -23,7 +23,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 
 
 class EmailDialogBox extends Dialog {
-	public EmailDialogBox(String addrs[], String subj[], String bod[]) {
+	public EmailDialogBox(String addrs[], String subj[], String bod[], int obsPeriodIds[], int changedPeriodIds[]) {
 		super();
 
 		// Basic Dlg settings
@@ -40,6 +40,9 @@ class EmailDialogBox extends Dialog {
 		{
 			tareas.put(tab_title[i], new HashMap<String, TextArea>());
 		}
+		
+		this.changedPeriodIds = changedPeriodIds;
+		this.obsPeriodIds = obsPeriodIds;
 	}
 
 	
@@ -94,6 +97,21 @@ class EmailDialogBox extends Dialog {
 		    		keys.put(body_key[i], body_field);
 		    		keys.put(address_key[i], to_field);
 	    		}
+	    		
+	    		// Hack Hack Hack: we need to send over the list of changed period ids.
+	    		// but we don't support arrays right now, so, make it into a string!
+	    		String pids = "";
+	    		for (int i = 0; i < obsPeriodIds.length; i++) {
+	    			pids += i == 0 ? "" : ",";
+	    			pids += Integer.toString(obsPeriodIds[i]);
+	    		}
+	    		keys.put("obs_periods", pids);
+	    		pids = "";
+	    		for (int i = 0; i < changedPeriodIds.length; i++) {
+	    			pids += i == 0 ? "" : ",";
+	    			pids += Integer.toString(changedPeriodIds[i]);
+	    		}
+	    		keys.put("changed_periods", pids);
 	    		
 	    		final MessageBox box = MessageBox.wait("Sending Email", "Sending scheduling e-mails to observers and staff.", "Be Patient ...");
 				JSONRequest.post("/schedule/email", keys,
@@ -161,12 +179,14 @@ class EmailDialogBox extends Dialog {
 	String address[] = new String[3];
 	String subject[] = new String[3];
 	String body[] = new String[3];
+	int changedPeriodIds[];
+	int obsPeriodIds[];
 	
-	String tab_title[] = {"observer", "deleted", "staff"};
-	String tab_tool_tip[] = {"email to scheduled observers", "email to observers of deleted periods", "email to staff"};
-	String address_key[] = {"observer_address", "deleted_address", "staff_address"};
-	String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
-	String body_key[] = {"observer_body", "deleted_body", "staff_body"};
+	String tab_title[] = {"observer", "changed", "staff"};
+	String tab_tool_tip[] = {"email to scheduled observers", "email to observers of changed periods", "email to staff"};
+	String address_key[] = {"observer_address", "changed_address", "staff_address"};
+	String subject_key[] = {"observer_subject", "changed_subject", "staff_subject"};
+	String body_key[] = {"observer_body", "changed_body", "staff_body"};
 
 	Map<String,Map<String, TextArea>> tareas = new HashMap<String, Map<String, TextArea>>();
 

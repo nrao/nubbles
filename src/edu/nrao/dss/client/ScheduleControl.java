@@ -250,9 +250,9 @@ public class ScheduleControl extends FormPanel {
 								String addr[] = new String[3];
 								String subject[] = new String[3];
 								String body[] = new String[3];
-								String address_key[] = {"observer_address", "deleted_address", "staff_address"};
-								String subject_key[] = {"observer_subject", "deleted_subject", "staff_subject"};
-								String body_key[] = {"observer_body", "deleted_body", "staff_body"};
+								String address_key[] = {"observer_address", "changed_address", "staff_address"};
+								String subject_key[] = {"observer_subject", "changed_subject", "staff_subject"};
+								String body_key[] = {"observer_body", "changed_body", "staff_body"};
 								                   
 								for (int j = 0; j < 3; ++j)
 								{
@@ -262,15 +262,32 @@ public class ScheduleControl extends FormPanel {
 									
 									for (int i = 0; i < emails.size(); ++i)
 									{
-										addr[j] += emails.get(i).isString().stringValue() + ", ";
+										addr[j] += i == 0 ? "" : ",";
+										addr[j] += emails.get(i).isString().stringValue(); // + ", ";
+										
 									}
 	
-									addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
+									//addr[j] = addr[j].substring(0, addr[j].length() - 2); // Get rid of last comma.
 									subject[j] = json.get(subject_key[j]).isString().stringValue();
 									body[j] = json.get(body_key[j]).isString().stringValue();
 								}
 								
-								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body);
+								// get the periods in the scheduling section
+								JSONArray obs_periods = json.get("obs_periods").isArray();
+								int obsPeriodIds[] = new int[obs_periods.size()];
+								for (int k = 0; k < obs_periods.size(); k++) {
+									obsPeriodIds[k] = (int) obs_periods.get(k).isNumber().doubleValue();
+									GWT.log(Integer.toString(obsPeriodIds[k]));
+								}								
+								// now get the changed periods
+								JSONArray changed_periods = json.get("changed_periods").isArray();
+								int chgPeriodIds[] = new int[changed_periods.size()];
+								for (int k = 0; k < changed_periods.size(); k++) {
+									chgPeriodIds[k] = (int) changed_periods.get(k).isNumber().doubleValue();
+									GWT.log(Integer.toString(chgPeriodIds[k]));
+								}
+								
+								EmailDialogBox dlg = new EmailDialogBox(addr, subject, body, obsPeriodIds, chgPeriodIds);
 								dlg.show();
 								box.close();
 							}
