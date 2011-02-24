@@ -350,7 +350,7 @@ public class Schedule extends ContentPanel {
 			    	type = p.isDefaultPeriod() ? "default period" : "chosen period";
 			    }
 			    String desc = p.getSession() + windowInfo;
-			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getEnd(), type, session_type, p.getState());
+			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), type, session_type, p.getState());
 		        dayView.addAppointments(event.getAppointments());
 		        
 		}

@@ -23,15 +23,26 @@ public class Period {
 		// interpret the fields that are part of the period
 		int id = (int) json.get("id").isNumber().doubleValue();
 		String handle = (String) json.get("handle").isString().stringValue();
+		
+		// start timestamp
 		String date = json.get("date").isString().stringValue();
 		String time = json.get("time").isString().stringValue();
 		Date st = DATE_FORMAT.parse(date + " " + time + ":00");
 		Date day = DAY_FORMAT.parse(date);
-
+		
+		// end timestamp
+		String end_date = json.get("end_date").isString().stringValue();
+		String end_time = json.get("end_time").isString().stringValue();
+		Date end = DATE_FORMAT.parse(end_date + " " + end_time + ":00");
+		Date end_day = DAY_FORMAT.parse(end_date);
+		
 		int dur = (int) hours2minutes(json.get("duration").isNumber()
 				.doubleValue());
 
-		Period period = new Period(id, handle, st, dur, day, time);
+		// instantiate a new period
+		Period period = new Period(id, handle, st, end, dur, day, time, end_day, end_time);
+		
+		// set the rest of it's atributes
 		period.setSession(json.get("session_name").isString().stringValue());
 		period.setMocAck(json.get("moc_ack").isBoolean().booleanValue());
 		period.setBackup(json.get("backup").isBoolean().booleanValue());
@@ -105,14 +116,18 @@ public class Period {
 		return hours * 60.0;
 	}
 
-	public Period(int id, String handle, Date start, int dur, Date start_day,
-			String start_time) {
+	public Period(int id, String handle, Date start, Date end, int dur, Date start_day,
+			String start_time, Date end_day, String end_time) {
 		this.id = id;
 		this.handle = handle;
 		this.start = start;
+		this.end = end;
 		this.duration = dur;
 		this.start_day = start_day;
 		this.start_time = start_time;
+		this.end_day = end_day;
+		this.end_time = end_time;
+		
 	}
 
 	private void setWindowedInfo(JSONObject json) {
@@ -142,20 +157,13 @@ public class Period {
 	}
 
 	public Date getEnd() {
-		// WTF: time arithmetic should not be this hard!
-		// WTF: can't use GregorianCalendar in GWT!
-		// GregorianCalendar cal = new GregorianCalendar(1872,
-		// GregorianCalendar.OCTOBER, 2); //GregorianCalendar.getInstance();
-		// cal.setTime(start);
-		// int durMins = (int) ((int) duration * 60.0);
-		// cal.add(GregorianCalendar.MINUTE, durMins);
-		// return cal.getTime();
-		long startSecs = start.getTime();
-		// add the duration (in minutes) to this time in milli-seconds
-		long endSecs = (long) (startSecs + (duration * 60.0 * 1000.0));
-		return new Date(endSecs);
+        return end;
 	}
 
+    public Date getEndDay() {
+    	return end_day;
+    }
+    
 	public String getEndTime() {
 		return TIME_FORMAT.format(getEnd());
 	}
@@ -175,7 +183,7 @@ public class Period {
 	}
 
 	public String getStartString() {
-		return start.toString(); // TODO
+		return start.toString(); // TBF
 	}
 
 	public int getDuration() {
@@ -431,10 +439,13 @@ public class Period {
 	private String handle;
 	private String session;
 	private Date start;
+	private Date end;	
 	private int duration; // minutes
 	private boolean moc_ack;
 	private Date start_day;
 	private String start_time;
+	private Date end_day;
+	private String end_time;	
 	private double hscore;
 	private double cscore;
 	private boolean backup;

@@ -171,7 +171,7 @@ public class Gwt_cal implements EntryPoint {
         Date dt = new Date();
         Date start = dt;
         Date end = new Date((long) (dt.getTime() + (60.0 * 60.0 * 1000.0) - (60.0 * 1000.0)));
-        Event event = new Event(0, "Event", "desc", start, end, "test", "test", "test");
+        Event event = new Event(0, "Event", "desc", start, start, end, end, "test", "test", "test");
         
         dayView.addAppointments(event.getAppointments());
 //        appt.setStart(start);
@@ -190,12 +190,12 @@ public class Gwt_cal implements EntryPoint {
 //        appt2.setDescription("should be a day long");
 //        appt2.addStyleName("gwt-appointment-blue");
 //        dayView.addAppointment(appt2);
-        Event event2 = new Event(0, "Event2", "desc2", start, end2, "test", "test", "test");
+        Event event2 = new Event(0, "Event2", "desc2", start, start,  end2, end2, "test", "test", "test");
         
         dayView.addAppointments(event2.getAppointments());
 
         Date end3 = new Date((long) (dt.getTime() + (2.0 * 24.0 * 60.0 * 60.0 * 1000.0)));
-        Event event3 = new Event(0, "Event3", "desc3", start, end3, "test", "test", "test");
+        Event event3 = new Event(0, "Event3", "desc3", start, start, end3, end3, "test", "test", "test");
         
         dayView.addAppointments(event3.getAppointments());
 
