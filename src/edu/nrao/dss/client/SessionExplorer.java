@@ -35,9 +35,10 @@ public class SessionExplorer extends Explorer {
 			"> 2 GHz", "> 5 GHz", "> 10 GHz", "> 20 GHz", "> 30 GHz", "> 40 GHz",
 			"<= 2 GHz", "<= 5 GHz", "<= 10 GHz", "<= 20 GHz", "<= 30 GHz", "<= 40 GHz"
 		};
+		// TODO: get these from the server?
 		String[] receivers = new String[] {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
-		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol", "KFPA"	
+		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol", "KFPA", "W"	
 		};
 		SimpleComboBox<String> project_complete = initCombo("Proj Status", new String[] {pcomplete, pincomplete, pall}, 110);
 		project_complete.setSimpleValue(pall);
