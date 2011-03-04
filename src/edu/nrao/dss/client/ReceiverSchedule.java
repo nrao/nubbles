@@ -83,7 +83,7 @@ public class ReceiverSchedule extends ContentPanel {
 	
 	// converts the JSON representation of the rx calendar (and related info) into a Java representation
 	// and passes this on to widgets for display
-	private void jsonToRcvrSchedule(JSONObject json) {
+	public void jsonToRcvrSchedule(JSONObject json) {
 		
 		// construct the header for the rcvr schedule calendar
 		JSONArray rcvrs = json.get("receivers").isArray();
