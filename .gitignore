@@ -1,5 +1,3 @@
-syntax: glob
-
 *~
 *.class
 *.hi
@@ -11,6 +9,7 @@ syntax: glob
 .classpath
 .project
 .metadata
+.settings
 
 *.launch
 
