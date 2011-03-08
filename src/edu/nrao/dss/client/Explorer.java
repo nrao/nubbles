@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -115,7 +117,7 @@ public class Explorer extends ContentPanel{
 		GridSelectionModel<BaseModelData> selectionModel = new GridSelectionModel<BaseModelData>();
 		selectionModel.setSelectionMode(SelectionMode.MULTI);
 		grid.setSelectionModel(selectionModel);
-		//addPlugins();
+		addPlugins();
 		add(grid);
 		grid.setBorders(true);
 
@@ -130,11 +132,11 @@ public class Explorer extends ContentPanel{
 		
 		columnConfForm  = new ColumnConfigForm(this);
 		filterComboForm = new FilterComboForm(this);
-		
 	}
 	
 	protected void addPlugins() {
 		for (CheckColumnConfig cb : checkBoxes) {
+			cb.setFiresEvents(true);
 			grid.addPlugin(cb);
 		}
 	}
@@ -143,26 +145,47 @@ public class Explorer extends ContentPanel{
 		loader.load(0, getPageSize());
 	}
 	
-	private void initListeners() {
+	private void add2UndoStack(Record record, String property, Object value) {
+		ArrayList<Object> data = new ArrayList<Object>();
+		data.add(property);
+		data.add(value);
+
+		// Update undo stacks
+		undoStackRecords.push(record);
+		undoStackData.push(data);
 		
+		if(!undoItem.isEnabled()) {
+			undoItem.enable();
+		}
+	}
+	
+	private void initListeners() {
+		grid.addListener(Events.CellMouseUp, new Listener<GridEvent<BaseModelData>>() {
+
+			@Override
+			public void handleEvent(GridEvent<BaseModelData> ge) {
+				BaseModelData m = ge.getModel();
+				Record record   = store.getRecord(m);  
+				String property = grid.getColumnModel().getColumnId(ge.getColIndex());
+				try {
+				//  We only use this event to handle checkboxes (bool)
+				//  all other fields are handled below.
+				Boolean value   = m.get(property);
+			    add2UndoStack(record, property, !value);
+			    } catch (ClassCastException e) {
+					
+				}
+			}
+		});
 		grid.addListener(Events.BeforeEdit, new Listener<GridEvent<BaseModelData>>() {
 
 			@Override
 			public void handleEvent(GridEvent<BaseModelData> ge) {
-				Record record = ge.getRecord();
-				Object value = record.get(ge.getProperty());
+				Record record   = ge.getRecord();
+				String property = ge.getProperty();
+				Object value    = record.get(property);
+				add2UndoStack(record, property, value);
 				
-				ArrayList<Object> data = new ArrayList<Object>();
-				data.add(ge.getProperty());
-				data.add(value);
-
-				// Update undo stacks
-				undoStackRecords.push(record);
-				undoStackData.push(data);
-				
-				if(!undoItem.isEnabled()) {
-					undoItem.enable();
-				}
 			}
 			
 		});

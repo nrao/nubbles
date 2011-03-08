@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.WidgetListener;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -323,6 +324,7 @@ public class ProjectExplorer extends Explorer {
 	    
 	    CheckColumnConfig checkColumn = new CheckColumnConfig("thesis", "Thesis?", 55);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
 
