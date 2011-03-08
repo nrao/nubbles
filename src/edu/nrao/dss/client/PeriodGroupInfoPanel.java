@@ -40,6 +40,8 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
     protected String groupPeriodType;
     protected String url;
     
+    protected String copyUrl;
+    
 	// common attributes to Electives and Windows
 	protected String header;
 	protected String handle;
@@ -48,8 +50,12 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
     
 	protected Button save;
 	protected Button cancel;
+	protected Button copy;
 	protected Button delete;
 	
+	protected NumCopyPeriodGroupDialog numCopyDialog;
+    protected Button copyApproval;
+    
 	protected Dialog removeDialog;
 	protected Button removeApproval;
 	
@@ -62,11 +68,18 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 	public PeriodGroupInfoPanel(JSONObject winJson, String url, String groupPeriodType) {
 		this.url = url;
 		this.groupPeriodType = groupPeriodType;
+        url2copyUrl(url);		
 		translateJson(winJson);
 		initLayout();
 		initListeners();
 	}
 	
+	// url is of the form "objects", and the copy url is of the form "object/id/object_copy"
+	private void url2copyUrl(String url) {
+        int size = url.length();
+		String obj = url.toLowerCase().substring(0, size - 1);
+		copyUrl = obj + "/id/" + obj + "_copy";
+	}
 	
 	protected void updateHeading() {
 		setHeading(header);
@@ -102,15 +115,19 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 
 	    save = new Button();
 	    save.setText("Save");
-	    buttonFp.add(save, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
+	    buttonFp.add(save, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
 	    
 	    cancel = new Button();
 	    cancel.setText("Cancel");
-	    buttonFp.add(cancel, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
+	    buttonFp.add(cancel, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
+	    
+        copy = new Button();
+	    copy.setText("Copy");
+	    buttonFp.add(copy, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
 	    
         delete = new Button();
 	    delete.setText("Delete");
-	    buttonFp.add(delete, new RowData(0.33, 1, new Margins(0, 4, 0, 4)));
+	    buttonFp.add(delete, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
 	    
 	    fp.add(buttonFp);
 	    
@@ -121,6 +138,14 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 		removeDialog.setHideOnButtonClick(true);
 		removeApproval = removeDialog.getButtonById(Dialog.YES);
 		removeDialog.hide();
+		
+		numCopyDialog = new NumCopyPeriodGroupDialog();
+		numCopyDialog.setButtons(Dialog.OKCANCEL);
+		numCopyDialog.setHeading("Number of Copies");
+		numCopyDialog.addText("Enter number of copies to make.");
+		numCopyDialog.setHideOnButtonClick(true);
+		copyApproval = numCopyDialog.getButtonById(Dialog.OK);
+		numCopyDialog.hide();
 		
 	    // Here we init the special period explorer for either Electives or Windows
 		initGroupPeriodExplorer(fp);
@@ -146,7 +171,19 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 			public void handleEvent(BaseEvent be) {
 	    		loadPeriodGroup();
 	    	}
+	    });
+	    copy.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	    	@SuppressWarnings("deprecation")
+			public void handleEvent(BaseEvent be) {
+	    		numCopyDialog.show();
+	    	}
 	    });	
+		copyApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		    @Override
+		    public void componentSelected(ButtonEvent ce) {
+			    copyPeriodGroup();
+		    }
+	    });	    
 	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	    	@SuppressWarnings("deprecation")
 			public void handleEvent(BaseEvent be) {
@@ -159,6 +196,21 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 			    deletePeriodGroup();
 		    }
 	    });	    
+	}
+	
+	private void copyPeriodGroup() {
+		HashMap<String, Object> keys = new HashMap<String, Object>();
+		keys.put("number", numCopyDialog.getNumCopies());
+		// url: /objects; copy url: /object/id/copy
+		String copyUrl = url.toLowerCase().substring(0, url.length() - 1);
+		copyUrl = "/" + copyUrl + "/" + Integer.toString(id) + "/copy";
+	    JSONRequest.post(copyUrl, keys, new JSONCallbackAdapter() {
+	            @Override
+	            public void onSuccess(JSONObject json) {
+	            	// reload all the electives or windows again!
+	        		((PeriodGroupsInfoPanel) getParent()).getPeriodGroups();
+	            }
+	    });			    	
 	}
 	
 	private void deletePeriodGroup() {
