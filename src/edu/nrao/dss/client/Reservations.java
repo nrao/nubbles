@@ -10,6 +10,9 @@ import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.http.client.RequestBuilder;
 
+import edu.nrao.dss.client.util.DynamicHttpProxy;
+import edu.nrao.dss.client.widget.ReservationsGrid;
+
 public class Reservations extends ContentPanel {
 
 	public ReservationsGrid res;

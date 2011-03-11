@@ -35,10 +35,17 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.util.DynamicHttpProxy;
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.JSONRequestCache;
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
 import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
 import edu.nrao.dss.client.util.dssgwtcal.DayView;
 import edu.nrao.dss.client.util.dssgwtcal.Event;
+import edu.nrao.dss.client.widget.FactorsDlg;
+import edu.nrao.dss.client.widget.NomineePanel;
+import edu.nrao.dss.client.widget.PeriodSummaryDlg;
 
 // This class is the new version of the Beta Test's Scheduling Page.
 

@@ -20,6 +20,9 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+
 public class WindowCalendar extends ContentPanel {
 	
 	private WindowCalTable calendar = new WindowCalTable();

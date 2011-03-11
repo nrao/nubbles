@@ -14,6 +14,12 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import edu.nrao.dss.client.widget.explorers.PeriodColConfig;
+import edu.nrao.dss.client.widget.explorers.ProjectExplorer;
+import edu.nrao.dss.client.widget.explorers.SessionColConfig;
+import edu.nrao.dss.client.widget.explorers.SessionExplorer;
+import edu.nrao.dss.client.widget.explorers.UserExplorer;
+
 public class Scheduler extends Viewport implements EntryPoint {
 	
     public void onModuleLoad() {

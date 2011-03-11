@@ -32,7 +32,11 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.TimeUtils;
+import edu.nrao.dss.client.widget.EmailDialogBox;
+import edu.nrao.dss.client.widget.FactorsDlg;
 
 public class ScheduleControl extends FormPanel {
 	
@@ -337,7 +341,7 @@ public class ScheduleControl extends FormPanel {
 		factorsButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				BaseModelData selectedItem = schedule.scheduleExplorer.pe.grid
+				BaseModelData selectedItem = schedule.scheduleExplorer.pe.getGrid()
 				        .getSelectionModel().getSelectedItem();
 				if (selectedItem != null) {
 					HashMap<String, Object> periodValues =

@@ -24,6 +24,12 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.HTML;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.JSONRequestCache;
+import edu.nrao.dss.client.widget.ElectivesInfoPanel;
+import edu.nrao.dss.client.widget.WindowsInfoPanel;
+
 public class SessionPage extends ContentPanel {
 	
     private final WindowsInfoPanel  wp = new WindowsInfoPanel("windows", "Window");

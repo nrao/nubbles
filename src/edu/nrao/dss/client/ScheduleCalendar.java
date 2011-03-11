@@ -11,6 +11,8 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
+import edu.nrao.dss.client.widget.explorers.PeriodExplorer;
+
 
 public class ScheduleCalendar extends ContentPanel { 
 
@@ -39,7 +41,7 @@ public class ScheduleCalendar extends ContentPanel {
 	}
 	
 	public void addRecord(HashMap<String, Object> fields) {
-		pe.addRecord(fields);
+		pe.addRecordInterface(fields);
 	}
 	
 	public void setDefaultDate(Date date) {

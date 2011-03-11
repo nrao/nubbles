@@ -30,6 +30,12 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.JSONRequestCache;
+import edu.nrao.dss.client.widget.explorers.FriendExplorer;
+import edu.nrao.dss.client.widget.explorers.InvestigatorExplorer;
+
 
 public class ProjectPage extends ContentPanel {
 
@@ -159,14 +165,14 @@ public class ProjectPage extends ContentPanel {
     		}
     	});
     	
-    	investigatorExplorer.saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    	investigatorExplorer.getSaveItem().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				updateProject(projects.getSimpleValue());
 			}
     	});
     	
-    	investigatorExplorer.removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    	investigatorExplorer.getRemoveApproval().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
     		    updateProject(projects.getSimpleValue());
@@ -178,14 +184,14 @@ public class ProjectPage extends ContentPanel {
 				updateProject(projects.getSimpleValue());
 			}
     	});
-    	friendExplorer.saveItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    	friendExplorer.getSaveItem().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				updateProject(projects.getSimpleValue());
 			}
     	});
     	
-    	friendExplorer.removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    	friendExplorer.getRemoveApproval().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
     		    updateProject(projects.getSimpleValue());
