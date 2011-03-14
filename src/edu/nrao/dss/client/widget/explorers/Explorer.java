@@ -119,32 +119,33 @@ public class Explorer extends ContentPanel{
 		store = new ListStore<BaseModelData>(loader);
 		
 	    setGrid(new EditorGrid<BaseModelData>(store, cm));
-	    getGrid().setAutoHeight(true);
+	    grid.setAutoHeight(true);
 	    
 		GridSelectionModel<BaseModelData> selectionModel = new GridSelectionModel<BaseModelData>();
 		selectionModel.setSelectionMode(SelectionMode.MULTI);
-		getGrid().setSelectionModel(selectionModel);
+		grid.setSelectionModel(selectionModel);
 		addPlugins();
-		add(getGrid());
-		getGrid().setBorders(true);
-
-		initListeners();
+		add(grid);
+		grid.setBorders(true);
+		
 		if (createToolBar) {
 		    initToolBar();
 		}
+		columnConfForm  = new ColumnConfigForm(this);
+		filterComboForm = new FilterComboForm(this);
+		undoredo        = new UndoRedo(this);
+		
+		initListeners();
 		
 		if (this.loadDataInitially) {
 			loadData();
 		}
-		
-		columnConfForm  = new ColumnConfigForm(this);
-		filterComboForm = new FilterComboForm(this);
 	}
 	
 	protected void addPlugins() {
 		for (CheckColumnConfig cb : checkBoxes) {
 			cb.setFiresEvents(true);
-			getGrid().addPlugin(cb);
+			grid.addPlugin(cb);
 		}
 	}
 	
@@ -152,80 +153,9 @@ public class Explorer extends ContentPanel{
 		loader.load(0, getPageSize());
 	}
 	
-	private void add2UndoStack(Record record, String property, Object value) {
-		ArrayList<Object> data = new ArrayList<Object>();
-		data.add(property);
-		data.add(value);
-
-		// Update undo stacks
-		undoStackRecords.push(record);
-		undoStackData.push(data);
-		
-		if(!undoItem.isEnabled()) {
-			undoItem.enable();
-		}
-	}
-	
 	private void initListeners() {
-		getGrid().addListener(Events.CellMouseUp, new Listener<GridEvent<BaseModelData>>() {
-
-			@Override
-			public void handleEvent(GridEvent<BaseModelData> ge) {
-				BaseModelData m = ge.getModel();
-				Record record   = store.getRecord(m);  
-				String property = getGrid().getColumnModel().getColumnId(ge.getColIndex());
-				try {
-				//  We only use this event to handle checkboxes (bool)
-				//  all other fields are handled below.
-				Boolean value   = m.get(property);
-			    add2UndoStack(record, property, !value);
-			    } catch (ClassCastException e) {
-					
-				}
-			}
-		});
-		getGrid().addListener(Events.BeforeEdit, new Listener<GridEvent<BaseModelData>>() {
-
-			@Override
-			public void handleEvent(GridEvent<BaseModelData> ge) {
-				Record record   = ge.getRecord();
-				String property = ge.getProperty();
-				Object value    = record.get(property);
-				add2UndoStack(record, property, value);
-				
-			}
-			
-		});
-		getGrid().addListener(Events.AfterEdit, new Listener<GridEvent<BaseModelData>>() { 
-			public void handleEvent(GridEvent<BaseModelData> ge) {
-				//  Check to see if the value has actually changed
-				Object value = ge.getRecord().get(ge.getProperty());
-				Record record = undoStackRecords.pop();
-				ArrayList<Object> data = undoStackData.pop();
-				if (data.get(1) != value) {
-					undoStackRecords.push(record);
-					undoStackData.push(data);
-				} else if (undoStackRecords.isEmpty() & undoStackData.isEmpty()) {
-					undoItem.disable();
-				}
-				
-				if (columnEditItem.isPressed()) {
-					for (BaseModelData model : getGrid().getSelectionModel()
-							.getSelectedItems()) {
-						record = store.getRecord(model);
-						Object old_value = record.get(ge.getProperty());
-						record.set(ge.getProperty(), value);
-						
-						//  Place the old values on the undo stack
-						undoStackRecords.push(record);
-						data = new ArrayList<Object>();
-						data.add(ge.getProperty());
-						data.add(old_value);
-						undoStackData.push(data);
-					}
-				}
-			}
-		});
+		
+		undoredo.initListeners();
 		
 		store.addStoreListener(new StoreListener<BaseModelData>() {
 			@Override
@@ -354,9 +284,9 @@ public class Explorer extends ContentPanel{
 		duplicateItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent be) {
-                addRecord(new HashMap<String, Object>(getGrid().getSelectionModel()
+                addRecord(new HashMap<String, Object>(grid.getSelectionModel()
             			.getSelectedItem().getProperties()));
-                getGrid().getView().refresh(true);
+                grid.getView().refresh(true);
             }
         });
 		
@@ -369,11 +299,11 @@ public class Explorer extends ContentPanel{
 		getRemoveApproval().addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				Double id = getGrid().getSelectionModel().getSelectedItem().get("id");
+				Double id = grid.getSelectionModel().getSelectedItem().get("id");
 				JSONRequest.delete(rootURL + "/" + id.intValue(),
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								store.remove(getGrid().getSelectionModel()
+								store.remove(grid.getSelectionModel()
 										.getSelectedItem());
 							}
 						});
@@ -421,29 +351,7 @@ public class Explorer extends ContentPanel{
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				//  If the undo stacks are not empty pop the top and update the record.
-				if (!undoStackRecords.isEmpty() & !undoStackData.isEmpty()) {
-					Record record = undoStackRecords.pop();
-					ArrayList<Object> undoData = undoStackData.pop();
-					Object value = record.get(undoData.get(0).toString());
-					
-					ArrayList<Object> data = new ArrayList<Object>();
-					data.add(undoData.get(0));
-					data.add(value);
-					redoStackRecords.push(record);
-					redoStackData.push(data);
-					
-					record.set(undoData.get(0).toString(), undoData.get(1));
-					
-					// Disable the undo button if there are no more undos.
-					if (undoStackRecords.isEmpty()) {
-						undoItem.disable();
-					}
-					
-					if (!redoItem.isEnabled()) {
-						redoItem.enable();
-					}
-				}
+				undoredo.doUndo();
 			}
 			
 		});
@@ -458,29 +366,7 @@ public class Explorer extends ContentPanel{
 
 			@Override
 			public void componentSelected(ButtonEvent ce) {
-				//  If the undo stacks are not empty pop the top and update the record.
-				if (!redoStackRecords.isEmpty() & !redoStackData.isEmpty()) {
-					Record record = redoStackRecords.pop();
-					ArrayList<Object> redoData = redoStackData.pop();
-					Object value = record.get(redoData.get(0).toString());
-					
-					ArrayList<Object> data = new ArrayList<Object>();
-					data.add(redoData.get(0));
-					data.add(value);
-					undoStackRecords.push(record);
-					undoStackData.push(data);
-					
-					record.set(redoData.get(0).toString(), redoData.get(1));
-					
-					// Disable the undo button if there are no more undos.
-					if (redoStackRecords.isEmpty()) {
-						redoItem.disable();
-					}
-					
-					if (!undoItem.isEnabled()) {
-						undoItem.enable();
-					}
-				}
+				undoredo.doRedo();
 			}
 			
 		});
@@ -497,12 +383,7 @@ public class Explorer extends ContentPanel{
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				store.rejectChanges();
-				undoStackRecords.clear();
-				undoStackData.clear();
-				undoItem.disable();
-				redoStackRecords.clear();
-				redoStackData.clear();
-				redoItem.disable();
+				undoredo.reset();
 			}
 			
 		});
@@ -521,18 +402,16 @@ public class Explorer extends ContentPanel{
 				//loadData();
 				//grid.getView().refresh(true);
 				
-				undoStackRecords.clear();
-				undoStackData.clear();
-				undoItem.disable();
+				undoredo.reset();
 			}
 		});
 		
 		// Enable the "Duplicate" button only if there is a selection.
-		getGrid().getSelectionModel().addSelectionChangedListener(
+		grid.getSelectionModel().addSelectionChangedListener(
 				new SelectionChangedListener<BaseModelData>() {
 					@Override
 					public void selectionChanged(SelectionChangedEvent<BaseModelData> se) {
-						duplicateItem.setEnabled(!getGrid().getSelectionModel().getSelectedItems().isEmpty());
+						duplicateItem.setEnabled(!grid.getSelectionModel().getSelectedItems().isEmpty());
 					}
 				});
 	}
@@ -618,10 +497,10 @@ public class Explorer extends ContentPanel{
 
 			@Override
 			public void componentSelected(MenuEvent ce) {
-				for (ColumnConfig cc : getGrid().getColumnModel().getColumns()){
+				for (ColumnConfig cc : grid.getColumnModel().getColumns()){
 					cc.setHidden(false);
 				}
-				getGrid().getView().refresh(true);	
+				grid.getView().refresh(true);	
 			}
 			
 		});
@@ -638,7 +517,7 @@ public class Explorer extends ContentPanel{
 					JSONArray config = configs.get(i).isArray();
 					String config_id = config.get(1).isNumber().toString();
 					ColumnConfigMenuItem mi = 
-						new ColumnConfigMenuItem(getGrid()
+						new ColumnConfigMenuItem(grid
 							                   , config.get(0).isString().stringValue()
 							                   , config_id);
 					menu.add(mi);
@@ -758,10 +637,10 @@ public class Explorer extends ContentPanel{
 						}
 					}
 				}
-				getGrid().stopEditing();
+				grid.stopEditing();
 				store.insert(model, 0);
 				//grid.getView().refresh(true);
-				getGrid().getSelectionModel().select(model, false);
+				grid.getSelectionModel().select(model, false);
 			}
 		});
 	}
@@ -826,6 +705,10 @@ public class Explorer extends ContentPanel{
 		rootURL = rurl;
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL);
 		proxy.setBuilder(builder);
+	}
+	
+	public ToggleButton getColumnEditItem() {
+		return columnEditItem;
 	}
 	
 	public void setPageSize(int pageSize) {
@@ -904,15 +787,12 @@ public class Explorer extends ContentPanel{
 	private ModelType modelType;	
 	private ColumnConfigForm columnConfForm;
 	private FilterComboForm filterComboForm;
+	private UndoRedo undoredo;
 	private Button columnsItem;
 	private boolean showColumnsMenu = true;
 	private FilterMenu filterMenu;
 	private boolean createFilterToolBar = true;
 	private ToggleButton columnEditItem;
-	private Stack<Record> undoStackRecords = new Stack<Record>();
-	private Stack<ArrayList<Object>> undoStackData = new Stack<ArrayList<Object>>();
-	private Stack<Record> redoStackRecords = new Stack<Record>();
-	private Stack<ArrayList<Object>> redoStackData = new Stack<ArrayList<Object>>();
 	
 	public List<String> filterComboIds = new ArrayList<String>();
 	public List<String> columnConfigIds = new ArrayList<String>();
