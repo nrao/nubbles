@@ -18,12 +18,6 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 
-interface JSONCallback {
-	public void onSuccess(JSONObject json);
-	public void onError(String error, JSONObject json);
-	public void setUri(String uri);
-}
-
 public class JSONRequest implements RequestCallback {
 	public JSONRequest(JSONCallback cb, String uri) {
 		this.cb = cb;

@@ -4,6 +4,12 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+interface JSONCallback {
+	public void onSuccess(JSONObject json);
+	public void onError(String error, JSONObject json);
+	public void setUri(String uri);
+}
+
 public class JSONCallbackAdapter implements JSONCallback {
 	private String uri;
 	
