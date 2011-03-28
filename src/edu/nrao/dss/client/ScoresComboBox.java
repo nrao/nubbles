@@ -19,6 +19,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+
 public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	
 	private ScoresDisplay display;

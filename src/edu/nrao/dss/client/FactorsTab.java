@@ -9,6 +9,8 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+import edu.nrao.dss.client.widget.FactorGrid;
+
 public class FactorsTab implements FactorsDisplay {
 	
 	private TabPanel panel;

@@ -10,6 +10,9 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+
 public class FactorsAccess {
 	private String banner;
 	private String headers[];

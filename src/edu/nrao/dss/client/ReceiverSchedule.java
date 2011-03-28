@@ -24,6 +24,11 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
+import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.widget.RcvrChangePanel;
+import edu.nrao.dss.client.widget.RcvrSchdGridPanel;
+
 public class ReceiverSchedule extends ContentPanel {
 	
 	//04/11/2009
