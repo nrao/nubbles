@@ -62,7 +62,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		//final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
 		sessions.setForceSelection(true);
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}

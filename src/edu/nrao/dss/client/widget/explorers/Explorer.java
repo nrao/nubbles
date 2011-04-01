@@ -473,7 +473,7 @@ public class Explorer extends ContentPanel{
 						if (cmi.isChecked()){
 							HashMap<String, Object> data = new HashMap<String, Object>();
 							data.put("method_", "DELETE");
-							JSONRequest.post("/configurations/explorer/columnConfigs/" + cmi.config_id
+							JSONRequest.post("/scheduler/configurations/explorer/columnConfigs/" + cmi.config_id
 									       , data
 									       , new JSONCallbackAdapter() {
 								public void onSuccess(JSONObject json){
@@ -510,7 +510,7 @@ public class Explorer extends ContentPanel{
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("explorer", rootURL);
 		// Get save configurations from the server and populate them as menu items
-		JSONRequest.get("/configurations/explorer/columnConfigs", data, new JSONCallbackAdapter() {
+		JSONRequest.get("/scheduler/configurations/explorer/columnConfigs", data, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json){
 				JSONArray configs = json.get("configs").isArray();
 				for (int i = 0; i < configs.size(); ++i) {
@@ -554,7 +554,7 @@ public class Explorer extends ContentPanel{
 						if (cmi.isChecked()){
 							HashMap<String, Object> data = new HashMap<String, Object>();
 							data.put("method_", "DELETE");
-							JSONRequest.post("/configurations/explorer/filterCombos/" + cmi.combo_id
+							JSONRequest.post("/scheduler/configurations/explorer/filterCombos/" + cmi.combo_id
 									       , data
 									       , new JSONCallbackAdapter() {
 								public void onSuccess(JSONObject json){
@@ -578,7 +578,7 @@ public class Explorer extends ContentPanel{
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("explorer", rootURL);
 		// Get save configurations from the server and populate them as menu items
-		JSONRequest.get("/configurations/explorer/filterCombos", data, new JSONCallbackAdapter() {
+		JSONRequest.get("/scheduler/configurations/explorer/filterCombos", data, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json){
 				JSONArray configs = json.get("configs").isArray();
 				for (int i = 0; i < configs.size(); ++i) {

@@ -87,7 +87,7 @@ public class SessionInfoPanel extends ContentPanel {
 			return;
 		}
 		
-		String url = "/sessions/" + sessIds.get(sessionHandle);
+		String url = "/scheduler/sessions/" + sessIds.get(sessionHandle);
 		HashMap <String, Object> keys = new HashMap<String, Object>();
 		
 		JSONRequest.get(url, keys, new JSONCallbackAdapter() {
@@ -101,7 +101,7 @@ public class SessionInfoPanel extends ContentPanel {
 		});		
 
 //		// TODO: just a test!
-//		JSONRequest.get("/windows", keys, new JSONCallbackAdapter() {
+//		JSONRequest.get("/scheduler/windows", keys, new JSONCallbackAdapter() {
 //			// this url returns all the time accounting for the whole proj., 
 //			// so use it to update the whole UI
 //			public void onSuccess(JSONObject json) {
@@ -117,7 +117,7 @@ public class SessionInfoPanel extends ContentPanel {
 	
 	// gets all project codes form the server and populates the project combo
 	public void updateSessionOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}

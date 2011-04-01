@@ -32,7 +32,7 @@ public class ColumnConfigMenuItem extends CheckMenuItem {
 			public void componentSelected(MenuEvent ce) {
 				// Get the configuration from the server.
 				// Set the visibility of the columns based on the configuration.
-				JSONRequest.get("/configurations/explorer/columnConfigs/" + config_id, new JSONCallbackAdapter() {
+				JSONRequest.get("/scheduler/configurations/explorer/columnConfigs/" + config_id, new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json){
 						//  Start by showing all columns
 						for (ColumnConfig cc : grid.getColumnModel().getColumns()){

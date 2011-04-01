@@ -37,7 +37,7 @@ public class InvestigatorExplorer extends UserProjectExplorer {
 //	private InvestigatorForm addInvest;
 	
 	public InvestigatorExplorer() {
-		super("investigators", "/investigators", getColumnTypes(), getFields());
+		super("investigators", "/scheduler/investigators", getColumnTypes(), getFields());
 		// setup the widget used for adding a new investigator to the project
 		setAddUser(new UserForm("Investigator", "users",
 				new Window(), InvestigatorExplorer.this));

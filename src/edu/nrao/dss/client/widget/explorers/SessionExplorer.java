@@ -34,7 +34,7 @@ import edu.nrao.dss.client.widget.form.ScienceField;
 
 public class SessionExplorer extends Explorer {
 	public SessionExplorer() {
-		super("/sessions", "?filterClp=False", new SessionType(columnTypes));
+		super("/scheduler/sessions", "?filterClp=False", new SessionType(columnTypes));
 		initFilters();
 		initLayout(initColumnModel(), true);
 	}

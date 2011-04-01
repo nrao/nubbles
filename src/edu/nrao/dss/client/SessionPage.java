@@ -103,7 +103,7 @@ public class SessionPage extends ContentPanel {
 	
 	// gets all project codes form the server and populates the project combo
 	public void updateSessionOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
@@ -134,7 +134,7 @@ public class SessionPage extends ContentPanel {
 			return;
 		}
 		
-		String url = "/sessions/" + session_ids.get(handle);
+		String url = "/scheduler/sessions/" + session_ids.get(handle);
 		HashMap <String, Object> keys = new HashMap<String, Object>();
 		
 		JSONRequest.get(url, keys, new JSONCallbackAdapter() {

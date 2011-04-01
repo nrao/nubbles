@@ -288,7 +288,7 @@ private void sendProjectAllotments() {
 // handles one grade's allotment numbers at a time
 private void sendProjectAllotment(ProjAllotmentFieldSet fs, String desc) {
 	
-	String url = "/projects/time_accounting/" + projects.getSimpleValue();
+	String url = "/scheduler/projects/time_accounting/" + projects.getSimpleValue();
 	HashMap <String, Object> keys = new HashMap<String, Object>();
 
 	keys.put("grade", fs.getGrade());
@@ -309,7 +309,7 @@ private void sendProjectAllotment(ProjAllotmentFieldSet fs, String desc) {
 //saves off changes to session allotments, then redisplays latest time accounting info
 private void sendSessionAllotment() {
 	
-	String url = "/sessions/time_accounting/" + sessionName.getValue();
+	String url = "/scheduler/sessions/time_accounting/" + sessionName.getValue();
 	HashMap <String, Object> keys = new HashMap<String, Object>();
 
 	keys.put("total_time", sessionTime.getValue().doubleValue());
@@ -331,14 +331,14 @@ private void sendSessionAllotment() {
 // retrieves the JSON that describes every detail about time accounting for given project
 protected void getProjectTimeAccounting() {
     
-	JSONRequest.get("/projects/time_accounting/" + projects.getSimpleValue()
+	JSONRequest.get("/scheduler/projects/time_accounting/" + projects.getSimpleValue()
 		      , new JSONCallbackAdapter() {
 		public void onSuccess(JSONObject json) {
 			timeAccountingJson = json;
 			// take the project level time accounting info, and populate the panel w/ it.
 			//populateProjTimeAccounting(json);
 			setTimeAccountingFromJSON(json);
-            //GWT.log("/projects/time_accounting onSuccess", null);          
+            //GWT.log("/scheduler/projects/time_accounting onSuccess", null);          
 		}
 	});    			
 }
@@ -440,7 +440,7 @@ protected void updateSessionPeriods() {
 // a session has been selected, so now what are the periods that we can choose from?
 private void updatePeriodOptions(final String pcode, final String sessionName) {
     //GWT.log("updatePeriodOptions", null);
-	JSONRequest.get("/sessions/options"
+	JSONRequest.get("/scheduler/sessions/options"
 		      , new HashMap<String, Object>() {{
 		    	  put("mode", "periods");
 		    	  put("pcode", pcode);
@@ -494,7 +494,7 @@ protected boolean updateProjectSessions() {
 // gets the session names from the server and populates the session combobox
 private void updateSessionOptions(final String pcode) {
     //GWT.log("updateSessionOptions", null);
-	JSONRequest.get("/sessions/options"
+	JSONRequest.get("/scheduler/sessions/options"
 		      , new HashMap<String, Object>() {{
 		    	  put("mode", "session_names");
 		    	  put("pcode", pcode);
@@ -516,7 +516,7 @@ private void updateSessionOptions(final String pcode) {
 
 // gets all project codes form the server and populates the project combo
 public void updatePCodeOptions() {
-	JSONRequestCache.get("/sessions/options"
+	JSONRequestCache.get("/scheduler/sessions/options"
 			, new HashMap<String, Object>() {{
   	  put("mode", "project_codes");
     }}

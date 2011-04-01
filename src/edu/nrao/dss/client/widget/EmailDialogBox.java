@@ -117,7 +117,7 @@ public class EmailDialogBox extends Dialog {
 	    		keys.put("changed_periods", pids);
 	    		
 	    		final MessageBox box = MessageBox.wait("Sending Email", "Sending scheduling e-mails to observers and staff.", "Be Patient ...");
-				JSONRequest.post("/schedule/email", keys,
+				JSONRequest.post("/scheduler/schedule/email", keys,
 						new JSONCallbackAdapter() {
 							@Override
 							public void onSuccess(JSONObject json) {

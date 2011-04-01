@@ -46,7 +46,7 @@ public abstract class GroupPeriodExplorer extends Explorer {
 
 	// NOTE: we are getting the column definitions passed in from the child class
 	public GroupPeriodExplorer(int periodGroupId, String sessionHandle, ColumnType[] columnTypes) {
-		super("/periods/UTC", "", new PeriodType(columnTypes));
+		super("/scheduler/periods/UTC", "", new PeriodType(columnTypes));
 	    this.periodGroupId = periodGroupId;
 	    this.sessionHandle = sessionHandle;    
 		setShowColumnsMenu(false);
@@ -98,7 +98,7 @@ public abstract class GroupPeriodExplorer extends Explorer {
 		Double bid = bd.get("id");
 		int periodId = bid.intValue();
 		// use this to get it's JSON, which includes things like time accounting
-	    JSONRequest.get("/periods/UTC/" + Integer.toString(periodId) , new JSONCallbackAdapter() {
+	    JSONRequest.get("/scheduler/periods/UTC/" + Integer.toString(periodId) , new JSONCallbackAdapter() {
             @Override
             public void onSuccess(JSONObject json) {
             	// display the dialog

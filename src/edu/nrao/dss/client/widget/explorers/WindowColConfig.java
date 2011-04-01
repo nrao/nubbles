@@ -61,7 +61,7 @@ public class WindowColConfig extends ColumnConfig {
 
 	@SuppressWarnings("serial")
 	public void setSessionOptions() {
-		JSONRequest.get("/sessions/options"
+		JSONRequest.get("/scheduler/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "windowed_session_handles");
 			        }}
@@ -80,7 +80,7 @@ public class WindowColConfig extends ColumnConfig {
 	
 	@SuppressWarnings("serial")
 	public void updateSessionOptions() {
-		JSONRequest.get("/sessions/options"
+		JSONRequest.get("/scheduler/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "windowed_session_handles");
 			        }}

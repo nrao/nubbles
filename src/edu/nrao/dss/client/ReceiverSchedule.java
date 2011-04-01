@@ -74,7 +74,7 @@ public class ReceiverSchedule extends ContentPanel {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("startdate", startStr);
 		keys.put("duration", numDays);
-		JSONRequest.get("/receivers/schedule", keys  
+		JSONRequest.get("/scheduler/receivers/schedule", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				jsonToRcvrSchedule(json);

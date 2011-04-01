@@ -77,7 +77,7 @@ public class SessionColConfig extends ColumnConfig {
 
 	@SuppressWarnings("serial")
 	public void setPCodeOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 	    	  put("mode", "project_codes");
         }}
@@ -95,12 +95,12 @@ public class SessionColConfig extends ColumnConfig {
 	}
 	
 	public void updatePCodeOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "project_codes");
 			        }}
 				, new JSONCallbackAdapter() {
-		//JSONRequest.get("/sessions/options", new JSONCallbackAdapter() {
+		//JSONRequest.get("/scheduler/sessions/options", new JSONCallbackAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(JSONObject json) {

@@ -160,7 +160,7 @@ class ChangeScheduleDlg extends Dialog {
 	    		keys.put("reason", reasons.getSimpleValue());
 	    		keys.put("description", desc.getValue());
 
-				JSONRequest.post("/schedule/change_schedule", keys,
+				JSONRequest.post("/scheduler/schedule/change_schedule", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								// if the change worked, update the calendar.

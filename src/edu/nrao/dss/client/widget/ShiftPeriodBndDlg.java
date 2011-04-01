@@ -205,7 +205,7 @@ public class ShiftPeriodBndDlg extends Dialog {
 	            keys.put("description", desc.getValue());
 	            keys.put("reason", reasons.getSimpleValue());
 	            
-				JSONRequest.post("/schedule/shift_period_boundaries", keys,
+				JSONRequest.post("/scheduler/schedule/shift_period_boundaries", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								// if the change worked, update the calendar.

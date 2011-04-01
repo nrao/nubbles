@@ -64,7 +64,7 @@ public class Schedule extends ContentPanel {
 	Date startCalendarDay;
 	Integer numCalendarDays = 3;
 	String timezone = "UTC";
-	String baseUrl = "/periods/" + timezone;
+	String baseUrl = "/scheduler/periods/" + timezone;
 	
 	Scores scores;
 	
@@ -228,7 +228,7 @@ public class Schedule extends ContentPanel {
 		dayView.addValueChangeHandler(new ValueChangeHandler<Appointment>(){
 	        public void onValueChange(ValueChangeEvent<Appointment> event) {
 	        	// seed the PeriodDialog w/ details from the period that just got clicked
-	            String periodUrl = "/periods/UTC/" + event.getValue().getEventId();
+	            String periodUrl = "/scheduler/periods/UTC/" + event.getValue().getEventId();
 	    	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
 		            @Override
 		            public void onSuccess(JSONObject json) {
@@ -379,7 +379,7 @@ public class Schedule extends ContentPanel {
     // gets all the session handles (sess name (proj name)) and holds on to them
     // for use in lists (e.g. PeriodDialog)
     private void getSessionOptions() {
-    	JSONRequestCache.get("/sessions/options"
+    	JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}

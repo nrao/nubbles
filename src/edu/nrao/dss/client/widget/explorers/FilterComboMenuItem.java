@@ -38,7 +38,7 @@ public class FilterComboMenuItem extends CheckMenuItem {
 			public void componentSelected(MenuEvent ce) {
 				// Get the configuration from the server.
 				// Set the visibility of the columns based on the configuration.
-				JSONRequest.get("/configurations/explorer/filterCombos/" + combo_id, new JSONCallbackAdapter() {
+				JSONRequest.get("/scheduler/configurations/explorer/filterCombos/" + combo_id, new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json){
 						// Set the filters base on server response
 						JSONObject filters = json.get("filters").isObject();

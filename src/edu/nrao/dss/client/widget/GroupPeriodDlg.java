@@ -110,7 +110,7 @@ public class GroupPeriodDlg extends Dialog {
 	}
 	
 	private void publishPeriod() {
-		String url = "/periods/publish/" + Integer.toString(period.getId());
+		String url = "/scheduler/periods/publish/" + Integer.toString(period.getId());
 		GWT.log("publish period: " + url, null);
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		JSONRequest.post(url, keys,
