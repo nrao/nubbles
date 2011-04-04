@@ -111,7 +111,7 @@ public class ProjectsEmailDialogBox extends Dialog {
 	    		keys.put("address", address);
 	    		
 	    		final MessageBox box = MessageBox.wait("Sending Email", "Sending e-mails to observers.", "Be Patient ...");
-				JSONRequest.post("/projects/email", keys,
+				JSONRequest.post("/scheduler/projects/email", keys,
 						new JSONCallbackAdapter() {
 							@Override
 							public void onSuccess(JSONObject json) {

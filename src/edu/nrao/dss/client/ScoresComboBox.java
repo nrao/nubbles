@@ -82,7 +82,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	
 	private void getOptions() {
 		this.removeAll();
-		JSONRequest.get("/sessions/options"
+		JSONRequest.get("/scheduler/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			    	  put("notcomplete", notcomplete.getValue().toString());

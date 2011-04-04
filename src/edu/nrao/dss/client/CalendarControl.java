@@ -143,7 +143,7 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	    		if (!schedule.timezone.equals(tz.getSimpleValue())) {
 		    		//schedule.timezone = tz.getSimpleValue();
 		    		schedule.setTimezone(tz.getSimpleValue());
-		    		schedule.baseUrl = "/periods/" + schedule.timezone;
+		    		schedule.baseUrl = "/scheduler/periods/" + schedule.timezone;
 		        	schedule.scheduleExplorer.pe.setRootURL(schedule.baseUrl);
 		            schedule.updateCalendar();
 	    		}

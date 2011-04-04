@@ -193,7 +193,7 @@ public class RcvrSchdEditPanel extends ContentPanel {
 		keys.put("up", upStr == null ? "" : upStr);
 		keys.put("down", downStr == null ? "" : downStr);
 		
-		JSONRequest.post("/receivers/change_schedule", keys  
+		JSONRequest.post("/scheduler/receivers/change_schedule", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				

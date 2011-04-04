@@ -98,7 +98,7 @@ public class AssignWindowPeriodDlg extends Dialog {
 		keys.put("mode", "periods");
 		keys.put("session_name", session); 
 		keys.put("pcode", pcode);
-		JSONRequest.get("/sessions/options"
+		JSONRequest.get("/scheduler/sessions/options"
 			      , keys 
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {

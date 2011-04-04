@@ -223,7 +223,7 @@ public class ProjectPage extends ContentPanel {
 			return;
 		}
 		
-		String url = "/projects/" + project_ids.get(pcode);
+		String url = "/scheduler/projects/" + project_ids.get(pcode);
 		HashMap <String, Object> keys = new HashMap<String, Object>();
 		
 		JSONRequest.get(url, keys, new JSONCallbackAdapter() {
@@ -284,7 +284,7 @@ public class ProjectPage extends ContentPanel {
 	
 	// gets all project codes form the server and populates the project combo
 	public void updatePCodeOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 	    	  put("mode", "project_codes");
           }}
@@ -349,7 +349,7 @@ public class ProjectPage extends ContentPanel {
 		}
 		keys.put("friends", v);
 				
-		String url = "/projects/" + project_ids.get(pcode);
+		String url = "/scheduler/projects/" + project_ids.get(pcode);
 		
 		JSONRequest.post(url, keys,
 			      new JSONCallbackAdapter() {

@@ -111,7 +111,7 @@ public class UserForm extends LayoutContainer {
     // gets all the appropriate types of users from the server 
     // and populates the drop down.
 	public void updateUserOptions() {
-		JSONRequest.get("/sessions/options"
+		JSONRequest.get("/scheduler/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", urlType);
 			        }}

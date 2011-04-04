@@ -86,7 +86,7 @@ public class FilterComboForm extends LayoutContainer {
 				// Used to identify the specific explorer on the server.
 				fields.put("explorer", explorer.rootURL);
 				
-				JSONRequest.post("/configurations/explorer/filterCombos", fields, new JSONCallbackAdapter() {
+				JSONRequest.post("/scheduler/configurations/explorer/filterCombos", fields, new JSONCallbackAdapter() {
 					@Override
 					public void onSuccess(JSONObject json) {
 						String new_id = json.get("id").isNumber().toString();

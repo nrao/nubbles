@@ -94,13 +94,13 @@ public class WindowCalendar extends ContentPanel {
 	
 	public void getWindows() {
 	    // update the calendar using the controls
-		// /windows?filterStartDate=2010-02-01&filterDuration=30&sortField=null&sortDir=NONE&offset=0&limit=50
+		// /scheduler/windows?filterStartDate=2010-02-01&filterDuration=30&sortField=null&sortDir=NONE&offset=0&limit=50
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start.getValue()); //+ " 00:00:00";
 		keys.put("filterStartDate", startStr);
 		keys.put("filterDuration", numDays.getSimpleValue());
-		JSONRequest.get("/windows", keys  
+		JSONRequest.get("/scheduler/windows", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				GWT.log(json.toString(), null);

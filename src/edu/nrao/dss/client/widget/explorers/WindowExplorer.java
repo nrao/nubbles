@@ -43,7 +43,7 @@ public class WindowExplorer extends Explorer {
     private AssignWindowPeriodDlg assignDlg;
 	
 	public WindowExplorer() {
-		super("/windows", "", new WindowType(columnTypes));
+		super("/scheduler/windows", "", new WindowType(columnTypes));
 		initFilters();
 		initLayout(initColumnModel(), true);
 		updateSessionOptions();
@@ -176,7 +176,7 @@ public class WindowExplorer extends Explorer {
 	
 	// gets all windowed session names form the server and populates the project combo
 	public void updateSessionOptions() {
-		JSONRequest.get("/sessions/options"
+		JSONRequest.get("/scheduler/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "windowed_session_handles");
 			        }}

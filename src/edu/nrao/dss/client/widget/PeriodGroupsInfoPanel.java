@@ -108,7 +108,7 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 		// by ignoring this filter
 		cmpFilter.setSimpleValue(cmpOptions[2]);
 		
-		JSONRequest.post("/" + url //.i.e: "/electives"
+		JSONRequest.post("/scheduler/" + url //.i.e: "/electives"
 			      , new HashMap<String, Object>() {{
 			    	  put("handle", sessionHandle);
 			    	  put("_method", "create");

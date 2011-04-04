@@ -34,7 +34,7 @@ public class PeriodSummaryDlg extends Dialog {
 	private Schedule sc_handle;
 	
 	private void publishPeriod() {
-		String url = "/periods/publish/" + Integer.toString(period.getId());
+		String url = "/scheduler/periods/publish/" + Integer.toString(period.getId());
 		GWT.log("publish period: " + url, null);
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		JSONRequest.post(url, keys,
@@ -71,7 +71,7 @@ public class PeriodSummaryDlg extends Dialog {
 	// can be deleted, then asks for confirmation before zapping it.
 	private void tryDeletePeriod() {
 	    // get this period again - it's time accounting might have changed
-        String periodUrl = "/periods/UTC/" + Integer.toString(this.period.getId());
+        String periodUrl = "/scheduler/periods/UTC/" + Integer.toString(this.period.getId());
 	    JSONRequest.get(periodUrl, new JSONCallbackAdapter() {
             @Override
             public void onSuccess(JSONObject json) {
@@ -93,7 +93,7 @@ public class PeriodSummaryDlg extends Dialog {
 	
 	// makes call to server for deletion, then updates calendar
 	private final void deletePeriod() {
-		String rootURL = "/periods/UTC";
+		String rootURL = "/scheduler/periods/UTC";
 		JSONRequest.delete(rootURL + "/" + this.period.getId(), //id.intValue(),
 				new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json) {

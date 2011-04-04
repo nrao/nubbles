@@ -37,7 +37,7 @@ public class FriendExplorer extends UserProjectExplorer {
 //	private UserForm addUser;
 	
 	public FriendExplorer() {
-		super("friends", "/friends", getColumnTypes(), getFields());
+		super("friends", "/scheduler/friends", getColumnTypes(), getFields());
 		// setup the widget used for adding a new friend
 		setAddUser(new UserForm("Friend", "friends",
 				new Window(), FriendExplorer.this));

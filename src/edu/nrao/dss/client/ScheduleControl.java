@@ -248,7 +248,7 @@ public class ScheduleControl extends FormPanel {
 				// Must set keys here somehow to transmit proper time range.  What is the time range?
 				HashMap<String, Object> keys = getTimeRange();
 				
-				JSONRequest.get("/schedule/email", keys,
+				JSONRequest.get("/scheduler/schedule/email", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								String addr[] = new String[3];
@@ -312,7 +312,7 @@ public class ScheduleControl extends FormPanel {
 				// we need the same url in a different format
 				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
 				HashMap<String, Object> keys = getTimeRange();
-				JSONRequest.post("/periods/publish", keys,
+				JSONRequest.post("/scheduler/periods/publish", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								schedule.updateCalendar();
@@ -329,7 +329,7 @@ public class ScheduleControl extends FormPanel {
 				// we need the same url in a different format
 				HashMap<String, Object> keys = getTimeRange();
 				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
-				JSONRequest.post("/periods/delete_pending", keys,
+				JSONRequest.post("/scheduler/periods/delete_pending", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								schedule.updateCalendar();

@@ -49,7 +49,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public class ProjectExplorer extends Explorer {
 	public ProjectExplorer() {
-		super("/projects", "?filterClp=False", new ProjectType(), new ProjectEmailPagingToolBar(50));
+		super("/scheduler/projects", "?filterClp=False", new ProjectType(), new ProjectEmailPagingToolBar(50));
 		// downcast, but we know that we have a ProjectEmailPagingToolBar now
 		selectionPagingToolBar = (ProjectEmailPagingToolBar)pagingToolBar;
 		initFilters();
@@ -122,7 +122,7 @@ public class ProjectExplorer extends Explorer {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		String msg = "Generating email addresses for selected projects";
 		final MessageBox box = MessageBox.wait("Getting Email Addresses", msg, "Be Patient ...");
-		String url = "/projects/email";
+		String url = "/scheduler/projects/email";
 		
 		if (pcodes.equals(""))
 		{

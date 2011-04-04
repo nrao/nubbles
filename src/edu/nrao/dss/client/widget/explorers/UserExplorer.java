@@ -36,7 +36,7 @@ public class UserExplorer extends Explorer {
 	private UserForm addInvest;
 	
 	public UserExplorer() {
-		super("/users", "", new UserType());
+		super("/scheduler/users", "", new UserType());
 		initFilters();
 		initLayout(initColumnModel(), true);
 		//initUserToolBar();

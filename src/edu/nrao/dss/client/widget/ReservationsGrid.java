@@ -38,7 +38,7 @@ public class ReservationsGrid extends ContentPanel{
 		DateTimeFormat fmt = DateTimeFormat.getFormat("MM/dd/yyyy");
 		String startStr = fmt.format(start);
 		
-		String rootUrl = "/reservations?start=" + startStr + "&days=" + days;
+		String rootUrl = "/scheduler/reservations?start=" + startStr + "&days=" + days;
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootUrl);
 

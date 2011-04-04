@@ -28,7 +28,7 @@ import edu.nrao.dss.client.widget.form.TimeField;
 
 public class PeriodExplorer extends Explorer {
 	public PeriodExplorer() {
-		super("/periods/UTC", "", new PeriodType(columnTypes));
+		super("/scheduler/periods/UTC", "", new PeriodType(columnTypes));
 		setShowColumnsMenu(false);
 		setAutoHeight(true);
 		setCreateFilterToolBar(false);

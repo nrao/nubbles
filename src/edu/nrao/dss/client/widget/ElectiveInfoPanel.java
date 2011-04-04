@@ -107,7 +107,7 @@ public class ElectiveInfoPanel extends PeriodGroupInfoPanel {
 		keys.put("_method", "put");
 		keys.put("complete", cmp.getValue());
 		keys.put("handle", handle);
-	    JSONRequest.post("/electives/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
+	    JSONRequest.post("/scheduler/electives/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
 	            	// get back from the server this elective & display it again

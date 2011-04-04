@@ -270,7 +270,7 @@ public class RcvrChangePanel extends ContentPanel {
 		keys.put("from", from_date);
 		keys.put("to",   to_date);
 		
-		JSONRequest.post("/receivers/shift_date", keys  
+		JSONRequest.post("/scheduler/receivers/shift_date", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// reload the calendar
@@ -296,7 +296,7 @@ public class RcvrChangePanel extends ContentPanel {
 		keys.put("from", startStr);
 		keys.put("to", endStr);
         keys.put("rcvr", receivers.getSimpleValue());	
-		JSONRequest.post("/receivers/toggle_rcvr", keys  
+		JSONRequest.post("/scheduler/receivers/toggle_rcvr", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// reload the calendar
@@ -313,7 +313,7 @@ public class RcvrChangePanel extends ContentPanel {
 		keys.put("startdate",   to_date);
 		
 		GWT.log("adding: " + to_date, null);
-		JSONRequest.post("/receivers/add_date", keys  
+		JSONRequest.post("/scheduler/receivers/add_date", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// reload the calendar
@@ -333,7 +333,7 @@ public class RcvrChangePanel extends ContentPanel {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("startdate", from_date);
 		
-		JSONRequest.post("/receivers/delete_date", keys  
+		JSONRequest.post("/scheduler/receivers/delete_date", keys  
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// reload the calendar

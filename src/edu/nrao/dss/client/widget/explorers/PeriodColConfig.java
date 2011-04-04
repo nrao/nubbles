@@ -64,7 +64,7 @@ public class PeriodColConfig extends ColumnConfig {
 
 	@SuppressWarnings("serial")
 	public void setSessionOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
@@ -83,7 +83,7 @@ public class PeriodColConfig extends ColumnConfig {
 	
 	@SuppressWarnings("serial")
 	public void updateSessionOptions() {
-		JSONRequestCache.get("/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}

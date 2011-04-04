@@ -35,7 +35,7 @@ public class Reservations extends ContentPanel {
 	
 	public void update(String start, String days) {
 		// get the period explorer to load these
-		String url = "/reservations?start=" + start + "&days=" + days;
+		String url = "/scheduler/reservations?start=" + start + "&days=" + days;
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 		DynamicHttpProxy<BaseListLoadResult<BaseModelData>> proxy = res.getProxy();
 		proxy.setBuilder(builder);
