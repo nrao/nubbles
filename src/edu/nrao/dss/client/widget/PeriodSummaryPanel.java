@@ -80,7 +80,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     	moc_ack.addListener(Events.OnClick, new Listener<BaseEvent>() {
     		public void handleEvent(BaseEvent be) {
     			//GWT.log("Updating period's moc_ack field", null);
-    			String url = "/period/" + Integer.toString(period.getId()) + "/toggle_moc";
+    			String url = "/scheduler/period/" + Integer.toString(period.getId()) + "/toggle_moc";
     			HashMap<String, Object> keys = new HashMap<String, Object>();
     			JSONRequest.post(url, keys,
     					new JSONCallbackAdapter() {

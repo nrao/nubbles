@@ -206,7 +206,7 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 		keys.put("number", numCopyDialog.getNumCopies());
 		// url: /objects; copy url: /object/id/copy
 		String copyUrl = url.toLowerCase().substring(0, url.length() - 1);
-		copyUrl = "/" + copyUrl + "/" + Integer.toString(id) + "/copy";
+		copyUrl = "/scheduler/" + copyUrl + "/" + Integer.toString(id) + "/copy";
 	    JSONRequest.post(copyUrl, keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
@@ -219,7 +219,7 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 	private void deletePeriodGroup() {
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("_method", "delete");
-	    JSONRequest.post("/" + url + "/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
+	    JSONRequest.post("/scheduler/" + url + "/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
 	            	// reload all the electives or windows again!
@@ -230,7 +230,7 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
 	
 	// get object from server -> class attributes -> displayed in widgets
 	public void getPeriodGroup() {
-	    JSONRequest.get("/" + url + "/" + Integer.toString(id), new JSONCallbackAdapter() {
+	    JSONRequest.get("/scheduler/" + url + "/" + Integer.toString(id), new JSONCallbackAdapter() {
             @Override
             public void onSuccess(JSONObject json) {
             	updateGroupPeriod(json);

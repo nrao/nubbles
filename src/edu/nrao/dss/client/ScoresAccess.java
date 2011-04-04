@@ -23,7 +23,7 @@ public class ScoresAccess {
 			final String label, final Date start, Integer minutes,
 			final String timezone) {
 		HashMap<String, Object> keys = formKeys(sessionId, label, start, minutes, timezone);
-		JSONRequest.get("/factors", keys, new JSONCallbackAdapter() {
+		JSONRequest.get("/scheduler/factors", keys, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				float[] scores = extractScores(json);
 				display.show(label, scores);

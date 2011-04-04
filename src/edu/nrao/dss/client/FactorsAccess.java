@@ -22,7 +22,7 @@ public class FactorsAccess {
 	public void request(final FactorsDisplay display, Integer sessionId,
 			final String label, final Date start, Integer minutes,
 			final String timezone) {
-		JSONRequest.get("/factors", formKeys(sessionId, label, start, minutes,
+		JSONRequest.get("/scheduler/factors", formKeys(sessionId, label, start, minutes,
 				timezone), new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				populateHeadersFactors(json, start, timezone);

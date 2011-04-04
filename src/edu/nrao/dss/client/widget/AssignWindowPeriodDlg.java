@@ -134,7 +134,7 @@ public class AssignWindowPeriodDlg extends Dialog {
 		}
 		int periodId = periodsMap.get(periodName);
 		
-		String url = "/window/" + Integer.toString(windowId) + "/assign_period/" + Integer.toString(periodId);
+		String url = "/scheduler/window/" + Integer.toString(windowId) + "/assign_period/" + Integer.toString(periodId);
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		keys.put("default", defaultPeriod.getValue());
 		JSONRequest.post(url
