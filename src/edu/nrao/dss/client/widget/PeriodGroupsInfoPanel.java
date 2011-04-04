@@ -148,7 +148,7 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 			keys.put("filterComplete", true);
 		}
 		
-		JSONRequest.get("/" + url
+		JSONRequest.get("/scheduler/" + url
 			      , keys 
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {

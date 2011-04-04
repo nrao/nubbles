@@ -184,7 +184,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		keys.put("total_time", total.getValue().doubleValue());
 		keys.put("complete", cmp.getValue());
 		keys.put("handle", handle);
-	    JSONRequest.post("/" + url + "/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
+	    JSONRequest.post("/scheduler/" + url + "/" + Integer.toString(id), keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
 	            	// get back from the server this window & display it again

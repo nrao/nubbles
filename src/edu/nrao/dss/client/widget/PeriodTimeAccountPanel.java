@@ -110,7 +110,7 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		//GWT.log("setting keys", null);
 		
 		// 3. send the json
-		JSONRequest.post("/period/" + Integer.toString(period.getId()) + "/time_accounting", keys,
+		JSONRequest.post("/scheduler/period/" + Integer.toString(period.getId()) + "/time_accounting", keys,
 				new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json) {
 						//GWT.log("periods/time_accounting onSuccess", null);
