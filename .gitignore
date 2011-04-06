@@ -5,6 +5,7 @@
 *.orig
 *.prof
 *.swp
+*.cache.*
 
 .classpath
 .project
