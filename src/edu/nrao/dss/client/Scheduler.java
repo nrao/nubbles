@@ -31,7 +31,7 @@ public class Scheduler extends Viewport implements EntryPoint {
               box.close();
             }
         };
-        t.schedule(15000);
+        t.schedule(10000);
     }
 
     private void initLayout() {
