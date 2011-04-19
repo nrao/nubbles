@@ -9,6 +9,9 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
+import edu.nrao.dss.client.data.RcvrScheduleData;
+import edu.nrao.dss.client.data.RcvrScheduleDate;
+
 // This class if responsible for using a FlexTable to display the rx schedule
 
 public class RcvrScheduleGrid extends FlexTable {
@@ -31,101 +34,83 @@ public class RcvrScheduleGrid extends FlexTable {
 	    setCellPadding(1);	
 	    
 	}
+
 	
-	public void loadSchedule(String[] headers, int numSchdRows, int numSchdCols, String[][] schedule, String[][] diffSchedule) {
+    public void loadRcvrScheduleData(RcvrScheduleData data) {
+    	this.setMaintenanceDays(data.getMaintenanceDayStrs());
+    	// headers start w/ the date, up rx, down rx, then the list of the rcvrs
+		String [] headers = getHeaders(data.getReceiverNames());
+		renderRcvrSchedule(headers, data);
+    }
 
-		// start fresh
-		clearAll();
-
-		// first the header
-		int tableRow = 0;
+    private String[] getHeaders(String[] rx) {
+		int numRcvrs = rx.length;
+		int offset = 3;
+		String[] headers = new String[numRcvrs + offset];
+		headers[0] = "Date";
+		headers[1] = "Up";
+		headers[2] = "Down";
+		for (int i = 0; i < numRcvrs; i++) {
+			headers[i+offset] = rx[i];
+		} 
+		return headers;
+    }
+    
+    private void renderRcvrSchedule(String[] headers, RcvrScheduleData data) {
+    	clearAll();
+        renderHeaders(headers);
+        renderRows(data);
+    }
+    
+    private void renderHeaders(String[] headers) {
+    	int tableRow = 0;
 		for (int tableCol = 0; tableCol < headers.length; tableCol++) {
 			// TODO: how to set the width of these columns?
 			//getColumnFormatter().setWidth(col, "200px");
 			setHTML(0, tableCol, headers[tableCol]);
 			getCellFormatter().setHorizontalAlignment(tableRow, tableCol, HasHorizontalAlignment.ALIGN_CENTER);
 			getCellFormatter().setStyleName(tableRow, tableCol, styleBase + "header");
-			
 			getCellFormatter().setWidth(tableRow, tableCol, "200");
-			
-		}
-
-		// now everything else!
-		loadRcvrSchedule(numSchdRows, numSchdCols, schedule, diffSchedule);
-
-	}
-	
-    private void loadRcvrSchedule(int numSchdRows, int numSchdCols, String[][] schedule, String[][] diffSchedule) {
-
-    	String scheduleValue, start, end;
-        int row;
-        int col;
-        int gridCol;
-        String [] daysBetween;
-        
-        int gridRow = 1; // row 0 is the header
-		for (row = 0; row < numSchdRows; row++) {
-	    	// first the diff schedule: first three cols of every row
-			for (col = 0; col < 3; col++) {
-				// don't display the first diff schedule values: they're redundant 
-				scheduleValue = (row == 0 && col > 0) ? "" : diffSchedule[row][col];
-				gridCol = col;
-				getCellFormatter().setStyleName(gridRow, gridCol, styleBase + "header");
-				setHTML(gridRow, gridCol, scheduleValue);
-			}
-	        // then each rcvr		
-			for (col = 1; col < numSchdCols; col++) {
-				//GWT.log("["+Integer.toString(row) + "][" + Integer.toString(col)+"]: "+schedule[row][col], null);
-				scheduleValue = schedule[row][col];
-				boolean on = (scheduleValue.compareTo("T") == 0) ? true : false;
+		}    	
+    }
+    
+    private void renderRows(RcvrScheduleData data) {
+    	
+    	String[] rcvrs = data.getReceiverNames();
+    	RcvrScheduleDate[] rowData = data.getDays();
+    	int gridRow = 1; // row 0 is the header
+    	int colOffset = 3; // first 3 columns are date, up, down
+    	for (int i=0; i<rowData.length; i++) {
+    		// first column  - the date
+    		String dateStr = rowData[i].getDateStr();
+			getCellFormatter().setStyleName(gridRow, 0, styleBase + "header");
+			setHTML(gridRow, 0, dateStr);
+			// next two columns - what's going up & going down
+			getCellFormatter().setStyleName(gridRow, 1, styleBase + "header");
+			setHTML(gridRow, 1, rowData[i].getUpStr());
+			getCellFormatter().setStyleName(gridRow, 2, styleBase + "header");
+			setHTML(gridRow, 2, rowData[i].getDownStr());
+			// remaining columns: on or off indication for each rcvr
+			for (int j=0; j<rcvrs.length; j++) {
+				boolean on = rowData[i].isRcvrAvailable(rcvrs[j]);
 				String styleName = on ? "on" : "off";
-				gridCol = col + 2; // first three cols were date, up, down
+				int gridCol = j + colOffset; 
 	    		getCellFormatter().setStyleName(gridRow, gridCol, styleBase + styleName);
 			    setHTML(gridRow, gridCol, "");
 			}
-			// we've inserted one row of rcvr changes
+            // we're done inserting a row's worth of rcvr scheudle
 			gridRow++;
-			// now, do we need to insert any maintenace days?
+			// but do we also have to show maintenance days?
 			if (showMaintenance) {
-				// if this isn't the last row, how many maintenance days to insert?
-				if (row < numSchdRows - 1) {
-					start = schedule[row][0];
-					end   = schedule[row+1][0];
-					daysBetween = getMaintenanceDaysBetween(start, end);
-				} else {
-					daysBetween = null;
-				}
+				String[] daysBetween = data.getMaintenanceDayStrsBetween(i);
 				// insert the maintenance days
-				if (daysBetween != null) {
-				    for (int mRow = 0; mRow < daysBetween.length; mRow++) {
-				    	setHTML(gridRow, 0, daysBetween[mRow]);
-				    	gridRow++;
-				    }
-				}			
-			}
-		}
-	}
-
-    
-    // given a time range, what are the maintenance dates between them, if any?
-    private String[] getMaintenanceDaysBetween(String startStr, String endStr) {
-    	
-    	Date start = DATE_FORMAT.parse(startStr);
-    	Date end   = DATE_FORMAT.parse(endStr);
-    	ArrayList<Date> mdays = new ArrayList<Date>();
-    	
-    	for (int i = 0; i < maintenanceDays.length; i++) {
-    		// is this day in our range?
-    		Date mday = DATE_FORMAT_MAINT.parse(maintenanceDays[i]);
-    		if (mday.after(start) && mday.before(end)) {
-    		    mdays.add(mday);	
-    		}
+			    for (int mRow = 0; mRow < daysBetween.length; mRow++) {
+			    	setHTML(gridRow, 0, daysBetween[mRow]);
+			    	gridRow++;
+			    }
+			}			
     	}
-    	String[] days = new String[mdays.size()];
-    	for (int i = 0; i < mdays.size(); i++) {
-    		days[i] = DATE_FORMAT.format(mdays.get(i));
-    	}
-    	return days;
+    	
     }
     
 	private void clearAll() {

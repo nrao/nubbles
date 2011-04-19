@@ -29,6 +29,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.ReceiverSchedule;
+import edu.nrao.dss.client.data.RcvrScheduleData;
+import edu.nrao.dss.client.data.RcvrScheduleDate;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 
@@ -55,7 +57,8 @@ public class RcvrChangePanel extends ContentPanel {
 	private SimpleComboBox<String> endDate = new SimpleComboBox<String>();
 	private Button toggle = new Button();
 	
-	private String[][] diffSchedule;
+	//private String[][] diffSchedule;
+	private RcvrScheduleData data;
 	
 	private ReceiverSchedule parent;
 	
@@ -200,8 +203,13 @@ public class RcvrChangePanel extends ContentPanel {
 		});			
 	}
 	
-	public void loadSchedule(String[][] diffSchedule) {
-		this.diffSchedule = diffSchedule;
+	public void loadRcvrScheduleData(RcvrScheduleData data) {
+		this.data = data;
+	    loadRcvrs(data.getReceiverNames());
+	    loadSchedule(data);
+	}
+	
+	private void loadSchedule(RcvrScheduleData data) {
 		
 		// TODO: how to condense this with a function call?
 		startDate.clearSelections();
@@ -213,8 +221,9 @@ public class RcvrChangePanel extends ContentPanel {
 		deleteDate.removeAll();
 		shiftFromDate.removeAll();
 		
-		for (int i = 0; i < diffSchedule.length; i++) {
-			String dt = diffSchedule[i][0];
+		RcvrScheduleDate[] rsDays = data.getDays();
+		for (int i = 0; i < rsDays.length; i++) {
+			String dt = RcvrScheduleData.DATE_FORMAT.format(rsDays[i].getDate()); //diffSchedule[i][0];
 			startDate.add(dt);
 			endDate.add(dt);
 			deleteDate.add(dt);

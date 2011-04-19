@@ -1,5 +1,8 @@
 package edu.nrao.dss.client;
 
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.junit.client.GWTTestCase;
 
 public class TestReceiverSchedule extends GWTTestCase {
@@ -9,13 +12,10 @@ public class TestReceiverSchedule extends GWTTestCase {
 		return "edu.nrao.dss.Nubbles";
 	}
 	
-	public void testSimple() {
-		assertEquals(0, 0);
-	}
-	
 	public void testJsonToRcvrSchedule() {
 		ReceiverSchedule rs = new ReceiverSchedule();
-		//rs.jsonToRcvrSchedule(null);
+        RcvrScheduleJSON json = new RcvrScheduleJSON();		
+		rs.jsonToRcvrSchedule(json);
 	}
 
 }
