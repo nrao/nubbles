@@ -36,7 +36,6 @@ import edu.nrao.dss.client.widget.explorers.WindowedPeriodExplorer;
 // ranges were introduced.
 
 // TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
-// TODO: pretty it up.
 
 public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	
@@ -63,7 +62,6 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	private LabelField end_dt;
 	private LabelField days;
 	private NumberField total;
-	// TODO: maybe these read-only fields should just be labels too?
 	private NumberField billed;
 	private NumberField remaining;
 	private CheckBox cmp; 
@@ -71,6 +69,7 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	private WindowRangeExplorer wre;
 	private WindowedPeriodExplorer wpe;
 	
+	// TODO: we should be taking advantage of the Window class to translate this JSON.
 	protected void translateJson(JSONObject winJson) {
 		
 		handle = winJson.get("handle").isString().stringValue();
@@ -122,7 +121,6 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 		String warnings = (errorMsgs.length() == 0) ? "" : "WARNINGS";
 		
 		// the header is a summary: [date range] time, complete (id) [Warning]
-		// TODO: tell if it's non-contigious!
 		header = "Window [" + startStr + " - " + endStr + "] " + Double.toString(time_remaining) + " Hrs Left; "+ cmpStr + "; (" + Integer.toString(id) + "): " + warnings;
 	}
 	
@@ -255,7 +253,6 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// This is called from the parents initLayout()
 	@Override
 	protected void initGroupPeriodExplorer(FormPanel fp) {
-	    //TODO: add the window range explorer here
         wre = new WindowRangeExplorer(id, handle);
         wre.registerObservers(this);
         fp.add(wre);

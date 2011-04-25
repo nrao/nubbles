@@ -25,9 +25,8 @@ import com.google.gwt.json.client.JSONObject;
 
 public class ElectivesInfoPanel extends PeriodGroupsInfoPanel {
 	
-public ElectivesInfoPanel(String url, String type) {
+    public ElectivesInfoPanel(String url, String type) {
 		super(url, type);
-		// TODO Auto-generated constructor stub
 	}
 
     public void getElectives() {

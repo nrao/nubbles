@@ -64,7 +64,6 @@ public class ElectivePeriodExplorer extends GroupPeriodExplorer {
 	
 	@Override
 	protected void showDlg(Period period) {
-		// TODO Auto-generated method stub
 		GroupPeriodDlg dlg = new GroupPeriodDlg(period, pg);
 	}
 	

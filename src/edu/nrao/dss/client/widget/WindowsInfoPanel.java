@@ -27,7 +27,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public class WindowsInfoPanel extends PeriodGroupsInfoPanel {
 	
-public WindowsInfoPanel(String url, String type) {
+	public WindowsInfoPanel(String url, String type) {
 		super(url, type);
 	}
 

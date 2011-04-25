@@ -36,7 +36,6 @@ import edu.nrao.dss.client.widget.explorers.ElectivePeriodExplorer;
 // ranges were introduced.
 
 // TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
-// TODO: pretty it up.
 
 public class ElectiveInfoPanel extends PeriodGroupInfoPanel {
 	
