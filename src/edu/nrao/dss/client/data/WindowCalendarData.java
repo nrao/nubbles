@@ -21,6 +21,7 @@ public class WindowCalendarData {
 	private Window window;
 	private Date start;
 	private int days;
+	private int calendarSize;
 	private Date end;
 	private Date[] dates;
 	long msPerDay = 1000 * 60 * 60 * 24;
@@ -32,9 +33,9 @@ public class WindowCalendarData {
 		this.days  = days;
 		computeDates();
 		// Calendar displays number of days, plus a 'start' and 'end' column
-		int calendarSize = days + 2;
+		calendarSize = days + 2;
 		on = new boolean[calendarSize ];
-		String info[] = new String[calendarSize];
+		info = new String[calendarSize];
 		window = Window.parseJSON(json);
 		computeDisplayInfo();
 	}
@@ -55,18 +56,13 @@ public class WindowCalendarData {
 		
 		Date wstart = window.getwStart();
 		Date wstop = window.getwEnd();
-        int lastDayIndex = days - 1;
+        int endIndex = calendarSize - 1;
         
-//		Date calStartDate = this.start;
-//		Date calEndDate = this.end;
-//		int numRanges = window.getRanges().length;
-//		int numPeriods = window.getPeriods().length;
-		
 		// the second & last days of the window contain info on what happens to this window
 		// outside of the calendar's range.  
 		// The Start Column:
 		String value, sep;
-		if (start.after(wstart)) {
+		if (start.after(wstart) || start.equals(wstart)) {
 			// we're in the window!
 			on[0] = true; 
 			value = "";
@@ -84,7 +80,7 @@ public class WindowCalendarData {
     		// periods?
 			for (Period p : window.getPeriods()) {
     			if (p.getStart().before(start)) {
-    				value += ", " + calPeriodToText(p) + " on "  + p.getStartString();
+    				value += ", " + calPeriodToText(p) + " on "  + p.getStartDayString();
     			}
     		}
 			// this is what get's displayed!
@@ -95,8 +91,8 @@ public class WindowCalendarData {
 		}
 		
 		// The End Column:
-		if (end.before(wstop)) {
-			on[lastDayIndex] = true; // in the window!
+		if (end.before(wstop) || end.equals(wstop)) {
+			on[endIndex] = true; // in the window!
 			value = "";
 			// window ranges?
 			for (DateRange r : window.getRanges()) {
@@ -112,14 +108,14 @@ public class WindowCalendarData {
     		// periods?
 			for (Period p : window.getPeriods()) {
     			if (p.getStart().after(end)) {
-    				value += ", " + calPeriodToText(p) + " on "  + p.getStartString();
+    				value += ", " + calPeriodToText(p) + " on "  + p.getStartDayString();
     			}
     		}
 			// this is what get's displayed!
-			info[lastDayIndex] = value;
+			info[endIndex] = value;
 		} else {
-			on[lastDayIndex] = false;
-			info[lastDayIndex] = "";
+			on[endIndex] = false;
+			info[endIndex] = "";
 		}
 
 		// now cover the dates between
@@ -153,5 +149,29 @@ public class WindowCalendarData {
 		// Ex: Default (P) (8.0)
 		return def + " " + state + " " + billed;
 		//return text;
+	}
+	
+	public boolean isDateInWindow(Date dt) {
+		return window.isDateInWindow(dt);
+	}
+	
+	public boolean[] getDisplayFlags() {
+		return on;
+	}
+	
+	public boolean isDayNumberInWindow(int day) {
+		return on[day];
+	}
+	
+	public String getDayNumberInfo(int day) {
+		return info[day];
+	}
+	
+	public Date[] getDates() {
+		return dates;
+	}
+	
+	public String getLabel() {
+		return window.getLabel();
 	}
 }

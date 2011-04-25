@@ -183,9 +183,13 @@ public class Period {
 	}
 
 	public String getStartString() {
-		return start.toString(); // TBF
+		return DATE_FORMAT.format(start);
 	}
 
+	public String getStartDayString() {
+		return DAY_FORMAT.format(start);
+	}
+	
 	public int getDuration() {
 		return duration;
 	}

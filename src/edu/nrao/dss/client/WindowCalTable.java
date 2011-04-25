@@ -1,12 +1,19 @@
 package edu.nrao.dss.client;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
-public class WindowCalTable extends FlexTable {
-	private String styleBase = "gwt-RcvrSchdGrid-";
+import edu.nrao.dss.client.data.WindowCalendarData;
 
+public class WindowCalTable extends FlexTable {
+	int numCols;
+	private String styleBase = "gwt-RcvrSchdGrid-";
+    private DateTimeFormat dtFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+    
 	public WindowCalTable() {
 		initLayout();
 	}	
@@ -18,72 +25,66 @@ public class WindowCalTable extends FlexTable {
 	    setCellPadding(1);	
 	    
 	}
-	
-	public void loadCalendar(int rows, int cols, String[] headers, String[][] schedule) {
 
-		int row;
+	// headers = ["Label", "Start", "date 1" ... "date n", "End"]
+	public String[] getHeaders(Date start, int numDays) {
+		numCols = numDays + 3;
+        String[] headers = new String[numCols];
+        String label = "Session (total/billed) Complete?";
+        headers[0] = label;
+        headers[1] = "Start";
+        headers[numCols-1] = "End";		
+		long offset;
+		long msPerDay = 1000 * 60 * 60 * 24;
+		Date[] dates = new Date[numDays];
+        for (int i=0; i<numDays; i++) {		
+		    offset = ((long) i) * msPerDay;
+		    dates[i] = new Date(start.getTime() + offset);
+		    headers[i+2] = dtFormat.format(dates[i]);
+        }    		
+		return headers;
 		
+	}
+	public void renderCalendar(WindowCalendarData[] data, Date start, int numDays) {
+		
+		// prepare for rendering
+        numCols = numDays + 3;
+        String[] headers = getHeaders(start, numDays);
+        
 		// start fresh
 		clearAll();
 
-		// first the header
-		row = 0;
-		for (int col = 0; col < cols; col++) {
+		// first the headers - the first row
+		int row = 0;
+		for (int col = 0; col < numCols; col++) {
 			// TODO: how to set the width of these columns?
 			//getColumnFormatter().setWidth(col, "200px");
 			setHTML(0, col, headers[col]);
 			getCellFormatter().setHorizontalAlignment(0, col, HasHorizontalAlignment.ALIGN_CENTER);
 			getCellFormatter().setStyleName(0, col, styleBase + "header");
-			
 			getCellFormatter().setWidth(row, col, "200");
-			
-		}
+		}        
 		
-		// now the data
-        loadAllDates(rows, cols, schedule);
-	}
+		// now the windows
+		row = 0;
+		int col = 0;
+		for (int i=0; i<data.length; i++) {
+		    WindowCalendarData wd = data[i];
+		    row = i + 1; // first row is the headers
+		    // first column is the window label
+		    getCellFormatter().setStyleName(row, 0, styleBase + "off");
+		    setHTML(row, 0, wd.getLabel());
+		    // the rest are the days in the calendar for this window
+		    //for (int day=0; day<numDays; day++) {
+		    for (int day=0; day<wd.getDisplayFlags().length; day++) {
+		    	col = day+1; // first col. is the session label
+				String styleName = wd.isDayNumberInWindow(day) ? "on" : "off"; 
+				getCellFormatter().setStyleName(row, col, styleBase + styleName);
+		    	setHTML(row, col, wd.getDayNumberInfo(day));
+		    }
+		}		
+ 	}
 	
-    private void loadAllDates(int rows, int cols, String[][] schedule) {
-    	String display;
-    	
-    	// schedule format:
-    	// rows - windows
-    	// columns - first = session name, second = 'start', all others are dates but last (= 'end')
-    	// go through the windows first
-		for (int row = 0; row < rows; row++) {
-			// go through the session name, then each day
-			for (int col = 0; col < cols; col++) {
-				// has the format, either "F", or "T;informative_text", where F or T is the boolean for whether the 
-				// day falls in this particular window
-				String scheduleValue = schedule[row][col];
-				String[] parts = scheduleValue.split(";");
-				
-				// extract the flag ("F" or "T") from the entry to see if this date is part of the window 
-				String flag = parts[0];
-			    if (parts.length > 1) {
-			    	display = parts[1];
-			    } else {
-					display = ""; 
-			    }
-			    // convert flag to a boolean
-				boolean on = (flag.compareTo("T") == 0) ? true : false;
-				
-				// set the style to show whether this date is in the current window
-				String styleName = on ? "on" : "off"; 
-    			if (col != 0) {
-	    			getCellFormatter().setStyleName(row + 1, col, styleBase + styleName);
-				} else {
-					// first column is the session name
-					getCellFormatter().setStyleName(row + 1, col, styleBase + "header");
-				}
-    			
-    			// make sure just the session name goes in the first column
-				String value = (col == 0) ? scheduleValue : display;
-			    setHTML(row + 1, col, value);
-			}
-		}
-	}
-    
 	private void clearAll() {
 		// WTF: I can't believe that this is the only thing that really works - 
 		// what a sucky interface!
