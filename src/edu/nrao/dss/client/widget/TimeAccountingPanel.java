@@ -180,7 +180,8 @@ public class TimeAccountingPanel extends ContentPanel {
 	private void setDefaultField(String label, NumberField nf) {
 		nf.setFieldLabel(label);
 		nf.setReadOnly(true);
-		// TODO: read only fields should just have their background color darkened!
+		// NOTE: it would be good to darken the background of read-only fields
+		// but since it seems we can't do this till they've been rendered, it doesn't work.
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
 		nf.setValidator(new DSSTimeValidator()); 
         // remind the user that they've changed a value		
@@ -199,7 +200,8 @@ public class TimeAccountingPanel extends ContentPanel {
 	}
 	
 	protected void setEditable(NumberField nf) {
-		//TODO: set background color to grey?
+		// NOTE: it would be good to darken the background of read-only fields
+		// but since it seems we can't do this till they've been rendered, it doesn't work.		
 		nf.setReadOnly(false);
 	}
 	
