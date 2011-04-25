@@ -32,12 +32,6 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	private Period period;
 	private TimeAccounting parent; // for callbacks
 	
-//	protected void initLayout() {
-//	    super.initLayout();	
-//	    
-//	    // add the save bar below the description 
-//	}
-	
 	public void setPeriod(Period p) {
 		period = p;
 		setValues(p);
@@ -79,6 +73,8 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	    	nf.el().firstChild().setStyleAttribute("color", "black");
 	    }	
 	}
+
+
 	
 	public void sendUpdates() {
 		
@@ -90,34 +86,16 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		// send all the non-derived values to the server so that time accounting
 		// for the entire project can be updated
 		// 1. update the period object
-        //GWT.log("setting period values", null);
-        
-		period.setDescription(getDescription());
-		period.setScheduled(scheduled.getValue().doubleValue());
-		period.setNot_billable(notBillable.getValue().doubleValue());
-		period.setShort_notice(shortNotice.getValue().doubleValue());
-		period.setLost_time_weather(ltw.getValue().doubleValue());
-		period.setLost_time_rfi(ltr.getValue().doubleValue());
-		period.setLost_time_other(lto.getValue().doubleValue());
-		period.setLost_time_bill_project(lp.getValue().doubleValue());
-		period.setOther_session_weather(osw.getValue().doubleValue());
-		period.setOther_session_rfi(osr.getValue().doubleValue());
-		period.setOther_session_other(oso.getValue().doubleValue());
-		
+        widgetsToPeriod();
 		
 		// 2. convert this info to JSON like stuff
 		HashMap <String, Object> keys = period.toHashMap();
-		//GWT.log("setting keys", null);
 		
 		// 3. send the json
 		JSONRequest.post("/scheduler/period/" + Integer.toString(period.getId()) + "/time_accounting", keys,
 				new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json) {
-						//GWT.log("periods/time_accounting onSuccess", null);
-                        // TODO: now get all the project level time accounting again, since
-						// it all may have changed.
 						if (parent != null) {
-							//GWT.log("calling parent.setTimeAcctFromJSON", null);
 							parent.setTimeAccountingFromJSON(json);
 						}
 						// now, make sure we update ourselves
@@ -129,9 +107,23 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 				});		
 	}
 	
-    public void updatePeriodForm(int periodId) {
+	// data in the wigets gets moved to the period object.
+    public void widgetsToPeriod() {
+		period.setDescription(getDescription());
+		period.setScheduled(scheduled.getValue().doubleValue());
+		period.setNot_billable(notBillable.getValue().doubleValue());
+		period.setShort_notice(shortNotice.getValue().doubleValue());
+		period.setLost_time_weather(ltw.getValue().doubleValue());
+		period.setLost_time_rfi(ltr.getValue().doubleValue());
+		period.setLost_time_other(lto.getValue().doubleValue());
+		period.setLost_time_bill_project(lp.getValue().doubleValue());
+		period.setOther_session_weather(osw.getValue().doubleValue());
+		period.setOther_session_rfi(osr.getValue().doubleValue());
+		period.setOther_session_other(oso.getValue().doubleValue());		
+	}
+
+	public void updatePeriodForm(int periodId) {
     	// get this period from the server and populate the form
-        //GWT.log("updatePeriodForm", null);
         // TODO - should pick up timezone from Schedule
     	JSONRequest.get("/scheduler/periods/UTC/" + Integer.toString(periodId)
     		      , new JSONCallbackAdapter() {
@@ -139,7 +131,6 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
             	// JSON period -> JAVA period
              	Period period = Period.parseJSON(json.get("period").isObject());
              	setPeriod(period);
-                //GWT.log("period onSuccess", null);          
     		}
     	});    	
     }
@@ -166,7 +157,6 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		
 	}
 	
-	// TODO: should probably be able to put stuff like this in the base class
 	public boolean hasChanged() {
 		// check to see if any field has changed
 		if (hasChanged(scheduled) || 
@@ -187,17 +177,10 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 		}	
 	}	
 	
-	private boolean hasChanged(NumberField nf) {
-		double newValue = nf.getValue().doubleValue();
-		double oldValue = nf.getOriginalValue().doubleValue();
-		return (newValue != oldValue);
-	}
-	
-	private boolean hasChanged(TextArea ta) {
-		String newValue = ta.getValue() == null ? "" : ta.getValue();
-		String oldValue = ta.getOriginalValue() == null ? "" : ta.getOriginalValue();
-		return (newValue.compareTo(oldValue) != 0);
-	}
+	// used mostly for unit tests
+    public Period getPeriod() {
+    	return period;
+    }
 	
 }
 

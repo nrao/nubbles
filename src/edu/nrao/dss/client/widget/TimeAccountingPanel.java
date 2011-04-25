@@ -218,4 +218,16 @@ public class TimeAccountingPanel extends ContentPanel {
 	public String getDescription() {
 		return (desc.getValue() == null) ? "" : desc.getValue();
 	}
+
+	protected boolean hasChanged(NumberField nf) {
+		double newValue = nf.getValue().doubleValue();
+		double oldValue = nf.getOriginalValue().doubleValue();
+		return (newValue != oldValue);
+	}
+	
+	protected boolean hasChanged(TextArea ta) {
+		String newValue = ta.getValue() == null ? "" : ta.getValue();
+		String oldValue = ta.getOriginalValue() == null ? "" : ta.getOriginalValue();
+		return (newValue.compareTo(oldValue) != 0);
+	}	
 }
