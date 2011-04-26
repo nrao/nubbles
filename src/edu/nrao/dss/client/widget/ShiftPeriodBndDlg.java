@@ -27,13 +27,25 @@ import edu.nrao.dss.client.Schedule;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 
+// This Dialog provides a way for the user to shift the boundary between two
+// existing periods - and having the server take care of all the time accounting
+// side affects.  Note: does not work when a boundary is along a schedule gap.
 
 public class ShiftPeriodBndDlg extends Dialog {
+	
+	private Period period;	
+	private Schedule schedule;
+	
+	final FormPanel fp = new FormPanel();
+	private Radio bottom = new Radio();  
+	private Radio top = new Radio();  
+	private RadioGroup boundary = new RadioGroup();
+    private DateField changeDate = new DateField();
+    private TimeField changeTime = new TimeField();
+    private SimpleComboBox<String> reasons = new SimpleComboBox<String>();
+    private TextArea desc = new TextArea();
 
-	// TODO: need to refactor this into more methods
-	//public ShiftPeriodDlg(final Period period, ArrayList<String> sess_handles, final Schedule sc) {
 	public ShiftPeriodBndDlg(final Period period, final Schedule sc) {
-		
 		super();
 		
 		this.period = period;
@@ -44,8 +56,6 @@ public class ShiftPeriodBndDlg extends Dialog {
 		setDefaultValues();
 		
 		show();
-		
-		
 	}	
 	
 	private void initLayout() {
@@ -56,26 +66,18 @@ public class ShiftPeriodBndDlg extends Dialog {
 		String txt = "Shift one of the boundaries for Period " + period.getHandle();
 		addText(txt);
 		setButtons(Dialog.OKCANCEL);
-		GWT.log("ShiftPeriodDialogBox", null);
 
 		// now set up the form w/ all it's fields
 		fp.setHeaderVisible(false);
-		
- 
 	
 		// the start date
-	    //final DateField changeDate = new DateField();
-	    //changeDate.setValue(period.getStartDay());
 		changeDate.setFieldLabel("Boundary Date");
 		changeDate.setToolTip("Set the new boundary date");
 	    fp.add(changeDate);
 	    
 	    // start time
-	    //final TimeField changeTime = new TimeField();
 	    changeTime.setTriggerAction(TriggerAction.ALL);
 	    changeTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
-	    //Time t = new Time(period.getStartHour(), period.getStartMinute(), period.getStartTime());
-	    //changeTime.setValue(t);
 	    changeTime.setFieldLabel("Boundary Time");
 	    changeTime.setAllowBlank(false);
 	    changeTime.setEditable(false);
@@ -93,7 +95,6 @@ public class ShiftPeriodBndDlg extends Dialog {
 		fp.add(boundary);
 		
 		// why?
-        //final SimpleComboBox<String> reasons = new SimpleComboBox<String>();
         reasons.add("other_session_weather");
         reasons.add("other_session_rfi");
         reasons.add("other_session_other");
@@ -105,15 +106,12 @@ public class ShiftPeriodBndDlg extends Dialog {
         fp.add(reasons);
         
 		// notes
-		//final TextArea desc = new TextArea();
 		desc.setFieldLabel("Description");
 		desc.setToolTip("Describe why this change is being made. (max. 512 chars.)");
 		fp.add(desc, new FormData(350, 350));
 		add(fp);
 		
-		// done adding fields to form!
-		
-		// TODO: how to size this right?
+		// Note: better way to size this?
 		setWidth(500);
 		setHeight(500);
 		
@@ -121,10 +119,10 @@ public class ShiftPeriodBndDlg extends Dialog {
 	
 	private void initListeners() {
 		
+		// when the top is chosen, set the changeDate to the beginning of the period
 		top.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-				GWT.log("got top click!", null);
 				if (top.getValue()) {
 					setValuesToTop();
 				} else {
@@ -134,10 +132,10 @@ public class ShiftPeriodBndDlg extends Dialog {
 			
 		});
 
+		// when the bottom is chosen, set the changeDate to the end of the period
 		bottom.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			@Override
 			public void handleEvent(BaseEvent be) {
-				GWT.log("got bottom click!", null);
 				if (!bottom.getValue()) {
 					setValuesToTop();
 				} else {
@@ -146,24 +144,6 @@ public class ShiftPeriodBndDlg extends Dialog {
 			}
 			
 		});
-		
-//		boundary.addListener(Events.OnClick, new Listener<BaseEvent>() {
-//
-//			@Override
-//			public void handleEvent(BaseEvent be) {
-//				GWT.log("boundary on blur", null);
-//				// TODO Auto-generated method stub
-//				RadioGroup rg = (RadioGroup) be.getSource();
-//				if ("top" == rg.getValue().getName()) {
-//					GWT.log("set to top!", null);
-//					setValuesToTop();
-//				} else {
-//					setValuesToBottom();
-//				}
-//				
-//			}
-//			
-//		});
 		
 		// Cancel Button: somebody decided to back out
 		Button cancel = getButtonById(Dialog.CANCEL);
@@ -174,7 +154,6 @@ public class ShiftPeriodBndDlg extends Dialog {
 			
 		});
 		
-
 		// OK button: Make the change to the schedule
 		Button ok = getButtonById(Dialog.OK);
 		ok.addListener(Events.OnClick,new Listener<BaseEvent>() {
@@ -209,7 +188,6 @@ public class ShiftPeriodBndDlg extends Dialog {
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								// if the change worked, update the calendar.
-								GWT.log("shift_period_boundaries onSuccess", null);
 								schedule.updateCalendar();
 							}
 						});
@@ -222,38 +200,25 @@ public class ShiftPeriodBndDlg extends Dialog {
 	
 		// default to start of period
 		top.setValue(true);
-		//bottom.setValue(false);
-		
 		setValuesToTop();
 		
 	}
-	
+
+	// init widgets to beginning of period
 	private void setValuesToTop() {
 		changeDate.setValue(period.getStartDay());
-		GWT.log("start time: "+period.getStartTime(), null);
 		Time t = new Time(period.getStartHour(), period.getStartMinute(), period.getStartTime());
 		changeTime.setValue(t);
 	}
 	
+	// init widgets to end of period
 	private void setValuesToBottom() {
 	    changeDate.setValue(period.getEnd());
-		GWT.log("end time: "+period.getEndTime(), null);
 	    Time t = new Time(period.getEndHour(), period.getEndMinute(), period.getEndTime());
 	    changeTime.setValue(t);
 	   
 	}
 	
-	private Period period;	
-	private Schedule schedule;
-	
-	final FormPanel fp = new FormPanel();
-	private Radio bottom = new Radio();  
-	private Radio top = new Radio();  
-	private RadioGroup boundary = new RadioGroup();
-    private DateField changeDate = new DateField();
-    private TimeField changeTime = new TimeField();
-    private SimpleComboBox<String> reasons = new SimpleComboBox<String>();
-    private TextArea desc = new TextArea();
 }
 
 
