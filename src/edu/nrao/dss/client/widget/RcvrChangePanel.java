@@ -57,7 +57,11 @@ public class RcvrChangePanel extends ContentPanel {
 	private SimpleComboBox<String> endDate = new SimpleComboBox<String>();
 	private Button toggle = new Button();
 	
-	//private String[][] diffSchedule;
+	// The date field in the DB for the Receiver Schedule is actually a 
+	// UT datetime; for some long forgotten reason, the time portion is not 
+	// 00:00:00, but 16:00:00. WTF.
+    private String rcvrSchdTime = "16:00:00";
+    
 	private RcvrScheduleData data;
 	
 	private ReceiverSchedule parent;
@@ -157,7 +161,7 @@ public class RcvrChangePanel extends ContentPanel {
 	private TableData newTableData(String px) {
 		TableData td = new TableData();
 		td.setVerticalAlign(VerticalAlignment.TOP);
-		// TODO: why must I do this, just to get the two forms to share space?
+		// Q: why must I do this, just to get the two forms to share space?
 		td.setColspan(1);
 		td.setWidth(px);		
 		return td;
@@ -192,15 +196,6 @@ public class RcvrChangePanel extends ContentPanel {
 			
 			}
 		});	
-		
-		// when startDate is set, default endDate to the same value
-		startDate.addListener(Events.Valid, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				// TODO: don't do this until you can figure out how to allow the user to select from options
-				// even after a this call to setValue
-			    //endDate.setValue(startDate.getValue());
-			}
-		});			
 	}
 	
 	public void loadRcvrScheduleData(RcvrScheduleData data) {
@@ -208,27 +203,27 @@ public class RcvrChangePanel extends ContentPanel {
 	    loadRcvrs(data.getReceiverNames());
 	    loadSchedule(data);
 	}
-	
+
+	// reload the widigets with choices from the current rx schedule
 	private void loadSchedule(RcvrScheduleData data) {
-		
-		// TODO: how to condense this with a function call?
-		startDate.clearSelections();
-		endDate.clearSelections();
-		deleteDate.clearSelections();
-		shiftFromDate.clearSelections();
-		startDate.removeAll();
-		endDate.removeAll();
-		deleteDate.removeAll();
-		shiftFromDate.removeAll();
+		initCombo(startDate);
+		initCombo(endDate);
+		initCombo(deleteDate);
+		initCombo(shiftFromDate);
 		
 		RcvrScheduleDate[] rsDays = data.getDays();
 		for (int i = 0; i < rsDays.length; i++) {
-			String dt = RcvrScheduleData.DATE_FORMAT.format(rsDays[i].getDate()); //diffSchedule[i][0];
+			String dt = RcvrScheduleData.DATE_FORMAT.format(rsDays[i].getDate()); 
 			startDate.add(dt);
 			endDate.add(dt);
 			deleteDate.add(dt);
 			shiftFromDate.add(dt);
 		}
+	}
+
+	private void initCombo(SimpleComboBox<String> combo) {
+		combo.clearSelections();
+		combo.removeAll();
 	}
 	
 	public void loadRcvrs(String[] rcvrs) {
@@ -247,8 +242,8 @@ public class RcvrChangePanel extends ContentPanel {
 		if (from_date == null || from_date.compareTo("") == 0) {
 			return null;
 		}
-		// TODO: rcvr dts in DB are datetimes - the time is set to this.  WTF.
-        from_date += " 16:00:00";
+		// date -> datetime
+        from_date += " " + rcvrSchdTime; 
         return from_date;
 	}
 	
@@ -258,8 +253,8 @@ public class RcvrChangePanel extends ContentPanel {
 			return null;
 		}
 		String date = DateTimeFormat.getFormat("MM/dd/yyyy").format(dt.getValue());
-		// TODO: rcvr dts in DB are datetimes - the time is set to this.  WTF.
-		return date  + " 16:00:00";
+		// date -> datetime
+		return date  + " " + rcvrSchdTime; 
 	}
 	
 	private void shiftRcvrChangeDate() {

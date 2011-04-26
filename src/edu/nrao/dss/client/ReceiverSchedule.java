@@ -60,11 +60,9 @@ public class ReceiverSchedule extends ContentPanel {
 		
         add(grid);
         add(change, new RowData(1, -1, new Margins(4)));
-        
-        //TODO: better way to bind?
+       
         grid.setParent(this);
         change.setParent(this);
-        
 	}	
 
 	// make the call to the server to retrieve the rx calendar
