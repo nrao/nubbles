@@ -39,7 +39,7 @@ public WindowedPeriodExplorer(int periodGroupId, String sessionHandle) {
 		setHeading("Window Periods");
 	}
 
-    // TODO: should we make this a static variable rather then a method?
+    // Note: should we make this a static variable rather then a method?
     // Here's where we distinguish Windowed from Elective Periods
     protected static ColumnType[] getColumnTypes() {
     	ColumnType[] columnTypes = {
