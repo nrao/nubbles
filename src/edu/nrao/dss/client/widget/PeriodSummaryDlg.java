@@ -207,7 +207,6 @@ public class PeriodSummaryDlg extends Dialog {
 		});	
 
 		// for confirming deletion of period
-		// TODO: cut & past from Explorer; refactor?
 		removeDialog = new Dialog();
 		removeDialog.setHeading("Confirmation");
 		removeDialog.addText("Are you sure you want to delete this Period?");

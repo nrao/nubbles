@@ -103,7 +103,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     	hscore.setReadOnly(true);
     	cscore.setFieldLabel("Current Score");
     	cscore.setReadOnly(true);
-    	// TODO
+    	// NOTE: this doesn't work
     	hscore.setStyleAttribute("color", "grey");
     	periodForm2.add(hscore);
     	cscore.setStyleAttribute("color", "grey");
@@ -112,7 +112,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     	// backup 
     	backup.setFieldLabel("Backup");
     	backup.setReadOnly(true);
-    	// TODO
+    	// Note: this doesn't work
     	backup.setStyleAttribute("color", "grey");
     	periodForm2.add(backup);
     	
@@ -167,7 +167,7 @@ public class PeriodSummaryPanel extends ContentPanel {
     private void setReadOnly(String label, TextField<String> tf) {
     	tf.setFieldLabel(label);
     	tf.setReadOnly(true);
-    	// TODO: read-only using background color?
+    	// Note: this doesn't work
     	tf.setStyleAttribute("color", "grey");
     }
     
