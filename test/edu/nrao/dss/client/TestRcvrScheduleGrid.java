@@ -60,6 +60,9 @@ public class TestRcvrScheduleGrid extends GWTTestCase {
 		    assertEquals(rsd.getDays()[i-2].getUpStr(),   rs.getHTML(i, 1));
 		    assertEquals(rsd.getDays()[i-2].getDownStr(), rs.getHTML(i, 2));
 		}
+		assertEquals(true, rs.isMaintenanceDay("04/07/2009"));
+		assertEquals(false, rs.isMaintenanceDay("04/08/2009"));
+		
 	}
 
 }

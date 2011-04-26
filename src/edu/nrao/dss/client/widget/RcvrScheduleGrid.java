@@ -65,8 +65,6 @@ public class RcvrScheduleGrid extends FlexTable {
     private void renderHeaders(String[] headers) {
     	int tableRow = 0;
 		for (int tableCol = 0; tableCol < headers.length; tableCol++) {
-			// TODO: how to set the width of these columns?
-			//getColumnFormatter().setWidth(col, "200px");
 			setHTML(0, tableCol, headers[tableCol]);
 			getCellFormatter().setHorizontalAlignment(tableRow, tableCol, HasHorizontalAlignment.ALIGN_CENTER);
 			getCellFormatter().setStyleName(tableRow, tableCol, styleBase + "header");
@@ -122,8 +120,13 @@ public class RcvrScheduleGrid extends FlexTable {
 		}		
 	}
 	
-	private boolean isMaintenanceDay(String day) {
-	    return false; //TODO:	
+	public boolean isMaintenanceDay(String day) {
+		for (String mday : maintenanceDays) {
+			if (mday.compareTo(day) == 0) {
+				return true; // found it!
+			}
+		}
+	    return false; // couldn't find it:	
 	}
 	
 	public void setMaintenanceDays(String[] maintenanceDays) {

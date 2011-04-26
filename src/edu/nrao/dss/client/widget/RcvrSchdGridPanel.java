@@ -103,7 +103,7 @@ public class RcvrSchdGridPanel extends ContentPanel {
 	private TableData newTableData(String px) {
 		TableData td = new TableData();
 		td.setVerticalAlign(VerticalAlignment.TOP);
-		// TODO: why must I do this, just to get the two forms to share space?
+		// Q: why must I do this, just to get the two forms to share space?
 		td.setColspan(1);
 		td.setWidth(px);		
 		return td;
