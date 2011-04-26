@@ -127,10 +127,8 @@ public class WindowCalendarData {
 	    	// * what day does the default & chosen fall on?
 	    	if (partOfWindow) {
 	    		// any periods on this day?
-	    		//for (int k = 0; k < numPeriods; k++) {
 	    		for (Period p : window.getPeriods()) {
 	    			if (p.getStartDay().equals(dt)) {
-	    			//if (calPeriodDates[k].equals(dates[j])) {
 	    				text += calPeriodToText(p);
 	    			}
 	    		}
@@ -148,7 +146,6 @@ public class WindowCalendarData {
 		String def = p.isDefaultPeriod() ? "Default" : "Chosen";
 		// Ex: Default (P) (8.0)
 		return def + " " + state + " " + billed;
-		//return text;
 	}
 	
 	public boolean isDateInWindow(Date dt) {

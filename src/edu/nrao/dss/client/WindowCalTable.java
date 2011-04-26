@@ -57,8 +57,6 @@ public class WindowCalTable extends FlexTable {
 		// first the headers - the first row
 		int row = 0;
 		for (int col = 0; col < numCols; col++) {
-			// TODO: how to set the width of these columns?
-			//getColumnFormatter().setWidth(col, "200px");
 			setHTML(0, col, headers[col]);
 			getCellFormatter().setHorizontalAlignment(0, col, HasHorizontalAlignment.ALIGN_CENTER);
 			getCellFormatter().setStyleName(0, col, styleBase + "header");
