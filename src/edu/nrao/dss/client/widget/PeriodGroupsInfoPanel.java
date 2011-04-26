@@ -48,7 +48,7 @@ public abstract class PeriodGroupsInfoPanel extends ContentPanel {
 	
 	private void initLayout() {
 
-		// TODO: originally wanted to use this layout, but can't get first panel to display
+		// Note: originally wanted to use this layout, but can't get first panel to display
 		//setLayout(new AccordionLayout());
 		setLayout(new RowLayout(Orientation.VERTICAL));
 

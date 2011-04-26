@@ -35,7 +35,7 @@ import edu.nrao.dss.client.widget.explorers.ElectivePeriodExplorer;
 // what a single row in the elective explorer used to cover, before multiple periods and date 
 // ranges were introduced.
 
-// TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
+// Note: to highlight unsaved changes see TimeAccounting for one way to do this.
 
 public class ElectiveInfoPanel extends PeriodGroupInfoPanel {
 	

@@ -35,7 +35,7 @@ import edu.nrao.dss.client.widget.explorers.WindowedPeriodExplorer;
 // what a single row in the window explorer used to cover, before multiple periods and date 
 // ranges were introduced.
 
-// TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
+// Note: to highlight unsaved changes - see TimeAccounting for one way to do this.
 
 public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	

@@ -34,8 +34,7 @@ import edu.nrao.dss.client.util.JSONRequest;
 // what a single row in the elective explorer used to cover, before multiple periods and date 
 // ranges were introduced.
 
-// TODO: highlight unsaved changes - see TimeAccounting for one way to do this.
-// TODO: pretty it up.
+// NOTE: to highlight unsaved changes - see TimeAccounting for one way to do this.
 
 public abstract class PeriodGroupInfoPanel extends ContentPanel {
 	
