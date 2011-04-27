@@ -96,6 +96,8 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 				new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json) {
 						if (parent != null) {
+							// changing the time accounting for a period makes changes that bubble up
+							// to the session and project.  So if there are other panels to reflect that
 							parent.setTimeAccountingFromJSON(json);
 						}
 						// now, make sure we update ourselves

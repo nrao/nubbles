@@ -172,6 +172,7 @@ public class PeriodSummaryDlg extends Dialog {
 	    
 		// display summary info
 		final PeriodSummaryPanel p = new PeriodSummaryPanel(period);
+		p.hidePeriodPicker();
 		add(p);
 		
 		// TODO: size correctly

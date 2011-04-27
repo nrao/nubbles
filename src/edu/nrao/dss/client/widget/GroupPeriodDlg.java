@@ -60,6 +60,7 @@ public class GroupPeriodDlg extends Dialog {
 	    
 		// display summary info
 		periodPanel = new PeriodSummaryPanel(period);
+		periodPanel.hidePeriodPicker();
 		add(periodPanel);
 		
 		// TODO: size correctly
