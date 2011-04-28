@@ -49,7 +49,7 @@ import edu.nrao.dss.client.widget.PeriodSummaryDlg;
 
 // This class is the new version of the Beta Test's Scheduling Page.
 
-public class Schedule extends ContentPanel {
+public class Schedule extends ContentPanel implements Refresher {
 	
 	public ScheduleCalendar scheduleExplorer;
 	public VacancyControl vacancyControl;
@@ -236,6 +236,7 @@ public class Schedule extends ContentPanel {
 	                 	Period period = Period.parseJSON(json.get("period").isObject());
                         // display info about this period, and give options to change it
 	                 	PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, sess_handles, (Schedule) controlsContainer.getParent());
+	                 	dlg.show();
 		            }
 		    });	            
 	            
@@ -296,6 +297,10 @@ public class Schedule extends ContentPanel {
 		nomineePanel.updateKeys(keys);
 		nomineePanel.loadData();
 		nomineePanel.expand();
+	}
+	
+	public void refresh() {
+		updateCalendar();
 	}
 	
     public void updateCalendar() {

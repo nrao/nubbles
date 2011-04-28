@@ -27,6 +27,7 @@ import com.google.gwt.json.client.JSONObject;
 // comment
 import com.google.gwt.json.client.JSONString;
 
+import edu.nrao.dss.client.Refresher;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 
@@ -36,7 +37,7 @@ import edu.nrao.dss.client.util.JSONRequest;
 
 // NOTE: to highlight unsaved changes - see TimeAccounting for one way to do this.
 
-public abstract class PeriodGroupInfoPanel extends ContentPanel {
+public abstract class PeriodGroupInfoPanel extends ContentPanel implements Refresher {
 	
     // to be set by child
     protected String groupPeriodType;
@@ -237,5 +238,8 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel {
         });			    	
 	}
 	
+	public void refresh() {
+		getPeriodGroup();
+	}
 }
 

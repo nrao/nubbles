@@ -22,6 +22,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 
 import edu.nrao.dss.client.Period;
+import edu.nrao.dss.client.Refresher;
 import edu.nrao.dss.client.Schedule;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -30,8 +31,145 @@ public class PeriodSummaryDlg extends Dialog {
 	
 	private Period period;
 	private Dialog removeDialog;
-	protected Button removeApproval;
-	private Schedule sc_handle;
+	private ArrayList<String> sess_handles;
+	
+	private Button delete = new Button();
+	private Button publish = new Button();
+	private Button change = new Button();
+	private Button shift = new Button();
+	
+	private Button removeApproval = new Button();
+	private  PeriodSummaryPanel periodPanel = new PeriodSummaryPanel(null);
+	
+	private Refresher parent;
+	
+
+	public PeriodSummaryDlg(Period period, ArrayList<String> sess_handles, Refresher parent) {
+		//super();
+		this.parent = parent;
+		this.period = period;
+		this.sess_handles = sess_handles;
+        initLayout();
+        initListeners();
+	}
+	
+	private void initLayout() {
+		
+		setLayout(new FlowLayout());
+		
+		// Basic Dialog settings
+		String txt = "Summary for Period " + period.getHandle();
+		setHeading(txt);
+		setButtons(Dialog.CANCEL);
+		
+		// Delete the Period?
+		delete.setToolTip("Click this button to delete this Period.");
+		delete.setText("Delete Period");
+	    add(delete);
+	    
+		// Publish the Period?
+		publish.setToolTip("Click this button to publish this Period.");
+		publish.setText("Publish Period");
+	    add(publish);	
+	    
+		// Insert a Period?
+		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
+		change.setText("Insert Period");
+	    add(change);
+	    
+	    // shift period boundary?
+		shift.setToolTip("Click this button to shift one of the boundaries of the period (start or end), with the correct time accounting.");
+		shift.setText("Shift Period Boundary");
+	    add(shift);
+	    
+		// display summary info
+	    periodPanel.setPeriod(period);
+		periodPanel.hidePeriodPicker();
+		add(periodPanel);
+
+		Button cancel = getButtonById(Dialog.CANCEL);
+		cancel.setText("Close");
+		cancel.setToolTip("Close this Dialog");
+
+		// for confirming deletion of period
+		removeDialog = new Dialog();
+		removeDialog.setHeading("Confirmation");
+		removeDialog.addText("Are you sure you want to delete this Period?");
+		removeDialog.setButtons(Dialog.YESNO);
+		removeDialog.setHideOnButtonClick(true);
+		removeApproval = removeDialog.getButtonById(Dialog.YES);
+
+		removeDialog.hide();
+		
+		setWidth(700);
+		setAutoHeight(true);
+	}	
+	
+	private void initListeners() {
+	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+	    		tryDeletePeriod();
+	    	}
+	    });
+	    publish.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+	    		publishPeriod();
+	    	}
+	    });	    
+	    shift.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+	    		ShiftPeriodBndDlg dlg = new ShiftPeriodBndDlg(period, (Schedule) parent); //period, sess_handles, sc);
+	    		hide();
+	    	}
+	    });	
+	    change.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+	    		GWT.log("Change Click", null);
+	    		ChangeScheduleDlg dlg = new ChangeScheduleDlg(period, sess_handles, (Schedule) parent);
+	    		hide();
+	    	}
+	    });		    
+		// listener for close w/ out saving changes confirmation
+		final Listener<MessageBoxEvent> cancelListener = new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent ce) {
+            	Button b = (Button) ce.getButtonClicked();
+            	if (b.getItemId().compareTo("yes") == 0) {
+            		// they really want to exit w/ out saving changes
+            		hide();
+            	}
+            }
+        };	
+		Button cancel = getButtonById(Dialog.CANCEL);        
+		cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+				// if they have unsaved changes, double check that they really want to exit
+				if (periodPanel.hasChanged()) {
+					MessageBox.confirm("Period Summary", "You have unsaved changes.  Exit anyways?", cancelListener);
+				} else {
+					hide();
+				}
+			}
+		});		    
+		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				deletePeriod();
+			}
+		});	
+		
+	}
+	
+	public void setPeriod(Period period) {
+		this.period = period;
+	}
+	
+	// some of things in this dialog are only good for the context of
+	// scheduling, so hide them if we don't want them
+	public void notForScheduling() {
+		delete.setVisible(false);
+		shift.setVisible(false);
+		change.setVisible(false);
+	}
 	
 	private void publishPeriod() {
 		String url = "/scheduler/periods/publish/" + Integer.toString(period.getId());
@@ -40,13 +178,10 @@ public class PeriodSummaryDlg extends Dialog {
 		JSONRequest.post(url, keys,
 				new JSONCallbackAdapter() {
 					public void onSuccess(JSONObject json) {
-						//updateCalendar();
-						if (sc_handle != null) {
-						    sc_handle.updateCalendar();
+						if (parent != null) {
+							parent.refresh();
 						}
-						// TODO: really we should refresh this dialog, but no time
-						// for that refactoring right now.
-						close();
+						hide();
 					}
 				});		
 	}
@@ -67,7 +202,7 @@ public class PeriodSummaryDlg extends Dialog {
 		}
 	}
 
-	// Retrieves the lastest value of the Period from the server, checks if it
+	// Retrieves the latest value of the Period from the server, checks if it
 	// can be deleted, then asks for confirmation before zapping it.
 	private void tryDeletePeriod() {
 	    // get this period again - it's time accounting might have changed
@@ -76,7 +211,6 @@ public class PeriodSummaryDlg extends Dialog {
             @Override
             public void onSuccess(JSONObject json) {
             	// JSON period -> JAVA period
-             	//Period period = Period.parseJSON(json.get("period").isObject());
              	period = Period.parseJSON(json.get("period").isObject());
              	
 	    		if (!periodCanBeDeleted(period)) {
@@ -94,137 +228,15 @@ public class PeriodSummaryDlg extends Dialog {
 	// makes call to server for deletion, then updates calendar
 	private final void deletePeriod() {
 		String rootURL = "/scheduler/periods/UTC";
-		JSONRequest.delete(rootURL + "/" + this.period.getId(), //id.intValue(),
-				new JSONCallbackAdapter() {
-					public void onSuccess(JSONObject json) {
-						close();
-						if (sc_handle != null) {
-						    sc_handle.updateCalendar();
-						}    
+		JSONRequest.delete(rootURL + "/" + this.period.getId(), 
+			new JSONCallbackAdapter() {
+				public void onSuccess(JSONObject json) {
+					if (parent != null) {
+					    parent.refresh();
 					}
-				});		
-	}
-	
-	public PeriodSummaryDlg(final Period period, final ArrayList<String> sess_handles, final Schedule sc) {
-		
-		super();
-		setLayout(new FlowLayout());
-	
-		sc_handle = sc;
-		this.period = period;
-		
-		// Basic Dlg settings
-		String txt = "Summary for Period " + period.getHandle();
-		setHeading(txt);
-		setButtons(Dialog.CANCEL);
-		
-		// Delete the Period?
-		Button delete = new Button();
-		delete.setToolTip("Click this button to delete this Period.");
-		delete.setText("Delete Period");
-	    delete.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		tryDeletePeriod();
-	    	}
-	    });	
-	    add(delete);
-	    
-		// Publish the Period?
-		Button publish = new Button();
-		publish.setToolTip("Click this button to publish this Period.");
-		publish.setText("Publish Period");
-	    publish.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		publishPeriod();
-	    	}
-	    });	
-	    add(publish);	
-	    
-		// Insert a Period?
-		Button change = new Button();
-		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
-		change.setText("Insert Period");
-	    change.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		GWT.log("Change Click", null);
-	    		ChangeScheduleDlg dlg = new ChangeScheduleDlg(period, sess_handles, sc);
-	    		close();
-	    	}
-	    });	
-	    add(change);
-	    
-	    // shfit period boundary?
-	    Button shift = new Button();
-		shift.setToolTip("Click this button to shift one of the boundaries of the period (start or end), with the correct time accounting.");
-		shift.setText("Shift Period Boundary");
-	    shift.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	    	@SuppressWarnings("deprecation")
-			public void handleEvent(BaseEvent be) {
-	    		GWT.log("shift Click", null);
-	    		ShiftPeriodBndDlg dlg = new ShiftPeriodBndDlg(period, sc); //period, sess_handles, sc);
-	    		close();
-	    	}
-	    });	
-	    add(shift);
-	    
-		// display summary info
-		final PeriodSummaryPanel p = new PeriodSummaryPanel(period);
-		p.hidePeriodPicker();
-		add(p);
-		
-		// TODO: size correctly
-		//setAutoWidth(true);
-		setWidth(700);
-		//setHeight(400);
-		setAutoHeight(true);
-		show();
-		
-		// listener for close w/ out saving changes confirmation
-		final Listener<MessageBoxEvent> cancelListener = new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent ce) {
-            	Button b = (Button) ce.getButtonClicked();
-            	if (b.getItemId().compareTo("yes") == 0) {
-            		// they really want to exit w/ out saving changes
-            		close();
-            	}
-            }
-        };
-		
-		Button cancel = getButtonById(Dialog.CANCEL);
-		cancel.setText("Close");
-		cancel.setToolTip("Close this Dialog");
-		cancel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				// if they have unsaved changes, double check that they really want to exit
-				if (p.hasChanged()) {
-					MessageBox.confirm("Period Summary", "You have unsaved changes.  Exit anyways?", cancelListener);
-				} else {
-					close();
+					hide();
 				}
-			}
-		});	
-
-		// for confirming deletion of period
-		removeDialog = new Dialog();
-		removeDialog.setHeading("Confirmation");
-		removeDialog.addText("Are you sure you want to delete this Period?");
-		removeDialog.setButtons(Dialog.YESNO);
-		removeDialog.setHideOnButtonClick(true);
-		removeApproval = removeDialog.getButtonById(Dialog.YES);
-		removeApproval.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				deletePeriod();
-			}
-		});	
-		removeDialog.hide();		
-	}	
-	
-	public void setPeriod(Period period) {
-		this.period = period;
+			});		
 	}
-
+	
 }
