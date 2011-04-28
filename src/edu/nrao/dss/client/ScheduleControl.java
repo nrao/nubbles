@@ -163,49 +163,9 @@ public class ScheduleControl extends FormPanel {
 		        
 		TableData tdLeft = new TableData();
 		tdLeft.setVerticalAlign(VerticalAlignment.TOP);
-		// TODO: why must I do this, just to get the two forms to share space?
-		//tdLeft.setColspan(1);
 		tdLeft.setWidth(col2Width);
 		
         add(left, tdLeft);
-        
-//        final FormPanel right = new FormPanel();
-//        right.setHeaderVisible(false);
-//		right.setBorders(false);
-//		right.setLayout(new FillLayout(Orientation.HORIZONTAL));
-//		
-//		right.setSize(400, 50);
-//		
-//		scheduleAverage = new LabelField();
-//		scheduleAverage.setToolTip("Average score of displayed periods resulting from last press of the 'Schedule' button");
-//		scheduleAverage.setFieldLabel("Schedule Average Score");
-//		scheduleAverage.setLabelSeparator(":");
-//		//scheduleAverage.setLabelStyle("font-size : " + labelFontSize);
-//		scheduleAverage.setValue("Schedule Average Score: N/A");
-//		right.add(scheduleAverage, new FillData(new Margins(0, 10, 0, 10)));
-//		
-//		currentAverage = new LabelField();
-//		currentAverage.setToolTip("Current average score of displayed periods");
-//		currentAverage.setFieldLabel("Current Average Score");
-//		currentAverage.setValue("Current Average Score: ");
-//		currentAverage.setLabelStyle("font-size : " + labelFontSize);
-//		right.add(currentAverage, new FillData(new Margins(0, 10, 0, 10)));
-//		
-//		unscheduledTime = new LabelField();
-//		unscheduledTime.setToolTip("Total unscheduled time among displayed periods");
-//		unscheduledTime.setFieldLabel("Unscheduled Time");
-//		unscheduledTime.setValue("Unscheduled Time: ");
-//		unscheduledTime.setLabelStyle("font-size : " + labelFontSize);
-//		right.add(unscheduledTime, new FillData(new Margins(0, 10, 0, 10)));
-//		
-//		TableData tdRight = new TableData();
-//		tdRight.setVerticalAlign(VerticalAlignment.TOP);
-//		// TODO: why must I do this, just to get the two forms to share space?
-//		//tdRight.setColspan(1);
-//		tdRight.setWidth(col1Width);
-//        
-//        add(right, tdRight);
-		
 	}
 	
 	private HashMap<String, Object> getTimeRange() {
