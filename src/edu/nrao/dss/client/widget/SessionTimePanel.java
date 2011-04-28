@@ -33,15 +33,15 @@ import edu.nrao.dss.client.TimeAccounting;
 
 public class SessionTimePanel extends ContentPanel {
 	
-	public SimpleComboBox<String> sessions = new SimpleComboBox<String>();
-	public TextField<String> sessionName = new TextField<String>();
-	public NumberField sessionGrade = new NumberField();
-	public NumberField sessionTime = new NumberField();
-    public SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
+	private SimpleComboBox<String> sessions = new SimpleComboBox<String>();
+	private TextField<String> sessionName = new TextField<String>();
+	private NumberField sessionGrade = new NumberField();
+	private NumberField sessionTime = new NumberField();
+    private SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
 	Button saveSess = new Button("Save Session Changes"); 
 	
 	private String pcode;
-	public ArrayList<String> session_names = new ArrayList<String>();	
+	private ArrayList<String> session_names = new ArrayList<String>();	
 	
 	private ContentPanel parent;
 	
@@ -249,5 +249,9 @@ public class SessionTimePanel extends ContentPanel {
 	
 	public void setParent(ContentPanel parent) {
 		this.parent = parent;
+	}
+	
+	public String getSelectedSession() {
+		return sessions.getSimpleValue();
 	}
 }	

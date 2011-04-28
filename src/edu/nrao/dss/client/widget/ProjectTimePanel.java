@@ -34,11 +34,11 @@ import edu.nrao.dss.client.widget.form.ProjAllotmentFieldSet;
 
 public class ProjectTimePanel extends ContentPanel {
 	// project level
-	public ArrayList<String> project_codes = new ArrayList<String>();
-	public SimpleComboBox<String> projects = new SimpleComboBox<String>();
-	public ProjAllotmentFieldSet projGrade1 = new ProjAllotmentFieldSet();
-	public ProjAllotmentFieldSet projGrade2 = new ProjAllotmentFieldSet();
-	public ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
+	private ArrayList<String> project_codes = new ArrayList<String>();
+	private SimpleComboBox<String> projects = new SimpleComboBox<String>();
+	private ProjAllotmentFieldSet projGrade1 = new ProjAllotmentFieldSet();
+	private ProjAllotmentFieldSet projGrade2 = new ProjAllotmentFieldSet();
+	private ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
 	private Button saveProj = new Button("Save Project Changes");
 	
 	private ContentPanel parent;
@@ -233,5 +233,9 @@ public class ProjectTimePanel extends ContentPanel {
 				populateProjTimeAccounting(json);
 			}
 		});
+	}
+	
+	public String getSelectedProject() {
+		return projects.getSimpleValue();
 	}
 }

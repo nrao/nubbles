@@ -65,7 +65,7 @@ public class TimeAccounting extends ContentPanel {
 	
 	public void sessionSelected(String sessionName) {
 		periodSummary.setVisible(true);
-		periodSummary.setNewPeriods(projectTimePanel.projects.getSimpleValue(), sessionName);
+		periodSummary.setNewPeriods(projectTimePanel.getSelectedProject(), sessionName);
 	}
 	
 	public void updatePCodeOptions() { 
@@ -78,7 +78,7 @@ public class TimeAccounting extends ContentPanel {
        // make sure the project & session panels get updated;
        // periods get updated by default
        projectTimePanel.populateProjTimeAccounting(json);
-       String name = sessionTimePanel.sessionName.getValue();
+       String name = sessionTimePanel.getSelectedSession();
        if (name != null & name != "") {
            sessionTimePanel.populateSessTimeAccounting(json, name);
        }        
