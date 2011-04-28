@@ -87,9 +87,9 @@ public class PeriodSummaryPanel extends ContentPanel {
     	periodForm.add(start);
     	periodForm.add(dur);
     	
-    	moc_ack.setFieldLabel("MOC Acknowledged");
-    	periodForm.add(moc_ack);
-
+    	save.setText("Save Period Changes");
+    	
+    	periodForm.add(save);
     	
     	lc.add(periodForm, td);
     	
@@ -108,7 +108,11 @@ public class PeriodSummaryPanel extends ContentPanel {
     	hscore.setStyleAttribute("color", "grey");
     	periodForm2.add(hscore);
     	cscore.setStyleAttribute("color", "grey");
+
     	periodForm2.add(cscore);
+
+    	setReadOnly("State", state);
+    	periodForm2.add(state);
     	
     	// backup 
     	backup.setFieldLabel("Backup");
@@ -117,16 +121,9 @@ public class PeriodSummaryPanel extends ContentPanel {
     	backup.setStyleAttribute("color", "grey");
     	periodForm2.add(backup);
     	
-    	setReadOnly("State", state);
-    	periodForm2.add(state);
+    	moc_ack.setFieldLabel("MOC Ack.");
+    	periodForm2.add(moc_ack);
     	
-    	// what else?
-    	
-    	// save the changes?
-    	//Button save = new Button();
-    	save.setText("Save Period Time Accounting");
-
-        periodForm2.add(save);
         
     	lc.add(periodForm2, td);
     	
@@ -241,7 +238,6 @@ public class PeriodSummaryPanel extends ContentPanel {
 					periodInfo.put(label, Integer.parseInt(id));
 					
 				}
-				//session.setVisible(false);
 			}
 		});    	
 	}
@@ -254,7 +250,6 @@ public class PeriodSummaryPanel extends ContentPanel {
 		int periodId = periodInfo.get(name);
 		// get this period from the server and update this panel
 		updatePeriodForm(periodId);
-		//setVisible(true);
 	}
 	
     private void setReadOnly(String label, TextField<String> tf) {

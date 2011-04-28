@@ -3,7 +3,6 @@ package edu.nrao.dss.client.widget;
 import java.util.ArrayList;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -12,7 +11,6 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 
-import com.google.gwt.user.client.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -42,8 +40,11 @@ public class ProjectTimePanel extends ContentPanel {
 	public ProjAllotmentFieldSet projGrade2 = new ProjAllotmentFieldSet();
 	public ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
 	private Button saveProj = new Button("Save Project Changes");
+	
 	private ContentPanel parent;
 
+	private String pcode = "";
+	
 	public ProjectTimePanel() {
 		initLayout();
 		initListeners();
@@ -118,14 +119,18 @@ public class ProjectTimePanel extends ContentPanel {
 
 		projects.addListener(Events.Valid, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-				getProjectTimeAccounting();
+				GWT.log("Project Name Selected!");
+				// TODO: we need to figure out why we are getting this event twice!
+				if (project_codes.contains(projects.getSimpleValue()) && (pcode != projects.getSimpleValue())) {
+					pcode = projects.getSimpleValue();
+				    getProjectTimeAccounting();
+				}
 			}
 		});
 
 		saveProj.addListener(Events.OnClick, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-				// save changes to project times, and display new time
-				// accounting
+				// save changes to project times, and display new time accounting
 				sendProjectAllotments();
 			}
 		});
@@ -155,22 +160,6 @@ public class ProjectTimePanel extends ContentPanel {
 					}
 				});
 	}
-
-	// a project has been selected - populate the panel w/ info, and
-	// display candidate sessions to also view.
-//	protected boolean updateProjectSessions() {
-//		// GWT.log("updateProjectSessions", null);
-//		// update the sessions drop down and clear the current selection
-//		String pcode = projects.getSimpleValue();
-//
-//		// don't bother if it doesn't even look like a valid pcode
-//		if ((pcode == null) || (pcode.equals(new String("")))) {
-//			Window.alert("You must select a valid project code.");
-//			return false;
-//		}
-//
-//		return true;
-//	}
 
 	protected void getProjectTimeAccounting() {
 

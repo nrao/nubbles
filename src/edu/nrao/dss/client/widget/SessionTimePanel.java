@@ -1,5 +1,6 @@
 package edu.nrao.dss.client.widget;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -32,17 +33,15 @@ import edu.nrao.dss.client.TimeAccounting;
 
 public class SessionTimePanel extends ContentPanel {
 	
-	public SimpleComboBox<String> sessions = new SimpleComboBox<String>();	
+	public SimpleComboBox<String> sessions = new SimpleComboBox<String>();
 	public TextField<String> sessionName = new TextField<String>();
 	public NumberField sessionGrade = new NumberField();
 	public NumberField sessionTime = new NumberField();
-//	public SimpleComboBox<String> periods = new SimpleComboBox<String>();
     public SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
-//	public HashMap<String, Integer> periodInfo = new HashMap<String, Integer>();
-	Button saveSess = new Button("Save Session Time Accounting");
+	Button saveSess = new Button("Save Session Changes"); 
 	
 	private String pcode;
-	private JSONObject json1;
+	public ArrayList<String> session_names = new ArrayList<String>();	
 	
 	private ContentPanel parent;
 	
@@ -90,6 +89,8 @@ public class SessionTimePanel extends ContentPanel {
 		sessionName.setVisible(false);
 		sessionForm.add(sessionName);
 	
+		sessionForm.add(saveSess);
+		
 		sessionTable.add(sessionForm, tdSess);
 		
 		final FormPanel sessionForm2 = new FormPanel();
@@ -106,8 +107,7 @@ public class SessionTimePanel extends ContentPanel {
 		sessionTime.setFormat(NumberFormat.getFormat("#0.00"));
 		sessionTime.setValidator(new DSSTimeValidator()); 	
 		sessionForm2.add(sessionTime);
-		
-		sessionForm2.add(saveSess);
+
 		
 		sessionTable.add(sessionForm2, tdSess);	
 		
@@ -121,7 +121,9 @@ public class SessionTimePanel extends ContentPanel {
 		sessions.addListener(Events.Valid, new Listener<BaseEvent>() {
 		  	public void handleEvent(BaseEvent be) {
                 // a session has been picked - get it's info from the server
-		  		getSession();
+		  		if (session_names.contains(sessions.getSimpleValue())) {
+		  		    getSession();
+		  		}
 		   	}
 		});		
 		sessionTime.addListener(Events.Blur, new Listener<BaseEvent>() {
@@ -141,6 +143,7 @@ public class SessionTimePanel extends ContentPanel {
 	}
 
 	public void setNewSessions(String pcode) {
+		GWT.log("setNewSessions: " + pcode);
 		this.pcode = pcode;
 		clearAll();
 		updateSessionOptions(pcode);
@@ -165,12 +168,15 @@ public class SessionTimePanel extends ContentPanel {
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
 				// get ready to populate the sessions codes list
+				GWT.log("updateSessionOptions.onSuccess: " + pcode);
 				sessions.clearSelections();
 				sessions.removeAll();
+				session_names.clear();
 				JSONArray names = json.get("session names").isArray();
 				for (int i = 0; i < names.size(); ++i){
 					String name = names.get(i).toString().replace('"', ' ').trim();
 					sessions.add(name);
+					session_names.add(name);
 				}
 			}
 		});    
