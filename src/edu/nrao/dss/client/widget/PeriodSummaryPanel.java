@@ -128,14 +128,14 @@ public class PeriodSummaryPanel extends ContentPanel {
     	lc.add(periodForm2, td);
     	
     	add(lc);
-    	
+
+    	// Time Accounting get's its own form
+    	ta.setHeading("Period Time Accounting");
     	ta.collapse();
     	add(ta);
     	
+    	// initialize the forms!
     	setValues(period);
-    	
-    	// Time Accounting get's its own form
-    	ta.setHeading("Period Time Accounting");
     	ta.setPeriod(period);
     }
     
@@ -200,13 +200,16 @@ public class PeriodSummaryPanel extends ContentPanel {
     	JSONRequest.get("/scheduler/periods/UTC/" + Integer.toString(periodId)
     		      , new JSONCallbackAdapter() {
     		public void onSuccess(JSONObject json) {
-            	// JSON period -> JAVA period
-             	Period period = Period.parseJSON(json.get("period").isObject());
-             	setPeriod(period);
-                //GWT.log("period onSuccess", null);          
+    			loadPeriodJson(json);
     		}
     	});    		
     	
+    }
+
+	// JSON period -> JAVA period
+    public void loadPeriodJson(JSONObject json) {
+     	Period period = Period.parseJSON(json.get("period").isObject());
+     	setPeriod(period);
     }
     
 	// a session has been selected, so now what are the periods that we can choose from?
@@ -220,26 +223,31 @@ public class PeriodSummaryPanel extends ContentPanel {
 			        }}
 			      , new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				// get ready to populate the sessions codes list
-				periods.clearSelections();
-				periods.removeAll();
-				periodInfo.clear();
-				//project_codes.clear();
-				JSONArray ps = json.get("periods").isArray();
-				JSONArray ids = json.get("period ids").isArray();
-				for (int i = 0; i < ps.size(); ++i){
-					// the periods drop down is populated w/ descriptions of the periods
-					String p = ps.get(i).toString().replace('"', ' ').trim();
-					String id = ids.get(i).toString().replace('"', ' ').trim();
-					// the labels displayed need to be unique, so we add the period id at the end
-					String label = p + " (" + id + ")";
-					periods.add(label);
-					// we need to save the mapping from 'description' to 'id'
-					periodInfo.put(label, Integer.parseInt(id));
-					
-				}
+				loadPeriodInfoJson(json);
+
 			}
 		});    	
+	}
+	
+	private void loadPeriodInfoJson(JSONObject json) {
+		// get ready to populate the sessions codes list
+		periods.clearSelections();
+		periods.removeAll();
+		periodInfo.clear();
+		//project_codes.clear();
+		JSONArray ps = json.get("periods").isArray();
+		JSONArray ids = json.get("period ids").isArray();
+		for (int i = 0; i < ps.size(); ++i){
+			// the periods drop down is populated w/ descriptions of the periods
+			String p = ps.get(i).toString().replace('"', ' ').trim();
+			String id = ids.get(i).toString().replace('"', ' ').trim();
+			// the labels displayed need to be unique, so we add the period id at the end
+			String label = p + " (" + id + ")";
+			periods.add(label);
+			// we need to save the mapping from 'description' to 'id'
+			periodInfo.put(label, Integer.parseInt(id));
+			
+		}		
 	}
 	
 	// a period has been selected - so update the period summary panel
@@ -284,5 +292,10 @@ public class PeriodSummaryPanel extends ContentPanel {
     
     public boolean hasChanged() {
     	return ta.hasChanged();
+    }
+    
+    // for testing purposes - summary of the widget values
+    public String[] getTestString() {
+    	return new String[] {label.getValue(), start.getValue(), dur.getValue(), hscore.getValue().toString(), cscore.getValue().toString(), state.getValue()};
     }
 }
