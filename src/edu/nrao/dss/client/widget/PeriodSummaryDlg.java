@@ -3,6 +3,7 @@ package edu.nrao.dss.client.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -11,12 +12,16 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
@@ -57,30 +62,40 @@ public class PeriodSummaryDlg extends Dialog {
 		
 		setLayout(new FlowLayout());
 		
+
 		// Basic Dialog settings
 		String txt = "Summary for Period " + period.getHandle();
 		setHeading(txt);
 		setButtons(Dialog.CANCEL);
+
+		// make all the buttons run horizontally
+	    FormPanel buttonFp = new FormPanel();
+		buttonFp.setLayout(new RowLayout(Orientation.HORIZONTAL));
+		buttonFp.setHeight(45);
+		buttonFp.setHeaderVisible(false);
+		buttonFp.setBodyBorder(false);
+
+		// Publish the Period?
+		publish.setToolTip("Click this button to publish this Period.");
+		publish.setText("Publish Period");
+		buttonFp.add(publish, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
 		
 		// Delete the Period?
 		delete.setToolTip("Click this button to delete this Period.");
 		delete.setText("Delete Period");
-	    add(delete);
-	    
-		// Publish the Period?
-		publish.setToolTip("Click this button to publish this Period.");
-		publish.setText("Publish Period");
-	    add(publish);	
+		buttonFp.add(delete, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
 	    
 		// Insert a Period?
 		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
 		change.setText("Insert Period");
-	    add(change);
+		buttonFp.add(change, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
 	    
 	    // shift period boundary?
 		shift.setToolTip("Click this button to shift one of the boundaries of the period (start or end), with the correct time accounting.");
 		shift.setText("Shift Period Boundary");
-	    add(shift);
+		buttonFp.add(shift, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
+
+	    add(buttonFp);
 	    
 		// display summary info
 	    periodPanel.setPeriod(period);
