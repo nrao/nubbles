@@ -20,7 +20,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.Period;
-import edu.nrao.dss.client.widget.GroupPeriodDlg;
 import edu.nrao.dss.client.widget.PeriodSummaryDlg;
 import edu.nrao.dss.client.widget.form.DateEditField;
 import edu.nrao.dss.client.widget.form.DisplayField;
