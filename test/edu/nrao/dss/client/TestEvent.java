@@ -37,21 +37,21 @@ public class TestEvent extends GWTTestCase {
     	assertEquals("description", a.getDescription());
     	assertEquals(start, a.getStart());
     	assertEquals(end, a.getEnd());
-    	// yellow is the color that some unrecognized type, like 'type' will get
     	assertEquals("gwt-appointment gwt-appointment-yellow", a.getStyleName());
     }
     
     public void testGetAppointments_2() {
     	
-    	// setup a windowed event, over two days
+    	// setup an event over two days
     	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     	Date start = dtf.parse("2006-02-02 22:30:00");
     	Date start_day = dtf.parse("2006-02-02 00:00:00");
+    	// this is one mintue before 2006-02-03, when the first appointment should end
     	Date start_day_end = dtf.parse("2006-02-02 23:59:00");
     	Date end= dtf.parse("2006-02-03 00:30:00");
     	Date end_day = dtf.parse("2006-02-03 00:00:00");
     	String description = "GBT10A-001";
-    	Event e = new Event(1, "", description, start, start_day, end, end_day, "green"); //"default period", "W", "S");
+    	Event e = new Event(1, "", description, start, start_day, end, end_day, "green"); 
 
     	// an event that spans > 1 day, gets multiple appointments
     	ArrayList<Appointment> appts = e.getAppointments();
@@ -62,7 +62,6 @@ public class TestEvent extends GWTTestCase {
     	assertEquals(description + " (Day 1)", a.getDescription());
     	assertEquals(start, a.getStart());
     	assertEquals(start_day_end, a.getEnd());
-    	// default periods for a window are green
     	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());
     	// second day
     	a = appts.get(1);
@@ -70,8 +69,75 @@ public class TestEvent extends GWTTestCase {
     	assertEquals(description + " (Day 2)", a.getDescription());
     	assertEquals(end_day, a.getStart());
     	assertEquals(end, a.getEnd());
-    	// default periods for a window are green
     	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());    	
     	
     }
+    
+    public void testGetAppointments_DST() {
+    	
+    	// setup an event over two days - overlapping with the first day of 
+    	// DST - Daylight Savings Time
+    	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+    	Date start = dtf.parse("2013-11-02 21:00:00");
+    	Date start_day = dtf.parse("2013-11-02 00:00:00");
+    	// this is one mintue before the start day ends, when the first appointment should end
+    	Date start_day_end = dtf.parse("2013-11-02 23:59:00");
+    	Date end= dtf.parse("2013-11-03 03:00:00");
+    	Date end_day = dtf.parse("2013-11-03 00:00:00");
+    	String description = "GBT10A-001";
+    	Event e = new Event(1, "", description, start, start_day, end, end_day, "green"); 
+
+    	// an event that spans > 1 day, gets multiple appointments
+    	ArrayList<Appointment> appts = e.getAppointments();
+    	assertEquals(2, appts.size());
+    	// first day
+    	Appointment a = appts.get(0);
+    	assertEquals("", a.getTitle());
+    	assertEquals(description + " (Day 1)", a.getDescription());
+    	assertEquals(start, a.getStart());
+    	assertEquals(start_day_end, a.getEnd());
+    	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());
+    	// second day
+    	a = appts.get(1);
+    	assertEquals("", a.getTitle());
+    	assertEquals(description + " (Day 2)", a.getDescription());
+    	assertEquals(end_day, a.getStart());
+    	assertEquals(end, a.getEnd());
+    	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());    	
+    	
+    }   
+    
+    public void testGetAppointments_DST_2() {
+    	
+    	// setup an event over two days - overlapping with the end of the first day of 
+    	// DST - Daylight Savings Time
+    	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+    	Date start = dtf.parse("2013-11-03 21:00:00");
+    	Date start_day = dtf.parse("2013-11-03 00:00:00");
+    	// this is one mintue before the start day ends, when the first appointment should end
+    	Date start_day_end = dtf.parse("2013-11-03 23:59:00");
+    	Date end= dtf.parse("2013-11-04 03:00:00");
+    	Date end_day = dtf.parse("2013-11-04 00:00:00");
+    	String description = "GBT10A-001";
+    	Event e = new Event(1, "", description, start, start_day, end, end_day, "green"); 
+
+    	// an event that spans > 1 day, gets multiple appointments
+    	ArrayList<Appointment> appts = e.getAppointments();
+    	assertEquals(2, appts.size());
+    	// first day
+    	Appointment a = appts.get(0);
+    	assertEquals("", a.getTitle());
+    	assertEquals(description + " (Day 1)", a.getDescription());
+    	assertEquals(start, a.getStart());
+    	assertEquals(start_day_end, a.getEnd());
+    	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());
+    	// second day
+    	a = appts.get(1);
+    	assertEquals("", a.getTitle());
+    	assertEquals(description + " (Day 2)", a.getDescription());
+    	assertEquals(end_day, a.getStart());
+    	assertEquals(end, a.getEnd());
+    	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());    	
+    	
+    }  
 }

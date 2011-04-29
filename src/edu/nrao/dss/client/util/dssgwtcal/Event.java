@@ -210,22 +210,25 @@ public class Event {
 			// our Event becomes one or more of their Appointments
 			Appointment appt = new Appointment();
 			appt.setEventId(id);
+			appt.setTitle(title); 
+			appt.setDescription(getAppointmentDescription(daySpan, i));
+            appt.addStyleName(getStyleName());
 			appt.setStart(apptStart);
 			appt.setEnd(apptEnd);
-
-			// TODO: format tittle and description better
-			appt.setTitle(title); // title + " : " + Integer.toString(i));
-			String desc = description;
-			if (daySpan > 0) {
-				desc = desc + " (Day " + Integer.toString(i + 1) + ")";
-			}
-			appt.setDescription(desc);
-            appt.addStyleName(getStyleName());
 			appointments.add(appt);
 		}
 
 	}
 
+	private String getAppointmentDescription(int daySpan, int day) {
+		if (daySpan > 0) {
+			return description + " (Day " + Integer.toString(day + 1) + ")";
+		} else {
+			return description;
+		}
+
+	}
+	
 	private String getStyleName() {
 		return "gwt-appointment-" + color;
 	}
