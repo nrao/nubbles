@@ -35,6 +35,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.PeriodEventAdapter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -354,7 +355,7 @@ public class Schedule extends ContentPanel implements Refresher {
 		dayView.suspendLayout();
 		dayView.clearAppointments();
 		for(Period p : periods) {
-			dayView.addAppointments(periodToCalendarEvent(p).getAppointments());
+			dayView.addAppointments(PeriodEventAdapter.fromPeriod(p).getAppointments());
 		}
 		
 		dayView.resumeLayout();
@@ -369,21 +370,7 @@ public class Schedule extends ContentPanel implements Refresher {
 		// is erased
 		dayView.clearScores();
     }
-    
-    public Event periodToCalendarEvent(Period p) {
-        // TODO: format title & description better			
-	    String title = ""; //Integer.toString(p.getId());
-	    String windowInfo = "";
-	    String session_type = p.getSessionType();
-	    String type = "not windowed!"; // TODO: need better way to indicate period attributes
-	    if (p.isWindowed()) {
-	    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
-	    	type = p.isDefaultPeriod() ? "default period" : "chosen period";
-	    }
-	    String desc = p.getSession() + windowInfo;
-	    return new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), type, session_type, p.getState());
-    }
-    
+   
     
     // gets all the session handles (sess name (proj name)) and holds on to them
     // for use in lists (e.g. PeriodDialog)

@@ -57,17 +57,4 @@ public class TestSchedule extends GWTTestCase {
     	assertEquals(2, periods.get(1).getId());
     	
     }
-    public void testPeriodToCalendarEvent() {
-    	// setup 
-    	Period p = Period.parseJSON(PeriodJSON.getTestPeriodJSON_1());
-    	String name = p.getSession();
-    	Schedule sch = new Schedule();
-    	
-    	Event e = sch.periodToCalendarEvent(p);
-    	assertEquals("", e.title);
-    	assertEquals(name + " +0/-6", e.description);
-    	assertEquals(p.getStart(), e.start);
-    	assertEquals(p.getStartDay(), e.start_day);
-    	
-    }
 }

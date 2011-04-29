@@ -21,10 +21,8 @@ public class Event {
 	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 	private long msInHour = 60 * 60 * 1000;
 	private long msInDay = 24 * 60 * 60 * 1000;
-	private String type;
-	private String session_type;
-	private String state;
 	private DateRange[] dstFiveHourOffsets;
+	private String color;
 
 	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat
 			.getFormat("yyyy-MM-dd HH:mm:ss");
@@ -49,8 +47,7 @@ public class Event {
 	}
 
 	public Event(int id, String title, String description, Date start,
-			Date start_day, Date end, Date end_day, String type,
-			String session_type, String state) {
+			Date start_day, Date end, Date end_day, String color) {
 		this.dstFiveHourOffsets = this.getDSTFiveHourOffsets();
 		this.id = id;
 		this.title = title;
@@ -60,9 +57,7 @@ public class Event {
 		this.end = getSafeEndDate(end); // don't end at midnight, but 1 min.
 										// before
 		this.end_day = end_day;
-		this.type = type;
-		this.session_type = session_type;
-		this.state = state;
+		this.color = color;
 		createAppointments();
 	}
 
@@ -231,59 +226,19 @@ public class Event {
 
 	}
 
-	// TODO: need to improve the way we indicate period attributes
-	public String getStyleName() {
-		String style = "";
-		if (type != "not windowed!") {
-			if (type == "default period") {
-				style = "gwt-appointment-green";
-			} else {
-				style = "gwt-appointment-yellow";
-			}
-		} else {
-			if (session_type.contains("O")) {
-				// Open Session
-				style = "gwt-appointment-blue";
-			} else if (session_type.contains("E")) {
-				// Elective Session
-				style = "gwt-appointment-darkpurple";
-			} else {
-				// Fixed Session
-				style = "gwt-appointment-red";
-			}
-		}
-		// Pending state wins out over everything else
-		if (state.contains("P")) {
-			style = "gwt-appointment-orange";
-		}	
-		return style;
+	private String getStyleName() {
+		return "gwt-appointment-" + color;
 	}
 	
 	public ArrayList<Appointment> getAppointments() {
 		return appointments;
 	}
 	
-	public String getType() {
-		return type;
+	public String getColor() {
+		return color;
 	}
 	
-	public String getSessionType() {
-		return session_type;
-	}
-	
-	public String getState() {
-		return state;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public void setSessionType(String session_type) {
-		this.session_type = session_type;
-	}
-	
-	public void setState(String state) {
-		this.state = state;
+	public void setColor(String color) {
+		this.color = color;
 	}
 }
