@@ -354,22 +354,9 @@ public class Schedule extends ContentPanel implements Refresher {
 		dayView.suspendLayout();
 		dayView.clearAppointments();
 		for(Period p : periods) {
-                // TODO: format title & description better			
-			    String title = ""; //Integer.toString(p.getId());
-			    String windowInfo = "";
-			    String session_type = p.getSessionType();
-			    String type = "not windowed!"; // TODO: need better way to indicate period attributes
-			    if (p.isWindowed()) {
-			    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
-			    	type = p.isDefaultPeriod() ? "default period" : "chosen period";
-			    }
-			    String desc = p.getSession() + windowInfo;
-			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), type, session_type, p.getState());
-		        dayView.addAppointments(event.getAppointments());
-		        
+			dayView.addAppointments(periodToCalendarEvent(p).getAppointments());
 		}
 		
-		//dayView.add
 		dayView.resumeLayout();
 		
 		// clear the header if no scores being displayed
@@ -382,6 +369,21 @@ public class Schedule extends ContentPanel implements Refresher {
 		// is erased
 		dayView.clearScores();
     }
+    
+    public Event periodToCalendarEvent(Period p) {
+        // TODO: format title & description better			
+	    String title = ""; //Integer.toString(p.getId());
+	    String windowInfo = "";
+	    String session_type = p.getSessionType();
+	    String type = "not windowed!"; // TODO: need better way to indicate period attributes
+	    if (p.isWindowed()) {
+	    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
+	    	type = p.isDefaultPeriod() ? "default period" : "chosen period";
+	    }
+	    String desc = p.getSession() + windowInfo;
+	    return new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), type, session_type, p.getState());
+    }
+    
     
     // gets all the session handles (sess name (proj name)) and holds on to them
     // for use in lists (e.g. PeriodDialog)

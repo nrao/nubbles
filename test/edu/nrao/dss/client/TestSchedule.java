@@ -8,6 +8,8 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.junit.client.GWTTestCase;
 
+import edu.nrao.dss.client.util.dssgwtcal.Event;
+
 public class TestSchedule extends GWTTestCase {
 	@Override
 	public String getModuleName() {
@@ -53,6 +55,19 @@ public class TestSchedule extends GWTTestCase {
     	assertEquals(2, periods.size());
     	assertEquals(1, periods.get(0).getId());
     	assertEquals(2, periods.get(1).getId());
+    	
+    }
+    public void testPeriodToCalendarEvent() {
+    	// setup 
+    	Period p = Period.parseJSON(PeriodJSON.getTestPeriodJSON_1());
+    	String name = p.getSession();
+    	Schedule sch = new Schedule();
+    	
+    	Event e = sch.periodToCalendarEvent(p);
+    	assertEquals("", e.title);
+    	assertEquals(name + " +0/-6", e.description);
+    	assertEquals(p.getStart(), e.start);
+    	assertEquals(p.getStartDay(), e.start_day);
     	
     }
 }
