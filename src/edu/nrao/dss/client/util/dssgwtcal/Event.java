@@ -225,38 +225,65 @@ public class Event {
 				desc = desc + " (Day " + Integer.toString(i + 1) + ")";
 			}
 			appt.setDescription(desc);
-
-			// TODO: need to improve the way we indicate period attributes
-			if (type != "not windowed!") {
-				if (type == "default period") {
-					appt.addStyleName("gwt-appointment-green");
-				} else {
-					appt.addStyleName("gwt-appointment-yellow");
-				}
-
-			} else {
-				if (session_type.contains("O")) {
-					// Open Session
-					appt.addStyleName("gwt-appointment-blue");
-				} else if (session_type.contains("E")) {
-					// Elective Session
-					appt.addStyleName("gwt-appointment-darkpurple");
-				} else {
-					// Fixed Session
-					appt.addStyleName("gwt-appointment-red");
-				}
-			}
-
-			if (state.contains("P")) {
-				appt.addStyleName("gwt-appointment-orange");
-			}
-
+            appt.addStyleName(getStyleName());
 			appointments.add(appt);
 		}
 
 	}
 
+	// TODO: need to improve the way we indicate period attributes
+	public String getStyleName() {
+		String style = "";
+		if (type != "not windowed!") {
+			if (type == "default period") {
+				style = "gwt-appointment-green";
+			} else {
+				style = "gwt-appointment-yellow";
+			}
+		} else {
+			if (session_type.contains("O")) {
+				// Open Session
+				style = "gwt-appointment-blue";
+			} else if (session_type.contains("E")) {
+				// Elective Session
+				style = "gwt-appointment-darkpurple";
+			} else {
+				// Fixed Session
+				style = "gwt-appointment-red";
+			}
+		}
+		// Pending state wins out over everything else
+		if (state.contains("P")) {
+			style = "gwt-appointment-orange";
+		}	
+		return style;
+	}
+	
 	public ArrayList<Appointment> getAppointments() {
 		return appointments;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public String getSessionType() {
+		return session_type;
+	}
+	
+	public String getState() {
+		return state;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public void setSessionType(String session_type) {
+		this.session_type = session_type;
+	}
+	
+	public void setState(String state) {
+		this.state = state;
 	}
 }
