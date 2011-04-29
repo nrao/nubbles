@@ -13,7 +13,7 @@ public class TestPeriodEventAdapter  extends GWTTestCase {
 	public String getModuleName() {
 		return "edu.nrao.dss.Nubbles";		
 	}
-	public void testPeriodToCalendarEvent() {
+	public void testFromPeriod() {
 		// setup 
 		Period p = Period.parseJSON(PeriodJSON.getTestPeriodJSON_1());
 		String name = p.getSession();
@@ -25,7 +25,18 @@ public class TestPeriodEventAdapter  extends GWTTestCase {
 		assertEquals(p.getStartDay(), e.start_day);
 		assertEquals("orange", e.getColor());
 	}	
-
+	public void testFromPeriod_2() {
+		// setup 
+		Period p = Period.parseJSON(PeriodJSON.getTestPeriodJSON_2());
+		String name = p.getSession();
+		
+		Event e = PeriodEventAdapter.fromPeriod(p);
+		assertEquals("", e.title);
+		assertEquals(name, e.description);
+		assertEquals(p.getStart(), e.start);
+		assertEquals(p.getStartDay(), e.start_day);
+		assertEquals("blue", e.getColor());
+	}
     public void testGetColor() {
     	// setup 
     	String[] states = {"D","P","S"};
