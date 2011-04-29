@@ -168,4 +168,20 @@ public class TestEvent extends GWTTestCase {
     	assertEquals(end, a.getEnd());
     	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());
     }    
+    
+    // another failing unit test - WTF!!!!  No, this is worth spelling it out:
+    // WHAT THE FUCK!!!!!!!!!!!!!!!!!!!!
+    public void testGetDaySpan() {
+    	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+    	Date start = dtf.parse("2010-11-07 00:30:00");
+    	Date start_day = dtf.parse("2010-11-07 00:00:00");
+    	// this is one mintue before the start day ends, when the first appointment should end
+    	//Date start_day_end = dtf.parse("2013-11-03 23:59:00");
+    	Date end= dtf.parse("2010-11-07 03:15:00");
+    	Date end_day = dtf.parse("2010-11-07 00:00:00");
+    	String description = "GBT10A-001";
+    	Event e = new Event(1, "", description, start, start_day, end, end_day, "green");  	
+    	
+    	assertEquals(0, e.getDaySpan());
+    }
 }

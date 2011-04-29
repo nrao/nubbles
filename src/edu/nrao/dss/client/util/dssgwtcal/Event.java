@@ -158,7 +158,7 @@ public class Event {
 
 	}
 
-	private int getDaySpan() {
+	public int getDaySpan() {
 		long dayStart = getDay(start);
 		long dayEnd = getDay(end, start);
 		return (int) (dayEnd - dayStart);
