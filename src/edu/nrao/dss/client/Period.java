@@ -377,7 +377,11 @@ public class Period {
 	public String getState() {
 		return state;
 	}
-
+	
+    public boolean isDeleted() {
+    	return state.equals("D");
+    }
+    
 	public void setSessionType(String stringValue) {
 		session_type = stringValue;
 	}

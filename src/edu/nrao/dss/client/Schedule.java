@@ -258,7 +258,6 @@ public class Schedule extends ContentPanel implements Refresher {
 
 			@Override
 			public void handleEvent(LoadEvent be) {
-				// TODO Auto-generated method stub
 				startVacancyDateTime = startVacancyDate;
 				startVacancyDateTime.setHours(startVacancyTime.getHour());
 				startVacancyDateTime.setMinutes(startVacancyTime.getMinutes());
@@ -327,26 +326,29 @@ public class Schedule extends ContentPanel implements Refresher {
 	    JSONRequest.get(baseUrl, keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
-	            	// JSON periods -> JAVA periods
-	                List<Period> periods = new ArrayList<Period>();
-	                JSONArray ps = json.get("periods").isArray();
-	                for (int i = 0; i < ps.size(); ++i) {
-	                	Period period = Period.parseJSON(ps.get(i).isObject());
-	                	if (period != null){
-	                		// TODO: really we should be using period state to keep these periods out
-	                		if (period.getDuration() > 0) {
-                        		periods.add(period);
-	                        }
-	                	}
-	                }
 	                // update the gwt-cal widget
-	                loadAppointments(periods);
+	                loadAppointments(jsonToPeriods(json));
 	            }
 	    });
 	    reservations.update(DateTimeFormat.getFormat("MM/dd/yyyy").format(startCalendarDay)
 	    		          , Integer.toString(numCalendarDays));
 	}		
 	    
+    public List<Period> jsonToPeriods(JSONObject json) {
+    	// JSON periods -> JAVA periods
+        List<Period> periods = new ArrayList<Period>();
+        JSONArray ps = json.get("periods").isArray();
+        for (int i = 0; i < ps.size(); ++i) {
+        	Period period = Period.parseJSON(ps.get(i).isObject());
+        	if (period != null){
+        		if (!period.isDeleted()) {
+            		periods.add(period);
+                }
+        	}
+        }
+		return periods;
+    }
+    
     // updates the gwt-cal widget w/ given periods
     private void loadAppointments(List<Period> periods) {	
 		dayView.suspendLayout();

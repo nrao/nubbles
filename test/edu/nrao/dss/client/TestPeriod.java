@@ -27,6 +27,8 @@ public class TestPeriod extends GWTTestCase {
     	assertEquals(handle, p.getHandle());
     	assertEquals(false, p.getMocAck());
     	assertEquals(0.0, p.getBilled());
+    	assertEquals("P", p.getState());
+    	assertEquals(false, p.isDeleted());
     	
     	// more complicated stuff
     	assertEquals(0,p.getWindowDaysAhead());
