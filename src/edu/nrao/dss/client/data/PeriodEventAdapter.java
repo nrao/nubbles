@@ -1,5 +1,7 @@
 package edu.nrao.dss.client.data;
 
+import java.util.HashMap;
+
 import edu.nrao.dss.client.Period;
 import edu.nrao.dss.client.util.dssgwtcal.Event;
 
@@ -9,47 +11,42 @@ import edu.nrao.dss.client.util.dssgwtcal.Event;
 public class PeriodEventAdapter {
 
 	public static Event fromPeriod(Period p) {
-        // TODO: format title & description better			
-	    String title = ""; //Integer.toString(p.getId());
+        // TODO: format title & description better
+		// not using a title saves valuable real estate in the UI
+	    String title = "";
+	    // the description is the session name, plus optional window info
 	    String windowInfo = "";
-	    String session_type = p.getSessionType();
-	    String type = "not windowed!"; // TODO: need better way to indicate period attributes
 	    if (p.isWindowed()) {
 	    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
-	    	type = p.isDefaultPeriod() ? "default period" : "chosen period";
-	    }
+	    } 
 	    String desc = p.getSession() + windowInfo;
-	    String color = PeriodEventAdapter.getColor(type, session_type, p.getState());
-	    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), color); //, type, session_type, p.getState());
-	    //event.setColor(PeriodEventAdapter.getColor(type, session_type, p.getState()));
-	    return event;
+	    // color is a rather complicated mapping of period attributes
+	    String color = PeriodEventAdapter.getColor(p.getState(), p.getSessionType(), p.isDefaultPeriod());
+	    // now that we've translated the period info, create the event
+	    return new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), color); 
 	}	
 	
-	// TODO: need to improve the way we indicate period attributes
-	public static String getColor(String type, String session_type, String state) {
-		String color = new String("");
-		if (type != "not windowed!") {
-			if (type == "default period") {
-				color = "green";
-			} else {
-				color = "yellow";
-			}
+
+	public static String getColor(String periodState, String sessionType, boolean defaultPeriod) {
+		// w/ only two exceptions, we can simply map session type to a color
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("O", "blue");
+		map.put("F", "red");
+		map.put("E", "darkpurple");
+		// but here come the exceptions:
+		String color = "";
+		// 1. all pending periods are orange
+		if (periodState.equals("P")) {
+			color = "orange";
 		} else {
-			if (session_type.contains("O")) {
-				// Open Session
-				color = "blue";
-			} else if (session_type.contains("E")) {
-				// Elective Session
-				color = "darkpurple";
+			// other wise, it's based on the session type;
+			//2.  windows being the other exception
+			if (sessionType.equals("W")) {
+				color = defaultPeriod ? "green" : "yellow";
 			} else {
-				// Fixed Session
-				color = "red";
+				color = map.get(sessionType);
 			}
 		}
-		// Pending state wins out over everything else
-		if (state.contains("P")) {
-			color = "orange";
-		}	
 		return color;
 	}
 }

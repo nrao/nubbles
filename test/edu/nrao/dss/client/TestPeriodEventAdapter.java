@@ -29,24 +29,25 @@ public class TestPeriodEventAdapter  extends GWTTestCase {
     public void testGetColor() {
     	// setup 
     	String[] states = {"D","P","S"};
-    	String[] session_types = {"O","W","E","F"};
-    	String nw = "not windowed!";
-    	String[] types = {nw, "default period", "chosen period"};
+    	String[] sessionTypes = {"O","W","E","F"};
     	
     	// no matter what, all pending events are orange
-    	for (String stype : session_types) {
-    		for (String type : types) {
-    			assertEquals("orange", PeriodEventAdapter.getColor(type, stype, "P"));
+    	for (String stype : sessionTypes) {
+    		for (String type : sessionTypes) {
+    			// Note: defaultPeriod == true for non-windowed periods is a pathological case
+    			// but test it anyways.
+    			assertEquals("orange", PeriodEventAdapter.getColor("P", stype, true));
+    			assertEquals("orange", PeriodEventAdapter.getColor("P", stype, false));
     		}
     	}
     	
     	// make sure all non-pending open are blue
 		for (String state : new String[] {"D", "S"}) {
-			assertEquals("blue", PeriodEventAdapter.getColor(nw, "O", state));
-			assertEquals("red", PeriodEventAdapter.getColor(nw, "F", state));
-			assertEquals("darkpurple", PeriodEventAdapter.getColor(nw, "E", state));
-			assertEquals("green", PeriodEventAdapter.getColor("default period", "W", state));
-			assertEquals("yellow", PeriodEventAdapter.getColor("chosen period", "W", state));
+			assertEquals("blue",       PeriodEventAdapter.getColor(state, "O", false));
+			assertEquals("red",        PeriodEventAdapter.getColor(state, "F", false));
+			assertEquals("darkpurple", PeriodEventAdapter.getColor(state, "E", false));
+			assertEquals("green",      PeriodEventAdapter.getColor(state, "W", true));
+			assertEquals("yellow",     PeriodEventAdapter.getColor(state, "W", false));
     	}
     }
 }
