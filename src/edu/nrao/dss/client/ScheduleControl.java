@@ -60,6 +60,9 @@ public class ScheduleControl extends FormPanel {
 		initListeners();
 	}
 	
+	// TODO: this could be modified to not modify widgets and be more
+	// unit testable!
+	// TODO: fails on DST boundaries!
 	public void setScheduleSummary(List<BaseModelData> data) {
 		if (!schedulePressed) {
 			dataSize = data.size();
