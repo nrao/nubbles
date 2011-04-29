@@ -28,13 +28,12 @@ public class SessionInfoPanel extends ContentPanel {
 	private FormPanel sessForm = new FormPanel();
 	private Anchor anchor = new Anchor("Observers Project Page", "");	
 	private SimpleComboBox<String> sessions = new SimpleComboBox<String>();
-	// TODO: what other fields?
+	// Note: what other fields would be useful here?
 	private TextField<String> type = new TextField<String>();
 
     private HashMap<String, Integer> sessIds = new HashMap<String, Integer>();
     private JSONObject sessJson;
     private WindowsInfoPanel wp;
-    //private TestAccordionPanel ap;
     
 	public SessionInfoPanel() {
 		initLayout();
@@ -83,7 +82,6 @@ public class SessionInfoPanel extends ContentPanel {
 		
 		// don't bother if it doesn't even look like a valid pcode
 		if ((sessionHandle == null) || (sessionHandle.equals(new String("")))) {
-			//Window.alert("You must select a valid project code.");
 			return;
 		}
 		
@@ -99,20 +97,6 @@ public class SessionInfoPanel extends ContentPanel {
 				populateSessionPage(json);
 			}
 		});		
-
-//		// TODO: just a test!
-//		JSONRequest.get("/scheduler/windows", keys, new JSONCallbackAdapter() {
-//			// this url returns all the time accounting for the whole proj., 
-//			// so use it to update the whole UI
-//			public void onSuccess(JSONObject json) {
-//			    //sessJson = json;
-//				GWT.log("Got windows", null);
-//			    GWT.log(json.toString(), null);
-//				//populateSessionPage(json);
-//			}
-//		});			
-		
-	
 	}
 	
 	// gets all project codes form the server and populates the project combo
@@ -128,7 +112,6 @@ public class SessionInfoPanel extends ContentPanel {
 				sessIds.clear();
 				JSONArray sessHandles = json.get("session handles").isArray();
 				JSONArray ids    = json.get("ids").isArray();
-				//GWT.log("got num of sessions: "+Integer.toString(sessHandles.size()), null); 
 				for (int i = 0; i < sessHandles.size(); ++i){
 					String sessHandle = sessHandles.get(i).toString().replace('"', ' ').trim();
 					int id = (int) ids.get(i).isNumber().doubleValue();

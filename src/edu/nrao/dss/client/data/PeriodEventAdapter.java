@@ -11,7 +11,6 @@ import edu.nrao.dss.client.util.dssgwtcal.Event;
 public class PeriodEventAdapter {
 
 	public static Event fromPeriod(Period p) {
-        // TODO: format title & description better
 		// not using a title saves valuable real estate in the UI
 	    String title = "";
 	    // the description is the session name, plus optional window info
