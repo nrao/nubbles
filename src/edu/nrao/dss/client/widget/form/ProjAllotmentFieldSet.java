@@ -53,7 +53,7 @@ public class ProjAllotmentFieldSet extends FieldSet {
 	private void setReadOnlyField(String label, NumberField nf) {
 	    nf.setFieldLabel(label);
 	    nf.setReadOnly(true);
-	    // TODO: use background color!
+	    // Note: this does not work!
 	    nf.setStyleAttribute("color", "grey");
 		nf.setFormat(NumberFormat.getFormat("#0.00"));
 	}

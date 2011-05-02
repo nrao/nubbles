@@ -60,7 +60,6 @@ public class TestRcvrScheduleData extends GWTTestCase {
 
 	@Override
 	public String getModuleName() {
-		// TODO Auto-generated method stub
 		return "edu.nrao.dss.Nubbles";
 	}
 }

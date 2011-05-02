@@ -20,7 +20,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.Period;
-import edu.nrao.dss.client.widget.GroupPeriodDlg;
+import edu.nrao.dss.client.widget.PeriodSummaryDlg;
 import edu.nrao.dss.client.widget.form.DateEditField;
 import edu.nrao.dss.client.widget.form.DisplayField;
 import edu.nrao.dss.client.widget.form.TimeField;
@@ -64,7 +64,9 @@ public class ElectivePeriodExplorer extends GroupPeriodExplorer {
 	
 	@Override
 	protected void showDlg(Period period) {
-		GroupPeriodDlg dlg = new GroupPeriodDlg(period, pg);
+		PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, null, pg);
+		dlg.notForScheduling();
+		dlg.show();
 	}
 	
 }	

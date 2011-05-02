@@ -35,6 +35,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.PeriodEventAdapter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -49,7 +50,7 @@ import edu.nrao.dss.client.widget.PeriodSummaryDlg;
 
 // This class is the new version of the Beta Test's Scheduling Page.
 
-public class Schedule extends ContentPanel {
+public class Schedule extends ContentPanel implements Refresher {
 	
 	public ScheduleCalendar scheduleExplorer;
 	public VacancyControl vacancyControl;
@@ -236,6 +237,7 @@ public class Schedule extends ContentPanel {
 	                 	Period period = Period.parseJSON(json.get("period").isObject());
                         // display info about this period, and give options to change it
 	                 	PeriodSummaryDlg dlg = new PeriodSummaryDlg(period, sess_handles, (Schedule) controlsContainer.getParent());
+	                 	dlg.show();
 		            }
 		    });	            
 	            
@@ -257,7 +259,6 @@ public class Schedule extends ContentPanel {
 
 			@Override
 			public void handleEvent(LoadEvent be) {
-				// TODO Auto-generated method stub
 				startVacancyDateTime = startVacancyDate;
 				startVacancyDateTime.setHours(startVacancyTime.getHour());
 				startVacancyDateTime.setMinutes(startVacancyTime.getMinutes());
@@ -298,6 +299,10 @@ public class Schedule extends ContentPanel {
 		nomineePanel.expand();
 	}
 	
+	public void refresh() {
+		updateCalendar();
+	}
+	
     public void updateCalendar() {
     	// construct the url that gets us our periods for the explorer
 		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(startCalendarDay);
@@ -322,47 +327,37 @@ public class Schedule extends ContentPanel {
 	    JSONRequest.get(baseUrl, keys, new JSONCallbackAdapter() {
 	            @Override
 	            public void onSuccess(JSONObject json) {
-	            	// JSON periods -> JAVA periods
-	                List<Period> periods = new ArrayList<Period>();
-	                JSONArray ps = json.get("periods").isArray();
-	                for (int i = 0; i < ps.size(); ++i) {
-	                	Period period = Period.parseJSON(ps.get(i).isObject());
-	                	if (period != null){
-	                		// TODO: really we should be using period state to keep these periods out
-	                		if (period.getDuration() > 0) {
-                        		periods.add(period);
-	                        }
-	                	}
-	                }
 	                // update the gwt-cal widget
-	                loadAppointments(periods);
+	                loadAppointments(jsonToPeriods(json));
 	            }
 	    });
 	    reservations.update(DateTimeFormat.getFormat("MM/dd/yyyy").format(startCalendarDay)
 	    		          , Integer.toString(numCalendarDays));
 	}		
 	    
+    public List<Period> jsonToPeriods(JSONObject json) {
+    	// JSON periods -> JAVA periods
+        List<Period> periods = new ArrayList<Period>();
+        JSONArray ps = json.get("periods").isArray();
+        for (int i = 0; i < ps.size(); ++i) {
+        	Period period = Period.parseJSON(ps.get(i).isObject());
+        	if (period != null){
+        		if (!period.isDeleted()) {
+            		periods.add(period);
+                }
+        	}
+        }
+		return periods;
+    }
+    
     // updates the gwt-cal widget w/ given periods
     private void loadAppointments(List<Period> periods) {	
 		dayView.suspendLayout();
 		dayView.clearAppointments();
 		for(Period p : periods) {
-                // TODO: format title & description better			
-			    String title = ""; //Integer.toString(p.getId());
-			    String windowInfo = "";
-			    String session_type = p.getSessionType();
-			    String type = "not windowed!"; // TODO: need better way to indicate period attributes
-			    if (p.isWindowed()) {
-			    	windowInfo = " +" + Integer.toString(p.getWindowDaysAhead()) + "/-" + Integer.toString(p.getWindowDaysAfter());
-			    	type = p.isDefaultPeriod() ? "default period" : "chosen period";
-			    }
-			    String desc = p.getSession() + windowInfo;
-			    Event event = new Event(p.getId(), title, desc, p.getStart(), p.getStartDay(), p.getEnd(), p.getEndDay(), type, session_type, p.getState());
-		        dayView.addAppointments(event.getAppointments());
-		        
+			dayView.addAppointments(PeriodEventAdapter.fromPeriod(p).getAppointments());
 		}
 		
-		//dayView.add
 		dayView.resumeLayout();
 		
 		// clear the header if no scores being displayed
@@ -375,6 +370,7 @@ public class Schedule extends ContentPanel {
 		// is erased
 		dayView.clearScores();
     }
+   
     
     // gets all the session handles (sess name (proj name)) and holds on to them
     // for use in lists (e.g. PeriodDialog)

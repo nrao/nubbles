@@ -141,8 +141,7 @@ public class RcvrScheduleData {
     		    mdays.add(mday);	
     		}
     	}
-    	// TODO: why doesn't this work?
-    	//return (Date[]) mdays.toArray();
+
     	Date[] mds = new Date[mdays.size()];
     	for (int i = 0; i < mdays.size(); i++) {
     	    mds[i] = mdays.get(i);

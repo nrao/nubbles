@@ -21,10 +21,8 @@ public class Event {
 	private ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 	private long msInHour = 60 * 60 * 1000;
 	private long msInDay = 24 * 60 * 60 * 1000;
-	private String type;
-	private String session_type;
-	private String state;
 	private DateRange[] dstFiveHourOffsets;
+	private String color;
 
 	private static final DateTimeFormat DATE_FORMAT = DateTimeFormat
 			.getFormat("yyyy-MM-dd HH:mm:ss");
@@ -49,8 +47,7 @@ public class Event {
 	}
 
 	public Event(int id, String title, String description, Date start,
-			Date start_day, Date end, Date end_day, String type,
-			String session_type, String state) {
+			Date start_day, Date end, Date end_day, String color) {
 		this.dstFiveHourOffsets = this.getDSTFiveHourOffsets();
 		this.id = id;
 		this.title = title;
@@ -60,9 +57,7 @@ public class Event {
 		this.end = getSafeEndDate(end); // don't end at midnight, but 1 min.
 										// before
 		this.end_day = end_day;
-		this.type = type;
-		this.session_type = session_type;
-		this.state = state;
+		this.color = color;
 		createAppointments();
 	}
 
@@ -163,7 +158,7 @@ public class Event {
 
 	}
 
-	private int getDaySpan() {
+	public int getDaySpan() {
 		long dayStart = getDay(start);
 		long dayEnd = getDay(end, start);
 		return (int) (dayEnd - dayStart);
@@ -215,48 +210,38 @@ public class Event {
 			// our Event becomes one or more of their Appointments
 			Appointment appt = new Appointment();
 			appt.setEventId(id);
+			appt.setTitle(title); 
+			appt.setDescription(getAppointmentDescription(daySpan, i));
+            appt.addStyleName(getStyleName());
 			appt.setStart(apptStart);
 			appt.setEnd(apptEnd);
-
-			// TODO: format tittle and description better
-			appt.setTitle(title); // title + " : " + Integer.toString(i));
-			String desc = description;
-			if (daySpan > 0) {
-				desc = desc + " (Day " + Integer.toString(i + 1) + ")";
-			}
-			appt.setDescription(desc);
-
-			// TODO: need to improve the way we indicate period attributes
-			if (type != "not windowed!") {
-				if (type == "default period") {
-					appt.addStyleName("gwt-appointment-green");
-				} else {
-					appt.addStyleName("gwt-appointment-yellow");
-				}
-
-			} else {
-				if (session_type.contains("O")) {
-					// Open Session
-					appt.addStyleName("gwt-appointment-blue");
-				} else if (session_type.contains("E")) {
-					// Elective Session
-					appt.addStyleName("gwt-appointment-darkpurple");
-				} else {
-					// Fixed Session
-					appt.addStyleName("gwt-appointment-red");
-				}
-			}
-
-			if (state.contains("P")) {
-				appt.addStyleName("gwt-appointment-orange");
-			}
-
 			appointments.add(appt);
 		}
 
 	}
 
+	private String getAppointmentDescription(int daySpan, int day) {
+		if (daySpan > 0) {
+			return description + " (Day " + Integer.toString(day + 1) + ")";
+		} else {
+			return description;
+		}
+
+	}
+	
+	private String getStyleName() {
+		return "gwt-appointment-" + color;
+	}
+	
 	public ArrayList<Appointment> getAppointments() {
 		return appointments;
+	}
+	
+	public String getColor() {
+		return color;
+	}
+	
+	public void setColor(String color) {
+		this.color = color;
 	}
 }

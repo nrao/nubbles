@@ -110,5 +110,11 @@ public class PeriodJSON extends TestJSON {
     	json.addWindowedInfo("2009-06-01","2009-06-07",true);	
     	return json;
 	}
-
+	static PeriodJSON getTestPeriodJSON_2() {
+    	String handle = "GBT10B (GBT10B-001) 1";
+    	String session_name = "GBT10B-001";
+    	JSONObject session = new JSONObject();
+    	PeriodJSON json = new PeriodJSON(2, session, handle, session_name, "2009-06-02", "14:00", "2009-06-02", "15:00", 1.0, "S", "O", false);
+    	return json;
+	}
 }

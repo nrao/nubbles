@@ -232,4 +232,23 @@ public class TimeAccountingPanel extends ContentPanel {
 		String oldValue = ta.getOriginalValue() == null ? "" : ta.getOriginalValue();
 		return (newValue.compareTo(oldValue) != 0);
 	}	
+	
+	public void clearAll() {
+	    scheduled.clear();
+	    timeBilled.clear();
+	    observed.clear();
+	    unaccounted.clear();
+	    notBillable.clear();
+	    shortNotice.clear();
+	    lt.clear();
+	    ltw.clear();
+	    ltr.clear();
+	    lto.clear();
+	    lp.clear();
+	    os.clear();
+	    osw.clear();
+	    osr.clear();
+	    oso.clear();
+	    desc.clear();		
+	}
 }

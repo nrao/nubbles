@@ -6,19 +6,19 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
 public class DSSTimeValidator implements Validator {
 	@Override
 	public String validate(Field<?> field, String value) {
-    	// TODO: reg. expression would be more elegant
-//	    String timeReg = "";
-//	    value.matches(timeReg)
-    	if (value.endsWith(".00") || value.endsWith(".0") || value.endsWith(".25") || value.endsWith(".50") || value.endsWith(".5") || value.endsWith(".75")) {
-    		//return null;
-		} else {
-			return "Time must be on 15-min boundary";
-		}		
-    	if (value.startsWith("-")) {
+
+		// make sure it's positive
+		Double hours = Double.parseDouble(value);
+		if (hours < 0.0) {
     		return "Time must be positive hours";
-    	}
-    	
-    	// valid
+			
+		}
+		// make sure it's on 15 minute boundaries
+		Double minutes = hours * 60.0;
+		if (minutes % 15.0 != 0.0) {
+			return "Time must be on 15-min boundary";
+		}
+    	// well, it must be valid
     	return null;
 	}
 }

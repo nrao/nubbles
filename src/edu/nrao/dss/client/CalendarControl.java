@@ -59,13 +59,12 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 
 		TableData tdLeft = new TableData();
 		tdLeft.setVerticalAlign(VerticalAlignment.TOP);
-		// TODO: why must I do this, just to get the two forms to share space?
+		// Question: why must I do this, just to get the two forms to share space?
 		tdLeft.setColspan(1);
 		tdLeft.setWidth(leftWidth);
 		
 		TableData tdRight = new TableData();
 		tdRight.setVerticalAlign(VerticalAlignment.TOP);
-		// TODO: why must I do this, just to get the two forms to share space?
 		tdRight.setColspan(1);
 		tdRight.setWidth(rightWidth);
 
