@@ -31,7 +31,7 @@ public class Scheduler extends Viewport implements EntryPoint {
               box.close();
             }
         };
-        t.schedule(15000);
+        t.schedule(10000);
     }
 
     private void initLayout() {
@@ -71,7 +71,7 @@ public class Scheduler extends Viewport implements EntryPoint {
         factors = new Factors(sch.getFactorsDlg(), new FactorsTab(tabPanel));
 
         RootPanel rp = RootPanel.get();
-        rp.add(new Html("<br/><a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/DSSOverview.html\" target=\"_blank\">Weather</a> | <a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/CloudCoverage.html\" target=\"_blank\">Cloud Coverage</a> | <a href=\"mailto:helpdesk-dss@gb.nrao.edu\">Help Desk</a> | <a href=\"#\" onClick=\"window.open('/scheduler/projects/ical', 'iCalendar', 'scrollbars=yes');return false;\">iCalendar</a>"));
+        rp.add(new Html("<br/><a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/DSSOverview.html\" target=\"_blank\">Weather</a> | <a href=\"http://www.gb.nrao.edu/~rmaddale/Weather/CloudCoverage.html\" target=\"_blank\">Cloud Coverage</a> | <a href=\"mailto:helpdesk-dss@gb.nrao.edu\">Help Desk</a> | <a href=\"#\" onClick=\"window.open('/scheduler/projects/ical', 'iCalendar', 'scrollbars=yes');return false;\">iCalendar</a> | <a href=\"/accounts/logout/\">Logout</a>"));
         rp.add(tabPanel);
     }
     

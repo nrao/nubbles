@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.event.Listener;
 
 import edu.nrao.dss.client.ReceiverSchedule;
+import edu.nrao.dss.client.data.RcvrScheduleData;
 
 // class is responsible for the panel that specifies what part of the rx schedule
 // to request, and uses RcvrScheduleGrid for displaying that schedule
@@ -143,15 +144,11 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		parent.getRcvrSchedule(start.getValue(), numDays, showMnt.getValue());
 	}
 	
-	public void loadSchedule(String[] headers, int rows, int cols, String[][] schedule, String[][] diffSchd) {
-		grid.loadSchedule(headers, rows, cols, schedule, diffSchd);
+	public void loadRcvrScheduleData(RcvrScheduleData data) {
+		grid.loadRcvrScheduleData(data);
 	}
 	
 	public void setParent(ReceiverSchedule rs) {
 		parent = rs;
-	}
-	
-	public void setMaintenanceDays(String[] maintenanceDays) {
-		grid.setMaintenanceDays(maintenanceDays);
 	}
 }

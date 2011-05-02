@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
+import edu.nrao.dss.client.data.RcvrScheduleData;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.widget.RcvrChangePanel;
@@ -90,130 +91,12 @@ public class ReceiverSchedule extends ContentPanel {
 	// and passes this on to widgets for display
 	public void jsonToRcvrSchedule(JSONObject json) {
 		
-		// construct the header for the rcvr schedule calendar
-		JSONArray rcvrs = json.get("receivers").isArray();
-		int numRcvrs = rcvrs.size();
-		// headers start w/ the date, up rx, down rx, then the list of the rcvrs
-		int offset = 3;
-		String[] headers = new String[numRcvrs + offset];
-		headers[0] = "Date";
-		headers[1] = "Up";
-		headers[2] = "Down";
-		String rcvr;
-		String [] rx = new String[numRcvrs];
-		for (int i = 0; i < numRcvrs; i++) {
-			rcvr = rcvrs.get(i).isString().stringValue();
-			headers[i+offset] = rcvr;
-			rx[i] = rcvr;
-		}
-	
-		// now, get the rest of the schedule
-		JSONObject schedule = json.get("schedule").isObject();
-		int numDays = schedule.keySet().size();
-		String[][] calendar = getRcvrCalStrs(schedule, rx, numDays);
-
+		RcvrScheduleData rsd = RcvrScheduleData.parseJSON(json);
 		
-		// get the diff schedule
-		JSONArray diff = json.get("diff").isArray();
-		String[][] diffCalendar = new String[diff.size()][4];
-		String day, up, down, available, on;
-		for (int i = 0; i < diff.size(); i++) {
-			JSONObject diffDay = diff.get(i).isObject();
-			day = diffDay.get("day").isString().stringValue();
-			// get the list of rcvrs that are going up this day
-			JSONArray ups = diffDay.get("up").isArray(); //.isString().stringValue();
-			up = "";
-			for (int j = 0; j<ups.size(); j++) {
-				up += ups.get(j).isString().stringValue() + " ";
-			}
-			// get the list of rcvrs that are going down this day
-			JSONArray downs = diffDay.get("down").isArray(); // .isString().stringValue();
-			down = "";
-			for (int j = 0; j<downs.size(); j++) {
-				down += downs.get(j).isString().stringValue() + " ";
-			}
-			// for this same day, use the earlier rcvr calendar to determine the 
-			// longer list of rcvrs that will be available at the end of this day
-			// TODO: deprecated
-			available = "";
-
-			diffCalendar[i][0] = day;
-			diffCalendar[i][1] = up;
-			diffCalendar[i][2] = down;
-			diffCalendar[i][3] = available;
-		}
-
-		
-		// get the maintenance days
-		JSONArray maintJson = json.get("maintenance").isArray();		
-		String[] maintenanceDays = new String[maintJson.size()];
-		String mDay;
-		for (int i = 0; i < maintJson.size(); i++) {
-			//JSONObject mObj = maintJson.get(i).isObject();
-			//mDay = mObj.get("date").isString().stringValue();
-			mDay = maintJson.get(i).isString().stringValue();
-			maintenanceDays[i] = mDay;
-		}
-
-		// send this info down to the widgets for display
 		// populate drop-down widget for rx, and dates for the other drop-downs
-		change.loadRcvrs(rx);
-		change.loadSchedule(calendar);
+		change.loadRcvrScheduleData(rsd);
 		
 		// use these to create the grid
-		grid.loadSchedule(headers, numDays, rx.length + 1, calendar, diffCalendar);
-		grid.setMaintenanceDays(maintenanceDays);
-	}
-
-	// this converts part of the JSON we get back from the server and the list of all rcvrs (plus the date)
-	// and converts it to a 2-D string representation of what we're supposed to display in the 
-	// Receiver Schedule calendar.
-	private String [][] getRcvrCalStrs(JSONObject schedule, String[] rcvrs, int numDays) {
-		String rcvr;
-		
-		int numRcvrs = rcvrs.length;
-		// the calendar is as wide as the number of rx, plus the date column
-		String[][] calendar = new String[numDays][numRcvrs + 1];
-		
-		// the entries in this dictionary are date strings: we need to turn them into
-		// Date objects so we can sort them, then use them as keys to get the
-		// rcvr schedule in the correct order.
-		TreeSet<Date> dates = new TreeSet<Date>(); //schedule.keySet());
-		for (String dateStr : schedule.keySet()) {
-		    Date dt = DATE_FORMAT.parse(dateStr);
-		    dates.add(dt);
-		}
-		
-		// now we have the dates in the right order, so we can populate the calendar
-		int row = 0;
-		for (Date date : dates) { 
-			// the first column in each row is the date of the rcvr change
-			String dtStr = DATE_FORMAT.format(date);
-			calendar[row][0] = dtStr;
-			// here we have the rcvr's available on this date
-			JSONArray onRcvrs = schedule.get(dtStr).isArray();
-			// put them in an array so we can test if a given rcvr is
-			// available or not
-			ArrayList<String> onRcvrList = new ArrayList<String>();
-            for (int i = 0; i < onRcvrs.size(); i++) {
-            	onRcvrList.add(onRcvrs.get(i).isString().stringValue());
-            }
-		    // go through the list of rcvrs
-			for (int i = 0; i < numRcvrs; i++) {
-				rcvr = rcvrs[i];
-				// if this rcvr is in the list of the available rcvrs
-				// indicate that somehow
-				if (onRcvrList.contains(rcvr)) {
-					calendar[row][i+1] = "T"; 
-				} else {
-					calendar[row][i+1] = "F"; 
-				}
-			}
-			onRcvrList.clear();
-			row += 1;
-		}    	
-		
-		return calendar;
-		
+		grid.loadRcvrScheduleData(rsd);
 	}
 }
