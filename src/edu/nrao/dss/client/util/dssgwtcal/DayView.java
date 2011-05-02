@@ -23,20 +23,29 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
+// This subclass of the CalendarView is what brings all the DayView* classes
+// together to actually implement a calendar table with hours as rows and 
+// days as columns.
+
 public class DayView extends CalendarView {
 
-    // <editor-fold desc="Static Fields" defaultState="collapse">
     private static final String GWT_CALENDAR_STYLE = "gwt-cal";
-    // </editor-fold>
-    // <editor-fold desc="Private Fields" defaultState="collapse">
+    
+    // for the header (ex: | 2011 | Mon, May 2 | Tue, May 3 |)
     private DayViewHeader dayViewHeader = null;
+    
+    // this actually creates the table with hours as rows and days as columns.
     private DayViewBody dayViewBody = null;
+    
+    // the way in which we show 'stuff' (Appointment objects) in this calendar view
+    // is coded in this class.
     private DayViewLayoutStrategy layoutStrategy = null;
+    
     private boolean lastWasKeyDown = false;
+    
+    // This is used to capture mouse and key events, which we use to select/delete/etc. an
+    // Appointment displayed in the calendar
     private FocusPanel focusPanel = new FocusPanel();
-    // </editor-fold>
-
-    // <editor-fold desc="Constructors" defaultState="collapse">
     
     private float[] scores;
     private String timezone;
@@ -49,26 +58,29 @@ public class DayView extends CalendarView {
 
         super(settings);
 
+        // Just instantiate these classes - the actual display logic get's 
+        // called in doLayout
         this.dayViewBody = new DayViewBody(this);
         this.dayViewHeader = new DayViewHeader(this);
         this.layoutStrategy = new DayViewLayoutStrategy(this);
 
         this.setStyleName(GWT_CALENDAR_STYLE);
 
-        //focusPanel.setVisible(false);
         rootPanel.add(focusPanel);
 
         rootPanel.add(dayViewHeader);
         rootPanel.add(dayViewBody);
 
-
-
+        // Why are we setting these attributes of the focusPanel?
         //border: 0px none ; width: 0px; height: 0px; position: absolute; top: -5px; left: -5px;
         DOM.setStyleAttribute(focusPanel.getElement(), "position", "absolute");
         DOM.setStyleAttribute(focusPanel.getElement(), "top", "-10");
         DOM.setStyleAttribute(focusPanel.getElement(), "left", "-10");
         DOM.setStyleAttribute(focusPanel.getElement(), "height", "0px");
         DOM.setStyleAttribute(focusPanel.getElement(), "width", "0px");
+        
+        // Here we capture some keyboard events
+        // Q: why does capturing keyboard vs. mouse events look so different?
         focusPanel.addKeyPressHandler(new KeyPressHandler() {
 
             public void onKeyPress(KeyPressEvent event) {
@@ -98,8 +110,8 @@ public class DayView extends CalendarView {
         doLayout();
     }
 
-    // </editor-fold>
-    // <editor-fold desc="Public Methods" defaultState="collapse">
+    // Here we actually make the calls to the classes which causes stuff to get
+    // laid out and displayed properly.
     @Override
     public void doLayout() {
 
@@ -120,36 +132,38 @@ public class DayView extends CalendarView {
             sortPending = false;
         }
 
-        // remove all appointments from their parent
-        for (AppointmentInterface appt : appointments) {
-            //((Widget) appt).removeFromParent();
-        }
-
         Date tmpDate = (Date) getDate().clone();
 
+        // add the appointments day by day
         for (int i = 0; i < getDays(); i++) {
 
+        	// get the appointments to display for the current day
             ArrayList<AppointmentInterface> filteredList =
                     AppointmentUtil.filterListByDate(appointments, tmpDate);
 
             // perform layout
+            // Q:why are we passing in AppointmentInterface's, not just Appointments?
+            // Q why are we returning adapters, only to get the appointment
+            // again in the next line?
             ArrayList<AppointmentAdapter> appointmentAdapters =
                     layoutStrategy.doLayout(filteredList, i, getDays());
 
-//            // add all appointments back to the grid
-//            //CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // add all appointments to the grid
             for (AppointmentAdapter appt : appointmentAdapters) {
                 this.dayViewBody.getGrid().grid.add((Widget) appt.getAppointment());
             }
 
+            // if scores are present, 
             // there should be a score for each 15-min interval in our calendar
             int expNumScores = getDays() * 24 * 4; 
             if (scores != null && scores.length == expNumScores) {
             	addScoreLabels(scores, i, getDays(), tmpDate);
             }
 
+            // add the 'Start' or 'End' labels?
             addSchedulingRange(i, getDays(), tmpDate);
        	
+            // increment the day's date
             tmpDate.setDate(tmpDate.getDate() + 1);
         }
     }
@@ -164,6 +178,7 @@ public class DayView extends CalendarView {
     	}
     }
     
+    // The Scheduling Range needs to be demarcated with 'Start' and 'End' labels
     private void addSchedulingRange(int dayIndex, int numDays, Date date) {
     	
     	float thisLeft;
@@ -203,6 +218,7 @@ public class DayView extends CalendarView {
         start = new Date(start.getTime() + (1000 * 60 * 15 * startHour));
         end = new Date(start.getTime() + (1000 * 60 * 14));
         
+        // stuff gets added (like scores) via our Label class
     	Label lb = new Label();
     	lb.setDescription(desc);
     	lb.setTitle("");
@@ -216,6 +232,7 @@ public class DayView extends CalendarView {
     	DOM.setStyleAttribute(lb.getElement(), "color", color);
     	
     	// add it to the calendar!
+    	// TODO: shouldn't we have a higher level add method?
     	this.dayViewBody.getGrid().grid.add((Widget) lb);   	
     }
     
@@ -267,6 +284,7 @@ public class DayView extends CalendarView {
         	}
         }        
     }
+    
     public void scrollToHour(int hour) {
         dayViewBody.getScrollPanel().setScrollPosition(hour *
                 getSettings().getIntervalsPerHour() * getSettings().getPixelsPerInterval());
@@ -288,6 +306,8 @@ public class DayView extends CalendarView {
         dayViewBody.setHeight(getOffsetHeight() - 2 - dayViewHeader.getOffsetHeight() + "px");
     }
 
+    // if the mouse clicks on an appointment, set this appointment as the 'selected'
+    // one, and possibly fire off other events.
     @Override
     @SuppressWarnings("fallthrough")
     public void onBrowserEvent(Event event) {
@@ -301,27 +321,27 @@ public class DayView extends CalendarView {
                         Appointment appt =
                                 AppointmentUtil.checkAppointmentElementClicked(elem, appointments);
                         if (appt != null) {
+                        	// the selected appointment has been found - but should we fire events?
                             setValue(appt);
-                        //focusPanel.setFocus(true);
                         }
-                        //} else if(getSelectedAppointment()!=null) {
-                        //    focusPanel.setFocus(true);
-                        //}
+                        // Q: what does this do?
                         focusPanel.setFocus(true);
+                        // Q: and what do these do?
                         DOM.eventCancelBubble(event, true);
                         DOM.eventPreventDefault(event);
 
                         //break;
                         return;
-                    }//end if
-            } //end case
-        } //end switch
+                    }
+            } 
+        } 
         
         super.onBrowserEvent(event);
     }
 
-    private void keyboardNavigation(
-            int key) {
+    // here we do some basic appointment naviation with the arrow keys,
+    // and enable the Delete key - all based on the given key ID
+    private void keyboardNavigation(int key) {
         switch (key) {
             case KeyCodes.KEY_DELETE: {
                 removeAppointment((Appointment) getSelectedAppointment());
@@ -342,19 +362,15 @@ public class DayView extends CalendarView {
         }
     }
 
+    // called by the focus panel - how to react to certain keys pressed
     private void keyboardNavigation(Event event) {
-
-
         //only proceed if an appointment is selected
         if (getSelectedAppointment() == null) {
             return;
         }
-
         //get the key
         int key = DOM.eventGetKeyCode(event);
         keyboardNavigation(key);
-    //GWT.log("pressed: " + key,null);
-
     }
 
 	public void setScores(float[] scores) {
@@ -376,6 +392,4 @@ public class DayView extends CalendarView {
 	public String getTimezone() {
 		return timezone;
 	}
-	
-    // </editor-fold>
 }

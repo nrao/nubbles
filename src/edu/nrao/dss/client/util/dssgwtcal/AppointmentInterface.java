@@ -2,11 +2,7 @@ package edu.nrao.dss.client.util.dssgwtcal;
 
 import java.util.Date;
 
-/**
- *
- * @author Brad Rydzewski
- */
-public interface AppointmentInterface extends Comparable<AppointmentInterface> {//implements SourcesMouseEvents {
+public interface AppointmentInterface extends Comparable<AppointmentInterface> {
 
 	public String getTitle();
 	public String getDescription();

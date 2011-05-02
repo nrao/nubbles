@@ -7,32 +7,25 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public /**
-         * The Timeline Class is a sequential display of the hours in a day. Each
-         * hour label should visually line up to a cell in the DayGrid.
-         * 
-         * @author Brad
-         */
-        class DayViewTimeline extends Composite {
+// This class is a sequential display of the hours in a day. Each
+// hour label should visually line up to a cell in the DayGrid.
 
-    //private static final int MINUTES_PER_HOUR = 60;
+public class DayViewTimeline extends Composite {
+
     private static final int HOURS_PER_DAY = 24;
-//	private int intervalsPerHour = settings.getIntervalsPerHour();//2; //30 minute intervals
-//	private float intervalSize = settings.getPixelsPerInterval();//25f; //25 pixels per interval
     private AbsolutePanel timelinePanel = new AbsolutePanel();
     private HasSettings settings = null;
     private static final String TIME_LABEL_STYLE = "hour-label";
-//    private final String[] HOURS = new String[]{"12 AM", "1 AM", "2 AM", "3 AM",
-//        "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM",
-//        "11 AM", "Noon", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM",
-//        "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"
-//    };
+
+    // used to easily look up labels when amPmTime flag is true
     private final String[] HOURS = new String[]{"12", "1", "2", "3",
         "4", "5", "6", "7", "8", "9", "10",
         "11", "Noon", "1", "2", "3", "4", "5",
         "6", "7", "8", "9", "10", "11"};
+    
     private final String AM = " AM";
     private final String PM = " PM";
+    
     // set this to change whether timeline uses AM, PM, or 24-hour style.
     private boolean amPmTime = false;
     
@@ -43,16 +36,19 @@ public /**
         prepare();
     }
 
+    // This function adds a panel for every hour of the day to the timelinePanel,
+    // computing the height of each one based of the setting, and simply 
+    // calling timelinePanel.add(new panel)
     public void prepare() {
+    	
         timelinePanel.clear();
+        
+        // the height of each panel showing the hour in the timeline is 
+        // computed from the settings
         float labelHeight = 
                 settings.getSettings().getIntervalsPerHour() * 
                 settings.getSettings().getPixelsPerInterval();
-        //float timeineHeight = labelHeight * HOURS_PER_DAY;
-        //this.setHeight(timeineHeight+"px");
-
-
-
+        
         int i = 0;
         if (settings.getSettings().isOffsetHourLabels() == true) {
 
@@ -62,8 +58,11 @@ public /**
             timelinePanel.add(sp);
         }
 
+        // Each hour in the day get's it's own panel (w/ subpanels)
         while (i < HOURS.length) {
 
+        	// What's the text to actually be displayed?
+        	// "13:00" vs. "1:00 PM"
         	String hour;
         	if (amPmTime) {
                 hour = HOURS[i];
@@ -72,11 +71,12 @@ public /**
         	}
             i++;
 
-            //block
+            // We need a SimplePanel to hold our FlowPanel (why?)
             SimplePanel hourWrapper = new SimplePanel();
             hourWrapper.setStylePrimaryName(TIME_LABEL_STYLE);
             hourWrapper.setHeight((labelHeight + FormattingUtil.getBorderOffset()) + "px");
 
+            // this new FlowPanel actualy holds the hour label (and optional AM/PM label).
             FlowPanel flowPanel = new FlowPanel();
             flowPanel.setStyleName("hour-layout");
             
@@ -84,6 +84,7 @@ public /**
             hourLabel.setStylePrimaryName("hour-text");
             flowPanel.add(hourLabel);
             
+            // Add "AM/PM" as another label only if we need it
             if (amPmTime) {
 	            String amPm = "";
 	            if(i<13)

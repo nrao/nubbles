@@ -9,6 +9,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 
+// This class is responsible for the top of the calendar that looks like this:
+// | 2011 | Mon, May 2 | Tue, May 3 |
+// A FlexTable is resonsible for the overall layout, with the dates (Mon, May 2, ...) being handled
+// by an AbsoluteLabel with a Label for each date.
+
 public class DayViewHeader extends Composite {
 	private FlexTable header = new FlexTable();
 	private AbsolutePanel dayPanel = new AbsolutePanel();
@@ -40,7 +45,6 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 		header.getCellFormatter().setStyleName(0, 0, YEAR_CELL_STYLE);
 		header.getCellFormatter().setWidth(0, 2,
 				WindowUtils.getScrollBarWidth(true) + "px");
-		// header.getCellFormatter().setStyleName(1, 0,SPLITTER_STYLE);
 
 		header.getFlexCellFormatter().setColSpan(1, 0, 3);
 		header.setCellPadding(0);
@@ -51,6 +55,9 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 		header.setWidget(1, 0, splitter);
 	}
 
+	// For each day, creates a label w/ text like "Mon, May 2";
+	// the label get it's DOM's left attribute set properly
+	// and that label gets added to dayPanel
 	public void setDays(Date date, int days) {
 
 		dayPanel.clear();
@@ -74,6 +81,7 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 			dayLabel.setStylePrimaryName("day-cell");
 			dayLabel.setWidth(dayWidth + "%");
 			dayLabel.setText(headerTitle);
+			// Question: why are we using the DOM here?
 			DOM.setStyleAttribute(dayLabel.getElement(), "left", dayLeft
 					+ "%");
 
@@ -89,7 +97,6 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 	}
 
 	public void setYear(Date date) {
-		// System.out.println("setting year: " + date);
 		setYear(1900 + date.getYear());
 	}
 

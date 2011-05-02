@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 
- * @author Brad Rydzewski
- */
+// This class is responsible for converting figuring out how overlapping Appointments
+// are to appear in the calendar.
+
 public class AppointmentAdapter {
 
     private AppointmentInterface appointment;

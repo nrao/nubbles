@@ -24,8 +24,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
+// This class is what actually get's displayed in the calendar!
+// Q: why do we need the AppointmentInterface?
+
 public class Appointment extends Composite implements AppointmentInterface {
 
+	// the different parts of the Appointment are all Div's; here we make
+	// sure they all can handle mouse events.
 	class Div extends ComplexPanel implements HasAllMouseHandlers {
 		
 		public Div() {
@@ -63,6 +68,9 @@ public class Appointment extends Composite implements AppointmentInterface {
 		}
 	}
 
+	// NOTE: for many of these attributes, we not only set them, but 
+	// (as can be seen below in their set* functions) we also set the
+	// DOM attribute of the same name.
 	private int eventId;
 	private String title;
 	private String description;
@@ -84,6 +92,7 @@ public class Appointment extends Composite implements AppointmentInterface {
 
 		initWidget(mainPanel);
 
+		// set the CSS
 		mainPanel.setStylePrimaryName("gwt-appointment");
 		headerPanel.setStylePrimaryName("header");
 		bodyPanel.setStylePrimaryName("body");
@@ -91,14 +100,13 @@ public class Appointment extends Composite implements AppointmentInterface {
 		timelinePanel.setStylePrimaryName("timeline");
 		timelineFillPanel.setStylePrimaryName("timeline-fill");
 
+		// add all the Div's to the AbsolutePanel
 		mainPanel.add(headerPanel);
 		mainPanel.add(bodyPanel);
 		mainPanel.add(footerPanel);
 		mainPanel.add(timelinePanel);
 		timelinePanel.add(timelineFillPanel);
-		// DOM.setStyleAttribute(footerPanel.getElement(), "height", "1px");
-		// DOM.setStyleAttribute(footerPanel.getElement(), "overvlow",
-		// "hidden");
+		
 		DOM.setStyleAttribute(mainPanel.getElement(), "position", "absolute");
 	}
 
@@ -122,6 +130,7 @@ public class Appointment extends Composite implements AppointmentInterface {
 		return selected;
 	}
 
+	// maintains state, and changes style name
 	public void setSelected(boolean selected) {
 
 		// set selected
@@ -197,6 +206,7 @@ public class Appointment extends Composite implements AppointmentInterface {
 		DOM.setStyleAttribute(timelineFillPanel.getElement(), "top", top + "%");
 	}
 
+	// Two appointments are considered equal if their start & end dates are equal.
 	public int compareTo(AppointmentInterface appt) {
 		// -1 0 1
 		// less, equal, greater
@@ -224,9 +234,4 @@ public class Appointment extends Composite implements AppointmentInterface {
 	public int getEventId() {
 		return eventId;
 	}
-        
-//        @Override
-//        public Element getElement() {
-//            return mainPanel.getElement();
-//        }
 }
