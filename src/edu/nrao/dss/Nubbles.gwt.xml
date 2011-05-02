@@ -18,7 +18,6 @@
   <!-- <inherits name='edu.nrao.dss.theme.google.Google'/> -->
   
   <stylesheet src="gwt-cal-google.css" />
-  <stylesheet src='dss.css'/>
   
   <!-- Specify the app entry point class.                         -->
   <entry-point class='edu.nrao.dss.client.Scheduler'/>
