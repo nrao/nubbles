@@ -9,11 +9,13 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -24,6 +26,7 @@ import edu.nrao.dss.client.data.Window;
 import edu.nrao.dss.client.data.WindowCalendarData;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.widget.form.IntegerValidator;
 
 public class WindowCalendar extends ContentPanel {
 	
@@ -61,6 +64,7 @@ public class WindowCalendar extends ContentPanel {
 		for (int i = 2; i < maxDays; i++) {
 			numDays.add(Integer.toString(i));
 		}
+		numDays.setValidator(new IntegerValidator());
 		fp.add(numDays);
 		
 		update.setText("Update");
@@ -95,7 +99,15 @@ public class WindowCalendar extends ContentPanel {
 	}
 	
 	public void getWindows() {
-	    // update the calendar using the controls
+	    // update the calendar using the controls;
+        // WTF: why doesn't this work?		
+		//if (!numDays.validate()) {
+		try {
+			int days = Integer.parseInt(numDays.getSimpleValue());
+		} catch (Exception e) {
+			MessageBox.alert("Error", "Invalid number of Days.", null);
+			return;
+		}
 		// /scheduler/windows?filterStartDate=2010-02-01&filterDuration=30&sortField=null&sortDir=NONE&offset=0&limit=50
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
