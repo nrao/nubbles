@@ -98,8 +98,10 @@ public class WindowCalendar extends ContentPanel {
 		getWindows();
 	}
 	
+    // update the calendar using the controls;
 	public void getWindows() {
-	    // update the calendar using the controls;
+		// first, validate the input
+		String startStr;
         // WTF: why doesn't this work?		
 		//if (!numDays.validate()) {
 		try {
@@ -108,10 +110,15 @@ public class WindowCalendar extends ContentPanel {
 			MessageBox.alert("Error", "Invalid number of Days.", null);
 			return;
 		}
+		try {
+		    startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start.getValue()); //+ " 00:00:00";
+		} catch (Exception e) {
+			MessageBox.alert("Error", "Invalid Start Date.", null);
+			return;
+		}
 		// /scheduler/windows?filterStartDate=2010-02-01&filterDuration=30&sortField=null&sortDir=NONE&offset=0&limit=50
 		HashMap<String, Object> keys = new HashMap<String, Object>();
 		//keys.put("startdate", DATE_FORMAT.format(day.getValue()));
-		String startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start.getValue()); //+ " 00:00:00";
 		keys.put("filterStartDate", startStr);
 		keys.put("filterDuration", numDays.getSimpleValue());
 		JSONRequest.get("/scheduler/windows", keys  
