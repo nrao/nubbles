@@ -84,4 +84,8 @@ public class DayViewBody extends Composite {
 	public void setDays(Date date, int days) {
 		grid.build(settings.getSettings().getWorkingHourStart(), settings.getSettings().getWorkingHourEnd(), days);
 	}
+	
+	public void addLabel(Label lb) {
+		getGrid().grid.add((Widget) lb);
+	}
 }

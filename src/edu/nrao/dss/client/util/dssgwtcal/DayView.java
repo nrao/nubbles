@@ -232,8 +232,7 @@ public class DayView extends CalendarView {
     	DOM.setStyleAttribute(lb.getElement(), "color", color);
     	
     	// add it to the calendar!
-    	// TODO: shouldn't we have a higher level add method?
-    	this.dayViewBody.getGrid().grid.add((Widget) lb);   	
+    	dayViewBody.addLabel(lb);
     }
     
     // adds the scores for this day to each quarter of the calendar's day
