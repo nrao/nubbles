@@ -8,24 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- * @author Brad Rydzewski
- */
 public class AppointmentUtil {
 
-    
-
-    /**
-     * filters a list of appointments and returns only appointments with a start
-     * date equal to the date provided. FYI - I hate everything about this
-     * method and am pissed off I have to use it. May be able to avoid it in the
-     * future
-     * 
-     * @param fullList
-     * @param startDate
-     * @return
-     */
+    // Filters a list of appointments and returns only appointments with a start
+    // date equal to the date provided. 
     public static ArrayList filterListByDate(ArrayList fullList, Date startDate) {
 
         ArrayList<AppointmentInterface> group = new ArrayList<AppointmentInterface>();
@@ -35,21 +21,12 @@ public class AppointmentUtil {
                 startDate.getDate(), 0, 0, 0);
         endDate.setDate(endDate.getDate() + 1);
 
+        // NOTE: this will *NOT* add an appointment that ends on 'endDate', i.e. midnight
         for (int i = 0; i < fullList.size(); i++) {
-
             AppointmentInterface tmpAppt = (AppointmentInterface) fullList.get(i);
-
             if (tmpAppt.getEnd().before(endDate)) {
-
-                //TODO: probably can shorten this by using the compareTo method
-                
-                
                 if (tmpAppt.getStart().after(startDate) || tmpAppt.getStart().equals(startDate)) {
                     group.add(tmpAppt);
-                } else {
-                    // System.out.println(" exiting filter at index " +i+ " ,"
-                    // +group.size()+ " found");
-                    // return group;
                 }
             }
         }
