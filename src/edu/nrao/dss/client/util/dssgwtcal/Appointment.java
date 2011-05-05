@@ -89,7 +89,19 @@ public class Appointment extends Composite implements AppointmentInterface {
 	private Panel timelineFillPanel = new Div();
 
 	public Appointment() {
+        initLayout();
+	}
 
+	public Appointment(int id, String title, String desc, Date start, Date end) {
+		setEventId(id);
+		this.title = title;
+		this.description = desc;
+		this.start = start;
+		this.end = end;
+		initLayout();
+	}
+	
+	private void initLayout() {
 		initWidget(mainPanel);
 
 		// set the CSS
@@ -107,9 +119,9 @@ public class Appointment extends Composite implements AppointmentInterface {
 		mainPanel.add(timelinePanel);
 		timelinePanel.add(timelineFillPanel);
 		
-		DOM.setStyleAttribute(mainPanel.getElement(), "position", "absolute");
+		DOM.setStyleAttribute(mainPanel.getElement(), "position", "absolute");		
 	}
-
+	
 	public Date getStart() {
 		return start;
 	}
