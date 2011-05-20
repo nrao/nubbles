@@ -134,7 +134,7 @@ public class Schedule extends ContentPanel implements Refresher {
         scheduleControl.setCollapsible(true);
         controlsContainer.add(scheduleControl);
 		
-        scheduleExplorer = new ScheduleCalendar(startCalendarDay, numCalendarDays);
+        scheduleExplorer = new ScheduleCalendar();
 		scheduleExplorer.addButtonsListener(this);
 		scheduleExplorer.setDefaultDate(startCalendarDay);
 		scheduleExplorer.setCollapsible(true);

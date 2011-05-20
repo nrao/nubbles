@@ -18,13 +18,12 @@ public class ScheduleCalendar extends ContentPanel {
 
 	public PeriodExplorer  pe;  
 	
-	public ScheduleCalendar(Date start, int days) {
+	public ScheduleCalendar() {
 		super();
-		// TODO: use this date range to filter the explorer
-		initLayout(start, days);
+		initLayout();
 	}	
 	
-	protected void initLayout(Date start, int days) {
+	protected void initLayout() {
 		
 		setHeading("Period Explorer");
 		setBorders(true);
@@ -33,7 +32,10 @@ public class ScheduleCalendar extends ContentPanel {
 		FitLayout fl = new FitLayout();
 		setLayout(fl);
 	    pe = new PeriodExplorer();
-	    add(pe, new FitData(10));   	
+	    add(pe, new FitData(10));
+	    
+	    // NOTE: the period explorer's loadData function is called when the
+	    // calendar is updated, using the calendar control's widgets as input
 	}
 	
 	public void addButtonsListener(final Schedule schedule) {
