@@ -69,7 +69,6 @@ public class DayViewBody extends Composite {
 
 		grid.setStyleName("gwt-appointment-panel");
                 
-        //TODO: use CSS to set table layout
         layout.getCellFormatter().setWidth(0, 0, "50px");
 		DOM.setStyleAttribute(layout.getElement(), "tableLayout", "fixed");                
         
