@@ -1,5 +1,7 @@
 package edu.nrao.dss.client;
 
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.junit.client.GWTTestCase;
 
 import edu.nrao.dss.client.data.Window;
@@ -70,5 +72,29 @@ public class TestWindow extends GWTTestCase {
     	assertEquals(6,p.getWindowDaysAfter());
         assertEquals("2009-06-01 12:15:00", p.getStartString());		
     }
-    
+    public void testParseJSON_incompleteJSON() {
+    	
+    	// create the input JSON - start w/ a complete one
+    	WindowJSON wjson = WindowJSON.getTestWindowJSON_2();
+    	// make it incomplete
+    	wjson.put("start", JSONNull.getInstance());
+    	wjson.put("end", JSONNull.getInstance());
+    	wjson.put("duration", JSONNull.getInstance());
+    	wjson.put("ranges", new JSONArray());
+    	
+		// now parse!
+		Window w = Window.parseJSON(wjson);
+		
+		// now check it
+		String handle = "Low Frequency With No RFI (GBT09A-001) 0";		
+		String expLabel = handle + " (0.0/0.0) Not Cmp.";
+		assertEquals(handle, w.getHandle());
+		assertEquals(0.0, w.getTime_billed());
+		assertEquals(false, w.isComplete());
+		assertEquals(true, w.isContigious());
+		assertEquals(expLabel, w.getLabel());
+		assertEquals("?", w.getwStartStr());
+		assertEquals(0, w.getRanges().length);		
+    }	
+    	
 }

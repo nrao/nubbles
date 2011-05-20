@@ -15,25 +15,29 @@ public class Window {
 	//DateTimeFormat.getFormat("yyyy-MM-dd")
 	public static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd");
 	
+	private int id;
 	private String handle;
 	private Double total_time;
 	private Double time_billed;
-	//private Double time_remaining;
+	private Double time_remaining;
 	private boolean complete;
 	private boolean contigious;
 	private Date wStart;
 	private Date wEnd;
-	private int duration;
+	private int duration = 0;
 	private DateRange[] ranges;
 	private Period[] periods;
+	private String[] warnings;
 	
 	
 	public static Window parseJSON(JSONObject json) {
 	    Window w = new Window();
 	    
+	    w.setId((int) json.get("id").isNumber().doubleValue());
 	    w.setHandle(json.get("handle").isString().stringValue());
 	    w.setTotal_time(json.get("total_time").isNumber().doubleValue());
 	    w.setTime_billed(json.get("time_billed").isNumber().doubleValue());
+	    w.setTime_remaining(json.get("time_remaining").isNumber().doubleValue());
 	    w.setComplete(json.get("complete").isBoolean().booleanValue());
 	    
 		// are there any gaps in the window (is this window non-contigious?)
@@ -43,14 +47,26 @@ public class Window {
 	    // now gather up info about the window ranges and periods:
 	    
 	    // when does the window start and stop (not taking into account gaps)?
-	    String wstartStr = json.get("start").isString().stringValue();
-	    String wstopStr  = json.get("end").isString().stringValue();
-		w.setwStart(DATE_FORMAT.parse(wstartStr));
-		w.setwEnd(DATE_FORMAT.parse(wstopStr));
+		// watch out: these can be null for a newly created window.
+        if (json.get("start").isString() != null) {
+	        String wstartStr = json.get("start").isString().stringValue();
+			w.setwStart(DATE_FORMAT.parse(wstartStr));
+        }
+        if (json.get("end").isString() != null) {
+    	    String wstopStr  = json.get("end").isString().stringValue();
+	    	w.setwEnd(DATE_FORMAT.parse(wstopStr));
+        }	
 
 		w.parseRangesJSON(json.get("ranges").isArray());
 		
 		w.parsePeriodJSON(json.get("periods").isArray());
+		
+		JSONArray errJson = json.get("errors").isArray();
+		String[] warnings = new String[errJson.size()];
+		for (int i = 0; i < errJson.size(); i++) {
+		    warnings[i] = errJson.get(i).isString().stringValue();	
+		}
+		w.setWarnings(warnings);
 		
 	    return w;
 	}
@@ -145,11 +161,11 @@ public class Window {
 	}
 
     public String getwStartStr() {
-    	return 	DATE_FORMAT.format(wStart);
+    	return 	(wStart != null) ? DATE_FORMAT.format(wStart) : "?";
     }
     
     public String getwEndStr() {
-    	return 	DATE_FORMAT.format(wEnd);
+    	return 	(wEnd != null) ? DATE_FORMAT.format(wEnd) : "?";
     }
     
     
@@ -199,5 +215,41 @@ public class Window {
 
 	public DateRange[] getRanges() {
 		return ranges;
+	}
+
+	public void setWarnings(String[] warnings) {
+		this.warnings = warnings;
+	}
+
+	public String[] getWarnings() {
+		return warnings;
+	}
+
+	// returns: "warning 1; warning 2"
+	public String getWarningsStr() {
+		String errorMsgs = "";
+		for (int i = 0; i < warnings.length; i++) {
+			if (i > 0) {
+				errorMsgs += ";";
+			}
+		    errorMsgs += warnings[i];	
+		}		
+		return errorMsgs;
+	}
+	
+	public void setTime_remaining(Double time_remaining) {
+		this.time_remaining = time_remaining;
+	}
+
+	public Double getTime_remaining() {
+		return time_remaining;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
 	}	
 }
