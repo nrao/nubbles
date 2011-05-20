@@ -202,9 +202,7 @@ public abstract class CalendarView extends Composite implements HasValue<Appoint
         newValue.setSelected(true);
 
         if (fireEvents) {
-            // TODO: I believe this is what keeps the event from being triggered if
-            // an appointment was clicked on more then once?
-            ValueChangeEvent.fireIfNotEqual(this, oldValue, newValue);
+            ValueChangeEvent.fire(this, newValue);
         }
 
     }
