@@ -44,7 +44,7 @@ public class SessionExplorer extends Explorer {
 			"> 2 GHz", "> 5 GHz", "> 10 GHz", "> 20 GHz", "> 30 GHz", "> 40 GHz",
 			"<= 2 GHz", "<= 5 GHz", "<= 10 GHz", "<= 20 GHz", "<= 30 GHz", "<= 40 GHz"
 		};
-		// TODO: get these from the server?
+		// Note: we *could* get these from the server, but hardly seems worth the extra effort
 		String[] receivers = new String[] {
 			"RRI", "342", "450", "600", "800", "1070", "L", "S", "C"
 		  , "X", "Ku", "K", "Ka", "Q", "MBA", "Z", "Hol", "KFPA", "W"	
