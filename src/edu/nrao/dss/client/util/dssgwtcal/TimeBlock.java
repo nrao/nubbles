@@ -115,8 +115,11 @@ public class TimeBlock {
         this.top = top;
     }
     
-    
-
+    // add this column to the list of occupied columns
+    public void registerColumn(int column) {
+    	getOccupiedColumns().put(column, column);
+    }
+   
     public boolean intersectsWith(int apptStart, int apptEnd) {
         
         //scenario 1: start date of appt between start and end of block

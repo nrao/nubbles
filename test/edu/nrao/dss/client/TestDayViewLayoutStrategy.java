@@ -244,7 +244,6 @@ public class TestDayViewLayoutStrategy extends GWTTestCase {
         assertEquals(8*11, aa.getCellStart());
         assertEquals(8, aa.getCellSpan());
         assertEquals(0, aa.getColumnStart());
-        assertEquals(1, aa.getColumnSpan()); // ever changes?
     	float e = 0.001f;
         assertEquals(99.166, aa.getCellPercentFill(), e); 
         assertEquals(0.0, aa.getCellPercentStart(), e); // ever changes?
@@ -274,8 +273,7 @@ public class TestDayViewLayoutStrategy extends GWTTestCase {
         assertEquals(cellStart, aa.getCellStart());
         assertEquals(cellSpan, aa.getCellSpan());
         assertEquals(colStart, aa.getColumnStart());
-        assertEquals(1, aa.getColumnSpan()); // ever changes?
-        assertEquals(100.0, aa.getCellPercentFill(), e); // ever changes?
+        assertEquals(100.0, aa.getCellPercentFill(), e); 
         assertEquals(0.0, aa.getCellPercentStart(), e); // ever changes?
         AppointmentInterface a = aa.getAppointment();
         assertEquals(left, a.getLeft(), e);
