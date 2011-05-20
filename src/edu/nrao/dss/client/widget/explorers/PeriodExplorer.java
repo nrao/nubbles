@@ -59,7 +59,6 @@ public class PeriodExplorer extends Explorer {
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
-				// TODO: check state of period
 				String state = getGrid().getSelectionModel().getSelectedItem().get("state");
 				// if pending, do this
 				if (state.compareTo("P") == 0) {
