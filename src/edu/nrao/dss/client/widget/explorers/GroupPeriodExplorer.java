@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -127,6 +128,24 @@ public abstract class GroupPeriodExplorer extends Explorer {
 	public void updateObservers() {
 		pg.getPeriodGroup();
 	}
+	
+	// override this method from the parent class so that we can enforce that only pending
+	// periods are removed from this explorer
+	protected void setRemoveItemListener() {
+		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				String state = getGrid().getSelectionModel().getSelectedItem().get("state");
+				// if pending, do this
+				if (state.compareTo("P") == 0) {
+					removeDialog.show();
+				} else {
+				    // if not, let them know they can't
+					MessageBox.alert("Not Allowed To Delete This Period", "Please use the Period Summary Dialog to delete a non-Pending Period.", null);
+				}	
+			}
+		});
+	}	
 	
 }	
 	
