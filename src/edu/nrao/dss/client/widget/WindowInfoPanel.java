@@ -26,6 +26,7 @@ import com.google.gwt.json.client.JSONObject;
 // comment
 import com.google.gwt.json.client.JSONString;
 
+import edu.nrao.dss.client.data.Window;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.widget.explorers.WindowRangeExplorer;
@@ -72,49 +73,24 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	// TODO: we should be taking advantage of the Window class to translate this JSON.
 	protected void translateJson(JSONObject winJson) {
 		
-		handle = winJson.get("handle").isString().stringValue();
+		Window w = Window.parseJSON(winJson);
 		
-		id = (int) winJson.get("id").isNumber().doubleValue();
+		handle = w.getHandle();
+		id = w.getId();
+		errorMsgs = w.getWarningsStr();
 		
-		// concat the multiple warnings (if any) into a single string
-		errorMsgs = "";
-		JSONArray errJson = winJson.get("errors").isArray();
-		for (int i = 0; i < errJson.size(); i++) {
-			if (errorMsgs.length() > 0) {
-				errorMsgs += ";";
-			}
-		    errorMsgs += errJson.get(i).isString().stringValue();	
-		}
+		// newly created windows have no ranges, so these date fields might be null
+        start = w.getwStart();
+        startStr = w.getwStartStr();
+        end = w.getwEnd();
+        endStr = w.getwEndStr();
+		numDays = w.getDuration();
 		
-		// newly created windows have no ranges, so these date fields will be null
-        if (winJson.get("start").isString() == null) {
-        	startStr = "?";
-        	start = null;
-        } else {
-    		startStr = winJson.get("start").isString().stringValue();
-    		start = DateTimeFormat.getFormat("yyyy-MM-dd").parse(startStr);   
-    		startStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(start);
-        }
-        if (winJson.get("end").isString() == null) {
-        	endStr = "?";
-        	end = null;
-        } else {
-    		endStr = winJson.get("end").isString().stringValue();
-    		end = DateTimeFormat.getFormat("yyyy-MM-dd").parse(endStr); 
-    		endStr = DateTimeFormat.getFormat("yyyy-MM-dd").format(end);   		
-        }
-        
-        if (winJson.get("duration").isNumber() != null) {
-		    numDays = (int) winJson.get("duration").isNumber().doubleValue();
-        } else {
-        	numDays = 0;
-        }
+		total_time = w.getTotal_time(); 
+		time_billed = w.getTime_billed();
+		time_remaining = w.getTime_remaining();
 		
-		total_time = winJson.get("total_time").isNumber().doubleValue();
-		time_billed = winJson.get("time_billed").isNumber().doubleValue();
-		time_remaining = winJson.get("time_remaining").isNumber().doubleValue();
-		
-		complete = winJson.get("complete").isBoolean().booleanValue();
+		complete = w.isComplete();
 		
 		String cmpStr = (complete == true) ? "Complete" : "Not Complete";
 		
