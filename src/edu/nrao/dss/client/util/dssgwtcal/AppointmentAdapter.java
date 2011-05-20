@@ -13,7 +13,6 @@ public class AppointmentAdapter {
     private int cellStart;
     private int cellSpan;
     private int columnStart = -1;
-    private int columnSpan;
     private int appointmentStart;
     private int appointmentEnd;
     private float cellPercentFill;
@@ -27,6 +26,14 @@ public class AppointmentAdapter {
         this.intersectingBlocks = new ArrayList<TimeBlock>();
     }
 
+    public int getStartMinutes() {
+    	return intersectingBlocks.get(0).getStart();
+    }
+    
+    public int getEndMinutes() {
+    	return intersectingBlocks.get(intersectingBlocks.size()-1).getEnd();
+    }
+    
     public int getCellStart() {
         return cellStart;
     }
@@ -49,14 +56,6 @@ public class AppointmentAdapter {
 
     public void setColumnStart(int columnStart) {
         this.columnStart = columnStart;
-    }
-
-    public int getColumnSpan() {
-        return columnSpan;
-    }
-
-    public void setColumnSpan(int columnSpan) {
-        this.columnSpan = columnSpan;
     }
 
     public int getAppointmentStart() {

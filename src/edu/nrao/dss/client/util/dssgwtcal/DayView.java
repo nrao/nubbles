@@ -291,10 +291,7 @@ public class DayView extends CalendarView {
 
     @Override
     public void setHeight(String height) {
-
         super.setHeight(height);
-        // TODO: don't know why, but this produces a neg. result - causing a crash 
-        //dayViewBody.setHeight(getOffsetHeight() - 2 - dayViewHeader.getOffsetHeight() + "px");
         dayViewBody.setHeight(height);
     }
 
