@@ -79,7 +79,6 @@ public class SessionTimePanel extends ContentPanel {
 		sessions.setFieldLabel("Sessions");
 	    sessionForm.add(sessions);
 	    
-	    // TODO: get rid of.
 		// what's the current session?
 		sessionName.setValue("");
 		sessionName.setReadOnly(true);
