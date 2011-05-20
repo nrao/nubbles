@@ -59,6 +59,11 @@ public class ProjectsEmailDialogBox extends Dialog {
 	@Override
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
+		initLayout();
+	}
+
+	// this is only public so we can call it from unit tests
+	public void initLayout() {
 		String addr = "", subj = "", body = "";
 		setSize(950, 700);
 		VerticalPanel vp = new VerticalPanel();
@@ -71,10 +76,7 @@ public class ProjectsEmailDialogBox extends Dialog {
 		vp.add(email_field("subject:", subj, 850, 30));
 		vp.add(email_field("body:", body, 850, 390));
 		update_recipients();
-		
 
-		
-		
 		add(vp);
 		
 		Button cancel = getButtonById(Dialog.CANCEL);
@@ -175,12 +177,7 @@ public class ProjectsEmailDialogBox extends Dialog {
 	{
 		HorizontalPanel hp = new HorizontalPanel();
 		Text field_label = new Text();
-		CheckBox pi_cb = new CheckBox("Principal Investigators");
-		CheckBox pc_cb = new CheckBox("Principal Contacts");
-		CheckBox ci_cb = new CheckBox("Co-Investigators");
-		CheckBox ob_cb = new CheckBox("Observers");
-		CheckBox fs_cb = new CheckBox("Friends");
-		CheckBox gb_cb = new CheckBox("gbtime");
+
 		
 	    pi_cb.setValue(pi_selected);
 	    pc_cb.setValue(pc_selected);
@@ -189,60 +186,12 @@ public class ProjectsEmailDialogBox extends Dialog {
 	    fs_cb.setValue(fs_selected);
 	    gb_cb.setValue(gb_selected);
 
-	    // TODO: we should be able to write a method for the next couple callbacks
-	    pi_cb.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event)
-	        {
-	        	CheckBox cb = (CheckBox)event.getSource();
-	        	pi_selected = cb.getValue();
-	        	update_recipients();
-	        }
-	     });
-
-	    pc_cb.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event)
-	        {
-	        	CheckBox cb = (CheckBox)event.getSource();
-	        	pc_selected = cb.getValue();
-	        	update_recipients();
-	        }
-	     });
-
-	    ci_cb.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event)
-	        {
-	        	CheckBox cb = (CheckBox)event.getSource();
-	        	ci_selected = cb.getValue();
-	        	update_recipients();
-	        }
-	     });
-	    
-	    ob_cb.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event)
-	        {
-	        	CheckBox cb = (CheckBox)event.getSource();
-	        	ob_selected = cb.getValue();
-	        	update_recipients();
-	        }
-	     });
-	    
-	    fs_cb.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event)
-	        {
-	        	CheckBox cb = (CheckBox)event.getSource();
-	        	fs_selected = cb.getValue();
-	        	update_recipients();
-	        }
-	     });	 
-	    
-	    gb_cb.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event)
-	        {
-	        	CheckBox cb = (CheckBox)event.getSource();
-	        	gb_selected = cb.getValue();
-	        	update_recipients();
-	        }
-	     });	    
+	    addCheckBoxClickHandler(pi_cb);
+	    addCheckBoxClickHandler(pc_cb);
+	    addCheckBoxClickHandler(ci_cb);
+	    addCheckBoxClickHandler(ob_cb);
+	    addCheckBoxClickHandler(fs_cb);
+	    addCheckBoxClickHandler(gb_cb);
 	    
 	    field_label.setText(label);
 	    hp.setSpacing(10);
@@ -257,6 +206,15 @@ public class ProjectsEmailDialogBox extends Dialog {
 		return hp;
 	}
 
+	// whenever a checkbox is clicked, we update who the emails go to
+	private void addCheckBoxClickHandler(CheckBox cb) {
+	    cb.addClickHandler(new ClickHandler() {
+	        public void onClick(ClickEvent event)
+	        {
+	        	update_recipients();
+	        }
+	     });		
+	}
 	
 	private String join(Set<String> s, String delimiter) {
         StringBuffer buffer = new StringBuffer();
@@ -291,11 +249,20 @@ public class ProjectsEmailDialogBox extends Dialog {
 		}
 	}
 	
-	private void update_recipients()
+	// public so we can unit test it
+	public void update_recipients()
 	{
 		Set<String> recipients = new TreeSet<String>();
 		String to;
 		TextArea ta;
+		
+		// update the check box fields
+		pi_selected = pi_cb.getValue();
+		pc_selected = pc_cb.getValue();
+		ci_selected = ci_cb.getValue();
+		ob_selected = ob_cb.getValue();
+		fs_selected = fs_cb.getValue();
+		gb_selected = gb_cb.getValue();
 		
 		add_addresses_to_set(principal_investigators, recipients, pi_selected);
 		add_addresses_to_set(principal_contacts, recipients, pc_selected);
@@ -327,6 +294,27 @@ public class ProjectsEmailDialogBox extends Dialog {
 		return hp;
 	}
 
+	// for testing purposes only
+	public String getTextArea(String name) {
+		return tareas.get(name).getValue();
+	}
+	
+	// for testing purposes only
+	public void checkObservers(boolean check) {
+		ob_cb.setValue(check);
+	}
+	
+	public void checkPI(boolean check) {
+		pi_cb.setValue(check);
+	}
+	
+	private CheckBox pi_cb = new CheckBox("Principal Investigators");
+	private CheckBox pc_cb = new CheckBox("Principal Contacts");
+	private CheckBox ci_cb = new CheckBox("Co-Investigators");
+	private CheckBox ob_cb = new CheckBox("Observers");
+	private CheckBox fs_cb = new CheckBox("Friends");
+	private CheckBox gb_cb = new CheckBox("gbtime");
+	
 	private boolean pi_selected;
 	private boolean pc_selected;
 	private boolean ci_selected;
