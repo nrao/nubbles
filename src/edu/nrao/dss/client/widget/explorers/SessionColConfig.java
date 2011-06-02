@@ -247,8 +247,8 @@ public class SessionColConfig extends ColumnConfig {
 	}
 
 	private void hourField() {
-		TextField<String> positionField = new TextField<String>();
-		positionField.setRegex("[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?");
+		final TextField<String> positionField = new TextField<String>();
+		positionField.setRegex("-?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
 
 		setAlignment(HorizontalAlignment.RIGHT);
 
@@ -256,9 +256,15 @@ public class SessionColConfig extends ColumnConfig {
 			public Object render(BaseModelData model, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<BaseModelData> store, Grid<BaseModelData> grid) {
+				Object coord = model.get("coord_mode");
 				Object val = model.get(property);
-				if (val != null) {
-					return Conversions.radiansToTime(((Double) val).doubleValue());
+				if (val != null & coord != null) {
+					if (coord == "Galactic"){
+						return Conversions.radiansToSexagesimal(((Double) val).doubleValue());
+					} else {
+						return Conversions.radiansToTime(((Double) val).doubleValue());
+					}
+					
 				} else {
 					// display a blank string here in place of "00:00:00" so users no it is null
 					return ""; 
