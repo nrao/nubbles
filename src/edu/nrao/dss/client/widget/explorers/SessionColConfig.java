@@ -256,23 +256,17 @@ public class SessionColConfig extends ColumnConfig {
 			public Object render(BaseModelData model, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<BaseModelData> store, Grid<BaseModelData> grid) {
-				Object coord = model.get("coord_mode");
 				Object val = model.get(property);
-				if (val != null & coord != null) {
-					if (coord == "Galactic"){
-						return Conversions.radiansToSexagesimal(((Double) val).doubleValue());
-					} else {
-						return Conversions.radiansToTime(((Double) val).doubleValue());
-					}
-					
+				if (val != null) {
+					return Conversions.radiansToTime(((Double) val).doubleValue());
 				} else {
 					// display a blank string here in place of "00:00:00" so users no it is null
 					return ""; 
 				}
 			}
 		});
-
-		setEditor(new CellEditor(positionField) {
+		
+		setEditor(new CellEditor(positionField){
 			@Override
 			public Object preProcessValue(Object value) {
 				if (value == null) {
