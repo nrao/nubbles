@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -53,6 +54,7 @@ public class ScheduleControl extends FormPanel {
 	private Button publishButton;
 	private Button deletePendingBtn;
 	private Button factorsButton;
+	private Dialog deletePendingDialog;
 	
 	public ScheduleControl(Schedule sched) {
 		schedule = sched;
@@ -147,6 +149,13 @@ public class ScheduleControl extends FormPanel {
 		deletePendingBtn = new Button("Delete Pending");
 		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
 		left.add(deletePendingBtn, new RowData(-1, -1, new Margins(0, 4, 0, 4)));		
+		
+		deletePendingDialog = new Dialog();
+		deletePendingDialog.setHeading("Confirmation");
+		deletePendingDialog.addText("Are you sure you want to delete pending periods?");
+		deletePendingDialog.setButtons(Dialog.YESNO);
+		deletePendingDialog.setHideOnButtonClick(true);
+		deletePendingDialog.hide();
 		
 		// Factors
 		factorsButton = new Button("Factors");
@@ -284,8 +293,16 @@ public class ScheduleControl extends FormPanel {
 			}
 		});
 
-		
+
 		deletePendingBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent be) {
+				deletePendingDialog.show();
+			}
+		});
+		
+		deletePendingDialog.getButtonById(Dialog.YES).addSelectionListener(
+				new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
 				// make the JSON request for the periods so we can make appointments
