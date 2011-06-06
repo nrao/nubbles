@@ -62,7 +62,7 @@ public class ScheduleControl extends FormPanel {
 	
 	// TODO: this could be modified to not modify widgets and be more
 	// unit testable!
-	// TODO: fails on DST boundaries!
+	// Fails on DST boundaries! Story: https://www.pivotaltracker.com/story/show/14225261
 	public void setScheduleSummary(List<BaseModelData> data) {
 		if (!schedulePressed) {
 			dataSize = data.size();
