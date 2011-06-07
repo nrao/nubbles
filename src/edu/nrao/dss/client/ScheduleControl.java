@@ -60,8 +60,6 @@ public class ScheduleControl extends FormPanel {
 		initListeners();
 	}
 	
-	// TODO: this could be modified to not modify widgets and be more
-	// unit testable!
 	// Fails on DST boundaries! Story: https://www.pivotaltracker.com/story/show/14225261
 	public void setScheduleSummary(List<BaseModelData> data) {
 		if (!schedulePressed) {
@@ -71,6 +69,27 @@ public class ScheduleControl extends FormPanel {
 			return;
 		}
 
+		// find the average score and gaps in the schedule
+		double[] results = analyzeSchedule(data);
+		double currentAverageValue = results[0];
+		double total_empty = results[1];
+		
+		String heading = "Schedule Control: (";
+		if (schedulePressed && dataSize != data.size()) {
+			//scheduleAverage.setValue("Schedule Average Score: " + scoreFormat.format(currentAverageValue));
+			heading += "Schedule Average Score: " + scoreFormat.format(currentAverageValue) + " ";
+			schedulePressed = false;
+			dataSize = data.size();
+		}
+		//currentAverage.setValue("Current Average Score: " + scoreFormat.format(currentAverageValue));
+		//unscheduledTime.setValue("Unscheduled Time: " + TimeUtils.min2sex((int)total_empty));
+		heading += "Current Average Score: " + scoreFormat.format(currentAverageValue);
+		heading += " Unscheduled Time: " + TimeUtils.min2sex((int)total_empty) + ")";
+		setHeading(heading);
+	}
+
+	// find the average score of the schedule, and any gaps
+	public double[] analyzeSchedule(List<BaseModelData> data) {
 		// Note: time computation done in minutes
 		long msecPerMinute = 60*1000;
 		double total_scheduled = 0.0;
@@ -103,19 +122,13 @@ public class ScheduleControl extends FormPanel {
 			total_empty += start - end;
 			end = start + duration;
 		}
-		double currentAverageValue = total_score/total_scheduled;
-		String heading = "Schedule Control: (";
-		if (schedulePressed && dataSize != data.size()) {
-			//scheduleAverage.setValue("Schedule Average Score: " + scoreFormat.format(currentAverageValue));
-			heading += "Schedule Average Score: " + scoreFormat.format(currentAverageValue) + " ";
-			schedulePressed = false;
-			dataSize = data.size();
-		}
-		//currentAverage.setValue("Current Average Score: " + scoreFormat.format(currentAverageValue));
-		//unscheduledTime.setValue("Unscheduled Time: " + TimeUtils.min2sex((int)total_empty));
-		heading += "Current Average Score: " + scoreFormat.format(currentAverageValue);
-		heading += " Unscheduled Time: " + TimeUtils.min2sex((int)total_empty) + ")";
-		setHeading(heading);
+		double currentAverageValue = total_score/total_scheduled;		
+		
+		// wrap up the results
+		double[] results = new double[2];
+		results[0] = currentAverageValue;
+		results[1] = total_empty;
+	    return results;	
 	}
 	
 	private void initLayout() {
