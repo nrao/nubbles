@@ -114,7 +114,7 @@ public class TestEvent extends GWTTestCase {
     	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     	Date start = dtf.parse("2013-11-03 21:00:00");
     	Date start_day = dtf.parse("2013-11-03 00:00:00");
-    	// this is one mintue before the start day ends, when the first appointment should end
+    	// this is one minute before the start day ends, when the first appointment should end
     	Date start_day_end = dtf.parse("2013-11-03 23:59:00");
     	Date end= dtf.parse("2013-11-04 03:00:00");
     	Date end_day = dtf.parse("2013-11-04 00:00:00");
@@ -171,7 +171,7 @@ public class TestEvent extends GWTTestCase {
     
     // another failing unit test - WTF!!!!  No, this is worth spelling it out:
     // WHAT THE FUCK!!!!!!!!!!!!!!!!!!!!
-    public void testGetDaySpan() {
+    public void testGetDaySpan_DST() {
     	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     	Date start = dtf.parse("2010-11-07 00:30:00");
     	Date start_day = dtf.parse("2010-11-07 00:00:00");
