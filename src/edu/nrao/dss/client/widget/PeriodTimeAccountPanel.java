@@ -125,8 +125,9 @@ public class PeriodTimeAccountPanel extends TimeAccountingPanel {
 	}
 
 	public void updatePeriodForm(int periodId) {
-    	// get this period from the server and populate the form
-        // TODO - should pick up timezone from Schedule
+    	// Get this period from the server and populate the form.
+        // Note that we are using UTC, regardless of the timezone that may be
+    	// being used in this context.
     	JSONRequest.get("/scheduler/periods/UTC/" + Integer.toString(periodId)
     		      , new JSONCallbackAdapter() {
     		public void onSuccess(JSONObject json) {
