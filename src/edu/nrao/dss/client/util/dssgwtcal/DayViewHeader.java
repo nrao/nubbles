@@ -1,5 +1,6 @@
 package edu.nrao.dss.client.util.dssgwtcal;
 
+import edu.nrao.dss.client.util.dssgwtcal.util.TimeUtils;
 import edu.nrao.dss.client.util.dssgwtcal.util.WindowUtils;
 import java.util.Date;
 
@@ -30,8 +31,12 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 		"Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
 		"Dec" };
 
+    private TimeUtils tu;
+    
 	public DayViewHeader(HasSettings settings) {
 		this.settings = settings;
+		tu = new TimeUtils();
+		
 		initWidget(header);
 		header.setStyleName(GWT_CALENDAR_HEADER_STYLE);
 		dayPanel.setStyleName(DAY_CELL_CONTAINER_STYLE);
@@ -76,22 +81,31 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 
 			String headerTitle = DAY_LIST[date.getDay()] + ", "
 					+ MONTH_LIST[date.getMonth()] + " " + date.getDate();
+//			if (tu.isDSTBoundary(date)) {
+//				// warn users that this Daylight Savings Time starts or ends on this day.
+//				headerTitle += " (DST)";
+//			}
 
 			Label dayLabel = new Label();
-			dayLabel.setStylePrimaryName("day-cell");
+			//dayLabel.setStylePrimaryName("day-cell");
 			dayLabel.setWidth(dayWidth + "%");
 			dayLabel.setText(headerTitle);
 			// Question: why are we using the DOM here?
 			DOM.setStyleAttribute(dayLabel.getElement(), "left", dayLeft
 					+ "%");
 
-			// set the style of the header to show that it is today
-			if (new Date().getYear() == date.getYear()
-					&& new Date().getMonth() == date.getMonth()
-					&& new Date().getDate() == date.getDate()) {
-				dayLabel.setStyleName("day-cell-today");
+			// how should this day be displayed?
+			String styleName = "day-cell"; //default value
+			if (tu.isToday(date)) {
+				styleName = "day-cell-today";
 			}
-
+//			if (tu.isDSTBoundary(date)) {
+//				// notice how displaying the fact that the day is DST takes
+//				// precedence over the fact that it is today.
+//			    styleName = "day-cell-dst";	
+//			}
+			dayLabel.setStyleName(styleName);
+			
 			dayPanel.add(dayLabel);
 		}
 	}

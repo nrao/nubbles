@@ -45,7 +45,7 @@ public class Event {
 		createAppointments();
 	}
 
-	// TODO: Total fucking kluge: when we calculate the next day using
+	// Total fucking kluge: when we calculate the next day using
 	// Date.getTime() + milliseconds
 	// the Date class will take DST into account, so watch for these offsets
 	private Date[] getDSTPositiveOffsets() {

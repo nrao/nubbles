@@ -132,6 +132,19 @@
 	background:#C3D9FF;
 }
 
+.gwt-cal .gwt-calendar-header .day-cell-dst {
+	border-left: 1px solid #C3D9FF;
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	text-align: center;
+	font-family: arial;
+	font-size: 12px;
+	padding-top: 2px;
+	font-weight: normal;
+	background:#D96666;
+}
+
 .gwt-cal .gwt-calendar-header .day-cell-today {
 	border-left: 1px solid #C3D9FF;
 	position: absolute;
