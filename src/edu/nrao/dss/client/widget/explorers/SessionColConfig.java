@@ -306,7 +306,7 @@ public class SessionColConfig extends ColumnConfig {
 		});
 	}
 
-	// TODO allows entries outside list of options
+	// Note: this allows entries outside list of options
 	private SimpleComboBox<String> createSimpleComboBox(String[] options) {
 		SimpleComboBox<String> typeCombo = new SimpleComboBox<String>();
 		typeCombo.setTriggerAction(TriggerAction.ALL);
