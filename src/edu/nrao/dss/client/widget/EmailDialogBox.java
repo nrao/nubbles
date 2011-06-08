@@ -169,8 +169,6 @@ public class EmailDialogBox extends Dialog {
 		field_label.setWidth(50);
 		field_text.setValue(content);
 		field_text.setSize(width, height);
-		// TODO: Use setInputStyleAttribute for extGWT 2.1 +!!!!
-		// field_text.setStyleAttribute("font-family", "monospace");
 		field_text.setInputStyleAttribute("font-family", "monospace");
 		hp.add(field_label);
 		hp.add(field_text);
