@@ -158,10 +158,7 @@ public class SessionPage extends ContentPanel {
 		Boolean g = s.get("guaranteed").isBoolean().booleanValue();
 		guaranteed.setValue(g);
 		
-		// TODO: straigten out all this handle crap!
-		String name = s.get("name").isString().stringValue();
-		String pcode = s.get("pcode").isString().stringValue(); 
-        String sessionHandle = name + " (" + pcode + ")";
+        String sessionHandle = s.get("handle").isString().stringValue(); 
 		int sessionId = (int) s.get("id").isNumber().doubleValue();
 		
 		if (sessionType.equals("windowed") == true) {
