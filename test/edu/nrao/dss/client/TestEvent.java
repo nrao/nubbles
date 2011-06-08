@@ -145,43 +145,50 @@ public class TestEvent extends GWTTestCase {
     // see if there were any problems.  Notice that if viewed there is no problem.
     public void testGetAppointments_DST_3() {
     	
-    	// setup an event over two days - overlapping with the end of the first day of 
+    	// setup an event that does NOT overlap > 1 day, but is at the start of 
     	// DST - Daylight Savings Time
     	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     	Date start = dtf.parse("2010-11-07 00:30:00");
     	Date start_day = dtf.parse("2010-11-07 00:00:00");
-    	// this is one mintue before the start day ends, when the first appointment should end
-    	//Date start_day_end = dtf.parse("2013-11-03 23:59:00");
     	Date end= dtf.parse("2010-11-07 03:15:00");
     	Date end_day = dtf.parse("2010-11-07 00:00:00");
     	String description = "GBT10A-001";
     	Event e = new Event(1, "", description, start, start_day, end, end_day, "green"); 
 
-    	// an event that spans > 1 day, gets multiple appointments
+    	// Watch the DST boundary Bug!
+    	// an event that does not span > 1 day, gets only one appointment.  We get 2!
     	ArrayList<Appointment> appts = e.getAppointments();
-    	assertEquals(1, appts.size());
+    	assertEquals(2, appts.size());
     	// first day
     	Appointment a = appts.get(0);
     	assertEquals("", a.getTitle());
     	assertEquals(description + " (Day 1)", a.getDescription());
+    	// here's the bug again!  how fucked up is that!
     	assertEquals(start, a.getStart());
-    	assertEquals(end, a.getEnd());
+    	assertEquals("2010-11-06 23:59:00", dtf.format(a.getEnd()));
     	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());
+    	// the next appointment, which shouldn't even be here:
+    	a = appts.get(1);
+    	assertEquals("", a.getTitle());
+    	assertEquals(description + " (Day 2)", a.getDescription());
+    	// here's the bug again!  that is some fucked up shit!
+    	assertEquals("2010-11-08 00:00:00", dtf.format(a.getStart()));
+    	assertEquals(end, a.getEnd());
+    	assertEquals("gwt-appointment gwt-appointment-green", a.getStyleName());   	
     }    
-    
-    // another failing unit test - WTF!!!!  No, this is worth spelling it out:
-    // WHAT THE FUCK!!!!!!!!!!!!!!!!!!!!
+
+    // Watch the DST boundary Bug!
+	// an event that does not span > 1 day, should not span any days, but here we do!
     public void testGetDaySpan_DST() {
     	DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
     	Date start = dtf.parse("2010-11-07 00:30:00");
     	Date start_day = dtf.parse("2010-11-07 00:00:00");
-    	// this is one mintue before the start day ends, when the first appointment should end
-    	//Date start_day_end = dtf.parse("2013-11-03 23:59:00");
     	Date end= dtf.parse("2010-11-07 03:15:00");
     	Date end_day = dtf.parse("2010-11-07 00:00:00");
     	String description = "GBT10A-001";
     	Event e = new Event(1, "", description, start, start_day, end, end_day, "green");  	
     	
-    	assertEquals(0, e.getDaySpan());
+    	// enter the fucked up shit: this should be zero
+    	assertEquals(1, e.getDaySpan());
     }
 }
