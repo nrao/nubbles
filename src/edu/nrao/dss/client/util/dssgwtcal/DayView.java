@@ -1,6 +1,8 @@
 package edu.nrao.dss.client.util.dssgwtcal;
 
 import edu.nrao.dss.client.util.dssgwtcal.util.AppointmentUtil;
+import edu.nrao.dss.client.util.dssgwtcal.util.TimeUtils;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -49,6 +51,8 @@ public class DayView extends CalendarView {
     
     private float[] scores;
     private String timezone;
+    
+    private TimeUtils tu = new TimeUtils();
     
     public DayView() {
         this(CalendarSettings.DEFAULT_SETTINGS);
@@ -168,11 +172,10 @@ public class DayView extends CalendarView {
         }
     }
 
-    private int estHourToTimezone(int estHour) {
-    	// TODO: take day-light savings into account
-    	int offset = 4;
+    private int estHourToTimezone(int estHour, Date dt) {
+    	long offset = tu.getEstOffsetMs(dt);
     	if (timezone == "UTC") {
-    		return estHour + offset;
+    		return (int) (estHour + offset);
     	} else {
     		return estHour;
     	}
@@ -196,14 +199,15 @@ public class DayView extends CalendarView {
     			color = "green";
     			thisLeft = (100.0f/numDays) - offset;
     			// simply start at beginning of calendar, regardless of timezone
-    			startHour = 0; //estHourToTimezone(8);
+    			startHour = 0; 
     		} else {
     			// last day
     			desc = "End";
     			color = "red";
     			thisLeft = ((numDays*100.0f)/numDays) - offset;
     			// this *does* depend on a certain time
-    	        startHour = estHourToTimezone(8);
+    			Date endDay = new Date(date.getTime() + numDays*(TimeUtils.msPerDay));
+    	        startHour = estHourToTimezone(8, endDay);
     		}
     	}
 

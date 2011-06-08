@@ -19,6 +19,8 @@ public class TimeUtils {
 	public static DateTimeFormat DATETIME_FORMAT  = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm");
 	public static DateTimeFormat DATETIME_FORMAT2 = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
 	
+	public static long msPerDay = 24 * 60 * 60 * 1000;
+	
 	private DateRange[] getDSTFiveHourOffsets() {
 		DateRange[] drs = {
 				new DateRange("2009-11-01 00:00:00", "2010-03-14 00:00:00"),
@@ -100,5 +102,9 @@ public class TimeUtils {
 	public long getDay(Date dt, Date offsetDt) {
 		long time = dt.getTime();
 		return (time - getEstOffsetMs(offsetDt)) / msInDay;
+	}
+	
+	public long msInDay() {
+		return msInDay;
 	}
 }
