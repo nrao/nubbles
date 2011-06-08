@@ -125,24 +125,6 @@ public class SessionColConfig extends ColumnConfig {
 
 		setAlignment(HorizontalAlignment.RIGHT);
 		setEditor(new CellEditor(field));
-		// TODO Remove this code???
-//		{
-//			@Override
-//			public Object preProcessValue(Object value) {
-//				if (value == null) {
-//					return null;
-//				}
-//				return Double.valueOf(value.toString());
-//			}
-//
-//			@Override
-//			public Object postProcessValue(Object value) {
-//				if (value == null) {
-//					return null;
-//				}
-//				return value.toString();
-//			}
-//		});
 
 		setNumberFormat(NumberFormat.getFormat("0"));
 		setRenderer(new GridCellRenderer<BaseModelData>() {
