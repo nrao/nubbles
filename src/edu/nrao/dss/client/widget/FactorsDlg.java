@@ -80,7 +80,6 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		
 		sessions.setToolTip("Select a session to factor.");
 		sessions.setFieldLabel("Sessions");
-		sessions.setSimpleValue("Maintenance (Maintenance)"); // TODO fails
 		sessions.setEditable(false);
 		sessions.setTriggerAction(TriggerAction.ALL);
 		fp.add(sessions);
