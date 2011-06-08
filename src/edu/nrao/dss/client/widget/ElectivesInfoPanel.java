@@ -55,7 +55,7 @@ public class ElectivesInfoPanel extends PeriodGroupsInfoPanel {
 			add(e);
 			
 			// display the elective as it comes in
-			// TODO: should we do this just once?
+			// Q: should we do this just once, rather then once per panel?
 			layout();	
 		}		
 	}

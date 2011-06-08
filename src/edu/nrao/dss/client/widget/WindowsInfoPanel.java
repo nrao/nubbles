@@ -57,7 +57,7 @@ public class WindowsInfoPanel extends PeriodGroupsInfoPanel {
 			add(w);
 			
 			// display the window as it comes in
-			// TODO: should we do this just once?
+			// Q: should we do this just once, instead of once per panel?
 			layout();	
 		}		
 	}
