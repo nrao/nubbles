@@ -63,9 +63,14 @@ public class NomineePanel extends ContentPanel {
 		
 		nominees = new ListView<NomineeModel>();
 		nominees.setStore(store);
-		// TODO How to change the format of a field, i.e., duration and score?
+		// Q: How to change the format of a field, i.e., duration and score?
+		// Well, we've already solved the formatting problem by formatting on the server side, but in theory you could do something like:
+		// nominees.setTemplate("<b>{sess_name}</b> {sess_type} ({proj_name}) {score:number(\"0000.0000\")} for {durationStr}");
+		// see: http://dev.sencha.com/deploy/gxtdocs/com/extjs/gxt/ui/client/core/XTemplate.html
+		// but we'd really like to do something like this:
 		//nominees.setSimpleTemplate("<b>{sess_name}</b> ({proj_name}) {duration} minutes {TimeUtil.min2sex(duration)}");
 		nominees.setSimpleTemplate("<b>{sess_name}</b> {sess_type} ({proj_name}) {scoreStr} for {durationStr}");
+		
 		add(nominees);
 		nominees.getSelectionModel().addListener(Events.SelectionChange,  
 		         new Listener<SelectionChangedEvent<BaseModel>>() {  
