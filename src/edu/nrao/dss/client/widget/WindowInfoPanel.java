@@ -70,7 +70,6 @@ public class WindowInfoPanel extends PeriodGroupInfoPanel {
 	private WindowRangeExplorer wre;
 	private WindowedPeriodExplorer wpe;
 	
-	// TODO: we should be taking advantage of the Window class to translate this JSON.
 	protected void translateJson(JSONObject winJson) {
 		
 		Window w = Window.parseJSON(winJson);
