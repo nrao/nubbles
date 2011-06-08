@@ -55,19 +55,19 @@ public class SessionColConfig extends ColumnConfig {
 		} else if (clasz == Boolean.class) {
 			checkboxField();
 		} else if (clasz == CoordModeField.class) {
-			typeField(CoordModeField.values);
+			typeField(CoordModeField.values, false);
 		} else if (clasz == DateEditField.class) {
 			dateField();
 		} else if (clasz == DegreeField.class) {
 			degreeField();
 		} else if (clasz == GradeField.class) {
-			typeField(GradeField.values);
+			typeField(GradeField.values, false);
 		} else if (clasz == HourField.class) {
 			hourField();
 		} else if (clasz == ScienceField.class) {
-			typeField(ScienceField.values);
+			typeField(ScienceField.values, false);
 		} else if (clasz == STypeField.class) {
-			typeField(STypeField.values);
+			typeField(STypeField.values, false);
 		} else if (clasz == PCodeField.class) {
 			setPCodeOptions();
 		} else {
@@ -89,7 +89,9 @@ public class SessionColConfig extends ColumnConfig {
 				for (int i = 0; i < pcodes.size(); ++i){
 					proj_codes.add(pcodes.get(i).toString().replace('"', ' ').trim());
 				}
-				typeField(proj_codes.toArray(new String[] {}));
+				// make sure it's an editable combobox so they don't have to search
+				// this huge list of projects
+				typeField(proj_codes.toArray(new String[] {}), true);
 			}
     	});
 	}
@@ -306,9 +308,9 @@ public class SessionColConfig extends ColumnConfig {
 		});
 	}
 
-	// Note: this allows entries outside list of options
-	private SimpleComboBox<String> createSimpleComboBox(String[] options) {
+	private SimpleComboBox<String> createSimpleComboBox(String[] options, boolean editable) {
 		SimpleComboBox<String> typeCombo = new SimpleComboBox<String>();
+		typeCombo.setEditable(editable);
 		typeCombo.setTriggerAction(TriggerAction.ALL);
 
 		for (String o : options) {
@@ -318,8 +320,8 @@ public class SessionColConfig extends ColumnConfig {
 		return typeCombo;
 	}
 	
-	private void typeField(String[] options) {
-		final SimpleComboBox<String> typeCombo = createSimpleComboBox(options);
+	private void typeField(String[] options, boolean editable) {
+		final SimpleComboBox<String> typeCombo = createSimpleComboBox(options, editable);
 
 		setEditor(new CellEditor(typeCombo) {
 			@Override
