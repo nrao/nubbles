@@ -213,7 +213,7 @@ public class PeriodColConfig extends ColumnConfig {
 		setEditor(new CellEditor(new TextField<String>()));
 	}
 
-	// TODO allows entries outside list of options
+	// Note: allows entries outside list of options
 	private SimpleComboBox<String> createSimpleComboBox(String[] options) {
 		SimpleComboBox<String> typeCombo = new SimpleComboBox<String>();
 		typeCombo.setTriggerAction(TriggerAction.ALL);
