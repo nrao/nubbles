@@ -573,7 +573,8 @@ public class Explorer extends ContentPanel{
 		filterMenu.add(removeCombos);
 		filterMenu.add(new SeparatorMenuItem());
 		
-		//  TODO:  This is only used below to init the MenuItem outside the namespace
+		// We'll need to pass in this object as to the FilterComboMenuItem constructor below
+		// so do this to make sure it will be in scope. 
 		final Explorer e = this;
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("explorer", rootURL);
@@ -622,16 +623,15 @@ public class Explorer extends ContentPanel{
 						JSONValue value = json.get(fName);
 						if (value.isNumber() != null) {
 							double numValue = value.isNumber().doubleValue();
-							//TODO conditional for case to int
-							//model.set(fName, (int) numValue);
+							// Note: we're treating even integer values like doubles here.  Doesn't appear
+							// to be an issue.  1.0 is displayed as 1 anyways.
 							model.set(fName, numValue);
 						} else if (value.isBoolean()!= null) {
 							model.set(fName, value.isBoolean().booleanValue());
 						} else if (value.isString() != null) {
 							model.set(fName, value.isString().stringValue());
 						} else if (value.isNull() != null) {
-							// TODO: should this really be a no-op
-							//Window.alert("null JSON value type");
+                            // not raising an error seems to be fine.
 						} else {
 							Window.alert("unknown JSON value type");
 						}
