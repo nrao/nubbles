@@ -158,9 +158,8 @@ public class Schedule extends ContentPanel implements Refresher {
         
         // in the middle, the calendar
 		// ======================== Calendar ===================================
-		calendar = new ContentPanel(); // TODO extend to bottom of panel
+		calendar = new ContentPanel(); 
   		calendar.setHeading("Calendar");
-  		//calendar.setAutoHeight(true);
 		calendar.setScrollMode(Scroll.AUTOX);
 		calendar.setStyleAttribute("bgcolor", "black");
 		
