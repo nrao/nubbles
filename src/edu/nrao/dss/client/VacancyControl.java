@@ -180,7 +180,8 @@ public class VacancyControl extends FormPanel {
 		// The right hand side has all the gaps
 		// Nominee vacancies
 	    vacancyShortcut.setToolTip("Selectable list of unscheduled gaps in the displayed schedule");
-	    vacancyShortcut.setScrollMode(Style.Scroll.AUTOY);  // TODO does not work
+	    // Does not work; see Story: https://www.pivotaltracker.com/story/show/14363277
+	    vacancyShortcut.setScrollMode(Style.Scroll.AUTOY);  
 	    right.add(vacancyShortcut);
 	    
 	    add(right, tdRight);
