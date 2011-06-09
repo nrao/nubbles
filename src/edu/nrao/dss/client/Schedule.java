@@ -241,8 +241,11 @@ public class Schedule extends ContentPanel implements Refresher {
 		    });	            
 	            
 	        }               
-	    });	
-		//dayView.addSelectionHandler(handler); // TODO handle nominee selection in calendar?
+	    });
+		// Wouldn't it be nice if the user could click on a gap in the calendar and find
+		// Nominees, rather then just use Vacancy Control?
+		// Story: https://www.pivotaltracker.com/story/show/14364047
+		//dayView.addSelectionHandler(handler); 
 		calendar.add(dayView);
 		
 		// add all the components to this parent panel
