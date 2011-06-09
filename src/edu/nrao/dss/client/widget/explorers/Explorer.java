@@ -826,9 +826,10 @@ public class Explorer extends ContentPanel{
 	protected PagingToolBar pagingToolBar;
 	
 	protected FilterItem filter;
-	
+
+	// Note: really should be grabing this list from the server, but it's static 
+	// enough to hard code here.
 	protected String[] semesters = new String[] {
-			// TODO - need to generate this list relative to the current date
 			  "12B", "12A"
 			, "11B", "11A"
 		    , "10C", "10B", "10A"
