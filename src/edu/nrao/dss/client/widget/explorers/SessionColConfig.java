@@ -231,8 +231,8 @@ public class SessionColConfig extends ColumnConfig {
 	}
 
 	private void hourField() {
-		TextField<String> positionField = new TextField<String>();
-		positionField.setRegex("[0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?");
+		final TextField<String> positionField = new TextField<String>();
+		positionField.setRegex("-?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
 
 		setAlignment(HorizontalAlignment.RIGHT);
 
@@ -249,8 +249,8 @@ public class SessionColConfig extends ColumnConfig {
 				}
 			}
 		});
-
-		setEditor(new CellEditor(positionField) {
+		
+		setEditor(new CellEditor(positionField){
 			@Override
 			public Object preProcessValue(Object value) {
 				if (value == null) {
