@@ -64,7 +64,6 @@ public class SessionPage extends ContentPanel {
         sessionForm.setHeaderVisible(false);
         sessionForm.add(new HTML("<h2>Session Information</h2>"));
 		
-        sessions.setTriggerAction(TriggerAction.ALL);
 		sessions.setFieldLabel("Session");
 		sessionForm.add(sessions);
 		
@@ -89,14 +88,11 @@ public class SessionPage extends ContentPanel {
 	
 	private void initListeners() {
 		// when a project gets picked, populate the sessions combo
-		sessions.addListener(Events.Valid, new Listener<BaseEvent>() {
+		sessions.addListener(Events.SelectionChange, new Listener<BaseEvent>() {
 		  	public void handleEvent(BaseEvent be) {
-		  		// TODO: this is getting triggered one too many times!! Crap ...
-		  		if (sessions.getSimpleValue().equals(sessionHandle) == false) {
-		  			sessionHandle = sessions.getSimpleValue();
-			  		// go git it
-			  		getSession(sessions.getSimpleValue());
-		  		}
+	  			sessionHandle = sessions.getSimpleValue();
+		  		// go git it
+		  		getSession(sessions.getSimpleValue());
 		   	}
 		});				
 	}

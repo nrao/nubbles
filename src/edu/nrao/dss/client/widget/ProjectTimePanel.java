@@ -117,11 +117,9 @@ public class ProjectTimePanel extends ContentPanel {
 
 	private void initListeners() {
 
-		projects.addListener(Events.Valid, new Listener<BaseEvent>() {
+		projects.addListener(Events.SelectionChange, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-				GWT.log("Project Name Selected!");
-				// TODO: we need to figure out why we are getting this event twice!
-				if (project_codes.contains(projects.getSimpleValue()) && (pcode != projects.getSimpleValue())) {
+				if (project_codes.contains(projects.getSimpleValue())) { 
 					pcode = projects.getSimpleValue();
 				    getProjectTimeAccounting();
 				}
