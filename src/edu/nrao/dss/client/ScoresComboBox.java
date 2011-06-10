@@ -30,14 +30,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
     private CheckBox notcomplete;
     private CheckBox enabled;
 	private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
-    
-    // TODO, WTF: used for seeing if this is a new request, to avoid bug where
-    // we are getting event twice.
-    private Date lastStart;
-    private int lastNumDays;
-    private String lastTimeZone;
-    private int lastSessionId;
-    
+  
 	public ScoresComboBox(Schedule schedulePanel, CheckBox notcomplete, CheckBox enabled) {
 		super();
 		this.schedulePanel = schedulePanel;
@@ -45,10 +38,6 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		this.enabled       = enabled;
 		initLayout();
 		initListeners();
-		lastStart = new Date();
-		lastNumDays = 0;
-		lastTimeZone = "";
-		lastSessionId = 0;
 		setTriggerAction(TriggerAction.ALL);
 	}
 	
@@ -113,10 +102,6 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		int numDays = schedulePanel.getNumCalendarDays();
 		String tz = schedulePanel.getTimeZone();
 		
-		lastStart = start;
-		lastNumDays = numDays;
-		lastTimeZone = tz;
-		lastSessionId = id;
 		// go get the scores
 	    access.request(display, id, name, start, (numDays * 24 * 60), tz);
 
