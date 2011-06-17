@@ -81,10 +81,10 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 
 			String headerTitle = DAY_LIST[date.getDay()] + ", "
 					+ MONTH_LIST[date.getMonth()] + " " + date.getDate();
-//			if (tu.isDSTBoundary(date)) {
-//				// warn users that this Daylight Savings Time starts or ends on this day.
-//				headerTitle += " (DST)";
-//			}
+			if (tu.isDSTBoundary(date)) {
+				// warn users that this Daylight Savings Time starts or ends on this day.
+				headerTitle += " (DST)";
+			}
 
 			Label dayLabel = new Label();
 			//dayLabel.setStylePrimaryName("day-cell");
@@ -99,11 +99,11 @@ public static final String[] MONTH_LIST = new String[] { "Jan", "Feb",
 			if (tu.isToday(date)) {
 				styleName = "day-cell-today";
 			}
-//			if (tu.isDSTBoundary(date)) {
-//				// notice how displaying the fact that the day is DST takes
-//				// precedence over the fact that it is today.
-//			    styleName = "day-cell-dst";	
-//			}
+			if (tu.isDSTBoundary(date)) {
+				// notice how displaying the fact that the day is DST takes
+				// precedence over the fact that it is today.
+			    styleName = "day-cell-dst";	
+			}
 			dayLabel.setStyleName(styleName);
 			
 			dayPanel.add(dayLabel);
