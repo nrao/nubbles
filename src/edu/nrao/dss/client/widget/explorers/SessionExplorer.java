@@ -214,6 +214,8 @@ public class SessionExplorer extends Explorer {
         new ColumnType("transit",          "Transit?",        55, false, Boolean.class),
         new ColumnType("nighttime",        "Night-time?",     65, false, Boolean.class),
         new ColumnType("guaranteed",       "Guaranteed?",     65, false, Boolean.class),
+        new ColumnType("gas",              "Good Atm. Stb.",  85, false, Boolean.class),
+        new ColumnType("keyhole",          "Keyhole Limit",   65, false, Boolean.class),
     	};
     
     public ColumnConfig getPcodeConfig() {
