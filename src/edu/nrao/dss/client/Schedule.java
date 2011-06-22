@@ -66,6 +66,7 @@ import edu.nrao.dss.client.util.dssgwtcal.Appointment;
 import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
 import edu.nrao.dss.client.util.dssgwtcal.DayView;
 import edu.nrao.dss.client.util.dssgwtcal.Event;
+import edu.nrao.dss.client.util.dssgwtcal.util.TimeUtils;
 import edu.nrao.dss.client.widget.FactorsDlg;
 import edu.nrao.dss.client.widget.NomineePanel;
 import edu.nrao.dss.client.widget.PeriodSummaryDlg;
@@ -110,6 +111,22 @@ public class Schedule extends ContentPanel implements Refresher {
 	
 	public String getTimeZone() {
 		return timezone;
+	}
+	
+	// it's important too know whether one of the dates being shown on the calendar is
+	// a DST boundary, because that means there's client side Date calculations that can't
+	// be trusted - like the graphical calendar for instance
+	public boolean hasDSTBoundary() {
+		Date start = startCalendarDay;
+		Date dt;
+		TimeUtils tu = new TimeUtils();
+		for (int day=0; day < numCalendarDays; day++) {
+			dt = new Date(start.getTime() + day*1000*60*60*24);
+			if (tu.isDSTBoundary(dt)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	protected void initLayout() {
