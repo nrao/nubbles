@@ -69,6 +69,8 @@ public class ScheduleControl extends FormPanel {
 	private boolean schedulePressed;
 	int dataSize;
 	private NumberFormat scoreFormat = NumberFormat.getFormat("0.00");
+	private String origBackground;
+	private String origBackgroundColor;
 	
 	public FactorsDlg factorsDlg;
 	
@@ -158,29 +160,32 @@ public class ScheduleControl extends FormPanel {
 	}
 
 
-//	protected void onRender(Element parent, int pos) {
-//		super.onRender(parent, pos);
-//		GWT.log("Rendering!!!!!!!!!!");
-//        color();		
-//	}
-	
 	// if we're displaying a DST boundary, make sure we mark this header so that
 	// users know not to trust the calculations.
 	private void checkForDST() {
-		if (schedule.hasDSTBoundary()) {
-			setHeading(getHeading() + " DST!");
-			GWT.log("hasDSTBoundary");
-			El e = el();
-			if (e != null) {
-				El child = e.firstChild();
-				if (child != null & isRendered()) {
-					GWT.log("changed background?");
+		El e = el();
+		if (e != null) {
+			El child = e.firstChild();
+			if (child != null & isRendered()) {
+				if (origBackground == null) {
+					origBackground = child.getStyleAttribute("background");
+					origBackgroundColor = child.getStyleAttribute("background-color");
+				}
+				if (schedule.hasDSTBoundary()) {
+					// warn the user of DST!
+					setHeading(getHeading() + " DST!");
 					child.setStyleAttribute("background", "none");
 					child.setStyleAttribute("background-color", "red");
-	
+				} else {
+					// make sure we reset the original appearence.
+					child.setStyleAttribute("background", origBackground);
+					child.setStyleAttribute("background-color", origBackgroundColor);
+					
 				}
+
 			}
 		}
+//		}
 		
 	}
 	
