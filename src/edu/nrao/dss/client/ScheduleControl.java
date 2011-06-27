@@ -77,7 +77,7 @@ public class ScheduleControl extends FormPanel {
 	private Button scheduleButton;
 	private Button emailButton;
 	private Button publishButton;
-	private Button deletePendingBtn;
+	private Button restoreScheduleBtn;
 	private Button factorsButton;
 	
 	public ScheduleControl(Schedule sched) {
@@ -215,9 +215,9 @@ public class ScheduleControl extends FormPanel {
 		left.add(scheduleButton, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 		
 		// deletes all pending periods currently displayed (state moved from pending to deleted)
-		deletePendingBtn = new Button("Delete Pending");
-		deletePendingBtn.setToolTip("Deletes all the currently visible Periods in the Pending (P) state.");
-		left.add(deletePendingBtn, new RowData(-1, -1, new Margins(0, 4, 0, 4)));		
+		restoreScheduleBtn = new Button("Restore Schedule");
+		restoreScheduleBtn.setToolTip("Deletes all the currently visible Open Periods and non-default Windowed Periods in the Pending (P) state; then it restores any Elective and Windowed Periods in the Deleted (D) state.");
+		left.add(restoreScheduleBtn, new RowData(-1, -1, new Margins(0, 4, 0, 4)));		
 		
 		// Factors
 		factorsButton = new Button("Factors");
@@ -356,14 +356,14 @@ public class ScheduleControl extends FormPanel {
 		});
 
 		
-		deletePendingBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+		restoreScheduleBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent be) {
 				// make the JSON request for the periods so we can make appointments
 				// we need the same url in a different format
 				HashMap<String, Object> keys = getTimeRange();
 				//final MessageBox box = MessageBox.confirm("Publish Pending Periods", "r u sure?", l);
-				JSONRequest.post("/scheduler/periods/delete_pending", keys,
+				JSONRequest.post("/scheduler/periods/restore_schedule", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
 								schedule.updateCalendar();
