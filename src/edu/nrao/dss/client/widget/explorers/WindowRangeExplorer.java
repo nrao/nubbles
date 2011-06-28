@@ -104,7 +104,7 @@ public class WindowRangeExplorer extends Explorer {
 	private static final ColumnType[] columnTypes = {
 	    new ColumnType("start",                  "Start",           70, false, DateEditField.class),
 	    new ColumnType("duration",               "Days",            70, false, Integer.class),
-	    new ColumnType("end",                    "Last Date",       90, false, DisplayField.class)
+	    new ColumnType("end",                    "Last Date",       70, false, DisplayField.class)
 	};	
 	
 	// who gets updates when changes are made?
