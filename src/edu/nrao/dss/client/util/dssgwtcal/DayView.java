@@ -38,11 +38,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -195,11 +193,15 @@ public class DayView extends CalendarView {
     }
 
     private int estHourToTimezone(int estHour, Date dt) {
-    	long offset = tu.getEstOffsetMs(dt);
-    	if (timezone == "UTC") {
-    		return (int) (estHour + offset);
-    	} else {
+    	// By checking for ET the default becomes UT, for example,
+    	// when timezone is null which is often the initial state.
+    	// This is fine because the default timezone in the client
+    	// is UT.
+    	if (timezone == "ET") {
     		return estHour;
+    	} else {
+    		long offset = tu.isInDSTFiveHourOffset(dt) ? 5 : 4;
+    		return (int) (estHour + offset);
     	}
     }
     
@@ -227,7 +229,7 @@ public class DayView extends CalendarView {
     			desc = "End";
     			color = "red";
     			thisLeft = ((numDays*100.0f)/numDays) - offset;
-    			// this *does* depend on a certain time
+    			// this *does* depend on a certain time and the timezone
     			Date endDay = new Date(date.getTime() + numDays*(TimeUtils.msPerDay));
     	        startHour = estHourToTimezone(8, endDay);
     		}
@@ -238,7 +240,7 @@ public class DayView extends CalendarView {
         float qTop = 0.0f;
         Date start = date;
         Date end;
-        int numQtrs = 24 * 4;  // each hour has 4 15-min quarters
+        //int numQtrs = 24 * 4;  // each hour has 4 15-min quarters
     	
         qTop = (startHour*4) * quarterHeight;
         start = new Date(start.getTime() + (1000 * 60 * 15 * startHour));
