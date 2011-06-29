@@ -293,7 +293,7 @@ public class SessionColConfig extends ColumnConfig {
 
 	private void degreeField() {
 		TextField<String> degreeField = new TextField<String>();
-		degreeField.setRegex("-?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
+		//degreeField.setRegex("-?\\d?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
 
 		setAlignment(HorizontalAlignment.RIGHT);
 

@@ -87,9 +87,15 @@ public class Conversions {
         	sign = "-";
         }
 
+        String degreeFormat;
+        if (degrees >= 100 | degrees <= -100) {
+        	degreeFormat = "000";
+        } else {
+        	degreeFormat = "00";
+        }
         StringBuilder result = new StringBuilder();
         result.append(sign)
-              .append(NumberFormat.getFormat("00").format(degrees))
+        	  .append(NumberFormat.getFormat(degreeFormat).format(degrees))
               .append(":")
               .append(NumberFormat.getFormat("00").format(minutes))
               .append(":")
@@ -131,11 +137,21 @@ public class Conversions {
         	start = 1;
         	factor = -1.0;
         }
-        double degrees = Double.parseDouble(sexigesimal.substring(start, start + 2));
-        double minutes = Double.parseDouble(sexigesimal.substring(start + 3, start + 5));
-        double seconds = Double.parseDouble(sexigesimal.substring(start + 6));
         
-        return factor*(degrees + (minutes + seconds / 60.0) / 60.0);
+        String[] dms = sexigesimal.split(":");
+        double degrees = Double.parseDouble(dms[0]);
+        double minutes = Double.parseDouble(dms[1]);
+        double seconds = Double.parseDouble(dms[2]);
+//        double degrees = Double.parseDouble(sexigesimal.substring(start, start + 2));
+//        double minutes = Double.parseDouble(sexigesimal.substring(start + 3, start + 5));
+//        double seconds = Double.parseDouble(sexigesimal.substring(start + 6));
+        
+        //return factor*(degrees + (minutes + seconds / 60.0) / 60.0);
+        if (degrees < 0) {
+        	return (degrees - (minutes + seconds / 60.0) / 60.0);
+        } else {
+        	return (degrees + (minutes + seconds / 60.0) / 60.0);
+        }
     }
     
     public static double radiansToDegrees(double radians) {
