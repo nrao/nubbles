@@ -293,31 +293,32 @@ public class SessionColConfig extends ColumnConfig {
 
 	private void degreeField() {
 		TextField<String> degreeField = new TextField<String>();
-		//degreeField.setRegex("-?\\d?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
+		degreeField.setRegex("-?\\d?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?");
+		//degreeField.setRegex("/-?\\d?\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?/g");
 
 		setAlignment(HorizontalAlignment.RIGHT);
-
+		
 		setRenderer(new GridCellRenderer<BaseModelData>() {
 			public Object render(BaseModelData model, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<BaseModelData> store, Grid<BaseModelData> grid) {
 				Object val = model.get(property);
 				if (val != null) {
-					return Conversions.radiansToSexagesimal(((Double) val).doubleValue());
+					return Conversions.degreesToSexagesimal(((Double) val).doubleValue());
 				} else {
 					// display a blank string here in place of "00:00:00" so users no it is null
 					return ""; 
 				}
 			}
 		});
-
+		
 		setEditor(new CellEditor(degreeField) {
 			@Override
 			public Object preProcessValue(Object value) {
 				if (value == null) {
-					return Conversions.radiansToSexagesimal(0.0);
+					return Conversions.degreesToSexagesimal(0.0);
 				}
-				return Conversions.radiansToSexagesimal(((Double) value).doubleValue());
+				return Conversions.degreesToSexagesimal(((Double) value).doubleValue());
 			}
 
 			@Override
@@ -325,7 +326,7 @@ public class SessionColConfig extends ColumnConfig {
 				if (value == null) {
 					return 0.0;
 				}
-				return Conversions.sexagesimalToRadians(value.toString());
+				return Conversions.sexigesimalToDegrees(value.toString());
 			}
 		});
 	}
