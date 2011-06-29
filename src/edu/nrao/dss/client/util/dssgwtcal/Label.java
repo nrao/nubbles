@@ -47,8 +47,10 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /*
- * The purpose of this Class is to stick text up on the calendar.  A specific implementation is the listing of 
- * the score in each quarter.  This was created by addapting the Appointment classes until we got it to work.
+ * The purpose of this Class is to stick text up on the calendar.
+ * A specific implementation is the listing of 
+ * the score in each quarter.  This was created by adapting the
+ * Appointment classes until we got it to work.
  * Anybody understand *how* it works?
  */
 
