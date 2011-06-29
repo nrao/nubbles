@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -54,6 +55,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Element;
 
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -68,6 +70,8 @@ public class ScheduleControl extends FormPanel {
 	private boolean schedulePressed;
 	int dataSize;
 	private NumberFormat scoreFormat = NumberFormat.getFormat("0.00");
+	private String origBackground;
+	private String origBackgroundColor;
 	
 	public FactorsDlg factorsDlg;
 	
@@ -110,6 +114,8 @@ public class ScheduleControl extends FormPanel {
 		heading += "Current Average Score: " + scoreFormat.format(currentAverageValue);
 		heading += " Unscheduled Time: " + TimeUtils.min2sex((int)total_empty) + ")";
 		setHeading(heading);
+		// do we need to highlight red?
+		checkForDST();
 	}
 
 	// find the average score of the schedule, and any gaps
@@ -153,6 +159,36 @@ public class ScheduleControl extends FormPanel {
 		results[0] = currentAverageValue;
 		results[1] = total_empty;
 	    return results;	
+	}
+
+
+	// if we're displaying a DST boundary, make sure we mark this header so that
+	// users know not to trust the calculations.
+	private void checkForDST() {
+		El e = el();
+		if (e != null) {
+			El child = e.firstChild();
+			if (child != null & isRendered()) {
+				if (origBackground == null) {
+					origBackground = child.getStyleAttribute("background");
+					origBackgroundColor = child.getStyleAttribute("background-color");
+				}
+				if (schedule.hasDSTBoundary()) {
+					// warn the user of DST!
+					setHeading(getHeading() + " DST!");
+					child.setStyleAttribute("background", "none");
+					child.setStyleAttribute("background-color", "red");
+				} else {
+					// make sure we reset the original appearence.
+					child.setStyleAttribute("background", origBackground);
+					child.setStyleAttribute("background-color", origBackgroundColor);
+					
+				}
+
+			}
+		}
+//		}
+		
 	}
 	
 	private void initLayout() {
