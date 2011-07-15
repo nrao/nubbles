@@ -87,7 +87,8 @@ public class JSONRequest implements RequestCallback {
 
 	// uri, cb -> request
 	public static void get(String uri, JSONCallback cb) {
-		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, uri + "?" + new java.util.Date().getTime());
+		RequestBuilder get = new RequestBuilder(RequestBuilder.GET, uri);
+
 		get.setHeader("Accept", "application/json");
 
 		try {
