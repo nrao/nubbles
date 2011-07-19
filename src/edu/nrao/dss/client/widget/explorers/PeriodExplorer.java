@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -56,6 +57,11 @@ public class PeriodExplorer extends Explorer {
 		setCreateFilterToolBar(false);
 		setLoadDataInitially(false);
 		initLayout(initColumnModel(), true);
+		// Setting auto height for the PeriodExplorer only because
+		// it is contained in the schedule tab.
+		setAutoHeight(true);
+		setScrollMode(Scroll.AUTOY);
+		getGrid().setAutoHeight(true);
 		
 	}
 	

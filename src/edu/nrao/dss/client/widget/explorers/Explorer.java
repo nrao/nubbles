@@ -129,7 +129,7 @@ public class Explorer extends ContentPanel{
 		setLayout(new FitLayout());
 		setCommitState(false);
 		//setAutoHeight(true);
-		setScrollMode(Scroll.AUTOY);
+		setScrollMode(Scroll.NONE);
 				
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, rootURL + initialArgs);
 
@@ -141,7 +141,8 @@ public class Explorer extends ContentPanel{
 		store = new ListStore<BaseModelData>(loader);
 		
 	    setGrid(new EditorGrid<BaseModelData>(store, cm));
-	    grid.setAutoHeight(true);
+	    //grid.setAutoHeight(true);
+	    grid.setHeight(875);
 	    
 		GridSelectionModel<BaseModelData> selectionModel = new GridSelectionModel<BaseModelData>();
 		selectionModel.setSelectionMode(SelectionMode.MULTI);
