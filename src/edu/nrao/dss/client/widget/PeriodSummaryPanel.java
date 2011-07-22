@@ -223,11 +223,50 @@ public class PeriodSummaryPanel extends ContentPanel {
     		      , new JSONCallbackAdapter() {
     		public void onSuccess(JSONObject json) {
     			loadPeriodJson(json);
+    			getScore();
     		}
     	});    		
     	
     }
 
+    // Get the score from the Antioch Server 
+    private void getScore() {
+    	if (period != null) {
+	      String url = "/update_periods?pids=" + Integer.toString(this.period.getId());
+	      JSONRequest.get(url, new JSONCallbackAdapter() {
+	         public void onSuccess(JSONObject json) {
+	                setScores(json);
+	         }   
+	      });      	
+    	}    
+    }
+    
+    // updates the fields that show the score
+    private void setScores(JSONObject json) {
+    	
+	      JSONArray scores = new JSONArray();
+	      scores = json.get("scores").isArray();
+	      int id;
+	      double cs, hs;
+	      JSONObject jsonScore = new JSONObject();
+	      for (int i = 0; i < scores.size(); i++) {
+	         jsonScore = scores.get(i).isObject();
+	         // we need the id to make sure we've got the right one
+	         id = (int) jsonScore.get("pid").isNumber().doubleValue();
+	         // we'll always be update the current score
+	         cs = jsonScore.get("score").isNumber().doubleValue();
+	         // we may not have to update the historical score        
+	         if (id == this.period.getId()) {
+	             cscore.setValue(cs);
+	             // now, see if we need to update the historical score
+	             if (jsonScore.get("hscore").isObject().containsKey("Just")) {
+	               hs = jsonScore.get("hscore").isObject().get("Just").isNumber().doubleValue();
+		           hscore.setValue(hs);
+                 }
+	         }   
+	      }    	
+    }
+    
 	// JSON period -> JAVA period
     public void loadPeriodJson(JSONObject json) {
      	Period period = Period.parseJSON(json.get("period").isObject());
@@ -294,6 +333,7 @@ public class PeriodSummaryPanel extends ContentPanel {
 	}  
 	
     public void setPeriod(Period period) {
+    	this.period = period;
     	setValues(period);
     	ta.setPeriod(period);
     }
@@ -308,8 +348,10 @@ public class PeriodSummaryPanel extends ContentPanel {
         	moc_ack.setValue(period.getMocAck());
         	backup.setValue(period.isBackup());
         	state.setValue(period.getState());
+        	// new period means the score has to be redone
+        	getScore();         	
         }
-    	
+   	
     }
     
     public boolean hasChanged() {
