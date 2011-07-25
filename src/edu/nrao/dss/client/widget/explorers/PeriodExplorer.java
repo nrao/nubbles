@@ -72,7 +72,6 @@ public class PeriodExplorer extends Explorer {
 		setScrollMode(Scroll.AUTOY);
 		getGrid().setAutoHeight(true);
 		
-
 		// make sure every time data is loaded, scores are recalculated
 		loader.addListener(Loader.Load, new LoadListener() {
     	      @Override
@@ -80,7 +79,6 @@ public class PeriodExplorer extends Explorer {
 		    	  getScores();
     	      }    
 		});	
-
 	}
 	
 	private ColumnModel initColumnModel() {
