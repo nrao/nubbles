@@ -65,14 +65,13 @@ public class PeriodExplorer extends Explorer {
 		setCreateFilterToolBar(false);
 		setLoadDataInitially(false);
 		initLayout(initColumnModel(), true);
-<<<<<<< HEAD
+
 		// Setting auto height for the PeriodExplorer only because
 		// it is contained in the schedule tab.
 		setAutoHeight(true);
 		setScrollMode(Scroll.AUTOY);
 		getGrid().setAutoHeight(true);
 		
-=======
 		// make sure every time data is loaded, scores are recalculated
 		loader.addListener(Loader.Load, new LoadListener() {
     	      @Override
@@ -80,7 +79,6 @@ public class PeriodExplorer extends Explorer {
 		    	  getScores();
     	      }    
 		});	
->>>>>>> d381a5bf0ab7db35872ff8802bc5b96f316e3129
 	}
 	
 	private ColumnModel initColumnModel() {
