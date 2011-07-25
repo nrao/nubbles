@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -40,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 
@@ -89,7 +91,7 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel implements Refre
 	protected abstract void updateGroupPeriod(JSONObject json);
 	protected abstract void savePeriodGroup(); 
 
-	
+
 	public PeriodGroupInfoPanel(JSONObject winJson, String url, String groupPeriodType) {
 		this.url = url;
 		this.groupPeriodType = groupPeriodType;
@@ -116,10 +118,13 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel implements Refre
 	}
 	
 	public void initLayout() {
-		setLayout(new FitLayout());
+		setLayout(new FlowLayout());
 		
 		setCollapsible(true);
-		collapse();
+
+		setAutoHeight(true);
+		setScrollMode(Scroll.AUTOY);
+
 		
 		// header
 		setHeaderVisible(true);
@@ -178,6 +183,7 @@ public abstract class PeriodGroupInfoPanel extends ContentPanel implements Refre
 	    add(fp);
 	    
 	    layout();
+
 	}
 	
 	

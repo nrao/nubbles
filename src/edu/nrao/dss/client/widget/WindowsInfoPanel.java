@@ -76,12 +76,18 @@ public class WindowsInfoPanel extends PeriodGroupsInfoPanel {
 			int id = (int) winJson.get("id").isNumber().doubleValue();
 		    ids.put(Integer.toString(id), id);
 			WindowInfoPanel w = new WindowInfoPanel(winJson, url, type);
+
 			add(w);
 			
 			// display the window as it comes in
 			// Q: should we do this just once, instead of once per panel?
-			layout();	
+			layout();
+			
+			// you have to do the collapse after the layout, or shit don't work
+			w.collapse();
 		}		
+		
+		//layout();
 	}
 
 }

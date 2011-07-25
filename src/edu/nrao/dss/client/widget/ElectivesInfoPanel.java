@@ -79,6 +79,9 @@ public class ElectivesInfoPanel extends PeriodGroupsInfoPanel {
 			// display the elective as it comes in
 			// Q: should we do this just once, rather then once per panel?
 			layout();	
+			
+			// you have to do the collapse after the layout, or all you get is a blank panel
+			e.collapse();
 		}		
 	}
 
