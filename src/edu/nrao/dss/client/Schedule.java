@@ -196,54 +196,8 @@ public class Schedule extends ContentPanel implements Refresher {
         controlsContainer.add(reservations);
         
         // in the middle, the calendar
-		// ======================== Calendar ===================================
-		calendar = new ContentPanel(); 
-  		calendar.setHeading("Calendar");
-		calendar.setScrollMode(Scroll.AUTOX);
-		calendar.setStyleAttribute("bgcolor", "black");
-		
-		FormPanel fp = new FormPanel();
-		fp.setHeaderVisible(false);
-		fp.setBorders(false);
-		fp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		fp.setHeight(40);
-		fp.setWidth("100%");
-		fp.setStyleAttribute("background", "#E9EEF6");
-		
-		LabelField pending = new LabelField("Legend");
-		pending.setStyleAttribute("color", "#F2A640");
-		pending.setValue("Pending");
-		fp.add(pending, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
-		
-		LabelField fixed = new LabelField("Legend");
-		fixed.setStyleAttribute("color", "#D96666");
-		fixed.setValue("Fixed");
-		fp.add(fixed, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
-		
-		LabelField open = new LabelField("Legend");
-		open.setStyleAttribute("color", "#668CD9");
-		open.setValue("Open");
-		fp.add(open, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
-		
-		LabelField dwindow = new LabelField("Legend");
-		dwindow.setStyleAttribute("color", "#4CB052");
-		dwindow.setValue("Default Windowed");
-		dwindow.setWidth(120);
-		fp.add(dwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
-		
-		LabelField ndwindow = new LabelField("Legend");
-		ndwindow.setStyleAttribute("color", "#BFBF4D");
-		ndwindow.setValue("Non-Default Windowed");
-		ndwindow.setWidth(150);
-		fp.add(ndwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
-		
-		LabelField elwindow = new LabelField("Legend");
-		elwindow.setStyleAttribute("color", "#8C66D9");
-		elwindow.setValue("Elective");
-		//elwindow.setWidth(150);
-		fp.add(elwindow, new RowData(-1, -1, new Margins(0, 10, 0, 10)));
-		
-		calendar.add(fp);
+		calendar = new ContentPanel();
+        setCalendarHeader(null);
 		calendar.setScrollMode(Scroll.NONE);
 		
 		// calendar
@@ -293,6 +247,24 @@ public class Schedule extends ContentPanel implements Refresher {
 
 		//updateCalendar();
 	}
+	
+    public void setCalendarHeader(String label) {
+		String heading = "Calendar ";
+		if (label != null) {
+			heading += label;
+		}
+		heading += " (";
+		heading += "<font color=#F2A640>Pending</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		heading += "<font color=#D96666>Fixed</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		heading += "<font color=#668CD9>Open</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		heading += "<font color=#4CB052>Default Windowed</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		heading += "<font color=#BFBF4D>Non-Default Windowed</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		heading += "<font color=#8C66D9>Elective</font>";
+		heading += ")";
+  		calendar.setHeading(heading);
+		calendar.setScrollMode(Scroll.AUTOX);
+		calendar.setStyleAttribute("bgcolor", "black");
+    }
 	
 	@SuppressWarnings("deprecation")
 	public void initListeners() {
@@ -403,7 +375,7 @@ public class Schedule extends ContentPanel implements Refresher {
 		
 		// clear the header if no scores being displayed
         if (dayView.getScores() == null) {
-        	setCalendarHeader("Calendar");
+        	setCalendarHeader(null);
         }
 		
 		// clear out the scores so that next time the calendar is updated,
@@ -443,10 +415,6 @@ public class Schedule extends ContentPanel implements Refresher {
 	
 	public int getNumCalendarDays() {
 		return numCalendarDays;
-	}
-	
-	public void setCalendarHeader(String header) {
-		calendar.setHeading(header);
 	}
 	
 	public void setTimezone(String tz) {

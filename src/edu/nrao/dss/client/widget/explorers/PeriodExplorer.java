@@ -23,7 +23,6 @@
 package edu.nrao.dss.client.widget.explorers;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -45,9 +44,12 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 
 import edu.nrao.dss.client.Schedule;
+import edu.nrao.dss.client.ScheduleCalendar;
 import edu.nrao.dss.client.data.PeriodType;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -58,8 +60,9 @@ import edu.nrao.dss.client.widget.form.SessionField;
 import edu.nrao.dss.client.widget.form.TimeField;
 
 public class PeriodExplorer extends Explorer {
-	public PeriodExplorer() {
+	public PeriodExplorer(ScheduleCalendar schedcal) {
 		super("/scheduler/periods/UTC", "", new PeriodType(columnTypes));
+		sc = schedcal;
 		setShowColumnsMenu(false);
 		setAutoHeight(true);
 		setCreateFilterToolBar(false);
@@ -197,7 +200,9 @@ public class PeriodExplorer extends Explorer {
 	      JSONObject jsonScore = new JSONObject();
 
 	      JSONArray scores = new JSONArray();
-	      scores = json.get("scores").isArray();
+	      scores =                  json.get("scores").isArray();
+	      JSONBoolean jsonFresh =   json.get("fresh").isBoolean();
+	      JSONString jsonForecast = json.get("forecast").isString();
 	      	      
 	      for (int i = 0; i < scores.size(); i++) {
 	         jsonScore = scores.get(i).isObject();
@@ -225,9 +230,12 @@ public class PeriodExplorer extends Explorer {
 	             }
 	         }   
 	      }
+
+	      sc.setPeriodExplorerHeading(jsonFresh.booleanValue(), jsonForecast.stringValue());
 	}
 	
 	private List<ColumnConfig> configs;
+	ScheduleCalendar sc;
 
 	private static final ColumnType[] columnTypes = {
        	new ColumnType("handle",                "Session (Project) VP", 220, false, SessionField.class),

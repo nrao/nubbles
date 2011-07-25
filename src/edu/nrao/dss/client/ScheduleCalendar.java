@@ -27,8 +27,6 @@ package edu.nrao.dss.client;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -47,17 +45,34 @@ public class ScheduleCalendar extends ContentPanel {
 	
 	protected void initLayout() {
 		
-		setHeading("Period Explorer");
+		setPeriodExplorerHeading(false, null);
 		setBorders(true);
 
 		// put the period explorer inside
 		FitLayout fl = new FitLayout();
 		setLayout(fl);
-	    pe = new PeriodExplorer();
+	    pe = new PeriodExplorer(this);
 	    add(pe, new FitData(10));
 	    
 	    // NOTE: the period explorer's loadData function is called when the
 	    // calendar is updated, using the calendar control's widgets as input
+	}
+	
+	public void setPeriodExplorerHeading(Boolean fresh, String forecast) {
+		String heading = "Period Explorer";
+		if (forecast != null) {
+			heading += " (most recent forecast at ";
+			if (!fresh) {
+				heading += "<font color=red>";
+			}
+			heading += forecast;
+			heading += " UTC";
+			if (!fresh) {
+				heading += "</font>";
+			}
+			heading += ")";
+		}
+		setHeading(heading);
 	}
 	
 	public void addButtonsListener(final Schedule schedule) {

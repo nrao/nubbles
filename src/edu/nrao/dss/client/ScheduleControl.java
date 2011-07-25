@@ -34,28 +34,18 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.layout.FillData;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Element;
 
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -66,7 +56,7 @@ import edu.nrao.dss.client.widget.FactorsDlg;
 public class ScheduleControl extends FormPanel {
 	
 	private Schedule schedule;
-	private LabelField scheduleAverage, currentAverage, unscheduledTime;
+	//private LabelField scheduleAverage, currentAverage, unscheduledTime;
 	private boolean schedulePressed;
 	int dataSize;
 	private NumberFormat scoreFormat = NumberFormat.getFormat("0.00");
@@ -102,7 +92,7 @@ public class ScheduleControl extends FormPanel {
 		double currentAverageValue = results[0];
 		double total_empty = results[1];
 		
-		String heading = "Schedule Control: (";
+		String heading = "Schedule Control (";
 		if (schedulePressed && dataSize != data.size()) {
 			//scheduleAverage.setValue("Schedule Average Score: " + scoreFormat.format(currentAverageValue));
 			heading += "Schedule Average Score: " + scoreFormat.format(currentAverageValue) + " ";

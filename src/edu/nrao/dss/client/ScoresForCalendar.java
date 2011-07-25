@@ -36,7 +36,7 @@ public class ScoresForCalendar implements ScoresDisplay {
 	public void show(String sessionName, float[] scores) {
 		
 		// display to the user what scores we're displaying
-		String label = "Calendar (Scoring Session " + sessionName + " )";
+		String label = " (Scoring Session " + sessionName + ")";
 		schedulePanel.setCalendarHeader(label);
 		
 	    // set the list of scores
