@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -54,12 +55,16 @@ public class WindowRangeExplorer extends Explorer {
 	    this.windowId = windowId;
 	    this.sessionHandle = sessionHandle;    
 		setShowColumnsMenu(false);
-		setAutoHeight(true);
+		
 		setCreateFilterToolBar(false);
 		initLayout(initColumnModel(), true);
 		filterByWindow(windowId);
 	    setHeaderVisible(true);
 	    setHeading("Window Ranges");
+	    // try this
+		setAutoHeight(true);
+		setScrollMode(Scroll.AUTOY);
+		getGrid().setAutoHeight(true);	    
 	}
 	
 	private ColumnModel initColumnModel() {

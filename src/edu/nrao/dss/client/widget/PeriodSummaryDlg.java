@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.Style.Orientation;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -44,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
@@ -82,7 +84,7 @@ public class PeriodSummaryDlg extends Dialog {
 	
 	private void initLayout() {
 		
-		setLayout(new FlowLayout());
+		setLayout(new RowLayout(Orientation.VERTICAL)); //new FlowLayout());
 		
 
 		// Basic Dialog settings
@@ -93,31 +95,33 @@ public class PeriodSummaryDlg extends Dialog {
 		// make all the buttons run horizontally
 	    FormPanel buttonFp = new FormPanel();
 		buttonFp.setLayout(new RowLayout(Orientation.HORIZONTAL));
-		buttonFp.setHeight(45);
 		buttonFp.setHeaderVisible(false);
 		buttonFp.setBodyBorder(false);
 
 		// Publish the Period?
 		publish.setToolTip("Click this button to publish this Period.");
-		publish.setText("Publish Period");
-		buttonFp.add(publish, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
+		publish.setText("Publish The Period");
+		buttonFp.add(publish, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 		
 		// Delete the Period?
 		delete.setToolTip("Click this button to delete this Period.");
 		delete.setText("Delete Period");
-		buttonFp.add(delete, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
+		buttonFp.add(delete, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 	    
 		// Insert a Period?
 		change.setToolTip("Click this button to insert a period into the schedule, with the correct time accounting.");
 		change.setText("Insert Period");
-		buttonFp.add(change, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
+		buttonFp.add(change, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
 	    
 	    // shift period boundary?
 		shift.setToolTip("Click this button to shift one of the boundaries of the period (start or end), with the correct time accounting.");
 		shift.setText("Shift Period Boundary");
-		buttonFp.add(shift, new RowData(0.25, 1, new Margins(0, 4, 0, 4)));
-
-	    add(buttonFp);
+		buttonFp.add(shift, new RowData(-1, -1, new Margins(0, 4, 0, 4)));
+		
+		TableData td = new TableData();
+		td.setVerticalAlign(VerticalAlignment.TOP);
+		td.setWidth("100px");
+	    add(buttonFp, td);
 	    
 		// display summary info
 	    periodPanel.setPeriod(period);

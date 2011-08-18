@@ -95,12 +95,10 @@ public class RcvrSchdGridPanel extends ContentPanel {
 		// for how long?
 		numMonths.setTriggerAction(TriggerAction.ALL);
 		numMonths.setFieldLabel("# Months");
-		numMonths.add("1");
-		numMonths.add("2");
-		numMonths.add("3");
-		numMonths.add("4");
-		numMonths.add("5");
-		numMonths.add("6");		
+		for (int i = 1; i < 13; i++) {
+			numMonths.add(Integer.toString(i));
+		}
+	
 		rightFp.add(numMonths);
 		
 		// include maintenance days?

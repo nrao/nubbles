@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -74,10 +75,13 @@ public abstract class GroupPeriodExplorer extends Explorer {
 	    this.sessionHandle = sessionHandle;    
 		setShowColumnsMenu(false);
 		setAutoHeight(true);
+		
 		setCreateFilterToolBar(false);
 		initLayout(initColumnModel(columnTypes), true);
 		filterByPeriodGroup(periodGroupId);
 		viewItem.setVisible(true);
+		setScrollMode(Scroll.AUTOY);
+		getGrid().setAutoHeight(true);		
 	}
 	
 	// make sure we pull in only periods belonging to this elective
