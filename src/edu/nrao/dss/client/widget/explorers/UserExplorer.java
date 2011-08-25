@@ -124,16 +124,32 @@ public class UserExplorer extends Explorer {
 	    column.setNumberFormat(NumberFormat.getFormat("#"));
 	    configs.add(column);
 	    
-	    CheckColumnConfig checkColumn = new CheckColumnConfig("sanctioned", "Sanctioned?", 70);
+	    CheckColumnConfig checkColumn = new CheckColumnConfig("sanctioned", "Sanctioned?", 75);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);
-	    
-	    column = new ColumnConfig("role", "Role", 80);
-	    column.setEditor(initCombo(new String[]{"Administrator", "Observer", "Operator"}));
-	    configs.add(column);
-	    
-	    checkColumn = new CheckColumnConfig("staff", "Staff?", 65);
+
+	    checkColumn = new CheckColumnConfig("observer", "Observer?", 65);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+
+	    checkColumn = new CheckColumnConfig("friend", "Friend?", 55);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+
+	    checkColumn = new CheckColumnConfig("operator", "Operator?", 60);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+
+	    checkColumn = new CheckColumnConfig("admin", "Admin?", 50);
+	    checkColumn.setEditor(new CellEditor(new CheckBox()));
+	    configs.add(checkColumn);
+	    checkBoxes.add(checkColumn);
+
+	    checkColumn = new CheckColumnConfig("staff", "Staff?", 40);
 	    checkColumn.setEditor(new CellEditor(new CheckBox()));
 	    configs.add(checkColumn);
 	    checkBoxes.add(checkColumn);

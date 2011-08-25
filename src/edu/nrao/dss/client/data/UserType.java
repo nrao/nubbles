@@ -34,7 +34,10 @@ public class UserType extends ModelType {
 		addField("last_name");
 		addField("sanctioned");
 		addField("projects");
-		addField("role");
+		addField("admin");
+		addField("observer");
+		addField("operator");
+		addField("friend");
 		addField("staff");
 		addField("username");
 		addField("pst_id");
