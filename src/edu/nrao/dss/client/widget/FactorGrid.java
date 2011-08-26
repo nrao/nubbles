@@ -71,6 +71,8 @@ public class FactorGrid extends Grid {
 		display.put("trackingEfficiency",         gValue("TrackEff",      "factor"));
 		display.put("inWindows",                  gValue("Window Flag",   "factor"));
 		display.put("keyholeLimit",               gValue("Keyhole Lim",   "factor"));
+		display.put("solarAvoidance",             gValue("Solar Avoid",   "factor"));
+
 	}
 	
 	private static String[] gValue(String label, String type) {
