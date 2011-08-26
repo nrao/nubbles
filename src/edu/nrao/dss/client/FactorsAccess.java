@@ -147,7 +147,7 @@ public class FactorsAccess {
 					repr = "?";
 				} else {
 					double value = obj.get("Just").isNumber().doubleValue();
-					repr = NumberFormat.getFormat("#0.000").format(value);
+					repr = NumberFormat.getFormat("#0.0000000").format(value);
 				}
 				factors[t][f + 1] = repr;
 			}
