@@ -268,6 +268,10 @@ public class ScheduleControl extends FormPanel {
 								schedule.updateCalendar();
 								box.close();
 							}
+							public void onError(String error, JSONObject json) {
+								box.close();
+								super.onError(error, json);
+							}							
 						});
 			}
 		});
