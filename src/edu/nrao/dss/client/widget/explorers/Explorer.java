@@ -96,6 +96,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -620,6 +621,15 @@ public class Explorer extends ContentPanel{
 		return filterMenu;
 	}
 	
+	protected void initOptionsFilter() {
+		optionsFilter = new OptionsFilter();
+		toolBar.insert(new SeparatorToolItem(), 6);
+		toolBar.insert(optionsFilter.getSemester(), 7);
+		toolBar.insert(optionsFilter.getEnabled(), 8);
+		toolBar.insert(optionsFilter.getNotComplete(), 9);
+		
+	}
+	
 	protected void setRemoveItemListener() {
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
@@ -847,6 +857,7 @@ public class Explorer extends ContentPanel{
 	protected ToolBar toolBar;
 	protected ToolBar filterToolBar;
 	protected PagingToolBar pagingToolBar;
+	protected OptionsFilter optionsFilter;
 	
 	protected FilterItem filter;
 

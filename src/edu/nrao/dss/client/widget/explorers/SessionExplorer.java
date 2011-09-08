@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WidgetListener;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -42,9 +43,11 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.RequestBuilder;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.data.SessionType;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.widget.form.CoordModeField;
@@ -60,6 +63,7 @@ public class SessionExplorer extends Explorer {
 		super("/scheduler/sessions", "?filterClp=False", new SessionType(columnTypes));
 		initFilters();
 		initLayout(initColumnModel(), true);
+		initOptionsFilter();
 	}
 	
 	private void initFilters() {

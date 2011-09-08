@@ -59,6 +59,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import edu.nrao.dss.client.ProjectPage;
 import edu.nrao.dss.client.Scheduler;
 import edu.nrao.dss.client.TimeAccounting;
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.data.ProjectType;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
@@ -88,6 +89,7 @@ public class ProjectExplorer extends Explorer {
 		setEmailButtonListener();
 		setClearButtonListener();
 		viewItem.setVisible(true);
+		initOptionsFilter();
 	}
 	
 	private void setClearButtonListener() {
