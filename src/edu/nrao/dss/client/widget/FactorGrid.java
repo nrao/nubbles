@@ -25,6 +25,7 @@ package edu.nrao.dss.client.widget;
 import java.util.HashMap;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
@@ -60,7 +61,7 @@ public class FactorGrid extends Grid {
 		display.put("atmosphericStabilityLimit",  gValue("AtmStab Lim",   "factor"));
 		display.put("receiver",                   gValue("Rx Flag",       "factor"));
 		display.put("observerOnSite",             gValue("OnSite Fact",   "factor"));
-		display.put("needsLowRFI",                gValue("LowRFI Flag",   "factor"));
+		display.put("correctTimeOfDay",           gValue("Time Of Day",   "factor"));
 		display.put("lstExcepted",                gValue("LST Flag",      "factor"));
 		display.put("enoughTimeBetween",          gValue("TimeBet Flag",  "factor"));
 		display.put("observerAvailable",          gValue("ObsAvail Flag", "factor"));
@@ -106,11 +107,21 @@ public class FactorGrid extends Grid {
 	    for (int row = 0; row < rows; ++row){
 	        for (int fac = 0; fac < cols; fac++) {
 	        	int col = colMap.get(headers[fac]);
-	            setText(row+1, col, factors[row][col]);
+	        	String text = factors[row][col];
+	        	Double value;
+	        	if (!text.contains("-") & !text.contains("?")){
+	        		value = Double.valueOf(text);
+	        		text = NumberFormat.getFormat("#0.0000").format(value);
+	        	} else {
+	        		value = null;
+	        	}
+	            setText(row+1, col, text);
 	            getCellFormatter().setHorizontalAlignment(row+1, col, HasHorizontalAlignment.ALIGN_CENTER);
 	            getCellFormatter().setWordWrap(row+1, col, false);
-	            if (factors[row][col] == "0.000") {
-	            	getCellFormatter().setStyleName(row+1, col, "gwt-FactorGrid-" + "zero");
+	            if (value != null){
+		            if (value == 0.000) {
+		            	getCellFormatter().setStyleName(row+1, col, "gwt-FactorGrid-" + "zero");
+		            }
 	            }
 	        }
 	    }

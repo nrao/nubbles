@@ -251,6 +251,37 @@ public class ScheduleControl extends FormPanel {
 		return keys;
 	}
 	
+	// brings up a warning message about what periods have been deleted
+	public final void deletedPeriodsWarning(JSONObject json) {
+		JSONArray deleted = json.get("deleted").isArray();
+		if (deleted.size() > 0) {
+			String msg = getDeletedPeriodsWarning(deleted);
+			MessageBox box = MessageBox.alert("Periods Deleted During Scheduling",
+					    msg, null);
+			
+		}
+	}
+	
+	// returns a string explaining what periods were deleted
+	public String getDeletedPeriodsWarning(JSONArray deleted) {
+		String msg = "The following periods were deleted: ";
+		for (int i=0; i < deleted.size(); i+=1)  {
+			String period = json2periodString(deleted.get(i).isObject());
+			String sep = i == (deleted.size() - 1) ? "." : "; ";
+			msg = msg + period + sep;
+		}
+		return msg;
+	}
+	
+	// converts a single JSON representation of a deleted period to a string
+	public String json2periodString(JSONObject json) {
+		String period = "";
+		String name = json.get("session_name").isString().stringValue();
+		String start = json.get("start_time").isString().stringValue();
+		period = name + " at " + start;
+		return period;
+	}
+	
 	private void initListeners() {
 		
 		scheduleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -265,9 +296,18 @@ public class ScheduleControl extends FormPanel {
 				JSONRequest.post("/runscheduler", keys,
 						new JSONCallbackAdapter() {
 							public void onSuccess(JSONObject json) {
-								schedule.updateCalendar();
 								box.close();
+								// if there's any deleted periods, warn the user
+								JSONArray deleted = json.get("deleted").isArray();
+								if (deleted.size() > 0) {
+									deletedPeriodsWarning(json); 
+								}
+								schedule.updateCalendar();
 							}
+							public void onError(String error, JSONObject json) {
+								box.close();
+								super.onError(error, json);
+							}							
 						});
 			}
 		});

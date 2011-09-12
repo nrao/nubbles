@@ -52,6 +52,10 @@ public class FactorsAccess {
 				display.show(label, banner, headers, factors);
 				box.close();
 			}
+			public void onError(String error, JSONObject json) {
+				box.close();
+				super.onError(error, json);
+			}
 		});
 	}
 
@@ -147,7 +151,7 @@ public class FactorsAccess {
 					repr = "?";
 				} else {
 					double value = obj.get("Just").isNumber().doubleValue();
-					repr = NumberFormat.getFormat("#0.000").format(value);
+					repr = NumberFormat.getFormat("#0.0000000").format(value);
 				}
 				factors[t][f + 1] = repr;
 			}
