@@ -61,7 +61,7 @@ public class FactorGrid extends Grid {
 		display.put("atmosphericStabilityLimit",  gValue("AtmStab Lim",   "factor"));
 		display.put("receiver",                   gValue("Rx Flag",       "factor"));
 		display.put("observerOnSite",             gValue("OnSite Fact",   "factor"));
-		display.put("needsLowRFI",                gValue("LowRFI Flag",   "factor"));
+		display.put("correctTimeOfDay",           gValue("Time Of Day",   "factor"));
 		display.put("lstExcepted",                gValue("LST Flag",      "factor"));
 		display.put("enoughTimeBetween",          gValue("TimeBet Flag",  "factor"));
 		display.put("observerAvailable",          gValue("ObsAvail Flag", "factor"));

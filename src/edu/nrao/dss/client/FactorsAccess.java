@@ -52,6 +52,10 @@ public class FactorsAccess {
 				display.show(label, banner, headers, factors);
 				box.close();
 			}
+			public void onError(String error, JSONObject json) {
+				box.close();
+				super.onError(error, json);
+			}
 		});
 	}
 

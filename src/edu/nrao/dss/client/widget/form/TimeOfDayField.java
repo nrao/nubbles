@@ -20,28 +20,21 @@
 //       P. O. Box 2
 //       Green Bank, WV 24944-0002 USA
 
-package edu.nrao.dss.client.data;
+package edu.nrao.dss.client.widget.form;
 
-import com.extjs.gxt.ui.client.data.ModelType;
+public class TimeOfDayField {
+    public static final String[] values = new String[] { "AnyTimeOfDay"
+        , "RfiNight"
+        , "PtcsNight"
+        };
 
-public class UserType extends ModelType {
-	public UserType() {
-		setRoot("users");
-		setTotalName("total");
-		
-		addField("id");
-		addField("first_name");
-		addField("last_name");
-		addField("sanctioned");
-		addField("projects");
-		addField("admin");
-		addField("observer");
-		addField("operator");
-		addField("friend");
-		addField("staff");
-		addField("username");
-		addField("pst_id");
-		addField("original_id");
-	}
+public TimeOfDayField(String value) {
+this.value = value;
+}
 
+public String toString() {
+return value;
+}
+
+private final String value;
 }

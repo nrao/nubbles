@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -62,6 +63,7 @@ public class ProjectTimePanel extends ContentPanel {
 	private ProjAllotmentFieldSet projGrade2 = new ProjAllotmentFieldSet();
 	private ProjectTimeAccountPanel projectTimeAccounting = new ProjectTimeAccountPanel();
 	private Button saveProj = new Button("Save Project Changes");
+	private NumberField projTimeRemaining = new NumberField();
 	
 	private ContentPanel parent;
 
@@ -126,6 +128,10 @@ public class ProjectTimePanel extends ContentPanel {
 		projGrade2.setVisible(false);
 		projectForm2.add(projGrade2);
 
+		projTimeRemaining.setFieldLabel("Remaining (Hrs)");
+		projTimeRemaining.setReadOnly(true);
+		projectForm2.add(projTimeRemaining);
+		
 		projectTable.add(projectForm2, td);
 
 		// so now we can add the top half of this panel
@@ -219,6 +225,8 @@ public class ProjectTimePanel extends ContentPanel {
 
 			}
 		}
+		double remaining = json.get("remaining").isNumber().doubleValue();
+		projTimeRemaining.setValue(remaining);
 		projectTimeAccounting.setValues(json);
 	}
 
