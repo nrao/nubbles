@@ -59,6 +59,7 @@ public class SessionTimePanel extends ContentPanel {
 	private TextField<String> sessionName = new TextField<String>();
 	private NumberField sessionGrade = new NumberField();
 	private NumberField sessionTime = new NumberField();
+	private NumberField sessionTimeRemaining = new NumberField();
     private SessionTimeAccountPanel sessionTimeAccounting = new SessionTimeAccountPanel();
 	Button saveSess = new Button("Save Session Changes"); 
 	
@@ -129,6 +130,11 @@ public class SessionTimePanel extends ContentPanel {
 		sessionTime.setValidator(new DSSTimeValidator()); 	
 		sessionForm2.add(sessionTime);
 
+		sessionTimeRemaining.setReadOnly(true);
+		sessionTimeRemaining.setFieldLabel("Remaining (Hrs)");
+		sessionTimeRemaining.setFormat(NumberFormat.getFormat("#0.00"));
+		//sessionTimeRemaining.setValidator(new DSSTimeValidator()); 	
+		sessionForm2.add(sessionTimeRemaining);
 		
 		sessionTable.add(sessionForm2, tdSess);	
 		
@@ -234,6 +240,7 @@ public class SessionTimePanel extends ContentPanel {
 	    		GWT.log("matched session name " + sessName, null);
 	    		sessionName.setValue(sessName);
 	    		sessionGrade.setValue(session.get("grade").isNumber().doubleValue());
+	    		sessionTimeRemaining.setValue(session.get("remaining").isNumber().doubleValue());
 	    		// time field
 	    		double time = session.get("total_time").isNumber().doubleValue();
 	    		sessionTime.setValue(time); 

@@ -59,6 +59,7 @@ import edu.nrao.dss.client.widget.form.HourField;
 import edu.nrao.dss.client.widget.form.PCodeField;
 import edu.nrao.dss.client.widget.form.STypeField;
 import edu.nrao.dss.client.widget.form.ScienceField;
+import edu.nrao.dss.client.widget.form.TimeOfDayField;
 
 //Should extend an intermediate class for duplicate code
 //between SessionColConfig and PeriodColConfig
@@ -92,6 +93,8 @@ public class SessionColConfig extends ColumnConfig {
 			typeField(STypeField.values, false);
 		} else if (clasz == PCodeField.class) {
 			setPCodeOptions();
+		} else if (clasz == TimeOfDayField.class) {
+			typeField(TimeOfDayField.values, false);
 		} else {
 			textField(disabled);
 		}
