@@ -62,6 +62,14 @@ h1 {
   color: #FF0000; # red;
 }
 
+.gwt-FactorGrid-day {
+  color: #FF3333;
+}
+
+.gwt-FactorGrid-night {
+  color: #3366FF;
+}
+
 .gwt-RcvrSchdGrid-header {
   font-size: 12;
   font-weight: bold;
