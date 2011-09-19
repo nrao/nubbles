@@ -57,6 +57,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.data.PeriodEventAdapter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
@@ -82,6 +83,7 @@ public class Schedule extends ContentPanel implements Refresher {
 	private NomineePanel nomineePanel;
 	private Reservations reservations;
 	private ContentPanel calendar;
+	private OptionsFilter optionsFilter;
 
 	private DayView dayView;
 	
@@ -164,6 +166,9 @@ public class Schedule extends ContentPanel implements Refresher {
 		controlsContainer.setBorders(true);
 		controlsContainer.setHeading("Controls");
 		controlsContainer.setScrollMode(Scroll.AUTO);
+		
+		optionsFilter = new OptionsFilter();
+		controlsContainer.add(optionsFilter.getToolbar());
 
 		calendarControl = new CalendarControl(this);
 		calendarControl.setCollapsible(true);

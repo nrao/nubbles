@@ -1,7 +1,9 @@
 package edu.nrao.dss.client.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -11,8 +13,11 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 
-public class OptionsFilter {
+import edu.nrao.dss.client.util.Subject;
+
+public class OptionsFilter extends Subject {
 	private ToggleButton notcomplete, enabled;
 	private Button semester;
 	private ToolBar toolbar;
@@ -26,19 +31,33 @@ public class OptionsFilter {
 	
 	private void initNotComplete() {
 		notcomplete = new ToggleButton("Not Complete");
-		notcomplete.setToolTip("Filters for session that are not complete when checked.");
+		notcomplete.setToolTip("Filters for sessions that are not complete in the options below when checked.");
 		notcomplete.toggle(true);
+		
+		notcomplete.addSelectionListener(new SelectionListener<ButtonEvent> () {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				notifyObservers();
+			}
+		});
 	}
 	
 	private void initEnabled() {
 		enabled = new ToggleButton("Enabled");
-		enabled.setToolTip("Filters for enabled session when checked.");
+		enabled.setToolTip("Filters for enabled sessions in the options below when checked.");
 		enabled.toggle(true);
+		
+		enabled.addSelectionListener(new SelectionListener<ButtonEvent> () {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				notifyObservers();
+			}
+		});
 	}
 	
 	private void initSemester() {
 		semester = new Button("Semester");
-		semester.setToolTip("Select which semesters you want to see.");
+		semester.setToolTip("Select which semesters you want to see in the project or session options below.");
 		semester.setMenu(initSemesterMenu());
 	}
 	
@@ -75,10 +94,18 @@ public class OptionsFilter {
 		CheckMenuItem cmi;
 		for(String s: semesters) {
 			cmi = new CheckMenuItem(s);
-			cmi.setChecked(true);
 			menu.add(cmi);
 			semesterItems.add(cmi);
+			cmi.addSelectionListener(new SelectionListener<MenuEvent> () {
+			@Override
+			public void componentSelected(MenuEvent ce) {
+				notifyObservers();
+			}
+			});
 		}
+		// Set the default, last two semesters checked
+		semesterItems.get(0).setChecked(true);
+		semesterItems.get(1).setChecked(true);
 		return menu;
 	}
 	
@@ -104,6 +131,20 @@ public class OptionsFilter {
 	
 	public Button getSemester() {
 		return semester;
+	}
+	
+	public HashMap<String, Object> getState() {
+		HashMap<String, Object> state = new HashMap<String, Object>();
+		state.put("enabled", enabled.isPressed());
+		state.put("notcomplete", notcomplete.isPressed());
+		ArrayList<String> semesters = new ArrayList<String>();
+		for (CheckMenuItem cmi : semesterItems) {
+			if (cmi.isChecked()) {
+				semesters.add(cmi.getText());
+			}
+		}
+		state.put("semesters", semesters);
+		return state;
 	}
 
 }

@@ -89,7 +89,6 @@ public class ProjectExplorer extends Explorer {
 		setEmailButtonListener();
 		setClearButtonListener();
 		viewItem.setVisible(true);
-		initOptionsFilter();
 	}
 	
 	private void setClearButtonListener() {

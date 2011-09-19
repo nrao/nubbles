@@ -100,11 +100,12 @@ import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.ObserverContentPanel;
 import edu.nrao.dss.client.util.PagingJsonReader;
 import edu.nrao.dss.client.widget.FilterItem;
 import edu.nrao.dss.client.widget.FilterMenu;
 
-public class Explorer extends ContentPanel{
+public class Explorer extends ObserverContentPanel{
 	
 	public Explorer(String url, String defaultArgs, ModelType mType) {
 		rootURL     = url;
@@ -627,6 +628,7 @@ public class Explorer extends ContentPanel{
 		toolBar.insert(optionsFilter.getSemester(), 7);
 		toolBar.insert(optionsFilter.getEnabled(), 8);
 		toolBar.insert(optionsFilter.getNotComplete(), 9);
+		optionsFilter.attach(this);
 		
 	}
 	

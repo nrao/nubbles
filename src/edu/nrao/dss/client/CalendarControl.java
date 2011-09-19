@@ -69,7 +69,7 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 		setHeading("Calendar Control");
 		setBorders(true);
 		
-	    String leftWidth = "400px";
+		String leftWidth = "400px";
 	    String rightWidth = "300px";
 	    String bottomWidth = "100%";
 
