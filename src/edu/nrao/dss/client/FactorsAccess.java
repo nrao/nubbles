@@ -39,6 +39,7 @@ public class FactorsAccess {
 	private String banner;
 	private String headers[];
 	private String factors[][];
+	private Boolean diural[];
 	MessageBox box;
 
 	public void request(final FactorsDisplay display, Integer sessionId,
@@ -49,7 +50,7 @@ public class FactorsAccess {
 			public void onSuccess(JSONObject json) {
 				populateHeadersFactors(json, start, timezone);
 				populateBanner(json, label);
-				display.show(label, banner, headers, factors);
+				display.show(label, banner, headers, factors, diural);
 				box.close();
 			}
 			public void onError(String error, JSONObject json) {
@@ -134,7 +135,9 @@ public class FactorsAccess {
 			String str = fs0.get(i).isArray().get(0).toString();
 			headers[i + 1] = str.substring(1, str.indexOf('"', 1));
 		}
-		// Extract factor values
+		// Extract diural and factor values
+		JSONArray dn = json.get("diural").isArray();
+		diural = new Boolean[rows];
 		factors = new String[rows][cols];
 		long msecs = start.getTime();
 		Date quarter = new Date();
@@ -155,6 +158,7 @@ public class FactorsAccess {
 				}
 				factors[t][f + 1] = repr;
 			}
+			diural[t] = dn.get(t).isBoolean().booleanValue();
 		}
 	}
 

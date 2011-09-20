@@ -42,8 +42,8 @@ public class FactorsTab implements FactorsDisplay {
 	}
 	
 	@Override
-	public void show(String title, String banner, String[] headers, String[][] factors) {
-		FactorGrid grid = new FactorGrid(factors.length, headers.length, headers, factors);
+	public void show(String title, String banner, String[] headers, String[][] factors, Boolean diural[]) {
+		FactorGrid grid = new FactorGrid(factors.length, headers.length, headers, factors, diural);
         TabItem item = new TabItem(title);
         ContentPanel cp = createContentPanel(banner, grid);
         item.add(cp);

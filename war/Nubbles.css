@@ -63,11 +63,11 @@ h1 {
 }
 
 .gwt-FactorGrid-day {
-  color: #FF3333;
+  color: #EE7600; # darkorange2
 }
 
 .gwt-FactorGrid-night {
-  color: #3366FF;
+  color: #00B2EE; # deepskyblue2
 }
 
 .gwt-RcvrSchdGrid-header {

@@ -93,7 +93,7 @@ public class FactorGrid extends Grid {
 		getCellFormatter().setStyleName(0, col, "gwt-FactorGrid-" + type);
 	}
 	 
-	public FactorGrid(int rows, int cols, String[] headers, String[][] factors) {
+	public FactorGrid(int rows, int cols, String[] headers, String[][] factors, Boolean diural[]) {
 		super(rows+1, cols);
 		setBorderWidth(2);
 		setCellPadding(1);
@@ -124,6 +124,11 @@ public class FactorGrid extends Grid {
 		            }
 	            }
 	        }
+            if (diural[row]) {
+	            getCellFormatter().setStyleName(row+1, 0, "gwt-FactorGrid-" + "day");   
+            } else {
+            	getCellFormatter().setStyleName(row+1, 0, "gwt-FactorGrid-" + "night");
+            }
 	    }
 	}
 }
