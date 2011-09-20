@@ -207,6 +207,7 @@ public class SessionExplorer extends Explorer {
         new ColumnType("trk_err_threshold","TrErrThreshold",  90, false, Double.class),
         new ColumnType("el_limit",         "EL",              40, false, Double.class),
         new ColumnType("irradiance",       "Irradiance",      65, false, Double.class),
+        new ColumnType("solar_avoid",      "Solar",           65, false, Double.class),
         new ColumnType("time_of_day",      "Time of Day",     85, false, TimeOfDayField.class),        
        	new ColumnType("authorized",       "Authorized?",     70, false, Boolean.class),
        	new ColumnType("enabled",          "Enabled?",        60, false, Boolean.class),
