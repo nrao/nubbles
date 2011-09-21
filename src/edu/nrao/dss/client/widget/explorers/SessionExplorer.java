@@ -235,7 +235,8 @@ public class SessionExplorer extends Explorer {
     	peSessionConfig.updateSessionOptions();
     }
     
-    protected void update(Subject subject) {
+    @Override
+    public void update(Subject subject) {
     	((SessionColConfig) getPcodeConfig()).updatePCodeOptions(subject.getState());
     }
     

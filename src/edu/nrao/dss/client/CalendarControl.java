@@ -22,6 +22,8 @@
 
 package edu.nrao.dss.client;
 
+import java.util.HashMap;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 
 import com.extjs.gxt.ui.client.Style.VerticalAlignment;
@@ -47,7 +49,10 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 
-public class CalendarControl extends ContentPanel { //FormPanel {
+import edu.nrao.dss.client.util.ObserverContentPanel;
+import edu.nrao.dss.client.util.Subject;
+
+public class CalendarControl extends ObserverContentPanel { //FormPanel {
 	
 	private Schedule schedule;
 	
@@ -175,20 +180,8 @@ public class CalendarControl extends ContentPanel { //FormPanel {
 	    
 	    add(right, tdRight);
 		
-		CheckBox notcomplete = new CheckBox();
-		notcomplete.setFieldLabel("Not Complete");
-		notcomplete.setToolTip("Filters for sessions that are not complete when checked.");
-		notcomplete.setValue(true);
-		left.add(notcomplete);
-		
-		CheckBox enabled = new CheckBox();
-		enabled.setFieldLabel("Enabled");
-		enabled.setToolTip("Filters for enabled sessions when checked.");
-		enabled.setValue(true);
-		left.add(enabled);
-		
 		// Scores
-		scoresComboBox = new ScoresComboBox(schedule, notcomplete, enabled);
+		scoresComboBox = new ScoresComboBox(schedule);
 		scoresComboBox.setFieldLabel("Scores");
 		
 		left.add(scoresComboBox);
@@ -216,5 +209,11 @@ public class CalendarControl extends ContentPanel { //FormPanel {
         
         schedule.scores = new Scores(scoresComboBox, new ScoresForCalendar(schedule));
         
+	}
+
+	@Override
+	public void update(Subject subject) {
+		HashMap<String, Object> state = subject.getState();
+		scoresComboBox.getOptions(state);
 	}
 }

@@ -71,6 +71,7 @@ public class OptionsFilter extends Subject {
 				for(CheckMenuItem s: semesterItems) {
 					s.setChecked(true);
 				}
+				notifyObservers();
 			}
 			
 		});
@@ -83,13 +84,15 @@ public class OptionsFilter extends Subject {
 				for(CheckMenuItem s: semesterItems) {
 					s.setChecked(false);
 				}
+				notifyObservers();
 			}
 			
 		});
 		menu.add(none);
 		menu.add(new SeparatorMenuItem());
 		String[] semesters = new String[]{"11B", "11A", "10C", "10B", "10A"
-				                        ,  "9C",  "9B",  "9A",  "8C",  "8B", "8A"};
+				                        , "09C", "09B", "09A", "08C", "08B","08A"
+				                        , "07C", "07B", "07A"};
 		semesterItems = new ArrayList<CheckMenuItem>();
 		CheckMenuItem cmi;
 		for(String s: semesters) {
@@ -145,6 +148,16 @@ public class OptionsFilter extends Subject {
 		}
 		state.put("semesters", semesters);
 		return state;
+	}
+	
+	@SuppressWarnings("serial")
+	public static HashMap<String, Object> getDefaultState(final String mode) {
+		return new HashMap<String, Object>() {{
+	    	  put("mode", mode);
+	    	  put("semesters", "[11A, 11B]");
+	    	  put("enabled", "true");
+	    	  put("notcomplete", "true");
+	        }};
 	}
 
 }

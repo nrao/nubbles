@@ -102,6 +102,7 @@ import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.ObserverContentPanel;
 import edu.nrao.dss.client.util.PagingJsonReader;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.FilterItem;
 import edu.nrao.dss.client.widget.FilterMenu;
 
@@ -878,4 +879,10 @@ public class Explorer extends ObserverContentPanel{
             };
 	
 	protected String defaultDate;
+
+	@Override
+	public void update(Subject subject) {
+		// TODO Auto-generated method stub
+		
+	}
 }

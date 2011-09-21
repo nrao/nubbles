@@ -53,6 +53,7 @@ import edu.nrao.dss.client.ScheduleCalendar;
 import edu.nrao.dss.client.data.PeriodType;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.form.DateEditField;
 import edu.nrao.dss.client.widget.form.DisplayField;
 import edu.nrao.dss.client.widget.form.ScoreField;
@@ -232,6 +233,11 @@ public class PeriodExplorer extends Explorer {
 	      }
 
 	      sc.setPeriodExplorerHeading(jsonFresh.booleanValue(), jsonForecast.stringValue());
+	}
+	
+	@Override
+	public void update(Subject subject) {
+		((PeriodColConfig) configs.get(0)).updateSessionOptions(subject.getState());
 	}
 	
 	private List<ColumnConfig> configs;

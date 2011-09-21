@@ -30,6 +30,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
+import edu.nrao.dss.client.util.ObserverContentPanel;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.PeriodSummaryPanel;
 import edu.nrao.dss.client.widget.ProjectTimePanel;
 import edu.nrao.dss.client.widget.SessionTimePanel;
@@ -48,7 +51,7 @@ public class TimeAccounting extends ContentPanel {
     private ProjectTimePanel projectTimePanel = new ProjectTimePanel();
     private SessionTimePanel sessionTimePanel = new SessionTimePanel();
     private PeriodSummaryPanel periodSummary = new PeriodSummaryPanel(null);
-;
+    
 	public TimeAccounting() {
 		initLayout();
     }	
@@ -91,7 +94,7 @@ public class TimeAccounting extends ContentPanel {
 	}
 	
 	public void updatePCodeOptions() { 
-		projectTimePanel.updatePCodeOptions();
+		projectTimePanel.getPCodeOptions(OptionsFilter.getDefaultState("project_codes"));
 	}
 	
 	// given the JSON which has all the time accounting info in it, update the current
@@ -105,4 +108,5 @@ public class TimeAccounting extends ContentPanel {
            sessionTimePanel.populateSessTimeAccounting(json, name);
        }        
 	}
+
 }

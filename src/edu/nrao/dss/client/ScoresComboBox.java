@@ -43,75 +43,69 @@ import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.JSONRequestCache;
 
 public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 	
 	private ScoresDisplay display;
 	private ScoresAccess access;
     private Schedule schedulePanel;
-    private CheckBox notcomplete;
-    private CheckBox enabled;
-	private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
   
-	public ScoresComboBox(Schedule schedulePanel, CheckBox notcomplete, CheckBox enabled) {
+	public ScoresComboBox(Schedule schedulePanel) {
 		super();
 		this.schedulePanel = schedulePanel;
-		this.notcomplete   = notcomplete;
-		this.enabled       = enabled;
 		initLayout();
-		initListeners();
 		setTriggerAction(TriggerAction.ALL);
-	}
-	
-	private void initListeners() {
-		
-		notcomplete.addListener(Events.Change, new Listener<BaseEvent>(){
-
-			@Override
-			public void handleEvent(BaseEvent be) {
-				getOptions();
-			}
-
-		});
-		enabled.addListener(Events.Change, new Listener<BaseEvent>(){
-
-			@Override
-			public void handleEvent(BaseEvent be) {
-				getOptions();
-			}
-
-		});
-		
 	}
 	
 	private void initLayout() {
 		
 	    // get the options
 		setForceSelection(true);
-		getOptions();
+		getOptions(new HashMap<String, Object> () {{
+			put("enabled", "true");
+			put("notcomplete", "true");
+			put("semesters", "[11A, 11B]");
+			
+		}});
 	}
 	
 	private void getOptions() {
 		this.removeAll();
-		JSONRequest.get("/scheduler/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 			      , new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
-			    	  put("notcomplete", notcomplete.getValue().toString());
-			    	  put("enabled",   enabled.getValue().toString());
 			        }}
 			      , new JSONCallbackAdapter() {
 			@SuppressWarnings("unchecked")
 			public void onSuccess(JSONObject json) {
-				JSONArray results = json.get("session handles").isArray();
-				JSONArray ids = json.get("ids").isArray();
-				for (int i = 0; i< ids.size(); i += 1) {
-					String key = results.get(i).toString().replace('"', ' ').trim();
-					sessionsMap.put(key, (int)(ids.get(i).isNumber().doubleValue()));
-					add(key);
-				}
+				updateOptions(json);
 			}
-  	});		
-		
+		});		
+	}
+	
+	public void getOptions(HashMap<String, Object> state) {
+		this.removeAll();
+		state.put("mode", "session_handles");
+		JSONRequestCache.get("/scheduler/sessions/options"
+			      , state
+			      , new JSONCallbackAdapter() {
+			@SuppressWarnings("unchecked")
+			public void onSuccess(JSONObject json) {
+				updateOptions(json);
+			}
+		});		
+	}
+	
+	public void updateOptions(JSONObject json) {
+		JSONArray results = json.get("session handles").isArray();
+		JSONArray ids = json.get("ids").isArray();
+		for (int i = 0; i< ids.size(); i += 1) {
+			String key = results.get(i).toString().replace('"', ' ').trim();
+			sessionsMap.put(key, (int)(ids.get(i).isNumber().doubleValue()));
+			add(key);
+		}
 	}
 
 	public void getSessionScores(String session) {

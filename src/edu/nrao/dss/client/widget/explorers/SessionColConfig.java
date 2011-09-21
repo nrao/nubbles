@@ -48,6 +48,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.Conversions;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
@@ -104,9 +105,7 @@ public class SessionColConfig extends ColumnConfig {
 	@SuppressWarnings("serial")
 	public void setPCodeOptions() {
 		JSONRequestCache.get("/scheduler/sessions/options"
-				, new HashMap<String, Object>() {{
-	    	  put("mode", "project_codes");
-        }}
+		, OptionsFilter.getDefaultState("project_codes")
 		, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
@@ -148,7 +147,7 @@ public class SessionColConfig extends ColumnConfig {
 	
 	public void updatePCodeOptions(HashMap<String, Object> state) {
 		state.put("mode", "project_codes");
-		JSONRequest.get("/scheduler/sessions/options"
+		JSONRequestCache.get("/scheduler/sessions/options"
 				, state
 				, new JSONCallbackAdapter() {
 		    @SuppressWarnings("unchecked")

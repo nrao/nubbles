@@ -81,24 +81,13 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		fp.setHeaderVisible(false);
 		
 		// session
-		//final SimpleComboBox<String> sessions = new SimpleComboBox<String>();
-		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
-		sessions.setForceSelection(true);
-		JSONRequestCache.get("/scheduler/sessions/options"
-				, new HashMap<String, Object>() {{
-			    	  put("mode", "session_handles");
-			        }}
-				, new JSONCallbackAdapter() {
-			public void onSuccess(JSONObject json) {
-				JSONArray results = json.get("session handles").isArray();
-				JSONArray ids = json.get("ids").isArray();
-				for (int i = 0; i< ids.size(); i += 1) {
-					String key = results.get(i).toString().replace('"', ' ').trim();
-					sessionsMap.put(key, (int)(ids.get(i).isNumber().doubleValue()));
-					sessions.add(key);
-				}
-			}
-    	});
+		final HashMap<String, Integer> sessionsMap = 
+			getOptions(new HashMap<String, Object> () {{
+			    put("enabled", "true");
+			    put("notcomplete", "true");
+			    put("semesters", "[11A, 11B]");
+			
+		}});
 		
 		sessions.setToolTip("Select a session to factor.");
 		sessions.setFieldLabel("Sessions");
@@ -170,6 +159,31 @@ public class FactorsDlg extends Dialog implements FactorsControl {
                 access.request(display, sessionId, label, start, getDuration(), schedule.getTimeZone());
 			}
 		});
+	}
+	
+	public HashMap<String, Integer> getOptions() {
+		return getOptions(new HashMap<String, Object>());
+	}
+	
+	public HashMap<String, Integer> getOptions(HashMap<String, Object> state) {
+		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
+		sessions.setForceSelection(true);
+		sessions.removeAll();
+		state.put("mode", "session_handles");
+		JSONRequestCache.get("/scheduler/sessions/options"
+				, state
+				, new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json) {
+				JSONArray results = json.get("session handles").isArray();
+				JSONArray ids = json.get("ids").isArray();
+				for (int i = 0; i< ids.size(); i += 1) {
+					String key = results.get(i).toString().replace('"', ' ').trim();
+					sessionsMap.put(key, (int)(ids.get(i).isNumber().doubleValue()));
+					sessions.add(key);
+				}
+			}
+    	});
+		return sessionsMap;
 	}
 	
 	private Integer getDuration() {

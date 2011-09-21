@@ -47,7 +47,9 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.JSONRequestCache;
 import edu.nrao.dss.client.widget.form.DateEditField;
 import edu.nrao.dss.client.widget.form.DisplayField;
@@ -87,20 +89,27 @@ public class PeriodColConfig extends ColumnConfig {
 	@SuppressWarnings("serial")
 	public void setSessionOptions() {
 		JSONRequestCache.get("/scheduler/sessions/options"
-				, new HashMap<String, Object>() {{
-			    	  put("mode", "session_handles");
-			        }}
+				, OptionsFilter.getDefaultState("session_handles")
 				, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
 				ArrayList<String> sess_handles = new ArrayList<String>();
 				JSONArray sessions = json.get("session handles").isArray();
-				for (int i = 0; i < sessions.size(); ++i){
+				for (int i = 0; i < sessions.size(); ++i) {
 					sess_handles.add(sessions.get(i).toString().replace('"', ' ').trim());
 				}
 				typeField(sess_handles.toArray(new String[] {}));
 			}
     	});
+	}
+	
+	public void updateSessionHandles(JSONObject json) {
+		SimpleComboBox<String> typeCombo = (SimpleComboBox<String>) getEditor().getField();
+		typeCombo.removeAll();
+		JSONArray sessions = json.get("session handles").isArray();
+		for (int i = 0; i < sessions.size(); ++i) {
+			typeCombo.add(sessions.get(i).toString().replace('"', ' ').trim());
+		}
 	}
 	
 	@SuppressWarnings("serial")
@@ -113,12 +122,20 @@ public class PeriodColConfig extends ColumnConfig {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(JSONObject json) {
-				SimpleComboBox<String> typeCombo = (SimpleComboBox<String>) getEditor().getField();
-				typeCombo.removeAll();
-				JSONArray sessions = json.get("session handles").isArray();
-				for (int i = 0; i < sessions.size(); ++i){
-					typeCombo.add(sessions.get(i).toString().replace('"', ' ').trim());
-				}
+				updateSessionHandles(json);
+			}
+    	});
+	}
+	
+	public void updateSessionOptions(HashMap<String, Object> state) {
+		state.put("mode", "project_codes");
+		JSONRequestCache.get("/scheduler/sessions/options"
+				, state
+				, new JSONCallbackAdapter() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(JSONObject json) {
+				updateSessionHandles(json);
 			}
     	});
 	}

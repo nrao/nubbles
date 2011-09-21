@@ -382,9 +382,9 @@ public class ProjectExplorer extends Explorer {
 	}
 	
 	public void updateObservers() {
-		sePcodeConfig.updatePCodeOptions();
+		sePcodeConfig.updatePCodeOptions(OptionsFilter.getDefaultState("project_codes"));
 		timeAccounting.updatePCodeOptions();
-		projectPage.updatePCodeOptions();
+		projectPage.getPCodeOptions(OptionsFilter.getDefaultState("project_codes"));
 	}
 	
 	// when the view button gets pressed, go to the Project Page tab.
