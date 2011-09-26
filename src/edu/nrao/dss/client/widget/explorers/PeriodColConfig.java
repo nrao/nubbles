@@ -128,7 +128,7 @@ public class PeriodColConfig extends ColumnConfig {
 	}
 	
 	public void updateSessionOptions(HashMap<String, Object> state) {
-		state.put("mode", "project_codes");
+		state.put("mode", "session_handles");
 		JSONRequestCache.get("/scheduler/sessions/options"
 				, state
 				, new JSONCallbackAdapter() {

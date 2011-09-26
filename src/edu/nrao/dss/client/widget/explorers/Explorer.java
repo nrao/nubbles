@@ -627,7 +627,9 @@ public class Explorer extends ObserverContentPanel{
 		optionsFilter = new OptionsFilter();
 		toolBar.insert(new SeparatorToolItem(), 6);
 		toolBar.insert(optionsFilter.getSemester(), 7);
-		toolBar.insert(optionsFilter.getEnabled(), 8);
+		if (this.rootURL != "/scheduler/sessions") {
+			toolBar.insert(optionsFilter.getEnabled(), 8);
+		}
 		toolBar.insert(optionsFilter.getNotComplete(), 9);
 		optionsFilter.attach(this);
 		

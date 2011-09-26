@@ -41,6 +41,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.JSONRequestCache;
@@ -63,12 +64,7 @@ public class ScoresComboBox extends SimpleComboBox implements ScoresControl {
 		
 	    // get the options
 		setForceSelection(true);
-		getOptions(new HashMap<String, Object> () {{
-			put("enabled", "true");
-			put("notcomplete", "true");
-			put("semesters", "[11A, 11B]");
-			
-		}});
+		getOptions(OptionsFilter.getDefaultState("session_handles"));
 	}
 	
 	private void getOptions() {
