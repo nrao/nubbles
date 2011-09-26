@@ -48,8 +48,10 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.Conversions;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
+import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.JSONRequestCache;
 import edu.nrao.dss.client.widget.form.CoordModeField;
 import edu.nrao.dss.client.widget.form.DateEditField;
@@ -103,9 +105,7 @@ public class SessionColConfig extends ColumnConfig {
 	@SuppressWarnings("serial")
 	public void setPCodeOptions() {
 		JSONRequestCache.get("/scheduler/sessions/options"
-				, new HashMap<String, Object>() {{
-	    	  put("mode", "project_codes");
-        }}
+		, OptionsFilter.getDefaultState("project_codes")
 		, new JSONCallbackAdapter() {
 			@Override
 			public void onSuccess(JSONObject json) {
@@ -121,22 +121,39 @@ public class SessionColConfig extends ColumnConfig {
     	});
 	}
 	
+	private void updatePCodes(JSONObject json){
+		@SuppressWarnings("unchecked")
+		SimpleComboBox<String> typeCombo = (SimpleComboBox<String>) getEditor().getField();
+		typeCombo.removeAll();
+		JSONArray pcodes = json.get("project codes").isArray();
+		for (int i = 0; i < pcodes.size(); ++i){
+			typeCombo.add(pcodes.get(i).toString().replace('"', ' ').trim());
+		}
+	}
+	
 	public void updatePCodeOptions() {
 		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
-			    	  put("mode", "project_codes");
-			        }}
+					put("mode", "project_codes");
+				   }}
 				, new JSONCallbackAdapter() {
-		//JSONRequest.get("/scheduler/sessions/options", new JSONCallbackAdapter() {
-			@SuppressWarnings("unchecked")
+		    @SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(JSONObject json) {
-				SimpleComboBox<String> typeCombo = (SimpleComboBox<String>) getEditor().getField();
-				typeCombo.removeAll();
-				JSONArray pcodes = json.get("project codes").isArray();
-				for (int i = 0; i < pcodes.size(); ++i){
-					typeCombo.add(pcodes.get(i).toString().replace('"', ' ').trim());
-				}
+				updatePCodes(json);
+			}
+    	});
+	}
+	
+	public void updatePCodeOptions(HashMap<String, Object> state) {
+		state.put("mode", "project_codes");
+		JSONRequestCache.get("/scheduler/sessions/options"
+				, state
+				, new JSONCallbackAdapter() {
+		    @SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(JSONObject json) {
+				updatePCodes(json);
 			}
     	});
 	}

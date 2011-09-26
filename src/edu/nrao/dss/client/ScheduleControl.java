@@ -49,11 +49,13 @@ import com.google.gwt.json.client.JSONObject;
 
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.ObserverContentPanel;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.util.TimeUtils;
 import edu.nrao.dss.client.widget.EmailDialogBox;
 import edu.nrao.dss.client.widget.FactorsDlg;
 
-public class ScheduleControl extends FormPanel {
+public class ScheduleControl extends ObserverContentPanel {
 	
 	private Schedule schedule;
 	//private LabelField scheduleAverage, currentAverage, unscheduledTime;
@@ -432,5 +434,11 @@ public class ScheduleControl extends FormPanel {
 				factorsDlg.show();
 			}
 		});		
+	}
+
+	@Override
+	public void update(Subject subject) {
+		HashMap<String, Object> state = subject.getState();
+		factorsDlg.getOptions(state);
 	}
 }

@@ -46,13 +46,16 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.HTML;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.JSONRequestCache;
+import edu.nrao.dss.client.util.ObserverContentPanel;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.ElectivesInfoPanel;
 import edu.nrao.dss.client.widget.WindowsInfoPanel;
 
-public class SessionPage extends ContentPanel {
+public class SessionPage extends ObserverContentPanel {
 	
     private final WindowsInfoPanel  wp = new WindowsInfoPanel("windows", "Window");
     private final ElectivesInfoPanel  ep = new ElectivesInfoPanel("electives", "Elective");
@@ -63,7 +66,8 @@ public class SessionPage extends ContentPanel {
 	private CheckBox guaranteed = new CheckBox();
 	private Button save = new Button();
 	private Button reset = new Button();
-    private FormData fd = new FormData(200, 25);    
+    private FormData fd = new FormData(200, 25);
+    private OptionsFilter optionsFilter;
 	
 	private HashMap<String, Integer> session_ids = new HashMap<String, Integer>();
 	private JSONObject sessionJson;
@@ -72,7 +76,7 @@ public class SessionPage extends ContentPanel {
 	public SessionPage() {
 		initLayout();
 		initListeners();
-		updateSessionOptions();		
+		getSessionOptions(OptionsFilter.getDefaultState("session_handles"));		
 	}
 
 	private void initLayout() {
@@ -82,6 +86,10 @@ public class SessionPage extends ContentPanel {
 		
 		// so we can always see everything 
 		setScrollMode(Scroll.AUTO); 
+		
+		optionsFilter = new OptionsFilter();
+		add(optionsFilter.getToolbar());
+		optionsFilter.attach(this);
 
         sessionForm.setHeaderVisible(false);
         sessionForm.add(new HTML("<h2>Session Information</h2>"));
@@ -120,28 +128,46 @@ public class SessionPage extends ContentPanel {
 	}
 	
 	// gets all project codes form the server and populates the project combo
-	public void updateSessionOptions() {
+	public void getSessionOptions() {
 		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 			    	  put("mode", "session_handles");
 			        }}
 				, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				// get ready to populate the project codes list
-				sessions.removeAll();
-				session_ids.clear();
-				JSONArray handles = json.get("session handles").isArray();
-				JSONArray ids    = json.get("ids").isArray();
-				for (int i = 0; i < handles.size(); ++i){
-					String handle = handles.get(i).toString().replace('"', ' ').trim();
-					int id = (int) ids.get(i).isNumber().doubleValue();
-					session_ids.put(handle, id);
-					sessions.add(handle);
-					
-				}
+				updateSessionOptions(json);
 			}
 		});
-	}	
+	}
+	
+	public void getSessionOptions(HashMap<String, Object> state) {
+		state.put("mode", "session_handles");
+		JSONRequestCache.get("/scheduler/sessions/options"
+				, state
+				, new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json) {
+				updateSessionOptions(json);
+			}
+		});
+	}
+
+    public void updateSessionOptions(JSONObject json) {
+    	// get ready to populate the project codes list
+		sessions.removeAll();
+		session_ids.clear();
+		JSONArray handles = json.get("session handles").isArray();
+		JSONArray ids    = json.get("ids").isArray();
+		for (int i = 0; i < handles.size(); ++i){
+			String handle = handles.get(i).toString().replace('"', ' ').trim();
+			int id = (int) ids.get(i).isNumber().doubleValue();
+			session_ids.put(handle, id);
+			sessions.add(handle);
+		}			
+    }
+	
+	public void update(Subject subject) {
+		getSessionOptions(subject.getState());
+	}
 	
 	// retrieves the project's JSON
 	private void getSession(String handle) {

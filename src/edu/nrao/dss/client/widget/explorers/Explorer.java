@@ -96,14 +96,17 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
+import edu.nrao.dss.client.util.ObserverContentPanel;
 import edu.nrao.dss.client.util.PagingJsonReader;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.FilterItem;
 import edu.nrao.dss.client.widget.FilterMenu;
 
-public class Explorer extends ContentPanel{
+public class Explorer extends ObserverContentPanel{
 	
 	public Explorer(String url, String defaultArgs, ModelType mType) {
 		rootURL     = url;
@@ -620,6 +623,16 @@ public class Explorer extends ContentPanel{
 		return filterMenu;
 	}
 	
+	protected void initOptionsFilter() {
+		optionsFilter = new OptionsFilter();
+		toolBar.insert(new SeparatorToolItem(), 6);
+		toolBar.insert(optionsFilter.getSemester(), 7);
+		toolBar.insert(optionsFilter.getEnabled(), 8);
+		toolBar.insert(optionsFilter.getNotComplete(), 9);
+		optionsFilter.attach(this);
+		
+	}
+	
 	protected void setRemoveItemListener() {
 		removeItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			@Override
@@ -847,6 +860,7 @@ public class Explorer extends ContentPanel{
 	protected ToolBar toolBar;
 	protected ToolBar filterToolBar;
 	protected PagingToolBar pagingToolBar;
+	protected OptionsFilter optionsFilter;
 	
 	protected FilterItem filter;
 
@@ -865,4 +879,10 @@ public class Explorer extends ContentPanel{
             };
 	
 	protected String defaultDate;
+
+	@Override
+	public void update(Subject subject) {
+		// TODO Auto-generated method stub
+		
+	}
 }

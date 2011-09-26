@@ -52,14 +52,17 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.JSONRequestCache;
+import edu.nrao.dss.client.util.ObserverContentPanel;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.explorers.FriendExplorer;
 import edu.nrao.dss.client.widget.explorers.InvestigatorExplorer;
 
 
-public class ProjectPage extends ContentPanel {
+public class ProjectPage extends ObserverContentPanel {
 
 	private FormPanel projectForm = new FormPanel();
 	private Anchor anchor = new Anchor("Observers Project Page", "");	
@@ -80,11 +83,12 @@ public class ProjectPage extends ContentPanel {
     
     private InvestigatorExplorer investigatorExplorer = new InvestigatorExplorer();
     private FriendExplorer friendExplorer = new FriendExplorer();
+    private OptionsFilter optionsFilter;
 	
 	public ProjectPage() {
 		initLayout();
 		initListeners();
-		updatePCodeOptions();
+		getPCodeOptions(OptionsFilter.getDefaultState("project_codes"));
 	}
 	
 	public InvestigatorExplorer getInvestigatorExplorer() {
@@ -99,7 +103,11 @@ public class ProjectPage extends ContentPanel {
 		setHeaderVisible(false);
 		
 		// so we can always see everything 
-		setScrollMode(Scroll.AUTO); 
+		setScrollMode(Scroll.AUTO);
+		
+		optionsFilter = new OptionsFilter();
+		optionsFilter.attach(this);
+		add(optionsFilter.getToolbar());
 
 		//projectForm.setHeading("Project");
 		//projectForm.setBorders(true);
@@ -305,28 +313,43 @@ public class ProjectPage extends ContentPanel {
 	}
 	
 	// gets all project codes form the server and populates the project combo
-	public void updatePCodeOptions() {
+	public void getPCodeOptions() {
 		JSONRequestCache.get("/scheduler/sessions/options"
 				, new HashMap<String, Object>() {{
 	    	  put("mode", "project_codes");
           }}
 		, new JSONCallbackAdapter() {
 			public void onSuccess(JSONObject json) {
-				// get ready to populate the project codes list
-				projects.removeAll();
-				project_ids.clear();
-				JSONArray pcodes = json.get("project codes").isArray();
-				JSONArray ids    = json.get("project ids").isArray();
-				//GWT.log("got num of pcodes: "+Integer.toString(pcodes.size()), null); 
-				for (int i = 0; i < pcodes.size(); ++i){
-					String pcode = pcodes.get(i).toString().replace('"', ' ').trim();
-					int id = (int) ids.get(i).isNumber().doubleValue();
-					project_ids.put(pcode, id);
-					projects.add(pcode);
-					
-				}
+				updatePCodeOptions(json);
 			}
 		});
+	}
+	
+	public void getPCodeOptions(HashMap<String, Object> state) {
+		state.put("mode", "project_codes");
+		JSONRequestCache.get("/scheduler/sessions/options"
+				, state
+		, new JSONCallbackAdapter() {
+			public void onSuccess(JSONObject json) {
+				updatePCodeOptions(json);
+			}
+		});
+	}
+	
+	public void updatePCodeOptions(JSONObject json) {
+		// get ready to populate the project codes list
+		projects.removeAll();
+		project_ids.clear();
+		JSONArray pcodes = json.get("project codes").isArray();
+		JSONArray ids    = json.get("project ids").isArray();
+		//GWT.log("got num of pcodes: "+Integer.toString(pcodes.size()), null); 
+		for (int i = 0; i < pcodes.size(); ++i){
+			String pcode = pcodes.get(i).toString().replace('"', ' ').trim();
+			int id = (int) ids.get(i).isNumber().doubleValue();
+			project_ids.put(pcode, id);
+			projects.add(pcode);
+			
+		}
 	}
 	
 	// take changes from widgets and send them over to the server to change
@@ -387,6 +410,11 @@ public class ProjectPage extends ContentPanel {
 		GWT.log("PP.setProject", null);
 		projects.setSimpleValue(pcode);
 	
+	}
+
+	@Override
+	public void update(Subject subject) {
+		getPCodeOptions(subject.getState());
 	}
 	
 //	public InvestigatorExplorer getInvestigatorExplorer() {

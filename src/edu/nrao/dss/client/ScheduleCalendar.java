@@ -31,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.widget.explorers.PeriodExplorer;
 
 
@@ -56,6 +57,10 @@ public class ScheduleCalendar extends ContentPanel {
 	    
 	    // NOTE: the period explorer's loadData function is called when the
 	    // calendar is updated, using the calendar control's widgets as input
+	}
+	
+	public void attachPE(Subject subject){
+		subject.attach(pe);
 	}
 	
 	public void setPeriodExplorerHeading(Boolean fresh, String forecast) {

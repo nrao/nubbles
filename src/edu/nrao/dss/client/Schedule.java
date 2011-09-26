@@ -57,11 +57,14 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.data.PeriodEventAdapter;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequest;
 import edu.nrao.dss.client.util.JSONRequestCache;
+import edu.nrao.dss.client.util.ObserverContentPanel;
+import edu.nrao.dss.client.util.Subject;
 import edu.nrao.dss.client.util.dssgwtcal.Appointment;
 import edu.nrao.dss.client.util.dssgwtcal.CalendarSettings;
 import edu.nrao.dss.client.util.dssgwtcal.DayView;
@@ -82,6 +85,7 @@ public class Schedule extends ContentPanel implements Refresher {
 	private NomineePanel nomineePanel;
 	private Reservations reservations;
 	private ContentPanel calendar;
+	private OptionsFilter optionsFilter;
 
 	private DayView dayView;
 	
@@ -164,14 +168,19 @@ public class Schedule extends ContentPanel implements Refresher {
 		controlsContainer.setBorders(true);
 		controlsContainer.setHeading("Controls");
 		controlsContainer.setScrollMode(Scroll.AUTO);
+		
+		optionsFilter = new OptionsFilter();
+		controlsContainer.add(optionsFilter.getToolbar());
 
 		calendarControl = new CalendarControl(this);
 		calendarControl.setCollapsible(true);
 		controlsContainer.add(calendarControl);
+		optionsFilter.attach(calendarControl);
 		
 		scheduleControl = new ScheduleControl(this);
         scheduleControl.setCollapsible(true);
         controlsContainer.add(scheduleControl);
+        optionsFilter.attach(scheduleControl);
 		
         scheduleExplorer = new ScheduleCalendar();
 		scheduleExplorer.addButtonsListener(this);
@@ -179,6 +188,7 @@ public class Schedule extends ContentPanel implements Refresher {
 		scheduleExplorer.setCollapsible(true);
 		scheduleExplorer.setAutoHeight(true);
 		controlsContainer.add(scheduleExplorer);
+		scheduleExplorer.attachPE(optionsFilter);
 		
 		vacancyControl = new VacancyControl(this);
         vacancyControl.setCollapsible(true);

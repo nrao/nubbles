@@ -59,6 +59,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import edu.nrao.dss.client.ProjectPage;
 import edu.nrao.dss.client.Scheduler;
 import edu.nrao.dss.client.TimeAccounting;
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.data.ProjectType;
 import edu.nrao.dss.client.util.DynamicHttpProxy;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
@@ -381,9 +382,9 @@ public class ProjectExplorer extends Explorer {
 	}
 	
 	public void updateObservers() {
-		sePcodeConfig.updatePCodeOptions();
+		sePcodeConfig.updatePCodeOptions(OptionsFilter.getDefaultState("project_codes"));
 		timeAccounting.updatePCodeOptions();
-		projectPage.updatePCodeOptions();
+		projectPage.getPCodeOptions(OptionsFilter.getDefaultState("project_codes"));
 	}
 	
 	// when the view button gets pressed, go to the Project Page tab.
