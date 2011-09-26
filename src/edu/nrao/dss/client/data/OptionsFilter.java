@@ -3,11 +3,19 @@ package edu.nrao.dss.client.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.extjs.gxt.ui.client.Style.HideMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
@@ -18,7 +26,7 @@ import com.google.gwt.core.client.GWT;
 import edu.nrao.dss.client.util.Subject;
 
 public class OptionsFilter extends Subject {
-	private ToggleButton notcomplete, enabled;
+	private SimpleComboBox<String> notcomplete, enabled;
 	private Button semester;
 	private ToolBar toolbar;
 	private ArrayList<CheckMenuItem> semesterItems;
@@ -30,26 +38,38 @@ public class OptionsFilter extends Subject {
 	}
 	
 	private void initNotComplete() {
-		notcomplete = new ToggleButton("Not Complete");
+		notcomplete = new SimpleComboBox<String>();
 		notcomplete.setToolTip("Filters for sessions that are not complete in the options below when checked.");
-		notcomplete.toggle(true);
+		notcomplete.add("Not Complete");
+		notcomplete.add("Complete");
+		notcomplete.add("All");
+		notcomplete.setSimpleValue("Not Complete");
+		notcomplete.setAllowBlank(false);
+		notcomplete.setEditable(false);
+		notcomplete.setTriggerAction(TriggerAction.ALL);
 		
-		notcomplete.addSelectionListener(new SelectionListener<ButtonEvent> () {
+		notcomplete.addListener(Events.Select, new Listener<FieldEvent> () {
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void handleEvent(FieldEvent be) {
 				notifyObservers();
 			}
 		});
 	}
 	
 	private void initEnabled() {
-		enabled = new ToggleButton("Enabled");
+		enabled = new SimpleComboBox<String>();
 		enabled.setToolTip("Filters for enabled sessions in the options below when checked.");
-		enabled.toggle(true);
+		enabled.add("Enabled");
+		enabled.add("Not Enabled");
+		enabled.add("All");
+		enabled.setSimpleValue("Enabled");
+		enabled.setAllowBlank(false);
+		enabled.setEditable(false);
+		enabled.setTriggerAction(TriggerAction.ALL);
 		
-		enabled.addSelectionListener(new SelectionListener<ButtonEvent> () {
+		enabled.addListener(Events.Select, new Listener<FieldEvent> () {
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void handleEvent(FieldEvent be) {
 				notifyObservers();
 			}
 		});
@@ -57,12 +77,13 @@ public class OptionsFilter extends Subject {
 	
 	private void initSemester() {
 		semester = new Button("Semester");
-		semester.setToolTip("Select which semesters you want to see in the project or session options below.");
+		semester.setToolTip("Select which semesters you want to see in the project or session options below in the drop down menu.");
 		semester.setMenu(initSemesterMenu());
 	}
 	
 	private Menu initSemesterMenu(){
 		Menu menu = new Menu();
+		menu.setHideMode(HideMode.DISPLAY);
 		MenuItem all = new MenuItem("Select All");
 		all.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -124,11 +145,11 @@ public class OptionsFilter extends Subject {
 		return toolbar;
 	}
 	
-	public ToggleButton getNotComplete() {
+	public SimpleComboBox<String> getNotComplete() {
 		return notcomplete;
 	}
 	
-	public ToggleButton getEnabled() {
+	public SimpleComboBox<String> getEnabled() {
 		return enabled;
 	}
 	
@@ -138,8 +159,8 @@ public class OptionsFilter extends Subject {
 	
 	public HashMap<String, Object> getState() {
 		HashMap<String, Object> state = new HashMap<String, Object>();
-		state.put("enabled", enabled.isPressed());
-		state.put("notcomplete", notcomplete.isPressed());
+		state.put("enabled", enabled.getRawValue());
+		state.put("notcomplete", notcomplete.getRawValue());
 		ArrayList<String> semesters = new ArrayList<String>();
 		for (CheckMenuItem cmi : semesterItems) {
 			if (cmi.isChecked()) {
@@ -155,8 +176,8 @@ public class OptionsFilter extends Subject {
 		return new HashMap<String, Object>() {{
 	    	  put("mode", mode);
 	    	  put("semesters", "[11A, 11B]");
-	    	  put("enabled", "true");
-	    	  put("notcomplete", "true");
+	    	  put("enabled", "Enabled");
+	    	  put("notcomplete", "Not Complete");
 	        }};
 	}
 

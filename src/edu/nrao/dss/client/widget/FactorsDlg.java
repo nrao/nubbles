@@ -47,6 +47,7 @@ import edu.nrao.dss.client.FactorsAccess;
 import edu.nrao.dss.client.FactorsControl;
 import edu.nrao.dss.client.FactorsDisplay;
 import edu.nrao.dss.client.Schedule;
+import edu.nrao.dss.client.data.OptionsFilter;
 import edu.nrao.dss.client.util.JSONCallbackAdapter;
 import edu.nrao.dss.client.util.JSONRequestCache;
 
@@ -82,12 +83,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		
 		// session
 		final HashMap<String, Integer> sessionsMap = 
-			getOptions(new HashMap<String, Object> () {{
-			    put("enabled", "true");
-			    put("notcomplete", "true");
-			    put("semesters", "[11A, 11B]");
-			
-		}});
+			getOptions(OptionsFilter.getDefaultState("session_handles"));
 		
 		sessions.setToolTip("Select a session to factor.");
 		sessions.setFieldLabel("Sessions");
