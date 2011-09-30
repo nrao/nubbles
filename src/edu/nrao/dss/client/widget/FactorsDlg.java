@@ -67,6 +67,8 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 	private final DateField startDateField = new DateField();
     private final TimeField timeField = new TimeField();
     private final NumberField hours = new NumberField();
+    
+    private final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer> ();
 
 	@SuppressWarnings("serial")
 	public FactorsDlg(Schedule sched) {
@@ -82,8 +84,7 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		fp.setHeaderVisible(false);
 		
 		// session
-		final HashMap<String, Integer> sessionsMap = 
-			getOptions(OptionsFilter.getDefaultState("session_handles"));
+		getOptions(OptionsFilter.getDefaultState("session_handles"));
 		
 		sessions.setToolTip("Select a session to factor.");
 		sessions.setFieldLabel("Sessions");
@@ -157,12 +158,12 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 		});
 	}
 	
-	public HashMap<String, Integer> getOptions() {
-		return getOptions(new HashMap<String, Object>());
+	public void getOptions() {
+		getOptions(new HashMap<String, Object>());
 	}
 	
-	public HashMap<String, Integer> getOptions(HashMap<String, Object> state) {
-		final HashMap<String, Integer> sessionsMap = new HashMap<String, Integer>();
+	public void getOptions(HashMap<String, Object> state) {
+		sessionsMap.clear();
 		sessions.setForceSelection(true);
 		sessions.removeAll();
 		state.put("mode", "session_handles");
@@ -179,7 +180,6 @@ public class FactorsDlg extends Dialog implements FactorsControl {
 				}
 			}
     	});
-		return sessionsMap;
 	}
 	
 	private Integer getDuration() {
