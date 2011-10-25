@@ -311,8 +311,7 @@ public class Explorer extends ContentPanel{
             	HashMap<String, Object> fields = new HashMap<String, Object>(grid.getSelectionModel()
             			.getSelectedItem().getProperties());
             	fields.put("pcode", fields.get("pcode") + " - 2");
-            	GWT.log("pcode: " + fields.get("pcode"));
-                addRecord(fields);
+            	addRecord(fields);
                 grid.getView().refresh(true);
             }
         });
